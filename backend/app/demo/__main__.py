@@ -1,0 +1,88 @@
+"""`python -m app.demo seed` restores the demo; `python -m app.demo strike N` replays lightning.
+
+Run from backend/. Reads `DATABASE_URL`, `DEMO_CREW_USER_ID`, and
+`DEMO_SUPERVISOR_USER_ID` from backend/.env. User IDs are never printed.
+"""
+
+import argparse
+import os
+from datetime import UTC, datetime
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.db.connection import to_driver_url
+from app.db.init import initialize_database, load_env_file
+from app.demo.scenario import (
+    PLACEHOLDER_CREW,
+    PLACEHOLDER_SUPERVISOR,
+    DemoAccounts,
+    replay_lightning,
+    seed_demo,
+)
+
+
+class DemoSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    demo_crew_user_id: str = ""
+    demo_supervisor_user_id: str = ""
+
+    def accounts(self) -> DemoAccounts:
+        return DemoAccounts(
+            self.demo_crew_user_id.strip() or PLACEHOLDER_CREW,
+            self.demo_supervisor_user_id.strip() or PLACEHOLDER_SUPERVISOR,
+        )
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(prog="python -m app.demo", description=__doc__)
+    commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("seed", help="remove the previous demo rows and restore the scenario")
+    strike = commands.add_parser("strike", help="replay one lightning step at the demo site")
+    strike.add_argument("step", type=int, help="replay step, 1 to 3 (2 resets the countdown)")
+    args = parser.parse_args(argv)
+
+    load_env_file()
+    try:
+        _run(args)
+    except Exception as exc:
+        raise SystemExit(_redact(str(exc))) from None
+
+
+def _run(args: argparse.Namespace) -> None:
+    from app.db.session import get_session
+    from app.outlook import get_event_outlook_service
+
+    now = datetime.now(UTC)
+    if args.command == "seed":
+        initialize_database()
+        accounts = DemoSettings().accounts()
+        with get_session() as session:
+            result = seed_demo(session, now, accounts, get_event_outlook_service())
+        print(
+            f"Demo restored at {now:%Y-%m-%d %H:%M} UTC: site {result.site_id}, "
+            f"score {result.risk_score:.1f} ({result.risk_level}), "
+            f"stop-work alert active, briefing {result.briefing.id} "
+            f"({result.briefing.generated_by})."
+        )
+        if not result.accounts_linked:
+            print(
+                "Demo accounts are NOT linked: set DEMO_CREW_USER_ID and "
+                "DEMO_SUPERVISOR_USER_ID (Auth0 user IDs) in backend/.env and run again."
+            )
+    else:
+        with get_session() as session:
+            transition = replay_lightning(session, args.step, now)
+        print(f"Replayed lightning step {args.step}: {transition}.")
+
+
+def _redact(message: str) -> str:
+    secret = os.environ.get("DATABASE_URL", "")
+    if secret:
+        message = message.replace(secret, "DATABASE_URL")
+        message = message.replace(to_driver_url(secret), "DATABASE_URL")
+    return message
+
+
+if __name__ == "__main__":
+    main()
