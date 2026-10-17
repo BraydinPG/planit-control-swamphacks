@@ -101,7 +101,7 @@ Every observation must carry a source, value, unit when relevant, observation ti
 
 ### Live data sources
 
-Braydin's ingestion adapters in `backend/app/ingestion/` fetch these feeds and normalize them into `Observation` records. Confirm access, rate limits, and terms for each source before building it.
+Ingestion adapters in `backend/app/ingestion/` fetch these feeds and normalize them into `Observation` records. Rudra owns the NWS weather, forecast, and flood-alert feeds and the shared `FeedCache`. Braydin owns the other adapters, and each wraps its fetch in `FeedCache`. Confirm access, rate limits, and terms for each source before building it.
 
 | Hazard | Source | Tier | Data state | When unavailable |
 |---|---|---|---|---|
@@ -114,7 +114,7 @@ Braydin's ingestion adapters in `backend/app/ingestion/` fetch these feeds and n
 | Flood gauges | USGS Water Services instantaneous gauge readings | P1 | observed | Fall back to NWS flood alerts and mark gauges unavailable |
 | Broken electrical pole, downed line, on-site fire, wildlife, other on-site hazards | No feed. In-person crew reports only. | P0, through the report flow | crew reported | Not applicable |
 
-For each feed, cache the last successful result with its fetch time. Mark it stale after a configurable age and unavailable when no successful result exists. Never present a stale reading as current. A feed outage never clears or resolves an alert.
+For each feed, cache the last successful result with its fetch time. Mark it stale after a configurable age and unavailable when no successful result exists. Never present a stale reading as current. A feed outage never clears or resolves an alert. Feed outputs follow the conventions in `AGENTS.md`, "Ingestion interface": one metric per weather Observation, an explicit "none active" Observation when an alert or event feed succeeds with nothing found, and unavailable placeholders on failure.
 
 ### ML model: outcomes conditional on an active event
 
@@ -322,9 +322,9 @@ See `AGENTS.md` for detailed individual ownership, prompts, path boundaries, con
 Ownership summary:
 
 - Cache: `ml/`, model training, features, evaluation, and model handoff.
-- Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/`, `backend/app/gemini/`, database migrations, EIA-860M site import, live data feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, Auth0 setup notes.
+- Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/` except Rudra's NWS and cache files, `backend/app/gemini/`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, Auth0 setup notes.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick deploys the frontend.
-- Rudra: `backend/app/` except `security/`, `db/`, `ingestion/`, and `gemini/`, API contracts, deterministic alert rules, scoring, report and notice persistence, root README. Rudra imports Braydin’s database session, ingestion adapters, and Gemini functions, and does not edit migrations, feed adapters, or Gemini calls.
+- Rudra: `backend/app/` except `security/`, `db/`, Braydin's adapters in `ingestion/`, and `gemini/`, API contracts, NWS weather, forecast, and flood-alert feeds and the shared feed cache in `ingestion/`, deterministic alert rules, scoring, report and notice persistence, root README. Rudra imports Braydin’s database session, other ingestion adapters, and Gemini functions, and does not edit migrations, Braydin's feed adapters, or Gemini calls.
 
 Rudra creates and publishes the shared schemas first. Other members start against fixtures and their own module boundaries. Do not have two people edit the same file. Shared manifest and lockfile changes go through Rudra.
 

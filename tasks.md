@@ -17,9 +17,9 @@ Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the 
 
 ## Owners
 
-- Rudra: backend routes except Gemini, API contracts, alert rules, scoring, report and notice persistence, README.
+- Rudra: backend routes except Gemini, API contracts, NWS feeds and the shared feed cache in `backend/app/ingestion/`, alert rules, scoring, report and notice persistence, README.
 - Cache: `ml/`, model training, features, prediction, evaluation.
-- Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**`, `backend/app/gemini/**`, database migrations, EIA-860M site import, live data feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, `auth/SETUP.md`.
+- Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**` except Rudra's NWS and cache files, `backend/app/gemini/**`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, `auth/SETUP.md`.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
 
 ## Shared contracts
@@ -43,8 +43,8 @@ Routes:
 
 ## Phase 0: Kickoff and shared setup
 
-- [ ] **T001 | Rudra | Confirm the stack.** Use React + TypeScript with Vite and Tailwind CSS for the UI, FastAPI for every API route, Tiger Data for the database, Auth0 for identity, and Vultr for hosting and photo storage, as required in `spec.md`. Auth0, Tiger Data, and Vultr are sponsors for tracks. Done when all members agree on that stack and run commands.
-- [ ] **T002 | All | Read the project docs.** Read `spec.md` and `AGENTS.md`. Done when each person confirms owned paths and project scope.
+- [x] **T001 | Rudra | Confirm the stack.** Use React + TypeScript with Vite and Tailwind CSS for the UI, FastAPI for every API route, Tiger Data for the database, Auth0 for identity, and Vultr for hosting and photo storage, as required in `spec.md`. Auth0, Tiger Data, and Vultr are sponsors for tracks. Done when all members agree on that stack and run commands.
+- [x] **T002 | All | Read the project docs.** Read `spec.md` and `AGENTS.md`. Done when each person confirms owned paths and project scope.
 - [x] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, FastAPI backend, model, auth, and test folders. Done when a placeholder Vite frontend and a FastAPI `GET /health` route run locally.
 - [x] **T004 | Rudra | Add `.env.example`.** List Tiger Data, Auth0, Gemini, and Vultr Object Storage variable names and descriptions, with no secrets. Done when a new member can identify required configuration.
 - [x] **T005 | Rudra | Add quality commands.** Document existing formatter, linter, and test commands. Done when each command runs locally.
@@ -118,14 +118,14 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 - [x] **T040 | Braydin | Import 50+ sites.** Validate IDs, coordinates, and duplicates. Label locations as representative power plants, not verified construction sites. Needs T039 and T012. Done when 50 valid locations are in the database.
 - [ ] **T041 | Rudra | Implement `GET /api/sites`.** Return every location with its assigned team, matching T006. Sort locations with a team first, then by risk. Needs T040 and T006. Done when response validates.
 - [ ] **T042 | Rudra | Implement `GET /api/sites/{id}`.** Return observations, score factors, reports, and freshness. Needs T041. Done when valid IDs return detail and unknown IDs return 404.
-- [ ] **T043 | Braydin | Add the NWS weather and forecast feed (P0).** Use `api.weather.gov` point lookup, hourly forecast, and latest station observation in `backend/app/ingestion/`. Send a `User-Agent`. Normalize results into Observation records through the ingestion interface in `AGENTS.md`. Needs T012. Done when one site receives timestamped observed and forecast readings.
-- [ ] **T043A | Braydin | Add the NWS flood alerts feed (P0).** Fetch active Flood Warning, Flash Flood Warning, and Flood Watch alerts for each site point. Normalize them into `flood_alert` Observations. Needs T043. Done when a fixture alert produces an Observation and a failed fetch is marked unavailable, not "no flood."
-- [ ] **T044 | Braydin | Add caching and stale state for every feed.** Preserve each feed's last successful readings, track freshness per feed, and mark stale and unavailable states. Needs T043. Done when failed refreshes cannot appear current and one failed feed does not mark the others stale.
+- [x] **T043 | Rudra | Add the NWS weather and forecast feed (P0).** Use `api.weather.gov` point lookup, hourly forecast, and latest station observation in `backend/app/ingestion/`. Send a `User-Agent`. Normalize results into Observation records through the ingestion interface in `AGENTS.md`. Needs T012. Done when one site receives timestamped observed and forecast readings.
+- [x] **T043A | Rudra | Add the NWS flood alerts feed (P0).** Fetch active Flood Warning, Flash Flood Warning, and Flood Watch alerts for each site point. Normalize them into `flood_alert` Observations. Needs T043. Done when a fixture alert produces an Observation and a failed fetch is marked unavailable, not "no flood."
+- [x] **T044 | Rudra | Add caching and stale state for every feed.** Preserve each feed's last successful readings, track freshness per feed, and mark stale and unavailable states. Needs T043. Done when failed refreshes cannot appear current and one failed feed does not mark the others stale.
 - [ ] **T045 | Braydin | Define lightning event input and replay fixture (P0).** Normalize strike location and time. Expose `submit_strike()` from the ingestion interface. Label replayed strikes simulated. Needs T012. Done when tests can submit a strike without a live feed.
-- [ ] **T045A | Braydin | Add a live lightning feed (P1, best effort).** Try NOAA GOES GLM lightning data on AWS Open Data. Fall back to the replay fixture and label it simulated. Needs T045 and T044. Done when live strikes arrive as Observations, or the fallback is documented and labeled.
-- [ ] **T045B | Braydin | Add the hurricane feed (P1).** Use NHC active storms (`CurrentStorms.json`) and NWS Hurricane and Tropical Storm Warning and Watch alerts. Normalize them into `hurricane` Observations. Needs T044. Done when a fixture storm produces an Observation with source and time, and a failed fetch is marked unavailable.
-- [ ] **T045C | Braydin | Add the earthquake feed (P1).** Use the USGS earthquake GeoJSON summary feed. Normalize magnitude, location, and time into `earthquake` Observations. Needs T044. Done when a fixture event produces an Observation and a failed fetch is marked unavailable.
-- [ ] **T045D | Braydin | Add the USGS flood gauge feed (P1).** Use USGS Water Services instantaneous readings for gauges near sites. Normalize them into `flood_gauge` Observations. Needs T044. Done when a fixture gauge reading produces an Observation and NWS flood alerts remain the fallback.
+- [ ] **T045A | Braydin | Add a live lightning feed (P1, best effort).** Try NOAA GOES GLM lightning data on AWS Open Data. Fall back to the replay fixture and label it simulated. Wrap the fetch in `FeedCache` (see `AGENTS.md`, "Adding a feed adapter"). Needs T045 and T044. Done when live strikes arrive as Observations, or the fallback is documented and labeled.
+- [ ] **T045B | Braydin | Add the hurricane feed (P1).** Use NHC active storms (`CurrentStorms.json`) and NWS Hurricane and Tropical Storm Warning and Watch alerts. Normalize them into `hurricane` Observations. Wrap the fetch in `FeedCache` (see `AGENTS.md`, "Adding a feed adapter"). Needs T044. Done when a fixture storm produces an Observation with source and time, and a failed fetch is marked unavailable.
+- [ ] **T045C | Braydin | Add the earthquake feed (P1).** Use the USGS earthquake GeoJSON summary feed. Normalize magnitude, location, and time into `earthquake` Observations. Wrap the fetch in `FeedCache` (see `AGENTS.md`, "Adding a feed adapter"). Needs T044. Done when a fixture event produces an Observation and a failed fetch is marked unavailable.
+- [ ] **T045D | Braydin | Add the USGS flood gauge feed (P1).** Use USGS Water Services instantaneous readings for gauges near sites. Normalize them into `flood_gauge` Observations. Wrap the fetch in `FeedCache` (see `AGENTS.md`, "Adding a feed adapter"). Needs T044. Done when a fixture gauge reading produces an Observation and NWS flood alerts remain the fallback.
 - [ ] **T046 | Rudra | Implement the 10-mile trigger.** Create stop-work alert for qualifying strikes. Needs T045. Done when tests cover inside, outside, and boundary distance.
 - [ ] **T047 | Rudra | Implement 30-minute resettable timer.** Base clear time on latest qualifying strike. Needs T046. Done when a second strike resets the timer and 30 strike-free minutes clear it.
 - [ ] **T048 | Rudra | Implement alert listing and acknowledgement.** Persist alert status, user, and acknowledgement time. Needs T046, T047, and T027. Done when state persists across requests.
@@ -197,7 +197,8 @@ T001–T008: kickoff, repo, contracts
   ├── T024–T029: Auth0 lane
   └── T030–T038: frontend lane
                 ↓
-T039–T045D: sites and live feeds (Braydin, backend/app/ingestion/)
+T039–T040, T045–T045D: sites and non-NWS feeds (Braydin, backend/app/ingestion/)
+T043–T044: NWS feeds and FeedCache (Rudra, backend/app/ingestion/)
 T046–T055: alerts, rules, scoring, reports, permissions (Rudra; calls Braydin's Gemini functions)
 T056–T061: Gemini endpoints (Braydin, backend/app/gemini/)
                 ↓
