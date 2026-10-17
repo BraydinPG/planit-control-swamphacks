@@ -357,12 +357,14 @@
   "boundaries_verified": true,
   "initial_base": "9ba1b7c",
   "initial_implementation": "ff35b7b542075c116b7cbac86e8cb6e9e419d5ca",
-  "main_incorporation": "d93fb3e5e38f0f7eff0779e7d96fbe96242d5f21",
+  "main_incorporation": "483bcd17fa895db037d6cf936b4f4d3573433579",
   "publication": {
     "pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/24",
     "state": "open",
     "target": "main",
-    "merged_by_agent": false
+    "merged_by_agent": false,
+    "mergeability_at_source": "clean",
+    "mergeability_verified_for_head": "483bcd17fa895db037d6cf936b4f4d3573433579"
   },
   "merge_resolution": {
     "source": "9b395f0fb241000df96b1651a483d91628a47873",
@@ -376,5 +378,6 @@
   "final_remote_audit": {
     "main": "9b395f0fb241000df96b1651a483d91628a47873",
     "change": "Inherited reviewed T049A/T049B/T073 with context-only conflict resolutions; no Cache backend/auth/contract edits"
-  }
+  },
+  "validated_source_commit": "483bcd17fa895db037d6cf936b4f4d3573433579"
 }
