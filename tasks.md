@@ -69,6 +69,8 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 
 ### Cache: AI/ML
 
+- [x] **T087 | Cache | Independent worker-outlook developer preview (non-production).** Generate one offline, worker-readable read-only preview of existing comprehensive event-plus-site outlooks for real EIA reference sites and clearly labeled replayed disaster contexts. Invoke the existing ML callable and typed 2.1.0 contract; reuse approved site identities, real captured observations where available, and explicit unknowns. Include at least one meaningful Flood and one High Wind example and a negative/missing-evidence example; provide a one-command reproducible local run. Needs T022, T023, and TML-H03. Done when the preview renders in a browser or terminal without starting an unauthenticated API, every output validates, a clean checkout can reproduce or gracefully report missing artifacts, safety boundaries are tested, and integration instructions are documented. This does not finish T050, T063, or the whole application demo.
+
 Worker advisory continuation (Cache-owned, explicit user authorization; independent of production integration):
 
 Comprehensive hazard follow-up (new branch after PR #9 merged):
