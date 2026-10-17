@@ -1,3 +1,68 @@
+## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
+
+Explicit task-specific user authorization permits focused ingestion/refresh edits.
+Branch `feature/cache-feed-refresh-performance`, baseline `11c62b6`; latest fetched
+main `cdba4c3` changes only UI hover styling, preserved on integration. No teammate
+worktree/server changes. T043/T043A/T044/T045B/C/D/T049B/T073 remain historically
+completed; no new task checkbox or live-service acceptance claim.
+
+Every cross-owner modification in this run:
+
+- `backend/app/ingestion/http.py` (new): pooled HTTP, host limits/pacing, bounded
+  response/retry/time budgets, Retry-After/cancellation and redacted status diagnostics.
+- `backend/app/ingestion/runtime.py` (new): immutable worker snapshots, bounded ordered
+  I/O, round single-flight, cancellation and retrieval/phase/region metrics.
+- `backend/app/ingestion/alert_matching.py` (new): conservative active CAP/geometry,
+  holes and exact-zone matching, with uncertain geometry delegated to point queries.
+- `backend/app/ingestion/nws.py`: client lifecycle, coordinate-keyed expiring metadata,
+  negative TTL only for explicit coverage errors, safe origin/pagination and shared
+  regional alerts. `json_client.py`: pooled transport and typed invalid-response logs.
+- `backend/app/ingestion/cache.py`: coordinate-safe fallback keys, bounded multi-site
+  fetching and structured per-site final states; original observation times retained.
+- `backend/app/ingestion/nws_weather.py`: bounded fetches and station metadata reuse.
+  `nws_alerts.py`: bounded fetches and source-qualified shared alerts.
+- `backend/app/ingestion/hurricanes.py`: bounded site matching/shared NWS notices;
+  original NHC single fetch preserved. `earthquakes.py`: preserve structured failure
+  identity while retaining one shared summary fetch.
+- `backend/app/ingestion/flood_gauges.py`: bounded geographic/region batch queries,
+  outward boxes, per-site nearest gauges and original gauge/time provenance; reject
+  nonfinite/wrong-unit/future/no-data measurements. No site flood-depth inference.
+- `backend/app/ingestion/settings.py`: additive conservative workers/HTTP/cache/batch
+  options; no shared environment-template changes.
+- `backend/app/services/refresh.py`: immutable snapshots, serial unchanged upserts,
+  rule/notice/score calls, explicit missing subresults and coverage/processing metrics;
+  cancellation propagation, redacted one-shot preflight/report CLI and scheduler guard.
+- `backend/scripts/benchmark_refresh.py` (new): offline 256-site mocked benchmark,
+  original/optimized source hashes, observation/score equivalence and paced option.
+- `backend/tests/test_feed_http.py`, `test_feed_optimization.py` (new): 42 offline
+  cases for transport, statuses, retry budgets, caches, spatial association, batching,
+  final-state logs, isolated failures, no zero/false clearance and serial persistence.
+  Existing `test_nws_alerts.py` and `test_hurricanes.py` assert the intentional combined
+  alert query while retaining output assertions.
+- Shared docs: `PROJECT_CONTEXT.md` index and this log; new
+  `docs/FEED_REFRESH_PERFORMANCE.md` plus `feed-refresh-{baseline,optimized,paced}.json`
+  provide operator commands, measured results, coverage and source/migration limits.
+
+Checks: **923 backend tests pass**, including scoring/alerts/GLM/schema mirror; Ruff
+lint and **153-file** formatting pass. Final tests reject external socket connections
+(Windows asyncio internal loopback allowed). Synthetic before/after **21.05/4.44 s**,
+requests **1,794/578**, paced **152.96 s**; all 256 sites, 4,352 readings, matching
+observation and score hashes. Serial DB processing measured 1.11/2.22 s; no database
+performance improvement claimed. Detailed per-feed coverage in the guide/reports.
+
+Local ignored FEED_REFRESH_ENABLED stays false; no DATABASE_URL/NWS_USER_AGENT ready.
+No real refresh, shared DB write, account/configuration provisioning or automatic job
+was run. Frontend, canonical schemas, alert rules, scoring weights, ML, Gemini and
+security modules are untouched. Existing servers retain PIDs 77984/22668/65924.
+
+**Braydin review:** provider limits/cache/batching, actual regional error diagnosis,
+legacy USGS degradation/retirement and separately approved modern API key/migration.
+**Rudra review:** snapshot/serial ORM ordering, per-source unavailable placeholders,
+coverage versus fully processed counts and unchanged deterministic authority.
+An owner-approved single live round remains required before claiming the reported
+20-minute production problem is resolved. PR publication/commit reference follows
+in this log; no merge by Cache.
+
 ## Application-wide UI readability (Cache for Rudra) — 2026-10-17 22:23 UTC
 
 Explicit user authorization expands this run to frontend copy, typography and
