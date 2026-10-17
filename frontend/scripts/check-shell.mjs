@@ -11,6 +11,7 @@ const root = fileURLToPath(new URL('..', import.meta.url))
 const output = join(root, '.shell-check')
 const base = new URL(process.argv[2] ?? 'http://localhost:5173/')
 const production = process.argv.includes('--production')
+const restartCheck = process.argv.includes('--restart-check')
 assert(
   ['localhost', '127.0.0.1', '[::1]'].includes(base.hostname) &&
     base.protocol === 'http:' &&
@@ -122,7 +123,8 @@ async function offModeServer(setting) {
     [
       '--input-type=module',
       '--eval',
-      `import {createServer} from 'vite'; const server=await createServer({root:${JSON.stringify(root)},cacheDir:${JSON.stringify(join(output, `mode-${setting}-${Date.now()}`))},server:{host:'127.0.0.1',port:${port},strictPort:true}});await server.listen();`,
+      // These fixed-source helpers do not need file watchers (including old browser profiles).
+      `import {createServer} from 'vite'; const server=await createServer({root:${JSON.stringify(root)},cacheDir:${JSON.stringify(join(output, `mode-${setting}-${Date.now()}`))},server:{host:'127.0.0.1',port:${port},strictPort:true,watch:null}});await server.listen();`,
     ],
     {
       cwd: root,
@@ -522,6 +524,35 @@ try {
     accessibility:
       'all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
   })
+  if (restartCheck) {
+    const saved = await evaluate("localStorage.getItem('planit:frontend-demo:v1')")
+    console.log(`RESTART CHECK: restart only your demo server at ${base.origin}, on the same port. Leave this browser running, then press Enter here. This checker never stops a server.`)
+    await new Promise((done, reject) => {
+      const timer = setTimeout(() => finish(new Error('Restart confirmation timed out after five minutes')), 300000)
+      const finish = (error) => {
+        clearTimeout(timer)
+        process.stdin.off('data', ready)
+        process.stdin.off('end', ended)
+        process.stdin.pause()
+        if (error) reject(error)
+        else done()
+      }
+      const ready = () => finish()
+      const ended = () => finish(new Error('Restart check needs an interactive stdin'))
+      process.stdin.once('data', ready)
+      process.stdin.once('end', ended)
+      process.stdin.resume()
+    })
+    await until(async () => (await fetch(base)).ok, 'restarted demo server')
+    await reload('Read-only stored briefings')
+    assert.equal(await evaluate("localStorage.getItem('planit:frontend-demo:v1')"), saved, 'Restart must retain exactly the same isolated demo state')
+    await hash('/supervisor/reports', reportId)
+    await hash('/supervisor/sites/site-demo-everglades', 'Demo reviewed instruction: await qualified field inspection.')
+    assert(await evaluate(`document.querySelector('[data-notice-id="${noticeId}"]').innerText.toLowerCase().includes('confirmed')`), 'Confirmed notice must survive restart')
+    await hash('/crew/overview', 'Demo reviewed instruction: await qualified field inspection.')
+    await hash('/crew/briefings', 'Gemini output')
+    results.push({ restart: 'Operator restarted the same-origin demo server; exact demo state/report, supervisor confirmation, approved crew instruction, navigation and stored briefing survived. Browser-local simulation only; photos are memory-only.' })
+  }
   if (!production) {
     await navigate(
       new URL('/tests/browser.html', base).href,
@@ -870,6 +901,7 @@ try {
       JSON.stringify(
         {
           error: String(error),
+          completed_results: results,
           errors,
           failedRequests,
           pending_requests: [...inFlightRequests.values()],

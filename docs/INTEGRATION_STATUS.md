@@ -1,5 +1,13 @@
 # Frontend integration status
 
+## Clean setup / T070 preparation — 2026-10-17
+
+Fresh main-based `feature/cache-clean-setup` (`681582b`), isolated functional worktree; PR #34 remains open and independent. [PowerShell quick start](WINDOWS_QUICKSTART.md) and [verification record](clean-setup-verification.json) replace undocumented machine-specific setup with tested commands. Fresh npm dependency directory and Python 3.12 venv: 71 Node,637 backend +2 optional ML skips,10 probe tests,pip check,Ruff/117-file format,lint/TypeScript and fixture/API builds pass. Dependency declarations/lockfiles need no changes. Existing Starlette/API chunk/npm postinstall warnings are recorded.
+
+Windows restart reproduced EBUSY on locked generated Edge profiles. Vite now excludes `.shell-check/`; fixed-source helper servers disable watchers (identical helper change also in PR #34). The existing runner's optional `--restart-check` verifies exact demo state/report/confirmation/instruction/navigation/briefing after an operator restarts only their own server. Final dev and production preview pass at1440/390/320, no browser exceptions/backend requests. No alternate app/API/auth/database/seed, no UI edits, and no changes to real-service behavior.
+
+Fresh FastAPI health-only startup works both with explicit process settings and the existing env-file path (200 health,401 anonymous sites); no database/auth credentials used. Proxy on5177 still targets existing8000 and returns401 JSON; the isolated8052 server was checked separately. Existing5173/5176/8000/primary checkout preserved. Actual local private environment files remain absent; roles/demo-account existence is not disputed. T070 and all T063–T068/T034A/T053A states remain unchecked/unchanged. Pending IDs, required owner work and another-teammate acceptance are listed in the evidence. Rudra can link the guide from README/T077; no protected README or backend/auth files edited here.
+
 ## Site-scoring verification — 2026-10-17 11:34 UTC
 
 T051A/PR #31 merged `07a459d`. Separate `feature/cache-scoring-integration` worktree branch, no unmerged parent; Claude's primary/`feature/rudra-ui` visual changes preserved. See [SITE_SCORING_INTEGRATION.md](SITE_SCORING_INTEGRATION.md) and [redacted evidence](site-scoring-integration-verification.json) for the current pipeline results, precise owner actions and reproducible acceptance commands.
