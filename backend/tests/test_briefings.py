@@ -373,7 +373,66 @@ def test_site_without_a_briefing_is_404(client: TestClient, factory) -> None:
         session.commit()
     response = client.get("/api/sites/site-empty/briefing", headers=supervisor("auth0|sup-east"))
     assert response.status_code == 404
-    assert "6 PM" in response.json()["detail"]
+    assert response.json()["detail"]["reason"] == "not_generated"
+    assert "6 PM" in response.json()["detail"]["message"]
+
+
+def reason(response) -> tuple[int, str]:
+    detail = response.json()["detail"]
+    assert "denied" not in detail["message"].lower()
+    return response.status_code, detail["reason"]
+
+
+def test_site_without_a_team_says_so(client: TestClient) -> None:
+    response = client.get("/api/sites/site-empty/briefing", headers=supervisor("auth0|sup-east"))
+    assert reason(response) == (404, "no_team")
+    assert response.json()["detail"]["message"].startswith("This site has no assigned team")
+
+
+def test_organization_without_a_supervisor_says_so(client: TestClient, factory) -> None:
+    with factory() as session:
+        session.add(
+            db.Membership(
+                id="m4", user_id="auth0|crew-3", organization_id="org-3",
+                team_id="team-3", role="crew",
+            )
+        )  # fmt: skip
+        session.commit()
+    me = crew("auth0|crew-3")
+    response = client.get("/api/sites/site-alone/briefing", headers=me)
+    assert reason(response) == (404, "no_supervisor")
+    assert response.json()["detail"]["message"].startswith(
+        "No supervisor is assigned to this organization"
+    )
+    assert reason(client.get("/api/briefings", headers=me)) == (404, "no_supervisor_org")
+
+
+def test_account_without_an_organization_says_so(client: TestClient) -> None:
+    stranger = supervisor("auth0|not-linked")
+    assert reason(client.get("/api/sites/site-ny/briefing", headers=stranger)) == (
+        403,
+        "not_linked",
+    )
+    assert reason(client.get("/api/briefings", headers=stranger)) == (403, "not_linked")
+
+
+def test_other_sites_and_organizations_are_refused_with_a_reason(client: TestClient) -> None:
+    east = supervisor("auth0|sup-east")
+    assert reason(client.get("/api/sites/site-la/briefing", headers=east)) == (
+        403,
+        "other_organization",
+    )
+    crew_ny = crew("auth0|crew-ny")
+    assert reason(client.get("/api/sites/site-la/briefing", headers=crew_ny)) == (
+        403,
+        "not_your_site",
+    )
+
+
+def test_unknown_site_is_404(client: TestClient) -> None:
+    response = client.get("/api/sites/nope/briefing", headers=supervisor("auth0|sup-east"))
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Site not found"
 
 
 def test_there_is_no_manual_generation_route(client: TestClient) -> None:

@@ -4,6 +4,7 @@ import { useApplication, useResource } from '../../application/context'
 import { field, labelText, LoadState } from './Interaction'
 import { Timestamp } from './Status'
 import { Icon } from '../shell/Icon'
+import { ApiError } from '../../api/contracts'
 
 export const NO_BRIEFING =
   'No briefing yet. Briefings are generated at 6 PM site-local time.'
@@ -120,15 +121,26 @@ export function BriefingCard({ value }: { value: Briefing }) {
   )
 }
 
+type Loaded = { briefings: Briefing[]; unavailable: string | null }
+
 export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
   const { client } = useApplication()
   const [selection, setSelection] = useState(sites[0]?.id ?? '')
   const result = useResource(
     `briefings:${selection}`,
-    useCallback(async () => {
-      if (selection === 'organization') return client.briefings()
-      const value = await client.briefing(selection)
-      return value ? [value] : []
+    useCallback(async (): Promise<Loaded> => {
+      try {
+        if (selection === 'organization')
+          return { briefings: await client.briefings(), unavailable: null }
+        const value = await client.briefing(selection)
+        return { briefings: value ? [value] : [], unavailable: null }
+      } catch (error) {
+        // The backend explained why there is no briefing (no team, no supervisor,
+        // account not linked, ...): an empty state, not a load failure.
+        if (error instanceof ApiError && error.reason && error.detail)
+          return { briefings: [], unavailable: error.detail }
+        throw error
+      }
     }, [client, selection]),
   )
   return (
@@ -168,8 +180,8 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
       )}
       {result.data === null ? (
         <LoadState error={result.error} />
-      ) : result.data.length ? (
-        result.data.map((value) => (
+      ) : result.data.briefings.length ? (
+        result.data.briefings.map((value) => (
           <BriefingCard key={value.id} value={value} />
         ))
       ) : (
@@ -177,7 +189,7 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
           role="status"
           className="rounded-2xl border border-dashed border-line-strong p-5 text-ink-2"
         >
-          {NO_BRIEFING}
+          {result.data.unavailable ?? NO_BRIEFING}
         </p>
       )}
     </section>

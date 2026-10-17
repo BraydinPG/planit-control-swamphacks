@@ -112,6 +112,7 @@ export class HttpClient implements Client {
           response.status,
           message[response.status] ??
             `Backend request failed (${response.status}).`,
+          await serverReason(response),
         )
       }
       if (response.status === 204) return undefined as T
@@ -255,7 +256,14 @@ export class HttpClient implements Client {
         id,
       )
     } catch (error) {
-      if (error instanceof ApiError && error.status === 404) return null
+      // A plain "not generated yet" 404 is the normal empty state. Any other reason
+      // (no team, no supervisor, ...) is rethrown so the view can show it.
+      if (
+        error instanceof ApiError &&
+        error.status === 404 &&
+        (!error.reason || error.reason === 'not_generated')
+      )
+        return null
       throw error
     }
   }
@@ -265,4 +273,27 @@ export class HttpClient implements Client {
       throw new ApiError(502, 'Invalid organization briefing response')
     return rows.map((row) => validateBriefing(row))
   }
+}
+
+/** The backend's `{detail: {reason, message}}` explanation, when it sent one. */
+async function serverReason(
+  response: Response,
+): Promise<{ reason: string; detail: string } | undefined> {
+  try {
+    const body: unknown = await response.json()
+    const detail =
+      body && typeof body === 'object' && 'detail' in body ? body.detail : null
+    if (
+      detail &&
+      typeof detail === 'object' &&
+      'reason' in detail &&
+      'message' in detail &&
+      typeof detail.reason === 'string' &&
+      typeof detail.message === 'string'
+    )
+      return { reason: detail.reason, detail: detail.message }
+  } catch {
+    // No JSON body: keep the generic status message.
+  }
+  return undefined
 }

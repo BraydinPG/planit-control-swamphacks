@@ -46,10 +46,20 @@ export interface DemoSnapshot {
 }
 export class ApiError extends Error {
   status: number
-  constructor(status: number, message: string) {
+  /** Machine-readable reason the backend gave, e.g. `no_supervisor`. */
+  reason?: string
+  /** The backend's own explanation, shown instead of the generic status text. */
+  detail?: string
+  constructor(
+    status: number,
+    message: string,
+    server?: { reason: string; detail: string },
+  ) {
     super(message)
     this.status = status
     this.name = 'ApiError'
+    this.reason = server?.reason
+    this.detail = server?.detail
   }
 }
 export function validCoordinate(value: number, latitude: boolean) {

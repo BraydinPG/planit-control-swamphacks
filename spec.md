@@ -269,7 +269,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
 | `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
-| `GET /api/sites/{id}/briefing` | The site's latest stored next-day briefing. Same site access as `GET /api/sites/{id}`. |
+| `GET /api/sites/{id}/briefing` | The site's latest stored next-day briefing (crew: their team's site; supervisors: their organization's team sites). When there is none to show, the 403 or 404 carries `{"detail": {"reason", "message"}}`: `not_your_site`, `no_team`, `not_linked`, `other_organization`, `no_supervisor`, or `not_generated`. |
 | `GET /api/briefings` | The latest briefing for every team site in the caller's organization (crew and supervisors). |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.
