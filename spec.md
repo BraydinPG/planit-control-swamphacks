@@ -25,11 +25,12 @@ The Sperry Tech brief asks for:
 6. A supervisor dashboard that ranks sites by risk.
 7. A 0–10 hazard index from a machine-learning model trained on historical weather and environmental data tied to worker hazards.
 
-The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Use of Auth0, and Best Use of AI/ML. The team should submit to all five tracks if registration permits.
+The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Use of Auth0, and Best Use of AI/ML. Auth0, Tiger Data, and Vultr are sponsors for tracks. The team should submit to the sponsor tracks and the other listed tracks if registration permits.
 
 ### Scope assumptions to state in the demo and README
 
 - EIA-860M locations are power plant locations, not proof of active construction sites. Display them as representative monitored sites. Confirm with the organizer whether these meet the intended meaning of “job site.”
+- A crew report stores coordinates and whether the hazard is present. The crew screen does not include a map snippet. The supervisor screen keeps the full map. A detected or crew-marked hazard sends a “potential {hazard}” notice with no instructions. Instructions go out only after a notified supervisor confirms the hazard and accepts or edits Gemini’s suggestion.
 - NOAA Storm Events and related historical weather data are proxies for hazard events. They do not represent worker injury outcomes unless the team obtains and validates separate outcome data.
 - If a live lightning feed is unavailable, use a deterministic replay fixture and label it as simulated.
 - Include only hazard feeds the team can source and timestamp. Mark missing, stale, mocked, or unavailable data clearly.
@@ -43,27 +44,34 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 2. Check current status, active alerts, immediate action, and last data update.
 3. Open an alert to see its trigger, evidence, distance, and countdown.
 4. Acknowledge an alert.
-5. Submit a hazard report with a photo, category, map pin, and optional note.
+5. Submit a hazard report with a photo, category, coordinates, whether the hazard is present, and an optional note. Marking the hazard present creates a potential-hazard notice. A report that the hazard is absent stays with that crew member’s organization for its supervisor to review.
+6. Receive a “potential {hazard}” notice when the crew member’s team is inside the notice radius. That notice does not include instructions. After a supervisor confirms the hazard, receive the instruction that supervisor accepted or edited.
 
 ### Supervisor
 
-1. Sign in and see all monitored sites ranked by risk.
-2. Filter by location, hazard type, or alert status.
-3. Open a site to inspect score factors, observations, freshness, active alerts, and crew reports.
-4. Review crew reports and confirm or reject Gemini’s suggested classification.
-5. Generate or review the next-day briefing and use the evidence links to inspect its inputs.
+1. Sign in as the supervisor for one organization. That organization can have multiple teams, and each team can have multiple crew members.
+2. See the full map and a list of every monitored location with the team assigned to it. Locations that have a team appear above locations that do not. Within each group, higher risk stays above lower risk.
+3. Filter by location, hazard type, or alert status.
+4. Open a site to inspect score factors, observations, freshness, active alerts, and crew reports.
+5. Review this organization’s reports that say no hazard is present, and make the final call on those reports.
+6. Receive a “potential {hazard}” notice, with no instructions, when one of this supervisor’s teams is inside the radius. Any supervisor who received that notice can confirm the hazard.
+7. After confirming, review Gemini’s suggested instruction, change it if needed, and send that text to every team inside the same radius.
+8. Generate or review the next-day briefing and use the evidence links to inspect its inputs.
 
 ## 4. MVP scope and priorities
 
 ### P0: required end-to-end product
 
 - Import and validate at least 50 EIA-860M coordinates.
-- Display all sites in a map and ranked list.
+- Display all sites in a map and a location list. Show the assigned team, and place locations that have a team above locations that do not.
 - Show a per-site hazard index, factor breakdown, confidence or data completeness, and last-updated time.
 - Show at least one reliable weather and forecast feed. Cache results and expose stale-data states.
 - Implement the lightning stop-work rule and resettable 30-minute countdown.
-- Support crew hazard reports with photo and map pin.
-- Support supervisor review of reports and a risk-ranked dashboard.
+- Support crew hazard reports with a photo, coordinates, and a present-or-absent answer.
+- Support one supervisor per organization, with multiple teams and crew members. Many organizations share one deployment.
+- When a connected source detects a hazard, or a crew member marks a hazard present, notify every team and supervisor inside a Gemini-chosen radius. The notice says “potential {hazard}” and contains no instructions.
+- After any notified supervisor confirms the hazard, have Gemini suggest one concise instruction. Send the text that supervisor accepts or edits to every team inside that radius.
+- Support supervisor review of absent reports and a full map plus the occupied-first location list.
 - Train and evaluate a baseline model on historical weather or environmental features joined to hazard-event labels.
 - Enforce crew and supervisor roles with Auth0 on protected backend routes.
 
@@ -101,7 +109,20 @@ Cache owns the model component. Rudra owns the final displayed index, which comb
 - Lightning: a qualifying strike within 10 miles creates a stop-work alert. The 30-minute all-clear window starts from the latest strike and resets after each new qualifying strike. Resolve only when the window expires with no new strike.
 - Flooding: use a documented rule based on a warning, gauge threshold, or rainfall plus site context. The brief sets no numeric threshold, so label a chosen threshold as a prototype setting.
 - Heat: show the forecast heat index and use a documented configurable threshold. Do not infer work/rest schedules from the brief.
-- Crew reports: only confirmed reports can contribute to the final score. Gemini suggestions remain pending review.
+- Crew reports: only a confirmed report that the hazard is present can contribute to the final score. A report that the hazard is absent does not raise the score and does not send a potential-hazard notice. A potential notice does not change the score.
+- Potential-hazard notice: a connected source detection or a crew member marking a hazard present notifies every team and every supervisor assigned to a location inside the radius. The notice text is “potential {hazard}” and includes no instructions. The radius comes from Gemini. Accept only a positive radius of 50 miles or less. If Gemini is unresponsive or returns an invalid radius, use that category’s default radius below and label it as a default. The lightning stop-work rule remains a separate 10-mile deterministic rule.
+
+| Category | Default radius when Gemini is unresponsive |
+|---|---:|
+| Lightning | 10 miles |
+| Flood | 5 miles |
+| Heat | 15 miles |
+| Wildlife | 1 mile |
+| Wildfire | 10 miles |
+| Any other category | 1 mile |
+
+These defaults are prototype notice distances, except lightning, which matches the required stop-work distance. Do not present the other defaults as official policy.
+- Instruction: the first notified supervisor to confirm the hazard asks Gemini for one direct, concise instruction. That supervisor can edit it. The accepted or edited text is what the teams inside the stored radius receive. Gemini does not send the instruction on its own, does not declare work safe, and does not clear the alert. If Gemini cannot draft the instruction, the supervisor writes it.
 
 Every alert must store and display the rule, triggering inputs, trigger time, latest qualifying event, status, and clear-after time.
 
@@ -133,6 +154,22 @@ Output fields: `suggested_category`, `description`, `severity_suggestion`, `conf
 
 Rules: label output as a suggestion. A person confirms the category and severity before the report affects risk. On failure, save the original report without enrichment.
 
+### Notice radius
+
+Input: hazard name, source, coordinates, supplied observations, and whether a crew member marked it present.
+
+Output fields: `radius_miles`, `hazard_label`, `evidence[]`, `unknowns[]`.
+
+Rules: Gemini chooses the radius only. It does not write instructions in this step. Validate a positive number no greater than 50. If Gemini is unresponsive or the radius is invalid, store that category’s labeled default from the table in section 5 and still send the potential notice.
+
+### Confirmed instruction
+
+Input: confirmed hazard label, radius, source, and the evidence already stored with the notice.
+
+Output fields: `suggested_instruction`, `evidence[]`, `unknowns[]`.
+
+Rules: return one direct, concise instruction. The confirming supervisor can edit it before it is sent. Send the supervisor’s final text, not an unreviewed Gemini draft. Gemini cannot declare work safe or clear the alert. On failure, leave the suggestion empty and require the supervisor to write the instruction.
+
 Create a small evaluation set for grounding, schema validity, unknown handling, and unsupported safety claims. Include examples and results in the repository.
 
 ## 7. UI/UX requirements
@@ -142,13 +179,13 @@ Create a small evaluation set for grounding, schema validity, unknown handling, 
 - Mobile-first site and alert screens.
 - Put site status, current alert, immediate action, and update time at the top.
 - Large, glove-friendly controls, minimum 44 by 44 CSS pixels for primary touch targets.
-- Report hazard flow with photo, category, pin, and optional text.
+- Report hazard flow with photo, category, coordinates, a required present-or-absent choice, and optional text.
 - High contrast and large text suitable for bright outdoor use.
 - Use icons and labels in addition to color. Support keyboard access, visible focus, semantic labels, and screen readers.
 
 ### Supervisor experience
 
-- Desktop and tablet map plus ranked site list.
+- Desktop and tablet map of all monitored locations, plus a list of every location and the team assigned to it. Locations with a team appear first.
 - Show score, trend, active alerts, data freshness, and top factors without opening each site.
 - Filters for region, hazard, and alert state.
 - Site detail with observations, sources, timestamps, reports, and score breakdown.
@@ -171,32 +208,39 @@ Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. H
 | Read assigned site and alerts | Yes | Yes |
 | Acknowledge alert | Yes | Yes |
 | Submit hazard report | Yes | Yes |
-| Read all sites and risk rankings | No | Yes |
-| Review or confirm reports | No | Yes |
-| Generate organization-wide briefing | No | Yes |
+| Read all sites, assigned teams, and the full map | No | Yes |
+| Review a report that no hazard is present | No | Own organization only |
+| Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
+| Confirm a potential hazard from a received notice | No | Any notified supervisor |
+| Edit and send the instruction for that hazard | No | The confirming supervisor |
+| Generate organization-wide briefing | No | Own organization only |
 | Request site explanation | Yes, assigned site | Yes |
 
 Keep secrets in environment variables. Provide one demo account per role. Any development bypass must be explicit, local-only, and disabled by default.
 
 ## 9. Architecture and API contract
 
-Required stack: React + TypeScript with Vite and Tailwind CSS for the frontend, FastAPI for every backend route, PostgreSQL, a geospatial map library, scikit-learn, Gemini API, and Auth0. Style the UI with Tailwind utility classes. Do not add a second CSS framework. The Vite app is the UI only. Implement API routes, Auth0 token checks, Gemini calls, scoring, alerts, and data ingestion in FastAPI under `backend/app/`. Do not implement those routes in Next.js, Express, Flask, or another server.
+Required stack: React + TypeScript with Vite and Tailwind CSS for the frontend, FastAPI for every backend route, Tiger Data for the application database, Vultr for application hosting and photo object storage, a geospatial map library, scikit-learn, Gemini API, and Auth0. Auth0, Tiger Data, and Vultr are sponsors for tracks. Style the UI with Tailwind utility classes. Do not add a second CSS framework. The Vite app is the UI only. Implement API routes, Auth0 token checks, Gemini calls, scoring, alerts, and data ingestion in FastAPI under `backend/app/`. Do not implement those routes in Next.js, Express, Flask, or another server.
+
+Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL and `sslmode=require`. Store sites, reports, scores, alerts, and observations there. Convert time-ordered `Observation`, `Alert`, and `AuditEvent` tables to hypertables. Keep `Organization`, `Team`, `Site`, `CrewReport`, `HazardNotice`, `Acknowledgement`, `Briefing`, `HazardPrediction`, and `HazardScore` as regular tables. One deployment serves many organizations. A supervisor belongs to one organization and manages all of its teams. A crew member belongs to one team. Auth0 is the only identity provider. Deploy the FastAPI app and the frontend on Vultr. Store crew photos in Vultr Object Storage, with a private local directory allowed for development. Do not add a second database, identity provider, or application host.
 
 ### Routes
 
 | Route | Purpose |
 |---|---|
-| `GET /api/sites` | Site list with score, factors, alerts, and freshness. |
+| `GET /api/sites` | Every location with its assigned team, score, factors, alerts, and freshness. Locations with a team come first. |
 | `GET /api/sites/{id}` | Site details, observations, score, reports. |
 | `GET /api/alerts` | Visible alerts and countdown state. |
 | `POST /api/alerts/{id}/acknowledge` | Record user and acknowledgement time. |
-| `POST /api/reports` | Submit category, photo, coordinates, and optional note. |
-| `GET /api/reports` | List reports, optionally filtered by site. |
-| `POST /api/reports/{id}/review` | Supervisor confirms or rejects a report. |
+| `POST /api/reports` | Submit category, photo, coordinates, whether the hazard is present, and an optional note. |
+| `GET /api/reports` | List reports visible to the caller, optionally filtered by site. |
+| `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
+| `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
+| `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
 | `POST /api/sites/{id}/briefings` | Generate a grounded briefing. |
 | `POST /api/sites/{id}/explanations` | Explain an existing score. |
 
-Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`.
+Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.
 
 Cache exports:
 
@@ -213,12 +257,15 @@ predict_site(features) -> {
 
 ### Core entities
 
+- `Organization`: identity and name. Many organizations share the deployment.
+- `Team`: organization, name, and the one location it is assigned to. A team has many crew members. A location lists at most one assigned team.
 - `Site`: identity, name, coordinates, location type, source, region.
 - `Observation`: hazard type, value, unit, source, observed and valid times, freshness, simulated flag.
 - `HazardPrediction`: probabilities, model version, created time.
 - `HazardScore`: final score, factor contributions, model version, created time.
 - `Alert`: site, rule, state, trigger time, latest qualifying event, clear-after time.
-- `CrewReport`: site, reporter, category, note, photo reference, coordinates, review status, timestamps.
+- `CrewReport`: organization, team, site, reporter, category, whether the hazard is present, note, photo reference, coordinates, review status, timestamps.
+- `HazardNotice`: hazard label, source, coordinates, radius in miles, whether the radius came from Gemini or that category’s default, potential status, confirming supervisor, and the instruction text that supervisor sent. The potential notice itself stores no instruction.
 - `Acknowledgement`: alert, user, timestamp.
 - `Briefing`: site or region, forecast window, generated text, evidence IDs, created time.
 - `AuditEvent`: actor, action, entity, timestamp.
@@ -230,7 +277,7 @@ predict_site(features) -> {
 - If the model fails, show the labeled fallback score.
 - If a feed is stale or unavailable, show that state and reduce confidence. Do not present stale observations as current.
 - Keep lightning alerts and rule evaluation independent from Gemini and model availability.
-- Restrict photo size and file types. Keep photo storage private where supported.
+- Restrict photo size and file types. Keep photo storage private. Use Vultr Object Storage outside local development.
 - Keep credentials out of git. Log alert triggers, acknowledgements, report review, and briefing generation.
 - Do not store more user data than needed for roles and audit records.
 
@@ -241,9 +288,9 @@ See `AGENTS.md` for detailed individual ownership, prompts, path boundaries, con
 Ownership summary:
 
 - Cache: `ml/`, model training, features, evaluation, and model handoff.
-- Braydin: `backend/app/security/`, `frontend/src/auth/`, Auth0 setup notes.
+- Braydin: `backend/app/security/`, `backend/app/db/`, database migrations, `frontend/src/auth/`, Auth0 setup notes.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
-- Rudra: `backend/app/` except `security/`, data ingestion, database, API contracts, alerts, Gemini endpoints, integration, deployment, root README.
+- Rudra: `backend/app/` except `security/` and `db/`, data ingestion, API contracts, alerts, Gemini endpoints, integration, deployment, root README. Rudra imports Braydin’s database session and does not edit migrations.
 
 Rudra creates and publishes the shared schemas first. Other members start against fixtures and their own module boundaries. Do not have two people edit the same file. Shared manifest and lockfile changes go through Rudra.
 
@@ -268,7 +315,9 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 | Sperry Tech | 50+ real locations, multi-hazard site view, lightning rule, crew reports, ranking, next-day brief. |
 | Gemini API | Useful, grounded structured briefing and score explanation with evidence and fallbacks. |
 | UI/UX | Fast crew flow, readable field interface, polished supervisor dashboard, accessible controls. |
-| Auth0 | Role-based sign-in and backend authorization demonstrated with two accounts. |
+| Auth0 (sponsor track) | Role-based sign-in and backend authorization demonstrated with two accounts. |
+| Tiger Data (sponsor track) | Time-ordered hazard records in Tiger Data, including hypertables for observations, alerts, and audit events. |
+| Vultr (sponsor track) | FastAPI app and frontend hosted on Vultr, with crew photos in Vultr Object Storage. |
 | AI/ML | Trained historical-data model, documented features, time-based evaluation, baseline comparison, public README. |
 
 ## 14. Demo script and acceptance criteria

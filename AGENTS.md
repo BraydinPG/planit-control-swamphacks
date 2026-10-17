@@ -11,9 +11,9 @@ Follow the file ownership rules in `AGENTS.md`. If a task conflicts with the spe
 
 ## Project-wide rules
 
-1. Use React + TypeScript with Vite and Tailwind CSS for the frontend, and FastAPI for every backend route. PostgreSQL, Auth0, Gemini API, and scikit-learn complete the stack. Style UI with Tailwind utility classes. Do not add a second CSS framework. The existing Vite app does not replace the API. Do not implement routes in Next.js, Express, Flask, or another server. Preserve other repository conventions.
+1. Use React + TypeScript with Vite and Tailwind CSS for the frontend, and FastAPI for every backend route. Tiger Data is the application database, Vultr hosts the app and photo object storage, and Auth0 is the only identity provider. Auth0, Tiger Data, and Vultr are sponsors for tracks. Gemini API and scikit-learn complete the stack. Style UI with Tailwind utility classes. Do not add a second CSS framework, database, identity provider, or application host. The existing Vite app does not replace the API. Do not implement routes in Next.js, Express, Flask, or another server. Preserve other repository conventions.
 2. Work only in your assigned paths. Do not edit another owner’s files. Ask the owner for a change or submit a focused integration request.
-3. Do not edit root `package.json`, lockfiles, shared environment templates, database migrations, or API contracts unless you own them or Rudra approves the change.
+3. Do not edit root `package.json`, lockfiles, shared environment templates, or API contracts unless you own them or Rudra approves the change. Braydin owns the Tiger Data migrations. Do not edit them unless you are Braydin or Braydin approves the change.
 4. Begin with fixtures and stable interfaces. Do not wait for another agent’s implementation to finish before building your independent module.
 5. Do not commit secrets, API keys, tokens, private photos, or real personal data.
 6. Label simulated, stale, mocked, and unavailable data in code and UI.
@@ -36,6 +36,7 @@ Rudra owns the canonical API and schema definitions. All agents use these names 
   "risk_score": 0.0,
   "risk_level": "low",
   "updated_at": "ISO-8601 timestamp",
+  "assigned_team": null,
   "active_alerts": 0,
   "top_factors": [],
   "data_completeness": 1.0,
@@ -107,11 +108,11 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 
 **Integration dependency:** Rudra imports the function and combines its output with live deterministic factors. Do not implement the final risk score or lightning alert logic.
 
-### Braydin: Auth0 and access control
+### Braydin: Auth0, access control, and Tiger Data setup
 
-**Owned paths:** `backend/app/security/**`, `frontend/src/auth/**`, `auth/SETUP.md`.
+**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, database migrations, `frontend/src/auth/**`, `auth/SETUP.md`.
 
-**Do not edit:** Nick’s pages/components/styles, Rudra’s route files and DB schema, shared manifests, lockfiles, root README.
+**Do not edit:** Nick’s pages/components/styles, Rudra’s route files, shared manifests, lockfiles, root README.
 
 **Tasks:**
 
@@ -122,10 +123,14 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 - Ensure the backend rejects unauthorized requests even if a user bypasses the interface.
 - Keep development bypass disabled by default and local-only if one is needed.
 - Never commit credentials.
+- Configure the Tiger Data connection from `DATABASE_URL`, with `sslmode=require` for Tiger Cloud.
+- Define the database models, including `Organization`, `Team`, and `HazardNotice`, and publish a session other routes can import.
+- Create migrations, enable TimescaleDB, and convert `Observation`, `Alert`, and `AuditEvent` into hypertables.
+- Add a runnable seed command. Leave site and observation contents for Rudra to fill.
 
-**Can start immediately:** Yes. Create the Auth0 module and setup instructions independently.
+**Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module after Rudra publishes the API schemas.
 
-**Integration dependency:** Nick imports frontend exports. Rudra imports backend dependencies and attaches them to routes. Send both import examples as soon as the module interface is stable.
+**Integration dependency:** Nick imports frontend exports. Rudra imports the Auth0 dependencies and the database session, then attaches both to routes. Send import examples as soon as each interface is stable.
 
 ### Nick: frontend and UI/UX
 
@@ -136,7 +141,7 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 **Tasks:**
 
 - Build mobile-first crew screens and desktop/tablet supervisor screens.
-- Include crew home, alert detail and timer, hazard report, supervisor map/ranking, site detail, briefing, and Gemini explanation views.
+- Include crew home, alert detail and timer, hazard report with a present-or-absent choice, supervisor full map, the location list with each assigned team, site detail, briefing, and Gemini explanation views. Locations with a team appear above locations without one.
 - Use mock JSON that follows the shared contract. Add a fixture switch so the interface works before backend integration.
 - Show data freshness, source, simulated/stale/unavailable status, score factors, and evidence references.
 - Style screens with Tailwind utility classes. Do not add a second CSS framework.
@@ -150,24 +155,26 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 
 ### Rudra: backend, data, Gemini, and integration
 
-**Owned paths:** `backend/app/**` except `backend/app/security/**`, migrations/schema, shared API types, data ingestion, root `README.md`, deployment files, shared configuration and manifests.
+**Owned paths:** `backend/app/**` except `backend/app/security/**` and `backend/app/db/**`, shared API types, data ingestion, root `README.md`, deployment files, shared configuration and manifests.
 
-**Do not edit:** `ml/**`, `backend/app/security/**`, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
+**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, database migrations, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
 
 **Tasks:**
 
 - First publish the shared API and model contracts. Provide fixture JSON for Nick.
 - Import and validate 50 or more EIA-860M locations. Label these as representative power plant locations.
 - Add one dependable weather/forecast feed with caching and freshness labels. Keep the data adapter replaceable.
-- Implement DB entities and FastAPI routes from the shared contract. Do not add those routes in another framework.
+- Import Braydin’s Tiger Data session and models into FastAPI routes from the shared contract. Do not add those routes in another framework. Do not edit migrations or hypertables.
 - Implement lightning stop-work within 10 miles and a resettable 30-minute all-clear. Provide a labeled replay fixture if live lightning access is unreliable.
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
 - Integrate Cache’s `predict_site()` output and compute the final score from model output, current factors, and confirmed reports.
-- Implement crew reports, photo handling, review state, acknowledgements, and audit events.
+- Implement crew reports, photo handling in Vultr Object Storage, review state, acknowledgements, and audit events. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
+- Ask Gemini for the notice radius. Validate the result. If Gemini is unresponsive or the radius is invalid, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate.
+- Let any supervisor who received the notice confirm the hazard. Gemini then drafts one concise instruction. The confirming supervisor can edit it, and that final text is sent to every team inside the stored radius. Gemini cannot send the instruction, declare work safe, or clear the alert.
 - Implement Gemini briefing and explanation endpoints with structured output validation, evidence IDs, explicit unknowns, and deterministic fallbacks.
-- Use Gemini for report enrichment only as a suggestion pending human confirmation.
+- Use Gemini for report enrichment only as a suggestion pending human confirmation. The reporting organization’s supervisor still reviews a report that no hazard is present.
 - Import Braydin’s Auth0 dependencies and protect routes according to the role policy in `spec.md`.
-- Add seed/demo data, health check, focused backend tests, deployment notes, and README.
+- Add seed/demo data, health check, focused backend tests, Vultr deployment notes, and README.
 - Own package/lockfile changes and shared configuration. Tell teammates before changing shared contracts.
 
 **Can start immediately:** Yes. Start with contract, app skeleton, seed fixtures, site endpoints, and deterministic alert logic.
@@ -181,10 +188,13 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 | Read assigned sites and alerts | Yes | Yes |
 | Acknowledge alert | Yes | Yes |
 | Submit hazard report | Yes | Yes |
-| Read all sites and rankings | No | Yes |
-| Review/confirm reports | No | Yes |
-| Generate organization-wide briefings | No | Yes |
-| Request score explanation | Assigned site only | Yes |
+| Read all sites, assigned teams, and the full map | No | Yes |
+| Review a report that no hazard is present | No | Own organization only |
+| Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
+| Confirm a potential hazard from a received notice | No | Any notified supervisor |
+| Edit and send the instruction for that hazard | No | The confirming supervisor |
+| Generate organization-wide briefings | No | Own organization only |
+| Request score explanation | Assigned site only | Own organization |
 
 The backend is the authority for permissions. Frontend guards improve UX but do not replace API checks.
 
@@ -212,8 +222,10 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 - 50+ validated site points appear in both map and ranked list.
 - Site risk includes model output, deterministic factors, confirmed reports, freshness, and explainable contributions.
 - Lightning within 10 miles triggers stop-work, and a new strike resets the 30-minute countdown.
-- Crew can acknowledge alerts and submit photo-plus-pin reports.
-- Supervisor can rank sites and review reports.
+- Crew can acknowledge alerts and submit a photo report that says whether a hazard is present.
+- A detected hazard or a crew member marking a hazard present sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius.
+- Any notified supervisor can confirm it. Teams inside that radius then receive the instruction that supervisor accepted or edited.
+- A supervisor sees the full map and every location with its assigned team, occupied locations first, and makes the final call on that organization’s reports that no hazard is present.
 - Gemini briefings and explanations cite supplied evidence, state unknowns, validate against schemas, and fall back safely.
 - Auth0 roles change available actions and backend permissions.
 - The interface works on mobile and desktop and includes stale, unavailable, loading, and error states.
