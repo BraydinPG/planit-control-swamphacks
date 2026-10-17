@@ -1,6 +1,6 @@
 {
   "branch": "feature/cache-live-integration-checks",
-  "base": "9ba1b7c",
+  "base": "4e94c52085f5ac88e1566a4a447573ad1c3aa308",
   "parent_pr": {
     "number": 19,
     "state": "merged",
@@ -8,7 +8,7 @@
   },
   "readiness_exit_code": 2,
   "readiness": {
-    "checked_at": "2026-10-17T10:08:34.186Z",
+    "checked_at": "2026-10-17T10:16:55.464Z",
     "status": "blocked",
     "scope": "local real-integration readiness and API acceptance; never task auto-completion",
     "frontend": {
@@ -63,6 +63,11 @@
       "database": {
         "status": "blocked",
         "reason": "DATABASE_URL missing or placeholder"
+      },
+      "ingestion": {
+        "background_refresh_enabled": false,
+        "nws_user_agent": "missing",
+        "note": "Settings inspection does not start the refresh loop or fetch feeds"
       }
     },
     "auth0_discovery": {
@@ -227,15 +232,20 @@
     },
     "python": {
       "command": "python -m pytest frontend/tests/test_integration_probe.py backend/tests -q",
-      "passed": 355,
-      "backend": 348,
+      "passed": 400,
+      "backend": 393,
       "probe": 7,
       "warnings": 1,
-      "warning": "pre-existing Starlette/httpx deprecation"
+      "warning": "pre-existing Starlette/httpx deprecation",
+      "previous_base_passed": 355
     },
     "lint": "npm run lint passed",
     "typescript_build": "npm run build passed",
-    "python_lint_format": "Ruff check/format passed"
+    "python_lint_format": "Ruff check/format passed",
+    "probe_after_metadata_addition": {
+      "command": "python -m pytest frontend/tests/test_integration_probe.py -q",
+      "passed": 7
+    }
   },
   "browser": {
     "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
@@ -317,7 +327,7 @@
     "review/instruction/Gemini endpoints"
   ],
   "task_checkboxes_changed": [],
-  "code_boundaries": "No Cache backend/auth internals/canonical type/fixture/ML/deployment/manifest edits relative to reviewed main.",
+  "code_boundaries": "No Cache backend/auth internals/canonical type/fixture/ML/deployment/manifest/task edits relative to reviewed main 4e94c52.",
   "changed_files": [
     "PROJECT_CONTEXT.md",
     "docs/CROSS_SCOPE_CHANGES.md",
@@ -340,5 +350,28 @@
     "frontend/tests/integration.test.mjs",
     "frontend/tests/test_integration_probe.py"
   ],
-  "boundaries_verified": true
+  "boundaries_verified": true,
+  "initial_base": "9ba1b7c",
+  "initial_implementation": "ff35b7b542075c116b7cbac86e8cb6e9e419d5ca",
+  "main_incorporation": "d93fb3e5e38f0f7eff0779e7d96fbe96242d5f21",
+  "publication": {
+    "pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/24",
+    "state": "open",
+    "target": "main",
+    "merged_by_agent": false
+  },
+  "merge_resolution": {
+    "source": "4e94c52085f5ac88e1566a4a447573ad1c3aa308",
+    "conflict": "PROJECT_CONTEXT.md only",
+    "resolution": "Preserved current phase-4 facts and Rudra source/readiness notes",
+    "local_runtime_controls": {
+      "DEV_AUTH_BYPASS": false,
+      "FEED_REFRESH_ENABLED": false
+    }
+  },
+  "final_remote_audit": {
+    "main": "9b395f0",
+    "change": "T073 feed-failure/scoring checks; no frontend/API/schema changes",
+    "integration_scope": "PR diff retains only the 20 Cache frontend/docs paths; later main work is not reverted"
+  }
 }
