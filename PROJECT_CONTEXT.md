@@ -2,13 +2,16 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
-## Current frontend checkpoint ? 2026-10-17
+## Current frontend checkpoint - 2026-10-17
 - Authorized sequence: Cache T067A, then T065; no backend/auth/database/ML changes in this run.
-- Branch `feature/cache-stored-briefings-report-lifecycle`, stacked on open PR #24 head `6a2fc4d`; reviewed main `70c20ff` incorporated in `9dcd278`. PR #26 merged as `9809db4`; parent PR #24 is preserved.
+- Current branch `feature/cache-report-lifecycle-integration` from reviewed main `dcd9fc5` (PR #28 scoring-history fix; initial base `1eed70e`). Maintainers merged PR #24 (`f3a65a7`) and our verified T067A checkpoint `2e4cfb7` as PR #27 (`1eed70e`) during this run; remaining T065 PR targets main. No PR merges performed by Cache.
 - T067A replaces obsolete generated-score prose and manual generation actions with stored GETs: `/api/sites/{id}/briefing` and `/api/briefings`. Site 404 is a scheduled-generation empty state. Canonical obsolete TS types/fixture removal explicitly authorized; no other API fields changed.
 - Frontend `StoredBriefings.tsx` shows site/organization, window, hazards, actions, evidence, unknowns, Gemini/template source and creation time. Fixtures are archived/read-only; no browser scheduler. Score factors remain.
 - T067A acceptance: 44 Node tests, 65 focused backend/fixture/mirror checks, lint/TypeScript/build and installed Edge browser checks at 1440/390/320 widths pass. Source has no retired calls. These are frontend/mock/contract checks, not real account persistence.
-- T065 follows next. Live task check-off requires actual roles/persistence/delivery. T063-T068 remain independent; no mock-only closure.
+- T065 wired: create/list; absent review; present notice confirmation with validated server response; unsent suggested/manual draft, explicit 1-500-character confirmer send; shared state refresh. Stable notice keys preserve edits during GET refresh; conflicts refresh ownership. No React scoring/recipient selection or automatic send/retry.
+- T065 remains unchecked: full real roles/persistence/delivery is blocked by missing local private configuration/memberships. T063/T064/T066/T067/T068 unchanged. Current checks: 56 Node and 518 backend/probe (511+7), lint/TS/build and clean npm ci/build pass; final browser evidence in docs/t065-verification.json.
+- Actual running/source OpenAPI now match all 11 operations. Ten anonymous/dev-header checks return 401; invalid bearer 503 (Auth0 unavailable). DATABASE_URL/Auth0 SPA/backend/Gemini/storage settings missing locally; no real DB write or authenticated delivery verified. Diagnostic process bypass/feed refresh/briefing schedule stay off.
+- T065 implementation `60ce280`, review [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication; no real acceptance/check-off or merge by Cache.
 - Website: http://localhost:5173/ (explicit demo). Run `cd frontend; npm ci; npm run dev -- --host localhost --port 5173 --strictPort`. Node 24, no ML artifacts needed.
 
 ## Verified upstream / owner boundaries
@@ -16,7 +19,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - PR #19 merged `64cf632`. PR #24 adds reusable redacted readiness/private account tooling; initial implementation `ff35b7b`, validated prior source `483bcd1` (39 Node/432 Python). No local real persistence was proven there.
 - Nick PR #26: receipt-scoped confirmation/atomic first confirmer; absent review scoped to reporting organization; confirmer-only draft/send; current-team stored-radius receipts; pending/absent/rejected excluded from score. Score persistence retains per-site lock, complete eligible reports and rollback. Focused owner records: `docs/T054_IMPLEMENTATION.md`, `T054A_IMPLEMENTATION.md`, `T055_IMPLEMENTATION.md` (post-main backend 487 pass).
 - Rudra T049A/T049B/T073: regional prototype factors, source notices/receipts, optional off-by-default feed refresh, outage regression tests; no feed outage or AI clears lightning state. `compute_score(site=...)` and refresh observation inputs preserved.
-- Braydin T058A: backend generates one next-day 07:00?19:00 site-local briefing after 18:00 for eligible team sites with an organization supervisor; stored GET reads. `sites.timezone` applied to Tiger per owner note. No manual generation API.
+- Braydin T058A: backend generates one next-day 07:00-19:00 site-local briefing after 18:00 for eligible team sites with an organization supervisor; stored GET reads. `sites.timezone` applied to Tiger per owner note. No manual generation API.
 - Braydin `7a2a886`: tenant/SPA/API `https://api.planit-control`, deployed roles Action, crew/supervisor permissions and isolated real sign-in verified; role matching case-insensitive. Actual demo subject memberships still need T069. No private credentials in this index.
 
 ## Architecture / integration
@@ -34,8 +37,8 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - No onset, injury probability, site clearance or score contribution from research ML. Monte Carlo stays offline consistency/sensitivity; no fresh predictive validation in this run.
 
 ## Shared-file log / next owners
-- 2026-10-17: T067A changes tasks.md only after its exact checks; context and integration/redesign/cross-scope guides record the authorized mirror/fixture removal and stored briefing behavior. Commit/PR recorded in CROSS_SCOPE_CHANGES.
-- Cache next: finish authorized T065 wiring; real end-to-end acceptance remains conditional on approved private configuration and memberships. Braydin continues provisioning independently; Rudra reviews interfaces/coordinates merge. No production deployment/merge is authorized.
+- 2026-10-17: T067A changes tasks.md only after its exact checks; context and integration/redesign/cross-scope guides record the authorized mirror/fixture removal and stored briefing behavior. T067A commit `2e4cfb7` merged in PR #27. T065 commit/PR recorded in CROSS_SCOPE_CHANGES.
+- Cache next: actual T065 end-to-end acceptance after approved private configuration and memberships; independently actionable next task T051A has checked T051 prerequisite, for a separate authorized run. Braydin continues provisioning independently; Rudra reviews interfaces/coordinates merge. No production deployment/merge is authorized.
 - Scope decisions (Braydin, 2026-10-17): Gemini never explains or interprets the hazard score; the weighted factor breakdown is the explanation (T059 removed, T051A is Cache's deterministic algorithm). Briefings are scheduled only; crew and supervisors with `read:org_briefings` read their organization's briefings.
 - Rudra next: T069 demo seed, including demo-account `memberships`, teams, and a pre-generated briefing; set `FEED_REFRESH_ENABLED=true` wherever live scores and briefings are needed (off by default).
 - Braydin next: T069 memberships with Rudra, the Gemini notice-radius, instruction, and enrichment calls (T057, T060), and Vultr deployment. No secrets in Git.

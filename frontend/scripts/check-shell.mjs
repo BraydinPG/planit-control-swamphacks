@@ -376,15 +376,11 @@ try {
     '/supervisor/sites/site-demo-everglades',
     'Potential notices and approved instructions',
   )
-  await evaluate(
-    `document.querySelector('[data-report-id="${reportId}"] button').click()`,
-  )
-  await until(
-    () =>
-      evaluate(
-        `document.querySelector('[data-report-id="${reportId}"] h3').innerText.includes('confirmed')`,
-      ),
-    'report confirmed',
+  assert(
+    await evaluate(
+      `document.querySelector('[data-report-id="${reportId}"]').innerText.includes('Present report remains pending') && !document.querySelector('[data-report-id="${reportId}"] button')`,
+    ),
+    'Present report must use its notice, not absent-review controls',
   )
   assert(
     await evaluate(
@@ -531,6 +527,7 @@ try {
       new URL('/tests/browser.html', base).href,
       'Sign in required',
     )
+    await evaluate('window.harness.reset()')
     await evaluate("window.harness.mount('loading')")
     await loaded('Checking sign-in')
     await evaluate("window.harness.mount('no-role')")
@@ -602,11 +599,189 @@ try {
       ),
       'Live absent report does not require a photo',
     )
+    // These requests stay inside the browser's explicit mock fetch, never FastAPI.
+    await click('Submit report')
+    await loaded('Report accepted by backend')
+    const absentId = await evaluate('window.harness.snapshot().reports[0].id')
+    for (const [code, text] of [
+      [401, 'Session expired'],
+      [403, 'Permission denied'],
+      [409, 'server state changed'],
+      [422, 'backend rejected'],
+      [503, 'service or database is unavailable'],
+    ]) {
+      await evaluate(`window.harness.settings({mutationStatus:${code}})`)
+      await click('Submit report')
+      await loaded(text)
+      assert(
+        await evaluate(
+          `window.harness.snapshot().reports[0].id===${JSON.stringify(absentId)}`,
+        ),
+        'Failed submit must not claim a saved report',
+      )
+    }
+    await evaluate('window.harness.settings({mutationStatus:200})')
+    await set('form select[required]', 'present')
+    async function attachMockPhoto() {
+      const { root } = await send('DOM.getDocument')
+      const { nodeId } = await send('DOM.querySelector', {
+        nodeId: root.nodeId,
+        selector: 'form input[type=file]',
+      })
+      await send('DOM.setFileInputFiles', {
+        nodeId,
+        files: [join(output, 'demo-photo.png')],
+      })
+    }
+    await attachMockPhoto()
+    await click('Submit report')
+    await loaded('Report accepted by backend')
+    const created = await evaluate('window.harness.snapshot().reports[0]')
+    assert.equal(created.review_status, 'pending')
+    const mockNotice = created.notice_id
+    await evaluate("window.harness.mount('supervisor')")
+    await hash(
+      '/supervisor/sites/site-demo-everglades',
+      'Potential notices and approved instructions',
+    )
+    assert(
+      await evaluate(
+        `!document.querySelector('[data-report-id="${created.id}"] button')`,
+      ),
+      'Present report has no absent-review action',
+    )
+    await evaluate(
+      `document.querySelector('[data-report-id="${absentId}"] button').click()`,
+    )
+    await until(
+      () =>
+        evaluate(
+          `document.querySelector('[data-report-id="${absentId}"] h3').innerText.includes('confirmed')`,
+        ),
+      'mock absent reviewed',
+    )
+    assert(
+      await evaluate(
+        `document.querySelector('[data-notice-id="${mockNotice}"]').innerText.includes('No instruction: supervisor confirmation is pending')`,
+      ),
+    )
+    await evaluate('window.harness.settings({denyMutation:true})')
+    await evaluate(
+      `document.querySelector('[data-notice-id="${mockNotice}"] button').click()`,
+    )
+    await loaded('Permission denied')
+    assert(
+      await evaluate(
+        `!document.querySelector('[data-notice-id="${mockNotice}"] textarea')`,
+      ),
+    )
+    await evaluate('window.harness.settings({denyMutation:false})')
+    await evaluate(
+      `document.querySelector('[data-notice-id="${mockNotice}"] button').click()`,
+    )
+    await loaded('Suggested instruction')
+    assert(
+      await evaluate(
+        `document.querySelector('[data-notice-id="${mockNotice}"] textarea').value.includes('Mocked Gemini draft')`,
+      ),
+      'Returned draft must populate the editor after confirmation',
+    )
+    assert(
+      await evaluate(
+        "!window.harness.requests.some(r=>r.endsWith('/instruction'))",
+      ),
+      'Draft must not send automatically',
+    )
+    await loaded('8.3 / 10')
+    await set(
+      `[data-notice-id="${mockNotice}"] textarea`,
+      'Edited mock supervisor instruction: request field inspection.',
+    )
+    const readsBeforeRefresh = await evaluate('window.harness.requests.length')
+    await click('Refresh server state')
+    await until(
+      () => evaluate(`window.harness.requests.length > ${readsBeforeRefresh}`),
+      'shared server refresh requested',
+    )
+    await evaluate(
+      'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+    )
+    assert(
+      await evaluate(
+        `document.querySelector('[data-notice-id="${mockNotice}"] textarea').value==='Edited mock supervisor instruction: request field inspection.'`,
+      ),
+      'Refreshing the same notice must preserve the edited draft',
+    )
+    await evaluate(
+      `document.querySelector('[data-notice-id="${mockNotice}"] button').click()`,
+    )
+    await loaded(
+      'Edited mock supervisor instruction: request field inspection.',
+    )
+    await send('Page.reload', { ignoreCache: true })
+    await loaded('Sign in required')
+    await evaluate("window.harness.mount('crew')")
+    await hash(
+      '/crew/overview',
+      'Edited mock supervisor instruction: request field inspection.',
+    )
+    assert(
+      await evaluate('!document.querySelector("main textarea")'),
+      'Crew cannot edit supervisor instruction',
+    )
+    // A second report exercises a null suggestion and a manual final instruction.
+    await hash('/crew/reports', 'Hazard present or absent')
+    await set('form select[required]', 'present')
+    await attachMockPhoto()
+    await click('Submit report')
+    await loaded('Report accepted by backend')
+    const manualId = await evaluate(
+      'window.harness.snapshot().reports[0].notice_id',
+    )
+    await evaluate(
+      "window.harness.settings({manual:true}); window.harness.mount('supervisor')",
+    )
+    await hash(
+      '/supervisor/sites/site-demo-everglades',
+      'Potential notices and approved instructions',
+    )
+    await evaluate(
+      `document.querySelector('[data-notice-id="${manualId}"] button').click()`,
+    )
+    await loaded(
+      'No suggestion available; the confirming supervisor writes the instruction',
+    )
+    assert(
+      await evaluate(
+        `document.querySelector('[data-notice-id="${manualId}"] textarea').value==='' && document.querySelector('[data-notice-id="${manualId}"] button').disabled`,
+      ),
+    )
+    await set(
+      `[data-notice-id="${manualId}"] textarea`,
+      'Manual mock instruction approved by supervisor.',
+    )
+    await evaluate(
+      `document.querySelector('[data-notice-id="${manualId}"] button').click()`,
+    )
+    await loaded('Manual mock instruction approved by supervisor.')
+    // Competing confirmation: backend conflict refreshes owner, no editor/takeover.
+    const raceId = await evaluate(
+      "window.harness.snapshot().notices.find(n=>n.status==='potential').id",
+    )
+    await evaluate(
+      `window.harness.settings({foreignOwner:${JSON.stringify(raceId)}}); document.querySelector('[data-notice-id="${raceId}"] button').click()`,
+    )
+    await loaded('Another supervisor confirmed this hazard')
+    assert(
+      await evaluate(
+        `!document.querySelector('[data-notice-id="${raceId}"] textarea')`,
+      ),
+    )
     results.push({
       reports:
-        'T053 creation enabled separately from unavailable review; mocked live present/absent photo requirement passed',
+        'MOCK HTTP ONLY: present/photo and absent/no-photo, 401/403/409/422/503 submission failures, absent review, notice confirmation/draft/edit/send, manual fallback, reload/crew delivery, server score refresh and competing owner all pass',
       alerts:
-        'published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified',
+        'Mock server state and acknowledgement preserved; no ML/React score or alert engine',
     })
     await evaluate("window.harness.mount('supervisor')")
     await hash('/supervisor/overview', '5 backend-authorized locations')

@@ -3,6 +3,7 @@ import {
   Suspense,
   useCallback,
   useMemo,
+  useRef,
   useState,
   type FormEvent,
 } from 'react'
@@ -91,7 +92,7 @@ function SitePage({
   dashboard: boolean
   sites: SiteSummary[]
 }) {
-  const { client, persona } = useApplication()
+  const { client, persona, refresh } = useApplication()
   const result = useResource(
     `site:${id}`,
     useCallback(() => client.site(id), [client, id]),
@@ -128,6 +129,9 @@ function SitePage({
         <a className={control} href={`#/${persona}/briefings`}>
           View briefing
         </a>
+        <button type="button" className={control} onClick={refresh}>
+          Refresh server state
+        </button>
       </div>
       <ScorePanel site={site} demo={client.mode === 'demo'} />
       <section className="space-y-3">
@@ -135,12 +139,7 @@ function SitePage({
           Potential notices and approved instructions
         </h2>
         {site.notices.length ? (
-          site.notices.map((n) => (
-            <NoticeCard
-              key={`${n.id}:${n.confirmed_at ?? n.status}`}
-              notice={n}
-            />
-          ))
+          site.notices.map((n) => <NoticeCard key={n.id} notice={n} />)
         ) : (
           <p>
             No notices supplied. Local electrical, structural and access
@@ -423,9 +422,11 @@ function ReportForm({ site }: { site: SiteSummary }) {
     [photo, setPhoto] = useState<File | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('')
+  const inFlight = useRef(false)
   async function submit(event: FormEvent) {
     event.preventDefault()
-    if (!presence) return
+    if (!presence || inFlight.current) return
+    inFlight.current = true
     setBusy(true)
     setMessage('')
     try {
@@ -449,6 +450,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
     } catch (e) {
       setMessage(e instanceof Error ? e.message : 'Submission unavailable')
     } finally {
+      inFlight.current = false
       setBusy(false)
     }
   }
@@ -562,7 +564,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
         type="submit"
       >
         {busy
-          ? 'Submitting…'
+          ? 'Uploading…'
           : client.mode === 'demo'
             ? 'Submit simulated report'
             : 'Submit report'}
@@ -616,7 +618,9 @@ function ReportCard({ report }: { report: CrewReport }) {
         </p>
       ) : (
         <p className="text-xs">
-          No persisted photo. Demo photos are session-only.
+          {client.mode === 'demo'
+            ? 'No persisted photo. Demo photos are session-only.'
+            : 'No photo reference supplied.'}
         </p>
       )}
       {report.enrichment && (
@@ -630,54 +634,68 @@ function ReportCard({ report }: { report: CrewReport }) {
           </p>
         </div>
       )}
-      {persona === 'supervisor' && report.review_status === 'pending' && (
-        <div className="flex flex-wrap gap-3">
-          <label>
-            Reviewed category
-            <select
-              className={control + ' block'}
-              value={reviewCategory}
-              onChange={(e) =>
-                setReviewCategory(e.target.value as ReportCategory)
+      {persona === 'supervisor' &&
+        report.review_status === 'pending' &&
+        !report.hazard_present && (
+          <div className="flex flex-wrap gap-3">
+            <label>
+              Reviewed category
+              <select
+                className={control + ' block'}
+                value={reviewCategory}
+                onChange={(e) =>
+                  setReviewCategory(e.target.value as ReportCategory)
+                }
+              >
+                {Object.entries(categories).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Reviewed severity (optional)
+              <select
+                className={control + ' block'}
+                value={severity}
+                onChange={(e) => setSeverity(e.target.value as typeof severity)}
+              >
+                <option value="">Not specified</option>
+                <option value="low">Low</option>
+                <option value="moderate">Moderate</option>
+                <option value="high">High</option>
+              </select>
+            </label>
+            <Action
+              run={() =>
+                client.review(report.id, {
+                  decision: 'confirmed',
+                  category: reviewCategory,
+                  severity: severity || null,
+                })
               }
             >
-              {Object.entries(categories).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Reviewed severity (optional)
-            <select
-              className={control + ' block'}
-              value={severity}
-              onChange={(e) => setSeverity(e.target.value as typeof severity)}
+              Confirm report classification
+            </Action>
+            <Action
+              run={() => client.review(report.id, { decision: 'rejected' })}
             >
-              <option value="">Not specified</option>
-              <option value="low">Low</option>
-              <option value="moderate">Moderate</option>
-              <option value="high">High</option>
-            </select>
-          </label>
-          <Action
-            run={() =>
-              client.review(report.id, {
-                decision: 'confirmed',
-                category: reviewCategory,
-                severity: severity || null,
-              })
-            }
+              Reject report
+            </Action>
+          </div>
+        )}
+      {report.hazard_present && report.review_status === 'pending' && (
+        <p>
+          Present report remains pending until a notified supervisor confirms
+          its potential notice.{' '}
+          <a
+            className={control}
+            href={`#/${persona}/sites/${encodeURIComponent(report.site_id)}`}
           >
-            Confirm report classification
-          </Action>
-          <Action
-            run={() => client.review(report.id, { decision: 'rejected' })}
-          >
-            Reject report
-          </Action>
-        </div>
+            Open site notices
+          </a>
+        </p>
       )}
       <p className="text-xs">
         Review does not authorize work. Pending/rejected reports are not
@@ -687,7 +705,7 @@ function ReportCard({ report }: { report: CrewReport }) {
   )
 }
 function ReportsPage({ sites }: { sites: SiteSummary[] }) {
-  const { client } = useApplication()
+  const { client, refresh } = useApplication()
   const result = useResource(
     'reports',
     useCallback(() => client.reports(), [client]),
@@ -711,6 +729,9 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
           ))}
         </select>
       </label>
+      <button type="button" className={control} onClick={refresh}>
+        Refresh reports and server state
+      </button>
       <ReportForm key={site.id} site={site} />
       {result.data ? (
         <section className="space-y-3" aria-label="Submitted reports">

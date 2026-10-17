@@ -1,3 +1,29 @@
+## T065 frontend lifecycle integration - 2026-10-17
+
+Published implementation `60ce28082e5bf18822f758bec4f4b1686d3dc794`: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication. This metadata-only follow-up records exact refs; source validation and T065 unchecked state are unchanged. Rudra/Braydin should use the owner handoff below.
+
+Authorized scope: frontend wiring/tests and shared progress docs, using merged T053/T054/T054A/T055 and T058A contracts. No backend/auth/database/ML/deployment/manifest/lockfile change. T065 remains unchecked because actual authenticated persistence/delivery is not available locally. T063/T064/T066/T067/T068 unchanged.
+
+Git update: maintainers merged PR #24 as `f3a65a7` and the pushed T067A checkpoint `2e4cfb7` in PR #27 as `1eed70e` while this run continued. Cache performed no main merge or force push. Preserved all work and fast-forwarded the new `feature/cache-report-lifecycle-integration` to reviewed main `1eed70e`; then fast-forwarded reviewed PR #28 main `dcd9fc5` (score-history regression fix) without touching its backend or T076 task note. Final review targets main without duplicated parent changes.
+
+Changed code paths:
+- `frontend/src/api/contracts.ts`: typed HazardConfirmResponse/HazardNotice returns; existing canonical types imported.
+- `frontend/src/api/http-client.ts`: published review/notice capabilities, canonical multipart/report/review/confirmation/instruction validation; general conflict and unknown timeout outcomes, no retries.
+- `frontend/src/api/validate.ts`: report/notice shape, ID/context/state and confirmation consistency checks; no inferred ownership or instruction on a potential notice.
+- `frontend/src/components/data/Interaction.tsx`: synchronous in-flight guard; permission/conflict/malformed mutation responses refresh shared state.
+- `frontend/src/components/data/NoticeCard.tsx`: returned server notice/draft, manual fallback, confirmer-only editor, explicit final 500-character send, foreign-owner state; stable notice identity preserves edits while GETs refresh.
+- `frontend/src/pages/ConnectedPages.tsx`: absent-only review actions, present report site-notice link, stable notice keys, upload in-flight state, honest live photo-reference message and manual server refresh.
+- `frontend/src/demo/client.ts`: separate absent review/present notice confirmation, matching report confirmation, duplicate conflicts; no simulated score recalculation.
+- `frontend/tests/{data.test.mjs,lifecycle.test.mjs,browser-harness.tsx,mock-service.ts}` and `frontend/scripts/check-shell.mjs`: reuse fixtures in isolated mocked HTTP tests, 12 new lifecycle tests and browser UI flow; fixtures in test session storage, no real credentials/API access.
+
+Shared docs: PROJECT_CONTEXT, INTEGRATION_STATUS, CROSS_SCOPE_CHANGES, FRONTEND_REDESIGN_HANDOFF, frontend/INTEGRATION, frontend/LIVE_INTEGRATION and docs/t065-verification.json. No T065 task.md change. T067A task checkbox already merged.
+
+Verification: 56 Node tests, 518 backend/probe checks (511+7), lint/TS/build and isolated npm ci/build pass. Full final browser acceptance passes at 1440/390/320, including complete mock lifecycle and reload; evidence is in t065-verification.json. Early browser runs exposed a confirmation-refresh editor reset; fixed stable parent/child keys and retained server response. Another browser assertion expected raw 8.25 while the existing UI correctly rounds to 8.3; assertion corrected. These failed runs are not counted as acceptance.
+
+Actual local readiness: restarted only owned FastAPI PID 64044 via its known session; intermediate known process 69228 has DEV_AUTH_BYPASS=false, FEED_REFRESH_ENABLED=false, BRIEFING_SCHEDULE_ENABLED=false. All 11 operations present without source/running drift. Five old and five additional route denial checks pass 401; invalid bearer503 remains blocked. DATABASE_URL/Auth0 settings missing; no actual account persistence, photos, instructions or Gemini-provider response verified. Final known developer process is PID 65924 after incorporating PR #28; it has the same disabled flags. No teammate process/configuration or long job was changed.
+
+Owner handoff: Rudra reviews canonical route/response use and coordinates merge. Braydin continues independent private Auth0/Tiger Data/membership/storage/Gemini setup; use LIVE_INTEGRATION's real report lifecycle checklist afterwards. Private photo retrieval remains unconnected; UI never follows arbitrary photo URLs. Separate redesign should preserve state, evidence, roles, explicit approval and error behavior.
+
 ## T067A / T065 continuation - 2026-10-17
 
 Explicit user authorization: complete T067A first, then wire T065 without duplicating Braydin's provisioning. Branch `feature/cache-stored-briefings-report-lifecycle` stacks on PR #24 head `6a2fc4d`; reviewed main `70c20ff` incorporated in `9dcd278`, preserving merged PR #26 and Auth0/Gemini changes. Detailed teammate evidence remains linked in PROJECT_CONTEXT and owner guides.
