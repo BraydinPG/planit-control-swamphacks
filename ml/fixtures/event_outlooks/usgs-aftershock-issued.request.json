@@ -1,0 +1,38 @@
+{
+  "contract_version": "ml-event-outlooks-1.0.0",
+  "site": {
+    "lat": 35.68771,
+    "lon": -117.6814,
+    "id": "eia860m-CA-57764",
+    "name": "Naval Air Weapons Station China Lake",
+    "source": "EIA-860M August 2026 (representative power plant location)",
+    "inventory_vintage": "2026-08; current reference, not historical work order"
+  },
+  "as_of_utc": "2026-09-03T04:00:00Z",
+  "events": [
+    {
+      "event_id": "ci38457511",
+      "notice_id": null,
+      "event_name": "Ridgecrest official sequence forecast / regional replay",
+      "event_type": "Earthquake",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2026-09-03T04:00:00Z",
+        "available_at_utc": "2026-09-03T04:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-CA-57764",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Source-backed EIA reference point inside the published 60 km OAF circle; regional probabilities apply to the sequence, never this point. No work order/impact asserted."
+      },
+      "event_start_utc": "2019-07-06T03:19:53.040000Z",
+      "event_definition": null,
+      "observations": [],
+      "station_id": null,
+      "official_product_id": "ridgecrest-oaf"
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "contract_version": "ml-event-outlooks-1.0.0",
+  "site": {
+    "lat": 28.066389,
+    "lon": -82.0175,
+    "id": "eia860m-FL-59611",
+    "name": "LKL BLBD, LLC",
+    "source": "EIA-860M August 2026; backend selection export",
+    "inventory_vintage": "2026-08; reference inventory, not historical work order"
+  },
+  "as_of_utc": "2024-09-27T05:00:00Z",
+  "status": "partial",
+  "event_outlooks": [
+    {
+      "event_id": "replay-flood",
+      "notice_id": null,
+      "event_name": "Hypothetical Flood activation",
+      "event_type": "Flood",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2024-09-27T05:00:00Z",
+        "available_at_utc": "2024-09-27T05:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-FL-59611",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Hypothetical activation at a real current EIA reference location; no actual work order or historical incident linkage asserted."
+      },
+      "as_of_utc": "2024-09-27T05:00:00Z",
+      "event_start_utc": "2024-09-27T03:00:00Z",
+      "last_observation_at_utc": null,
+      "last_forecast_issued_at_utc": null,
+      "evidence_status": "accepted_for_research",
+      "status": "available",
+      "forecast": {
+        "kind": "historical_duration_research",
+        "target_definition": "noaa_recorded_flood_interval",
+        "model_version": "noaa-flood-conditional-km-v2",
+        "estimator": "kaplan_meier",
+        "persistence": [
+          {
+            "horizon_hours": 6,
+            "recorded_event_ongoing_probability": 0.5377325377325376
+          },
+          {
+            "horizon_hours": 12,
+            "recorded_event_ongoing_probability": 0.428220428220427
+          },
+          {
+            "horizon_hours": 24,
+            "recorded_event_ongoing_probability": 0.3236223236223221
+          }
+        ],
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 8.0,
+          "p90": null
+        },
+        "model_card": "ml/EVALUATION.md",
+        "training_support_at_event_age": 5698,
+        "trend": "unknown"
+      },
+      "evidence": [],
+      "limitations": [
+        "Recorded event resolution is not worksite clearance. Local damage and exposure remain unverified.",
+        "No site hazard probability is validated; no score, alert, lightning timer or work authorization is changed.",
+        "Historical research, not operational validation. Previously inspected 2025 data is not a fresh holdout.",
+        "Duration intervals can be poorly calibrated even when persistence passes its research gate; unidentified quantiles remain null.",
+        "Reference inventory coordinates do not establish historical worksite conditions.",
+        "NOAA event intervals describe regional recorded events, not verified site conditions.",
+        "Historical weather and live site measurements are not included in this trained model.",
+        "Recorded event resolution does not mean site conditions are safe or work may resume."
+      ],
+      "is_simulated": true,
+      "research_only": true,
+      "production_eligibility": false,
+      "site_hazard_probability": null
+    },
+    {
+      "event_id": "replay-flash-flood",
+      "notice_id": null,
+      "event_name": "Hypothetical Flash Flood activation",
+      "event_type": "Flash Flood",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2024-09-27T05:00:00Z",
+        "available_at_utc": "2024-09-27T05:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-FL-59611",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Hypothetical activation at a real current EIA reference location; no actual work order or historical incident linkage asserted."
+      },
+      "as_of_utc": "2024-09-27T05:00:00Z",
+      "event_start_utc": "2024-09-27T03:00:00Z",
+      "last_observation_at_utc": null,
+      "last_forecast_issued_at_utc": null,
+      "evidence_status": "accepted_for_research",
+      "status": "available",
+      "forecast": {
+        "kind": "historical_duration_research",
+        "target_definition": "noaa_positive_continuous_recorded_interval",
+        "model_version": "active-flash_flood-pooled-logistic-v1:kaplan_meier",
+        "estimator": "kaplan_meier",
+        "persistence": [
+          {
+            "horizon_hours": 1,
+            "recorded_event_ongoing_probability": 0.5095439312254118
+          },
+          {
+            "horizon_hours": 3,
+            "recorded_event_ongoing_probability": 0.22133177910534751
+          },
+          {
+            "horizon_hours": 6,
+            "recorded_event_ongoing_probability": 0.054349409879061686
+          }
+        ],
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 2.0,
+          "p90": 5.0
+        },
+        "model_card": "ml/reports/multidisaster/flash_flood.json",
+        "training_support_at_event_age": 6863,
+        "trend": "unknown"
+      },
+      "evidence": [],
+      "limitations": [
+        "Recorded event resolution is not worksite clearance. Local damage and exposure remain unverified.",
+        "No site hazard probability is validated; no score, alert, lightning timer or work authorization is changed.",
+        "Historical research, not operational validation. Previously inspected 2025 data is not a fresh holdout.",
+        "Duration intervals can be poorly calibrated even when persistence passes its research gate; unidentified quantiles remain null.",
+        "Reference inventory coordinates do not establish historical worksite conditions.",
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "is_simulated": true,
+      "research_only": true,
+      "production_eligibility": false,
+      "site_hazard_probability": null
+    },
+    {
+      "event_id": "replay-high-wind",
+      "notice_id": null,
+      "event_name": "Hypothetical High Wind activation",
+      "event_type": "High Wind",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2024-09-27T05:00:00Z",
+        "available_at_utc": "2024-09-27T05:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-FL-59611",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Hypothetical activation at a real current EIA reference location; no actual work order or historical incident linkage asserted."
+      },
+      "as_of_utc": "2024-09-27T05:00:00Z",
+      "event_start_utc": "2024-09-27T03:00:00Z",
+      "last_observation_at_utc": null,
+      "last_forecast_issued_at_utc": null,
+      "evidence_status": "accepted_for_research",
+      "status": "available",
+      "forecast": {
+        "kind": "historical_duration_research",
+        "target_definition": "noaa_positive_continuous_recorded_interval",
+        "model_version": "active-high_wind-pooled-logistic-v1:kaplan_meier",
+        "estimator": "kaplan_meier",
+        "persistence": [
+          {
+            "horizon_hours": 6,
+            "recorded_event_ongoing_probability": 0.42385004316191865
+          },
+          {
+            "horizon_hours": 12,
+            "recorded_event_ongoing_probability": 0.21457639659637417
+          },
+          {
+            "horizon_hours": 24,
+            "recorded_event_ongoing_probability": 0.08669379701566143
+          }
+        ],
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 5.0,
+          "p90": 22.0
+        },
+        "model_card": "ml/reports/multidisaster/high_wind.json",
+        "training_support_at_event_age": 8109,
+        "trend": "unknown"
+      },
+      "evidence": [],
+      "limitations": [
+        "Recorded event resolution is not worksite clearance. Local damage and exposure remain unverified.",
+        "No site hazard probability is validated; no score, alert, lightning timer or work authorization is changed.",
+        "Historical research, not operational validation. Previously inspected 2025 data is not a fresh holdout.",
+        "Duration intervals can be poorly calibrated even when persistence passes its research gate; unidentified quantiles remain null.",
+        "Reference inventory coordinates do not establish historical worksite conditions.",
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "is_simulated": true,
+      "research_only": true,
+      "production_eligibility": false,
+      "site_hazard_probability": null
+    },
+    {
+      "event_id": "replay-wildfire",
+      "notice_id": null,
+      "event_name": "Hypothetical Wildfire activation",
+      "event_type": "Wildfire",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2024-09-27T05:00:00Z",
+        "available_at_utc": "2024-09-27T05:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-FL-59611",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Hypothetical activation at a real current EIA reference location; no actual work order or historical incident linkage asserted."
+      },
+      "as_of_utc": "2024-09-27T05:00:00Z",
+      "event_start_utc": "2024-09-27T03:00:00Z",
+      "last_observation_at_utc": null,
+      "last_forecast_issued_at_utc": null,
+      "evidence_status": "rejected_for_forecast",
+      "status": "unavailable",
+      "forecast": {
+        "kind": "unavailable",
+        "reason_code": "unsupported_target",
+        "reason": "No qualified event-specific forecast exists for this target; no other model is substituted.",
+        "required_inputs": [
+          "Target-specific as-of time-series labels, baseline and independent historical evaluation"
+        ]
+      },
+      "evidence": [],
+      "limitations": [
+        "Recorded event resolution is not worksite clearance. Local damage and exposure remain unverified.",
+        "No site hazard probability is validated; no score, alert, lightning timer or work authorization is changed."
+      ],
+      "is_simulated": true,
+      "research_only": true,
+      "production_eligibility": false,
+      "site_hazard_probability": null
+    }
+  ],
+  "work_authorization": "outside_advisory_authority",
+  "affects_site_score": false,
+  "affects_alerts_or_lightning_timer": false,
+  "unverified_worksite_hazards": [
+    "Electrical / energized water: unknown; qualified field verification required",
+    "Structural / access: unknown; field verification required",
+    "Chemical / biological / wildlife: unknown; confirmed reports required"
+  ]
+}

@@ -6,6 +6,7 @@ data/processed/*
 artifacts/*
 !artifacts/.gitkeep
 reports/*
+!reports/event_outlooks_verification.json
 !reports/backtest_metrics.json
 !reports/monte_carlo_summary.json
 !reports/source_manifest.json

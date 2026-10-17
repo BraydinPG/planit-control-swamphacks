@@ -1,0 +1,249 @@
+{
+  "contract_version": "ml-event-outlooks-1.0.0",
+  "site": {
+    "lat": 35.68771,
+    "lon": -117.6814,
+    "id": "eia860m-CA-57764",
+    "name": "Naval Air Weapons Station China Lake",
+    "source": "EIA-860M August 2026 (representative power plant location)",
+    "inventory_vintage": "2026-08; current reference, not historical work order"
+  },
+  "as_of_utc": "2026-09-03T04:00:00Z",
+  "status": "available",
+  "event_outlooks": [
+    {
+      "event_id": "ci38457511",
+      "notice_id": null,
+      "event_name": "Ridgecrest official sequence forecast / regional replay",
+      "event_type": "Earthquake",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2026-09-03T04:00:00Z",
+        "available_at_utc": "2026-09-03T04:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-CA-57764",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Source-backed EIA reference point inside the published 60 km OAF circle; regional probabilities apply to the sequence, never this point. No work order/impact asserted."
+      },
+      "as_of_utc": "2026-09-03T04:00:00Z",
+      "event_start_utc": "2019-07-06T03:19:53.040000Z",
+      "last_observation_at_utc": null,
+      "last_forecast_issued_at_utc": "2026-09-03T03:30:03.671000Z",
+      "evidence_status": "issued_provider_product",
+      "status": "available",
+      "forecast": {
+        "kind": "official_aftershock_forecast",
+        "mainshock": {
+          "lat": 35.7695,
+          "lon": -117.5993333,
+          "event_id": "ci38457511",
+          "time_utc": "2019-07-06T03:19:53.040000Z",
+          "magnitude": 7.1
+        },
+        "provider_version": "Reasenberg-Jones (1989, 1994) aftershock model (Sequence Specific)",
+        "source": {
+          "id": "usgs-oaf-ci38457511-1788406203671",
+          "provider": "USGS",
+          "url": "https://earthquake.usgs.gov/product/oaf/ci38457511/us/1788406203671/forecast.json",
+          "sha256": "8ad8a8332c8e349ae847b46b831401c9fa0f738fbe9297ed30e590ca02584c0c",
+          "issued_at_utc": "2026-09-03T03:30:03.671000Z",
+          "retrieved_at_utc": "2026-10-17T17:06:59.758600Z",
+          "available_at_utc": null,
+          "vintage": "archive_capture"
+        },
+        "mainshock_source": {
+          "id": "usgs-mainshock-ci38457511",
+          "provider": "USGS",
+          "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/ci38457511.geojson",
+          "sha256": "b50ed4fa2bf4e43b897db38c5881dcdd0628c242207d96e1146022304f45ec77",
+          "issued_at_utc": "2026-09-03T03:30:03.671000Z",
+          "retrieved_at_utc": "2026-10-17T17:06:59.674769Z",
+          "available_at_utc": null,
+          "vintage": "archive_capture"
+        },
+        "expires_at_utc": "2027-09-03T04:00:00Z",
+        "region": {
+          "lat": 35.808,
+          "lon": -117.6254,
+          "radius_km": 60.0,
+          "interpretation": "provider_sequence_region_not_site_probability"
+        },
+        "windows": [
+          {
+            "label": "1 Day",
+            "start_utc": "2026-09-03T04:00:00Z",
+            "end_utc": "2026-09-04T04:00:00Z",
+            "bins": [
+              {
+                "magnitude_at_least": 3.0,
+                "probability_at_least_one": 0.01844,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 4.0,
+                "probability_at_least_one": 0.001859,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 5.0,
+                "probability_at_least_one": 0.0001861,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 6.0,
+                "probability_at_least_one": 1.861e-05,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 7.0,
+                "probability_at_least_one": 1.861e-06,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              }
+            ]
+          },
+          {
+            "label": "1 Week",
+            "start_utc": "2026-09-03T04:00:00Z",
+            "end_utc": "2026-09-10T04:00:00Z",
+            "bins": [
+              {
+                "magnitude_at_least": 3.0,
+                "probability_at_least_one": 0.1219,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 1
+              },
+              {
+                "magnitude_at_least": 4.0,
+                "probability_at_least_one": 0.01293,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 5.0,
+                "probability_at_least_one": 0.0013,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 6.0,
+                "probability_at_least_one": 0.0001301,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 7.0,
+                "probability_at_least_one": 1.301e-05,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              }
+            ]
+          },
+          {
+            "label": "1 Month",
+            "start_utc": "2026-09-03T04:00:00Z",
+            "end_utc": "2026-10-03T04:00:00Z",
+            "bins": [
+              {
+                "magnitude_at_least": 3.0,
+                "probability_at_least_one": 0.4252,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 2
+              },
+              {
+                "magnitude_at_least": 4.0,
+                "probability_at_least_one": 0.05397,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 1
+              },
+              {
+                "magnitude_at_least": 5.0,
+                "probability_at_least_one": 0.005534,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 6.0,
+                "probability_at_least_one": 0.0005548,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 7.0,
+                "probability_at_least_one": 5.549e-05,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              }
+            ]
+          },
+          {
+            "label": "1 Year",
+            "start_utc": "2026-09-03T04:00:00Z",
+            "end_utc": "2027-09-03T04:00:00Z",
+            "bins": [
+              {
+                "magnitude_at_least": 3.0,
+                "probability_at_least_one": 0.9979,
+                "count_p95_minimum": 2,
+                "count_p95_maximum": 12
+              },
+              {
+                "magnitude_at_least": 4.0,
+                "probability_at_least_one": 0.4677,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 3
+              },
+              {
+                "magnitude_at_least": 5.0,
+                "probability_at_least_one": 0.06125,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 1
+              },
+              {
+                "magnitude_at_least": 6.0,
+                "probability_at_least_one": 0.006302,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              },
+              {
+                "magnitude_at_least": 7.0,
+                "probability_at_least_one": 0.000632,
+                "count_p95_minimum": 0,
+                "count_p95_maximum": 0
+              }
+            ]
+          }
+        ],
+        "earthquake_remaining_duration": null
+      },
+      "evidence": [],
+      "limitations": [
+        "Recorded event resolution is not worksite clearance. Local damage and exposure remain unverified.",
+        "No site hazard probability is validated; no score, alert, lightning timer or work authorization is changed.",
+        "Issued provider forecast, not a locally validated ML prediction. Archive retrieval does not prove historical operational availability.",
+        "Aftershock probabilities describe the entire provider sequence region and exact original windows, never a point-site probability or earthquake end time.",
+        "Hypothetical activation / reference-site display; not a verified worker-site incident."
+      ],
+      "is_simulated": true,
+      "research_only": false,
+      "production_eligibility": false,
+      "site_hazard_probability": null
+    }
+  ],
+  "work_authorization": "outside_advisory_authority",
+  "affects_site_score": false,
+  "affects_alerts_or_lightning_timer": false,
+  "unverified_worksite_hazards": [
+    "Electrical / energized water: unknown; qualified field verification required",
+    "Structural / access: unknown; field verification required",
+    "Chemical / biological / wildlife: unknown; confirmed reports required"
+  ]
+}

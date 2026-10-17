@@ -13,6 +13,8 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 HOSTS = frozenset(
     {
         "api.weather.gov",
+        "www.nhc.noaa.gov",
+        "ftp.nhc.noaa.gov",
         "api.waterdata.usgs.gov",
         "earthquake.usgs.gov",
         "services.swpc.noaa.gov",
