@@ -324,3 +324,13 @@ Rudra approved an Apple-style mockup and chose its light theme for both workspac
 - All strings, roles, shapes-plus-words, null/unknown/incomplete handling and 44/72px targets are unchanged.
 
 Verification: build, lint (clean), 95/95 Node tests, `check-shell.mjs` pass with no browser exceptions; phone and desktop screenshots reviewed.
+
+### 2026-10-17 — Rudra: score display integration (rules-0.2)
+
+Explicit user request to make the Site Hazard Index display and update correctly. Focused
+edits outside Rudra's default paths: `backend/app/gemini/briefings.py` (Braydin: stale
+factors keep their points in briefing hazards; incomplete-evidence unknowns) and
+`frontend/src/api/contracts.ts` (Codex: `sortSites` completeness tie-break matching the
+backend). Presentation helper `frontend/src/components/data/evidence.ts` and the site
+factor breakdown in `ConnectedPages.tsx` (Claude's redesign files). No schema, contract,
+weight or scorer change. Details: SITE_SCORING_INTEGRATION.md.
