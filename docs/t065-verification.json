@@ -420,5 +420,14 @@
     "Rudra": "Review HTTP/response use and coordinate merge; private photo retrieval still unconnected",
     "Braydin": "Continue private Auth0/Tiger Data/membership/Gemini/storage work; run LIVE_INTEGRATION real lifecycle checklist afterwards",
     "Cache": "No T065 checkbox until actual UI roles/persistence/delivery pass"
+  },
+  "implementation_commit": "60ce28082e5bf18822f758bec4f4b1686d3dc794",
+  "publication": {
+    "number": 29,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/29",
+    "state_at_publication": "open",
+    "base": "main",
+    "reviewed_base": "dcd9fc5",
+    "merged_by_cache": false
   }
 }

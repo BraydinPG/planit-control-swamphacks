@@ -2,6 +2,8 @@
 
 Verified 2026-10-17. PR #24 merged as `f3a65a7` and T067A PR #27 merged as `1eed70e` by maintainers during this run. T065 continues on `feature/cache-report-lifecycle-integration` from reviewed main `dcd9fc5` (PR #28 scoring-history fix), targeting main with no duplicated parent diff. PR #26 (`9809db4`) and Braydin's T058A/Auth0 updates are inherited unchanged.
 
+Review: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), implementation `60ce280`, open against main. No merge or real acceptance claimed.
+
 ## Authorized sequence and task evidence
 
 | Task | Prerequisites and acceptance | State |

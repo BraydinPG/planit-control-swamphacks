@@ -1,5 +1,7 @@
 ## T065 frontend lifecycle integration - 2026-10-17
 
+Published implementation `60ce28082e5bf18822f758bec4f4b1686d3dc794`: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication. This metadata-only follow-up records exact refs; source validation and T065 unchecked state are unchanged. Rudra/Braydin should use the owner handoff below.
+
 Authorized scope: frontend wiring/tests and shared progress docs, using merged T053/T054/T054A/T055 and T058A contracts. No backend/auth/database/ML/deployment/manifest/lockfile change. T065 remains unchecked because actual authenticated persistence/delivery is not available locally. T063/T064/T066/T067/T068 unchanged.
 
 Git update: maintainers merged PR #24 as `f3a65a7` and the pushed T067A checkpoint `2e4cfb7` in PR #27 as `1eed70e` while this run continued. Cache performed no main merge or force push. Preserved all work and fast-forwarded the new `feature/cache-report-lifecycle-integration` to reviewed main `1eed70e`; then fast-forwarded reviewed PR #28 main `dcd9fc5` (score-history regression fix) without touching its backend or T076 task note. Final review targets main without duplicated parent changes.

@@ -11,6 +11,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - T065 wired: create/list; absent review; present notice confirmation with validated server response; unsent suggested/manual draft, explicit 1-500-character confirmer send; shared state refresh. Stable notice keys preserve edits during GET refresh; conflicts refresh ownership. No React scoring/recipient selection or automatic send/retry.
 - T065 remains unchecked: full real roles/persistence/delivery is blocked by missing local private configuration/memberships. T063/T064/T066/T067/T068 unchanged. Current checks: 56 Node and 518 backend/probe (511+7), lint/TS/build and clean npm ci/build pass; final browser evidence in docs/t065-verification.json.
 - Actual running/source OpenAPI now match all 11 operations. Ten anonymous/dev-header checks return 401; invalid bearer 503 (Auth0 unavailable). DATABASE_URL/Auth0 SPA/backend/Gemini/storage settings missing locally; no real DB write or authenticated delivery verified. Diagnostic process bypass/feed refresh/briefing schedule stay off.
+- T065 implementation `60ce280`, review [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication; no real acceptance/check-off or merge by Cache.
 - Website: http://localhost:5173/ (explicit demo). Run `cd frontend; npm ci; npm run dev -- --host localhost --port 5173 --strictPort`. Node 24, no ML artifacts needed.
 
 ## Verified upstream / owner boundaries
