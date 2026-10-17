@@ -43,7 +43,7 @@ Routes:
 
 - [ ] **T001 | Rudra | Confirm the stack.** Use React + TypeScript with Vite and Tailwind CSS for the UI, and FastAPI for every API route, as required in `spec.md`. Done when all members agree on that stack and run commands.
 - [ ] **T002 | All | Read the project docs.** Read `spec.md` and `AGENTS.md`. Done when each person confirms owned paths and project scope.
-- [ ] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, FastAPI backend, model, auth, and test folders. Done when a placeholder Vite frontend and a FastAPI `GET /health` route run locally.
+- [x] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, FastAPI backend, model, auth, and test folders. Done when a placeholder Vite frontend and a FastAPI `GET /health` route run locally.
 - [ ] **T004 | Rudra | Add `.env.example`.** List required variable names and descriptions, with no secrets. Done when a new member can identify required configuration.
 - [ ] **T005 | Rudra | Add quality commands.** Document existing formatter, linter, and test commands. Done when each command runs locally.
 - [ ] **T006 | Rudra | Publish API schemas.** Define site, observation, alert, score, report, briefing, and explanation types. Done when Nick can build without guessing field names.
