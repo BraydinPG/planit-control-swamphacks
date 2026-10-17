@@ -9,12 +9,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react'
-import type {
-  AnalysisVerdict,
-  CrewReport,
-  ReportCategory,
-  SiteSummary,
-} from '../types/api'
+import type { CrewReport, ReportCategory, SiteSummary } from '../types/api'
 import {
   useApplication,
   useResource,
@@ -22,6 +17,7 @@ import {
   demoClient,
   useClock,
 } from '../application/context'
+import { useReportLocation } from '../application/useReportLocation'
 import { StoredBriefings } from '../components/data/StoredBriefings'
 import { sortSites } from '../api/contracts'
 import {
@@ -36,6 +32,7 @@ import {
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
 import { NoticeCard } from '../components/data/NoticeCard'
+import { ReportAnalysis } from '../components/data/ReportAnalysis'
 import {
   ScorePanel,
   Factors,
@@ -254,7 +251,13 @@ function SitePage({
               title="Potential notices and approved instructions"
             />
             {site.notices.length ? (
-              site.notices.map((n) => <NoticeCard key={n.id} notice={n} />)
+              site.notices.map((n) => (
+                <NoticeCard
+                  key={n.id}
+                  notice={n}
+                  outlook={site.event_outlook}
+                />
+              ))
             ) : (
               <Empty>
                 No notices supplied. Local electrical, structural and access
@@ -688,12 +691,6 @@ function AlertsPage({ id }: { id: string | null }) {
     </div>
   )
 }
-// T060 verdict in words, never color alone. Cache's T036A builds the full side panel.
-const verdictText: Record<AnalysisVerdict, string> = {
-  supports: 'Supports the report',
-  contradicts: 'Contradicts the report',
-  inconclusive: "Inconclusive: the data can't confirm or rule it out",
-}
 const categories: Record<ReportCategory, string> = {
   broken_pole_downed_line: 'Broken pole / downed line',
   on_site_fire: 'On-site fire',
@@ -708,19 +705,33 @@ const categoryIcon: Record<ReportCategory, IconName> = {
   flooding: 'layers',
   other: 'doc',
 }
-function ReportForm({ site }: { site: SiteSummary }) {
+export function ReportForm({ site }: { site: SiteSummary }) {
   const { client, refresh } = useApplication()
   const [category, setCategory] = useState<ReportCategory>(
       'broken_pole_downed_line',
     ),
     [presence, setPresence] = useState(''),
-    [lat, setLat] = useState(String(site.lat)),
-    [lon, setLon] = useState(String(site.lon)),
     [note, setNote] = useState(''),
     [photo, setPhoto] = useState<File | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('')
   const inFlight = useRef(false)
+  // T034A: device location with the crew member's permission, else the site's
+  // coordinates (approximate); editing the coordinates makes it a manual pin.
+  const location = useReportLocation(site, client.mode)
+  const point = location.location
+  // The fields show the current location; typed values win only while pinning.
+  const [typed, setTyped] = useState<{ lat: string; lon: string } | null>(null)
+  const pinning =
+    typed !== null &&
+    (location.status === 'pin' || location.status === 'unavailable')
+  const lat = pinning ? typed.lat : point ? String(point.lat) : ''
+  const lon = pinning ? typed.lon : point ? String(point.lon) : ''
+  function editCoordinates(nextLat: string, nextLon: string) {
+    setTyped({ lat: nextLat, lon: nextLon })
+    const number = (v: string) => (v.trim() === '' ? NaN : Number(v))
+    location.setPin(number(nextLat), number(nextLon))
+  }
   // Local preview of the selected photo; the object URL never leaves the page.
   const [preview, setPreview] = useState<string | null>(null)
   const previewUrl = useRef<string | null>(null)
@@ -739,6 +750,12 @@ function ReportForm({ site }: { site: SiteSummary }) {
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (!presence || inFlight.current) return
+    // Snapshot now, so a later device fix cannot change this request.
+    const at = point
+    if (!at) {
+      setMessage('Enter a valid latitude and longitude before submitting.')
+      return
+    }
     inFlight.current = true
     setBusy(true)
     setMessage('')
@@ -748,8 +765,10 @@ function ReportForm({ site }: { site: SiteSummary }) {
           site_id: site.id,
           category,
           hazard_present: presence === 'present',
-          lat: Number(lat),
-          lon: Number(lon),
+          lat: at.lat,
+          lon: at.lon,
+          location_source: at.source,
+          location_accuracy_m: at.source === 'device' ? at.accuracyM : null,
           note: note || null,
         },
         photo,
@@ -883,7 +902,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
               step="any"
               className={field}
               value={lat}
-              onChange={(e) => setLat(e.target.value)}
+              onChange={(e) => editCoordinates(e.target.value, lon)}
             />
           </label>
           <label className={labelText}>
@@ -896,13 +915,26 @@ function ReportForm({ site }: { site: SiteSummary }) {
               step="any"
               className={field}
               value={lon}
-              onChange={(e) => setLon(e.target.value)}
+              onChange={(e) => editCoordinates(lat, e.target.value)}
             />
           </label>
         </div>
-        <p className="mt-2 text-xs text-muted">
-          Coordinates start at the selected reference location. Confirm the
-          actual report location before submission.
+        <p
+          role="status"
+          aria-live="polite"
+          className="mt-2 flex flex-wrap items-center gap-2 text-sm text-ink-2"
+        >
+          <span className="chip border border-line-strong text-ink">
+            {locationChip[location.status]}
+            {point?.source === 'device' &&
+              point.accuracyM !== null &&
+              ` · ±${Math.round(point.accuracyM)} m`}
+          </span>
+          {location.message}
+        </p>
+        <p className="mt-1 text-xs text-muted">
+          Location is read only for this report and only with your permission.
+          Edit the coordinates to pin a different spot.
         </p>
       </fieldset>
       <label className={labelText}>
@@ -920,6 +952,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
         disabled={
           busy ||
           !presence ||
+          !point ||
           !client.capabilities.reports ||
           (client.mode === 'live' && presence === 'present' && !photo)
         }
@@ -949,6 +982,30 @@ function ReportForm({ site }: { site: SiteSummary }) {
     </form>
   )
 }
+const locationChip = {
+  closed: 'No location',
+  locating: 'Finding your location…',
+  device: 'Device location',
+  site: 'Approximate: site',
+  pin: 'Pinned',
+  unavailable: 'Needs a valid location',
+} as const
+/** T034A/T053A: where a report's coordinates came from, in words. */
+function locationText(report: CrewReport) {
+  const source =
+    report.location_source === 'device'
+      ? `Device location${report.location_accuracy_m !== null ? ` (±${Math.round(report.location_accuracy_m)} m)` : ''}`
+      : report.location_source === 'pin'
+        ? 'Pinned on the map by the crew member'
+        : report.location_source === 'site'
+          ? 'Approximate: the site’s own coordinates'
+          : 'Location source not recorded'
+  const distance =
+    report.site_distance_miles === null
+      ? ''
+      : ` · ${report.site_distance_miles < 0.1 ? 'under 0.1' : report.site_distance_miles.toFixed(1)} mi from the site`
+  return source + distance
+}
 const reviewLook = {
   pending: {
     shape: 'nodata',
@@ -975,77 +1032,67 @@ function ReportCard({ report }: { report: CrewReport }) {
   const [severity, setSeverity] = useState<'' | 'low' | 'moderate' | 'high'>('')
   const look = reviewLook[report.review_status]
   return (
-    <article data-report-id={report.id} className={`${card} space-y-3 p-4`}>
-      <div className="flex flex-wrap items-center gap-2">
-        <span
-          className={`chip inline-flex items-center gap-1.5 border ${look.cls}`}
-        >
-          <RiskShape kind={look.shape} className="size-3.5" />
-          {look.text}
-        </span>
-        <span
-          className={`chip inline-flex items-center gap-1.5 border ${report.hazard_present ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'}`}
-        >
-          {report.hazard_present ? 'Hazard present' : 'Hazard absent'}
-        </span>
-      </div>
-      <h3 className="text-lg font-bold">
-        {categories[report.category]} ·{' '}
-        {report.hazard_present ? 'present' : 'absent'} · {report.review_status}
-      </h3>
-      <p className="break-words font-mono text-xs text-muted">
-        {report.site_id} · {report.lat}, {report.lon}
-      </p>
-      <p className="text-xs text-muted">
-        Report {report.id} · <Timestamp value={report.created_at} />
-      </p>
-      {report.note && (
-        <p className="rounded-xl bg-surface-2 px-3 py-2 text-ink">
-          {report.note}
-        </p>
-      )}
-      {photo ? (
-        <img
-          className="max-h-48 max-w-full rounded-xl border border-line object-cover"
-          src={photo}
-          alt={`Selected demo evidence for ${categories[report.category]}`}
-        />
-      ) : report.photo_url ? (
-        <p className="text-xs text-muted">
-          Photo reference supplied; private photo retrieval is not connected.
-        </p>
-      ) : (
-        <p className="text-xs text-muted">
-          {client.mode === 'demo'
-            ? 'No persisted photo. Demo photos are session-only.'
-            : 'No photo reference supplied.'}
-        </p>
-      )}
-      {report.enrichment && (
-        <div className="rounded-xl border border-dotted border-sim p-3 text-sm">
-          <strong className="inline-flex items-center gap-1.5 text-sim">
-            <Icon name="spark" className="size-4" />
-            AI analysis, needs human review
-          </strong>
-          {report.enrichment.status === 'complete' ? (
-            <>
-              <p className="mt-1 font-semibold text-ink">
-                {verdictText[report.enrichment.verdict ?? 'inconclusive']}
-              </p>
-              <p className="mt-1 text-ink">{report.enrichment.summary}</p>
-              <p className="mt-1 text-ink-2">
-                Suggested: {report.enrichment.suggested_category ?? 'none'};{' '}
-                {report.enrichment.severity_suggestion ?? 'no severity'}. Not
-                confirmed by this analysis.
-              </p>
-            </>
+    <article
+      data-report-id={report.id}
+      className={`${card} @container space-y-3 p-4`}
+    >
+      {/* T036A: the crew member's report as submitted, Gemini's analysis beside it. */}
+      <div className="grid gap-4 @xl:grid-cols-2 @xl:items-start">
+        <div className="min-w-0 space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`chip inline-flex items-center gap-1.5 border ${look.cls}`}
+            >
+              <RiskShape kind={look.shape} className="size-3.5" />
+              {look.text}
+            </span>
+            <span
+              className={`chip inline-flex items-center gap-1.5 border ${report.hazard_present ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'}`}
+            >
+              {report.hazard_present ? 'Hazard present' : 'Hazard absent'}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold">
+            {categories[report.category]} ·{' '}
+            {report.hazard_present ? 'present' : 'absent'} ·{' '}
+            {report.review_status}
+          </h3>
+          <p className="break-words font-mono text-xs text-muted">
+            {report.site_id} · {report.lat}, {report.lon}
+          </p>
+          <p className="flex items-center gap-1.5 text-xs text-ink-2">
+            <Icon name="pin" className="size-3.5" />
+            {locationText(report)}
+          </p>
+          <p className="text-xs text-muted">
+            Report {report.id} · <Timestamp value={report.created_at} />
+          </p>
+          {report.note && (
+            <p className="rounded-xl bg-surface-2 px-3 py-2 text-ink">
+              {report.note}
+            </p>
+          )}
+          {photo ? (
+            <img
+              className="max-h-48 max-w-full rounded-xl border border-line object-cover"
+              src={photo}
+              alt={`Selected demo evidence for ${categories[report.category]}`}
+            />
+          ) : report.photo_url ? (
+            <p className="text-xs text-muted">
+              Photo reference supplied; private photo retrieval is not
+              connected.
+            </p>
           ) : (
-            <p className="mt-1 text-ink-2">
-              Photo analysis unavailable. The report stands on its own.
+            <p className="text-xs text-muted">
+              {client.mode === 'demo'
+                ? 'No persisted photo. Demo photos are session-only.'
+                : 'No photo reference supplied.'}
             </p>
           )}
         </div>
-      )}
+        <ReportAnalysis report={report} />
+      </div>
       {persona === 'supervisor' &&
         report.review_status === 'pending' &&
         !report.hazard_present && (

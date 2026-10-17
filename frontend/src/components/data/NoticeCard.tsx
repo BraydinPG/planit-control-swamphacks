@@ -1,13 +1,27 @@
 import { useState } from 'react'
-import type { HazardNotice } from '../../types/api'
+import type { EventOutlook, HazardNotice } from '../../types/api'
 import { useApplication } from '../../application/context'
 import { Action, field, labelText } from './Interaction'
 import { Timestamp } from './Status'
 import { RiskShape } from './Risk'
-export function NoticeCard({ notice }: { notice: HazardNotice }) {
-  return <NoticeWorkflow key={notice.id} initial={notice} />
+import { ExpectedDuration } from './Duration'
+/** `outlook` is the site's event outlook; it shows on the confirmed notice it belongs to. */
+export function NoticeCard({
+  notice,
+  outlook = null,
+}: {
+  notice: HazardNotice
+  outlook?: EventOutlook | null
+}) {
+  return <NoticeWorkflow key={notice.id} initial={notice} outlook={outlook} />
 }
-function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
+function NoticeWorkflow({
+  initial,
+  outlook,
+}: {
+  initial: HazardNotice
+  outlook: EventOutlook | null
+}) {
   const [responseNotice, setNotice] = useState<HazardNotice | null>(null)
   // Keep the returned server confirmation while its GET refresh is in flight.
   // Equivalent refreshes must not remount the editor and erase a supervisor's draft.
@@ -72,6 +86,9 @@ function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
         <p className="text-sm">
           Confirmed; no approved instruction has been sent.
         </p>
+      )}
+      {!potential && outlook?.event_id === notice.id && (
+        <ExpectedDuration outlook={outlook} />
       )}
       {persona === 'supervisor' && potential && (
         <Action

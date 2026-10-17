@@ -218,10 +218,13 @@ test('2.1 replay matches exact site only; wrong site cannot borrow probabilities
         ).id,
       ),
     ),
-    /No supported event outlook/,
+    /No duration estimate for this hazard/,
   )
   const compact = render(await client.site(assigned))
-  assert.match(compact, /Replay.*Flood/)
+  assert.match(
+    compact,
+    /Simulated replay: .*This flood is likely to continue for about 22 more hours/,
+  )
   assert(!compact.includes('Developer/demo advisory'))
 })
 test('HTTP adapter passes Auth0 token and multipart photo, never a fake dev-role header', async () => {

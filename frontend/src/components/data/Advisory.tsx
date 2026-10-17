@@ -1,6 +1,8 @@
 import advisories from '../../demo/generated/advisories.json'
 import type { SiteRecord } from '../../api/contracts'
 import { Timestamp } from './Status'
+import { ExpectedDuration } from './Duration'
+import { NO_ESTIMATE } from './duration-text'
 export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
   const replay = demo ? advisories.find((a) => a.site.id === site.id) : null
   const compact = site.event_outlook
@@ -109,40 +111,12 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
           </ul>
         </>
       ) : compact ? (
-        <>
-          <p>
-            {compact.is_simulated
-              ? 'Replay'
-              : 'Confirmed-event backend advisory'}{' '}
-            · {compact.event_type ?? 'event unavailable'} · {compact.status}
-          </p>
-          <p>
-            As of <Timestamp value={compact.as_of_utc} /> · generated{' '}
-            <Timestamp value={compact.generated_at_utc} />
-          </p>
-          <p>
-            Model: {compact.model_version} · Trend: {compact.trend}
-          </p>
-          <p>
-            Regional persistence: {JSON.stringify(compact.ongoing_probability)}
-          </p>
-          <p>
-            Remaining hours p10 / median / p90:{' '}
-            {compact.remaining_hours_p10 ?? 'unknown'} /{' '}
-            {compact.remaining_hours_median ?? 'unknown'} /{' '}
-            {compact.remaining_hours_p90 ?? 'unknown'}
-          </p>
-          <ul>
-            {compact.limitations.map((x, i) => (
-              <li key={i}>{x}</li>
-            ))}
-          </ul>
-        </>
+        // T036B: the plain-language estimate; the numbers sit behind its disclosure.
+        <ExpectedDuration outlook={compact} />
       ) : (
         <p>
-          No supported event outlook was supplied for this site. Never infer
-          event absence or zero risk. Comprehensive 2.1 live evidence still
-          needs an approved backend endpoint.
+          {NO_ESTIMATE} No confirmed event with a supported estimate covers this
+          site. That never means an event is over or the site is safe.
         </p>
       )}
       <p>

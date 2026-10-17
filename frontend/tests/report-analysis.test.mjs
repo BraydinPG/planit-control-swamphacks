@@ -13,12 +13,68 @@ const server = await createServer({
 })
 after(() => server.close())
 const { validateReport } = await server.ssrLoadModule('/src/api/validate.ts')
+const React = (await import('react')).default
+const { renderToStaticMarkup } = await import('react-dom/server')
+const { ApplicationContext } = await server.ssrLoadModule(
+  '/src/application/context.tsx',
+)
+const { ReportAnalysis } = await server.ssrLoadModule(
+  '/src/components/data/ReportAnalysis.tsx',
+)
+const { ExpectedDuration } = await server.ssrLoadModule(
+  '/src/components/data/Duration.tsx',
+)
+const { durationSentence, NO_ESTIMATE } = await server.ssrLoadModule(
+  '/src/components/data/duration-text.ts',
+)
+const { ReportForm } = await server.ssrLoadModule(
+  '/src/pages/ConnectedPages.tsx',
+)
+const detail = JSON.parse(
+  readFileSync(
+    new URL('../src/fixtures/site-detail.json', import.meta.url),
+    'utf8',
+  ),
+)
+const text = (html) =>
+  html
+    .replace(/<[^>]+>/g, '')
+    .replaceAll('&#x27;', "'")
+    .replaceAll('&quot;', '"')
+    .replaceAll('&amp;', '&')
+function panel(
+  report,
+  mode = 'live',
+  now = Date.parse(report.created_at) + 1000,
+) {
+  const value = {
+    client: { mode, now: () => now },
+    persona: 'supervisor',
+    principalId: null,
+    revision: 0,
+    refresh: () => {},
+  }
+  return text(
+    renderToStaticMarkup(
+      React.createElement(
+        ApplicationContext.Provider,
+        { value },
+        React.createElement(ReportAnalysis, { report }),
+      ),
+    ),
+  )
+}
 
 const reports = JSON.parse(
-  readFileSync(new URL('../src/fixtures/reports.json', import.meta.url), 'utf8'),
+  readFileSync(
+    new URL('../src/fixtures/reports.json', import.meta.url),
+    'utf8',
+  ),
 )
 const byVerdict = (status, verdict) =>
-  reports.find((r) => r.enrichment?.status === status && r.enrichment.verdict === verdict)
+  reports.find(
+    (r) => r.enrichment?.status === status && r.enrichment.verdict === verdict,
+  )
 const invalid = (e) => e.status === 502
 
 test('generated fixtures cover supports, inconclusive, and unavailable analyses', () => {
@@ -52,7 +108,11 @@ test('a complete analysis needs a known verdict and a summary', () => {
 test('an unavailable analysis carries no verdict', () => {
   const report = byVerdict('unavailable', null)
   assert.throws(
-    () => validateReport({ ...report, enrichment: { ...report.enrichment, verdict: 'supports' } }),
+    () =>
+      validateReport({
+        ...report,
+        enrichment: { ...report.enrichment, verdict: 'supports' },
+      }),
     invalid,
   )
 })
@@ -60,11 +120,141 @@ test('an unavailable analysis carries no verdict', () => {
 test('location source, accuracy, and site distance are validated', () => {
   const report = byVerdict('complete', 'supports')
   assert.equal(validateReport(report).location_source, 'device')
-  assert.equal(validateReport({ ...report, location_source: null }).location_source, null)
+  assert.equal(
+    validateReport({ ...report, location_source: null }).location_source,
+    null,
+  )
   for (const bad of [
     { location_source: 'gps' },
     { location_accuracy_m: -1 },
     { site_distance_miles: 'near' },
   ])
     assert.throws(() => validateReport({ ...report, ...bad }), invalid)
+})
+
+// ---- T036A side panel ----
+
+test('a supporting analysis shows its verdict, reasons with evidence labels, and suggestions', () => {
+  const html = panel(byVerdict('complete', 'supports'))
+  assert(html.includes('Supports the report'))
+  assert(html.includes('Backs up the report'))
+  assert(html.includes("Based on: Crew member's photo"))
+  assert(html.includes('Also visible in the photo'))
+  assert(html.includes('Suggested category: Broken pole / downed line'))
+  assert(html.includes('The supervisor makes the final call'))
+})
+
+test('contradicts, inconclusive, analyzing, and unavailable render distinctly', () => {
+  const base = byVerdict('complete', 'supports')
+  const contradicts = panel({
+    ...base,
+    enrichment: {
+      ...base.enrichment,
+      verdict: 'contradicts',
+      supporting: [],
+      contradicting: [
+        { statement: 'The ground is dry.', evidence_ids: ['photo'] },
+      ],
+    },
+  })
+  assert(contradicts.includes('Contradicts the report'))
+  assert(contradicts.includes('Points against the report'))
+  assert(panel(byVerdict('complete', 'inconclusive')).includes('Inconclusive'))
+  const unavailable = panel(byVerdict('unavailable', null))
+  assert(unavailable.includes('Photo analysis unavailable'))
+  assert(unavailable.includes('Gemini did not answer in time'))
+  const fresh = { ...base, enrichment: null }
+  assert(panel(fresh).includes('Analyzing the photo and site data'))
+  const old = panel(fresh, 'live', Date.parse(base.created_at) + 10 * 60 * 1000)
+  assert(old.includes('No analysis recorded'))
+  assert(panel(fresh, 'demo').includes('live backend only'))
+})
+
+// ---- T036B expected duration ----
+
+const outlook = (patch = {}) => ({ ...detail.event_outlook, ...patch })
+
+test('the duration reads as one plain sentence and never as zero', () => {
+  assert.equal(
+    durationSentence(
+      outlook({
+        remaining_hours_p10: 2,
+        remaining_hours_median: 6.2,
+        remaining_hours_p90: 14,
+      }),
+    ),
+    'This flood is likely to continue for about 6 more hours (likely range 2 hours to 14 hours).',
+  )
+  const short = durationSentence(
+    outlook({
+      remaining_hours_p10: 0.2,
+      remaining_hours_median: 0.4,
+      remaining_hours_p90: 3,
+    }),
+  )
+  assert(
+    short.includes('less than an hour more') &&
+      short.includes('under 1 hour to 3 hours'),
+  )
+  assert(!short.includes('0 hours'))
+  assert.equal(
+    durationSentence(outlook({ remaining_hours_median: null })),
+    null,
+  )
+  assert.equal(durationSentence(outlook({ status: 'unavailable' })), null)
+  assert.equal(durationSentence(null), null)
+})
+
+test('the duration card labels replays and explains a missing estimate', () => {
+  const card = (o) =>
+    text(
+      renderToStaticMarkup(
+        React.createElement(ExpectedDuration, { outlook: o }),
+      ),
+    )
+  const replay = card(outlook())
+  assert(
+    replay.includes(
+      'Simulated replay: This flood is likely to continue for about 22 more hours',
+    ),
+  )
+  assert(replay.includes('Not an all-clear'))
+  assert(replay.includes('How this is estimated'))
+  const missing = card(
+    outlook({ status: 'unavailable', limitations: ['model unavailable'] }),
+  )
+  assert(missing.includes(NO_ESTIMATE) && missing.includes('model unavailable'))
+})
+
+// ---- T034A report location in the form ----
+
+const site = { id: 'site-a', lat: 25.76, lon: -80.49, name: 'Alpha' }
+function form(mode) {
+  const value = {
+    client: { mode, capabilities: { reports: true } },
+    persona: 'crew',
+    principalId: null,
+    revision: 0,
+    refresh: () => {},
+  }
+  return renderToStaticMarkup(
+    React.createElement(
+      ApplicationContext.Provider,
+      { value },
+      React.createElement(ReportForm, { site }),
+    ),
+  )
+}
+
+test('live reports start from the site while asking for the device location', () => {
+  const html = form('live')
+  assert(text(html).includes('Finding your location…'))
+  assert(html.includes('value="25.76"') && html.includes('value="-80.49"'))
+  assert(text(html).includes('only with your permission'))
+})
+
+test('demo reports never request device location and say they are approximate', () => {
+  const html = text(form('demo'))
+  assert(html.includes('Approximate: site'))
+  assert(!html.includes('Finding your location'))
 })

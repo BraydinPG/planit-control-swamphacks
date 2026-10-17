@@ -1,3 +1,20 @@
+## Report location, analysis panel, and duration on screen (T034A, T036A, T036B; Braydin for Cache) — 2026-10-17
+
+Explicit user authorization (Braydin): complete Cache's T034A, T036A, and T036B in Cache's frontend files, matching Rudra's redesign theme (existing tokens, `card`/`kicker`/`chip`/`field`, `RiskShape`, existing icons; no new colors).
+
+- `frontend/src/pages/ConnectedPages.tsx`:
+  - `ReportForm` wires `useReportLocation` (T034A) and is now exported for tests.
+  - `ReportCard` places `ReportAnalysis` beside the report and shows the location source and distance.
+  - Notices receive the site's `event_outlook`.
+  - Formatted with the file's existing single-quote, no-semicolon style.
+- New: `components/data/ReportAnalysis.tsx`, `components/data/Duration.tsx`, `components/data/duration-text.ts`.
+- `components/data/NoticeCard.tsx` gains an optional `outlook` prop; `components/data/Advisory.tsx` replaces the raw JSON outlook with the plain sentence.
+- Tests: `frontend/tests/report-analysis.test.mjs` (panel states, duration sentence, form location); `frontend/tests/data.test.mjs` expects the new advisory wording.
+
+Also (user-authorized dependency change): `backend/requirements.txt` adds Cache's model packages (`joblib`, `numpy`, `scikit-learn`, same ranges as `ml/requirements.txt`). Without them the backend could not import `ml`, so every live duration estimate was "unavailable". After installing, provision the model once from the repo root: `python -m ml.provision --download` (writes the git-ignored `ml/artifacts/provisioned_v2/`). Run the backend with `PYTHONPATH=..` from `backend/`.
+
+Checks: 103 frontend tests, oxlint, `tsc -b`, and build clean. Cache's `scripts/check-shell.mjs` run in headless Chrome renders all three features with no browser errors. It then fails "Crew primary action below viewport at 320" at the same pixel position on unmodified main, so that existing layout issue is Rudra's redesign, not these changes.
+
 ## Briefing index and hazard points (T058C, Braydin) — 2026-10-17
 
 Explicit user decision (Braydin): briefings show the site's 0–10 index and each hazard's points, both from Cache's deterministic score; Gemini's per-hazard level word is removed.
