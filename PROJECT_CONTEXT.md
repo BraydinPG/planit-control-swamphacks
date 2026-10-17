@@ -1,27 +1,16 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 08:43:07 UTC; current task T030 only, Cache assisting Nick with explicit user authorization.
-- Branch: `feature/cache-t030-app-shell`, based on main `3dd52cc`; no uncommitted frontend work or published Nick branch/open PR found at startup.
-- PR #14 is merged in that main; prior PR #4/#6/#9/#12 remain merged. No stacked dependency.
-- Main now includes Braydin's Auth0 modules and site-route guards; tenant/live token behavior not verified in T030.
-- T030 replaces the Vite starter with the responsive React/TypeScript/Tailwind application shell.
-- Exact entrypoint: `frontend/src/App.tsx` -> `components/shell/AppShell.tsx`; fixture overview in `pages/WorkspaceOverview.tsx`.
-- Run: `cd frontend; npm ci; npm run dev`; current printed URL http://localhost:5173/ (developer server left running).
-- Fixture mode defaults on when unset; `VITE_USE_FIXTURES=false` or invalid input shows unavailable, never silent sample/live fallback.
-- Existing generated SiteSummary/SiteDetail fixtures used for reference context; all sample data explicitly simulated, not EIA/live jobs.
-- Crew/supervisor preview navigation grants no permissions. Auth0/API integration, site list/detail, score components and alert/report workflows remain separate.
-- Browser acceptance: 1440x1000, 390x844, 320x740; ten crew/supervisor destinations per size, no horizontal overflow, >=44px nav targets.
-- Reload/back/keyboard skip link, null-score text, false/invalid fixture states passed; zero browser exceptions and backend API requests.
-- `npm run lint`, `npm run build`, browser acceptance and visual desktop/phone inspection pass; details in `docs/t030-acceptance.json`.
-- Visible Edge launch was blocked by automatic approval review; headless browser rendering succeeded. No security workaround enabled.
-- Only T030 checkbox changed after its done criterion passed; T031/T032/T063 and every other state preserved.
-- No auth/backend/shared type/fixture JSON/ML/manifest/lockfile edits; no new project dependencies.
-- Cross-scope authorization, all changed paths and Nick handoff: `docs/CROSS_SCOPE_CHANGES.md`; fixture commands/limits: `frontend/SHELL.md`.
-- Implementation: `9d94f75e78b33c1a73d31ed2d35e02138ecf5785`; PR #16 open for Nick (`n1ckbown`) review: https://github.com/BraydinPG/planit-control-swamphacks/pull/16 (not merged).
-- Existing offline ML preview remains `python -m ml.worker_preview` (T087); combined 2.1.0 callable/contracts unchanged.
-- Prior ML source snapshot: 2026-10-17T07:18:48.564672Z, 50 sites/150 replay outputs; environmental evidence 2/50, notices 10/50.
-- Next unblocked task: Nick T031 (T006/T007 checked), before T032 crew home. T063 remains a later integration task.
+- Frontend takeover authorized 2026-10-17: Cache now implements remaining frontend work; Nick retains prior attribution.
+- Branch `feature/cache-functional-frontend`, stacked on PR #16 head `84e3936`; PR #16 remains open. Main `2e79cb6` has separately merged T050.
+- T031 foundation: source-state/score/observation components; three component checks pass, frontend build/lint pass.
+- Unknown scores stay null; unsafe legacy fixture ML components are withheld without recomputing scores.
+- Focused frontend dependency change: Leaflet 1.9.4 and types for T035 map; no second UI framework/backend.
+- Shared transport, interactive demo and remaining frontend task chain are in progress; no live-integration completion claimed.
+- Protected site APIs/auth modules exist; report/alert-write/Gemini endpoints and local DATABASE_URL/Auth0 values remain blockers.
+- Ownership/task prerequisites and detailed limits: `docs/INTEGRATION_STATUS.md`, `docs/CROSS_SCOPE_CHANGES.md`.
+- Existing ML 2.1 contract/artifacts remain unchanged. No ML retraining or production activation.
+- Completed checkpoint: this ownership/T031 commit; further task boxes require their own passing checks.
 
 ## Mission and boundaries
 - Layer A: conditional evolution of an already confirmed event, never event onset.
