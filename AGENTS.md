@@ -50,6 +50,8 @@ Rudra owns the canonical API and schema definitions. All agents use these names 
 }
 ```
 
+`risk_score`, `risk_level`, and `updated_at` are `null` until the site has a computed score. Show null as "Not scored yet", never as low risk. `GET /api/sites` lists assigned sites first, then scored sites by `risk_score` descending, then unscored sites, then by name. `GET /api/sites/{id}` returns `SiteDetail`, or 404 for an unknown ID.
+
 ### Cache model interface
 
 ```text
