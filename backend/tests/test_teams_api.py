@@ -259,3 +259,78 @@ def test_profile_refreshes_from_the_token(client, h) -> None:
     with h() as s:
         member = s.scalars(select(db.Membership).where(db.Membership.user_id == "auth0|p")).one()
         assert (member.display_name, member.email) == ("New Name", "p@example.com")
+
+
+# ---- managing teams: a supervisor runs several ----
+
+
+def test_supervisor_adds_teams_at_free_sites(client, h) -> None:
+    with h() as s:
+        s.add(
+            db.Site(
+                id="site-b", name="Bravo Plant", lat=26.0, lon=-80.2,
+                location_type="power_plant", source="test",
+            )
+        )  # fmt: skip
+        s.commit()
+    response = client.post(
+        "/api/teams", json={"name": " Night Crew ", "site_id": "site-b"}, headers=SUPERVISOR
+    )
+    assert response.status_code == 201, response.text
+    team = response.json()
+    assert (team["name"], team["site_name"], team["members"]) == ("Night Crew", "Bravo Plant", [])
+    teams = client.get("/api/team", headers=SUPERVISOR).json()["teams"]
+    assert {t["name"] for t in teams} == {"Line Crew A", "Crew B", "Night Crew"}
+    # Its own join code puts new crew on it.
+    code = make_code(client, team=team["id"])
+    joined = client.post("/api/join", json={"code": code}, headers=person("auth0|night"))
+    assert joined.json()["team_id"] == team["id"]
+
+
+def test_a_site_has_at_most_one_team(client) -> None:
+    response = client.post(
+        "/api/teams", json={"name": "Second", "site_id": "site-a"}, headers=SUPERVISOR
+    )
+    assert response.status_code == 409
+    assert response.json()["detail"]["reason"] == "site_taken"
+
+
+def test_rename_move_and_unassign(client) -> None:
+    renamed = client.patch("/api/teams/team-b", json={"name": "Crew Bee"}, headers=SUPERVISOR)
+    assert renamed.json()["name"] == "Crew Bee" and renamed.json()["site_id"] is None
+    moved = client.patch("/api/teams/team-a", json={"site_id": None}, headers=SUPERVISOR)
+    assert moved.json()["site_id"] is None  # site-a is free again
+    app.dependency_overrides[get_now] = lambda: NOW + timedelta(minutes=1)  # a later edit
+    claimed = client.patch("/api/teams/team-b", json={"site_id": "site-a"}, headers=SUPERVISOR)
+    assert claimed.json()["site_name"] == "Alpha Plant"
+
+
+def test_only_empty_teams_are_removed(client, h) -> None:
+    code = make_code(client, team="team-b")
+    client.post("/api/join", json={"code": code}, headers=person("auth0|bee"))
+    response = client.delete("/api/teams/team-b", headers=SUPERVISOR)
+    assert response.json()["detail"]["reason"] == "has_members"
+    empty = client.post("/api/teams", json={"name": "Temp"}, headers=SUPERVISOR).json()
+    temp_code = make_code(client, team=empty["id"])
+    assert client.delete(f"/api/teams/{empty['id']}", headers=SUPERVISOR).status_code == 204
+    gone = client.post("/api/join", json={"code": temp_code}, headers=person("auth0|late"))
+    assert gone.status_code == 404  # its codes went with it
+
+
+@pytest.mark.parametrize(
+    ("method", "path", "body"),
+    [
+        ("patch", "/api/teams/team-x", {"name": "Mine now"}),
+        ("delete", "/api/teams/team-x", None),
+    ],
+)
+def test_other_organizations_teams_are_off_limits(client, method, path, body) -> None:
+    kwargs = {"json": body} if body else {}
+    response = getattr(client, method)(path, headers=SUPERVISOR, **kwargs)
+    assert response.status_code == 404
+
+
+def test_crew_cannot_manage_teams(client) -> None:
+    assert (
+        client.post("/api/teams", json={"name": "X"}, headers=person("auth0|c")).status_code == 403
+    )

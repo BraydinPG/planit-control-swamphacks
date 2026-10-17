@@ -1,3 +1,23 @@
+## Team onboarding, supervisor Overview, and supervisor UI cleanup (Braydin) — 2026-10-17
+
+Explicit user requests (Braydin): join codes (`XXXX-XXXX`, 7 days); supervisors see exactly who is on each team; the supervisor UI should follow Rudra's design but be functional, logical and free of bloat, covering spec.md and tasks.md. Rudra now owns all frontend/UI (Cache's ownership update), so every change below is focused and listed for his review.
+
+- **Backend.** New `app/api/teams.py` (Rudra's route area) and `app/schemas/teams.py`; registered in `app/main.py`.
+  - `app/security/dependencies.py`: name and email profile claims; only crew fall back to role permissions when the list is empty.
+  - `app/db`: `JoinCode` table and membership `email`, `display_name`, `joined_at` (applied to Tiger).
+- **Robustness.** `app/services/refresh.py` commits after reading sites, so its ~20-minute fetch no longer holds locks. `app/db/init.py` alters only missing columns and hypertables, with a 15 s lock timeout. Before this, a migration queued live API requests behind the refresh transaction.
+- **Frontend (Rudra's).** `types/api.ts` mirror, plus `api/contracts.ts`, `api/http-client.ts`, `api/validate.ts`, and `demo/client.ts` (simulated roster and codes).
+  - `components/shell/AppShell.tsx` and `Icon.tsx`: a supervisor-only Team tab with a "team" icon; the phone nav uses 6 columns for supervisors.
+  - New `components/data/TeamRoster.tsx` (Team page; "Join your team" for crew with no team), `SupervisorOverview.tsx` and `attention.ts`.
+  - `pages/ConnectedPages.tsx`:
+    - The supervisor Overview is now "Needs your attention" (active alerts, potential notices to confirm, absent reports to review, team sites) plus the three highest-risk sites. Worksites keeps the map, list and filters.
+    - Developer and fixture wording removed (`site-…` IDs on rows, "sample/reference", "supplied", raw factor IDs).
+    - Reports and Briefings pickers list team sites only.
+  - `components/data/AlertCard.tsx`: plain titles ("Flood alert active"), "Status · Simulated replay", empty distance and window fields hidden, evidence shown by label, pluralized acknowledgements.
+- **Team management** (user request: a supervisor runs more than one team): `POST /api/teams`, `PATCH`/`DELETE /api/teams/{id}` (one team per site; only empty teams with no reports are removed); `TeamCreate`/`TeamUpdate` schemas and TS mirror; client and demo methods; Add team and Manage team on the Team tab.
+- **`scripts/check-shell.mjs`**: the supervisor Overview waits for "Needs your attention", and the map and list checks run on Worksites ("55 locations"). It still stops earlier, on main's existing crew 320 px layout issue.
+
+Checks: 800+ backend and 121 frontend tests, Ruff, oxlint, `tsc -b`, and build clean. The demo-mode supervisor tabs were re-read in headless Chrome.
 ## Site species context (Rudra; cross-scope into Braydin's Gemini and Cache's frontend) — 2026-10-17
 
 Explicit user request (Rudra): a read-only, site-aware species guide for team sites using the USFWS IPaC Location API, USFWS critical habitat boundaries on the existing map, and the existing Gemini client. Guide: [SPECIES_CONTEXT.md](SPECIES_CONTEXT.md).

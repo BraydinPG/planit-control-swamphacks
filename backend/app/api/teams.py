@@ -10,6 +10,9 @@
   organization. Codes look like `XXXX-XXXX` and expire after seven days.
 - `DELETE /api/join-codes/{code}`: a supervisor revokes one of their organization's codes.
   People who already joined keep their membership.
+- `POST /api/teams`, `PATCH /api/teams/{team_id}`, `DELETE /api/teams/{team_id}`: a
+  supervisor adds, renames, moves (site), or removes teams in their organization. A site
+  has at most one team; a team with members can't be removed.
 
 Every change is written to the audit log. A code only ever grants crew access to one team.
 """
@@ -26,7 +29,16 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_now
 from app.api.sites import DbSession
 from app.db import models as db
-from app.schemas import Account, JoinCode, JoinRequest, OrganizationTeams, TeamMember, TeamRoster
+from app.schemas import (
+    Account,
+    JoinCode,
+    JoinRequest,
+    OrganizationTeams,
+    TeamCreate,
+    TeamMember,
+    TeamRoster,
+    TeamUpdate,
+)
 from app.security import AuthenticatedUser, CurrentUser, membership_for, require_role
 from app.services.alerts import audit
 
@@ -95,23 +107,60 @@ def team(user: Supervisor, session: DbSession, now: Now) -> OrganizationTeams:
         organization_id=org.id,
         organization_name=org.name,
         supervisors=[_member(m) for m in members if m.role == "supervisor"],
-        teams=[
-            TeamRoster(
-                id=t.id,
-                name=t.name,
-                site_id=t.site_id,
-                site_name=t.site.name if t.site else None,
-                members=sorted(
-                    (_member(m) for m in members if m.team_id == t.id),
-                    key=lambda m: (m.name or m.email or m.user_id).lower(),
-                ),
-                join_codes=[
-                    _code(c) for c in codes if c.team_id == t.id and _aware(c.expires_at) > now
-                ],
-            )
-            for t in teams
-        ],
+        teams=[_roster(t, members, codes, now) for t in teams],
     )
+
+
+@router.post("/api/teams", response_model=TeamRoster, status_code=201)
+def create_team(body: TeamCreate, user: Supervisor, session: DbSession, now: Now) -> TeamRoster:
+    membership = _organization_of(session, user)
+    team = db.Team(
+        id=f"team:{uuid4().hex}",
+        organization_id=membership.organization_id,
+        name=body.name.strip(),
+        site_id=_free_site(session, body.site_id, None),
+    )
+    session.add(team)
+    audit(session, user.sub, "team.create", team.id, now)
+    session.commit()
+    return _roster(team, [], [], now)
+
+
+@router.patch("/api/teams/{team_id}", response_model=TeamRoster)
+def update_team(
+    team_id: str, body: TeamUpdate, user: Supervisor, session: DbSession, now: Now
+) -> TeamRoster:
+    team = _team_of(session, user, team_id)
+    if body.name is not None:
+        team.name = body.name.strip()
+    if "site_id" in body.model_fields_set:
+        team.site_id = _free_site(session, body.site_id, team.id)
+    audit(session, user.sub, "team.update", team.id, now)
+    session.commit()
+    members = session.scalars(select(db.Membership).where(db.Membership.team_id == team.id)).all()
+    codes = session.scalars(
+        select(db.JoinCode).where(db.JoinCode.team_id == team.id, db.JoinCode.revoked_at.is_(None))
+    ).all()
+    return _roster(team, list(members), list(codes), now)
+
+
+@router.delete("/api/teams/{team_id}", status_code=204)
+def delete_team(team_id: str, user: Supervisor, session: DbSession, now: Now) -> Response:
+    team = _team_of(session, user, team_id)
+    if session.scalar(select(db.Membership.id).where(db.Membership.team_id == team.id).limit(1)):
+        raise _refuse(409, "has_members", "Move or remove this team's members first.")
+    if session.scalar(select(db.CrewReport.id).where(db.CrewReport.team_id == team.id).limit(1)):
+        raise _refuse(
+            409,
+            "has_reports",
+            "This team's reports are on record, so it can't be removed. Unassign its site instead.",
+        )
+    for code in session.scalars(select(db.JoinCode).where(db.JoinCode.team_id == team.id)):
+        session.delete(code)  # its codes stop working with it
+    session.delete(team)
+    audit(session, user.sub, "team.delete", team_id, now)
+    session.commit()
+    return Response(status_code=204)
 
 
 @router.post("/api/teams/{team_id}/join-codes", response_model=JoinCode, status_code=201)
@@ -164,6 +213,42 @@ def _unused_code(session: Session) -> str:
         if session.get(db.JoinCode, code) is None:
             return code
     raise HTTPException(503, "Could not create a unique join code; try again")
+
+
+def _roster(
+    team: db.Team, members: list[db.Membership], codes: list[db.JoinCode], now: datetime
+) -> TeamRoster:
+    return TeamRoster(
+        id=team.id,
+        name=team.name,
+        site_id=team.site_id,
+        site_name=team.site.name if team.site else None,
+        members=sorted(
+            (_member(m) for m in members if m.team_id == team.id),
+            key=lambda m: (m.name or m.email or m.user_id).lower(),
+        ),
+        join_codes=[_code(c) for c in codes if c.team_id == team.id and _aware(c.expires_at) > now],
+    )
+
+
+def _team_of(session: Session, user: CurrentUser, team_id: str) -> db.Team:
+    membership = _organization_of(session, user)
+    team = session.get(db.Team, team_id)
+    if team is None or team.organization_id != membership.organization_id:
+        raise HTTPException(404, "Team not found in your organization")
+    return team
+
+
+def _free_site(session: Session, site_id: str | None, team_id: str | None) -> str | None:
+    """The site, if it exists and no other team has it. One team per site (spec.md)."""
+    if site_id is None:
+        return None
+    if session.get(db.Site, site_id) is None:
+        raise _refuse(404, "site_not_found", "That site doesn't exist.")
+    holder = session.scalar(select(db.Team.id).where(db.Team.site_id == site_id))
+    if holder is not None and holder != team_id:
+        raise _refuse(409, "site_taken", "That site already has a team.")
+    return site_id
 
 
 def _organization_of(session: Session, user: CurrentUser) -> db.Membership:

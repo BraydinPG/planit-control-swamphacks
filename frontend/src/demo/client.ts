@@ -18,8 +18,10 @@ import type {
   ReportReview,
   SiteSpeciesContext,
   SiteSummary,
+  TeamCreate,
   TeamMember,
   TeamRoster,
+  TeamUpdate,
 } from '../types/api'
 import {
   ApiError,
@@ -511,6 +513,59 @@ export class DemoClient implements Client {
     this.supervisor()
     for (const t of this.roster.teams)
       t.join_codes = t.join_codes.filter((c) => c.code !== code)
+  }
+  private freeSite(siteId: string | null | undefined, teamId: string | null) {
+    if (!siteId) return null
+    const site = this.state.sites.find((s) => s.id === siteId)
+    if (!site)
+      throw new ApiError(404, 'Site not found', {
+        reason: 'site_not_found',
+        detail: "That site doesn't exist.",
+      })
+    const holder = this.roster.teams.find((t) => t.site_id === siteId)
+    if ((holder && holder.id !== teamId) || (!holder && site.assigned_team))
+      throw new ApiError(409, 'Site taken', {
+        reason: 'site_taken',
+        detail: 'That site already has a team.',
+      })
+    return site
+  }
+  async createTeam(input: TeamCreate) {
+    this.supervisor()
+    const site = this.freeSite(input.site_id, null)
+    const team: TeamRoster = {
+      id: `demo-team-${crypto.randomUUID().slice(0, 8)}`,
+      name: input.name.trim(),
+      site_id: site?.id ?? null,
+      site_name: site?.name ?? null,
+      members: [],
+      join_codes: [],
+    }
+    this.roster.teams.push(team)
+    return clone(team)
+  }
+  async updateTeam(id: string, input: TeamUpdate) {
+    this.supervisor()
+    const team = this.roster.teams.find((t) => t.id === id)
+    if (!team) throw new ApiError(404, 'Team not found in your organization')
+    if (input.name) team.name = input.name.trim()
+    if ('site_id' in input) {
+      const site = this.freeSite(input.site_id, id)
+      team.site_id = site?.id ?? null
+      team.site_name = site?.name ?? null
+    }
+    return clone(team)
+  }
+  async deleteTeam(id: string) {
+    this.supervisor()
+    const team = this.roster.teams.find((t) => t.id === id)
+    if (!team) throw new ApiError(404, 'Team not found in your organization')
+    if (team.members.length)
+      throw new ApiError(409, 'Team has members', {
+        reason: 'has_members',
+        detail: "Move or remove this team's members first.",
+      })
+    this.roster.teams = this.roster.teams.filter((t) => t.id !== id)
   }
   async join(): Promise<Account> {
     throw new ApiError(

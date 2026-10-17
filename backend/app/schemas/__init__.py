@@ -78,8 +78,10 @@ from app.schemas.teams import (
     JoinCode,
     JoinRequest,
     OrganizationTeams,
+    TeamCreate,
     TeamMember,
     TeamRoster,
+    TeamUpdate,
 )
 
 __all__ = [
@@ -88,6 +90,8 @@ __all__ = [
     "JoinCode",
     "JoinRequest",
     "OrganizationTeams",
+    "TeamCreate",
+    "TeamUpdate",
     "TeamMember",
     "TeamRoster",
     "AnalysisPoint",
