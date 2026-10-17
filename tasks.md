@@ -114,8 +114,8 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 ## Phase 2: Real sites, data, scores, and alerts
 
-- [ ] **T039 | Braydin | Inspect EIA-860M data.** Record source date, fields, and import mapping. Needs T013. Done when coordinate fields are verified.
-- [ ] **T040 | Braydin | Import 50+ sites.** Validate IDs, coordinates, and duplicates. Label locations as representative power plants, not verified construction sites. Needs T039 and T012. Done when 50 valid locations are in the database.
+- [x] **T039 | Braydin | Inspect EIA-860M data.** Record source date, fields, and import mapping. Needs T013. Done when coordinate fields are verified.
+- [x] **T040 | Braydin | Import 50+ sites.** Validate IDs, coordinates, and duplicates. Label locations as representative power plants, not verified construction sites. Needs T039 and T012. Done when 50 valid locations are in the database.
 - [ ] **T041 | Rudra | Implement `GET /api/sites`.** Return every location with its assigned team, matching T006. Sort locations with a team first, then by risk. Needs T040 and T006. Done when response validates.
 - [ ] **T042 | Rudra | Implement `GET /api/sites/{id}`.** Return observations, score factors, reports, and freshness. Needs T041. Done when valid IDs return detail and unknown IDs return 404.
 - [ ] **T043 | Braydin | Add the NWS weather and forecast feed (P0).** Use `api.weather.gov` point lookup, hourly forecast, and latest station observation in `backend/app/ingestion/`. Send a `User-Agent`. Normalize results into Observation records through the ingestion interface in `AGENTS.md`. Needs T012. Done when one site receives timestamped observed and forecast readings.
