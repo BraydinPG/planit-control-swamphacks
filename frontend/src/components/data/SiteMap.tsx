@@ -28,7 +28,7 @@ export function SiteMap({
           [-80, lon],
           [80, lon],
         ],
-        { color: '#9aa3ad', weight: 1, opacity: 0.35, interactive: false },
+        { color: '#8e8e93', weight: 1, opacity: 0.3, interactive: false },
       ).addTo(map)
     for (let lat = -60; lat <= 60; lat += 30)
       L.polyline(
@@ -36,7 +36,7 @@ export function SiteMap({
           [lat, -180],
           [lat, 180],
         ],
-        { color: '#9aa3ad', weight: 1, opacity: 0.35, interactive: false },
+        { color: '#8e8e93', weight: 1, opacity: 0.3, interactive: false },
       ).addTo(map)
     sites.forEach((s) => {
       const button = document.createElement('button')
@@ -45,7 +45,7 @@ export function SiteMap({
       button.onclick = () => select(s.id)
       L.circleMarker([s.lat, s.lon], {
         radius: s.assigned_team ? 9 : 5,
-        color: s.assigned_team ? '#f2f4f6' : '#1a1e24',
+        color: s.assigned_team ? '#1d1d1f' : '#ffffff',
         weight: s.assigned_team ? 2.5 : 1,
         // No evidence reads as unknown; partial evidence gets a dashed outline.
         fillColor:
