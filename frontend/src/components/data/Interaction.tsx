@@ -1,6 +1,6 @@
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { useApplication } from '../../application/context'
-import type { Client } from '../../api/contracts'
+import { ApiError, type Client } from '../../api/contracts'
 export const control =
   'min-h-11 min-w-11 rounded-lg border border-slate-400 bg-white px-3 py-2 text-sm text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-60'
 export const primary = control + ' bg-teal-800! text-white! border-teal-800!'
@@ -33,6 +33,7 @@ export function Action({
   const { refresh, client } = useApplication()
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const inFlight = useRef(false)
   return (
     <div>
       <button
@@ -40,6 +41,8 @@ export function Action({
         className={control}
         disabled={busy || disabled || !client.capabilities[capability]}
         onClick={async () => {
+          if (inFlight.current) return
+          inFlight.current = true
           setBusy(true)
           setMessage('')
           try {
@@ -48,7 +51,10 @@ export function Action({
             setMessage('Action recorded.')
           } catch (e) {
             setMessage(e instanceof Error ? e.message : 'Action unavailable')
+            if (e instanceof ApiError && [403, 409, 502].includes(e.status))
+              refresh()
           } finally {
+            inFlight.current = false
             setBusy(false)
           }
         }}

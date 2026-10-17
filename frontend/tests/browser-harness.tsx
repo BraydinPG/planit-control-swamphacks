@@ -2,17 +2,21 @@
 import { createRoot } from 'react-dom/client'
 import { AuthContext, type AuthContextValue } from '../src/auth/context'
 import { LiveApplication } from '../src/application/LiveApplication'
-import sitesJSON from '../src/fixtures/sites.json'
-import detailJSON from '../src/fixtures/site-detail.json'
-import alertsJSON from '../src/fixtures/alerts.json'
+import { createMockService } from './mock-service'
 import briefingsJSON from '../src/fixtures/briefings.json'
-import reportsJSON from '../src/fixtures/reports.json'
 import '../src/index.css'
 const root = createRoot(document.getElementById('auth-test')!)
 let role: 'crew' | 'supervisor' | null = 'crew',
   status = 200
 const requests: string[] = []
-const alerts = structuredClone(alertsJSON)
+let service = createMockService()
+const testKey = 'planit:mock-http-browser-test'
+try {
+  const stored = JSON.parse(sessionStorage.getItem(testKey) ?? 'null')
+  if (stored) Object.assign(service, stored)
+} catch {
+  /* Isolated public test fixtures only. */
+}
 window.fetch = async (input, options) => {
   const url = new URL(String(input), location.origin)
   requests.push(`${options?.method ?? 'GET'} ${url.pathname}`)
@@ -31,61 +35,50 @@ window.fetch = async (input, options) => {
       return new Response('', { status: controls.briefingStatus })
     return Response.json(controls.invalidBriefing ? {} : briefingsJSON[0])
   }
-  if (url.pathname === '/api/sites')
-    return Response.json(role === 'crew' ? [sitesJSON[0]] : sitesJSON)
-  if (url.pathname === '/api/reports')
-    return Response.json(
-      reportsJSON.filter(
-        (r) => role === 'supervisor' || r.site_id === sitesJSON[0].id,
-      ),
-    )
-  if (url.pathname === '/api/alerts')
-    return Response.json(
-      alerts.filter(
-        (a) => role === 'supervisor' || a.site_id === sitesJSON[0].id,
-      ),
-    )
-  if (url.pathname.endsWith('/acknowledge')) {
-    const alert = alerts.find(
-      (a) => a.id === decodeURIComponent(url.pathname.split('/')[3]),
-    )
-    if (!alert) return new Response('', { status: 404 })
-    if (alert.state !== 'active') return new Response('', { status: 409 })
-    if (!alert.acknowledgements.some((a) => a.user_id === `mock-${role}`))
-      alert.acknowledgements.push({
-        id: 'mock-ack',
-        alert_id: alert.id,
-        user_id: `mock-${role}`,
-        acknowledged_at: new Date().toISOString(),
-      })
-    return Response.json(alert)
-  }
-  const id = decodeURIComponent(url.pathname.split('/')[3] ?? '')
-  if (role === 'crew' && id !== sitesJSON[0].id)
-    return new Response('', { status: 403 })
-  if (id === detailJSON.id)
-    return Response.json({
-      ...detailJSON,
-      alerts: alerts.filter((a) => a.site_id === id),
-    })
-  const summary = sitesJSON.find((s) => s.id === id)
-  return summary
-    ? Response.json({
-        ...summary,
-        location_type: 'power_plant',
-        source: 'Mocked HTTP fixture',
-        region: null,
-        observations: [],
-        score: null,
-        alerts: [],
-        reports: [],
-        notices: [],
-        event_outlook: null,
-      })
-    : new Response('', { status: 404 })
+  const response = await service.request(url, options, role ?? '')
+  sessionStorage.setItem(
+    testKey,
+    JSON.stringify({
+      reports: service.reports,
+      notices: service.notices,
+      alerts: service.alerts,
+      confirmed: service.confirmed,
+    }),
+  )
+  return response
 }
 const controls = {
   requests,
+  snapshot: () => ({ reports: service.reports, notices: service.notices }),
+  reset() {
+    service = createMockService()
+    sessionStorage.removeItem(testKey)
+  },
+  settings(input: {
+    mutationStatus?: number
+    manual?: boolean
+    denyMutation?: boolean
+    conflict?: boolean
+    foreignOwner?: string
+  }) {
+    if (input.mutationStatus !== undefined)
+      service.mutationStatus = input.mutationStatus
+    if (input.manual !== undefined)
+      service.draft = input.manual
+        ? null
+        : 'Mocked Gemini draft: request qualified inspection before proceeding.'
+    if (input.denyMutation !== undefined)
+      service.denyMutation = input.denyMutation
+    if (input.conflict !== undefined) service.conflict = input.conflict
+    if (input.foreignOwner) {
+      const notice = service.notices.find((n) => n.id === input.foreignOwner)
+      if (notice) {
+        notice.status = 'confirmed'
+        notice.confirmed_by = 'other-supervisor'
+        notice.confirmed_at = '2026-10-17T20:00:00Z'
+      }
+    }
+  },
   briefingStatus: 200,
   invalidBriefing: false,
   mount(

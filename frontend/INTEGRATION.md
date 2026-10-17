@@ -40,7 +40,7 @@ Legacy canonical fixture scores containing a `model` factor are withheld and exc
 
 ## Real Auth0/API mode
 
-Phase-4 current setup, redacted readiness command, private real-account checker and per-task browser criteria: [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md). PR #19 is now merged; the continuation incorporates main `9ba1b7c` and T053 report list/create. The earlier foundation validation below remains historical evidence.
+Current setup, redacted readiness command and real-account criteria: [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md). PR #24 and T067A PR #27 merged during this run; T065 continues from reviewed main `dcd9fc5` on `feature/cache-report-lifecycle-integration`. Earlier foundation records remain historical.
 
 Set the existing public values in `frontend/.env.local` using `auth/SETUP.md`, then restart Vite:
 
@@ -59,7 +59,9 @@ An empty API base uses same-origin `/api`. Vite proxies it to the existing FastA
 
 The shared `HttpClient` uses canonical multipart `ReportCreate` and published response types. Stored briefings are read with `GET /api/sites/{id}/briefing` and `GET /api/briefings`. Site 404 is an empty scheduled-briefing state; other errors stay errors. There is no browser scheduler or generation action. `StoredBriefings.tsx` separates display from transport and labels Gemini versus deterministic template results. The deterministic factor breakdown remains in site detail.
 
-Report lifecycle wiring is the next checkpoint in this branch; see LIVE_INTEGRATION for its current capability and actual acceptance state.
+T065 enables the reviewed report lifecycle capabilities. A present report needs a photo in real mode and stays pending until its notice is confirmed; its report card links to the site notices. An absent report uses the reporting-organization supervisor review route. Confirmation validates `HazardConfirmResponse`, reads the returned notice and shows an unsent server draft or empty manual field. Only the confirming session sees the editor; FastAPI enforces actual authority. Send explicitly accepts/edits 1-500 nonblank characters and validates the returned `HazardNotice`. Shared refresh reloads sites, reports and notices; no score is computed in React. Refreshing the same notice preserves the edited draft. Conflicts refresh ownership, and no operation is automatically retried. A timeout has an unknown outcome: refresh before resubmitting.
+
+Demo confirmation now marks its matching present report confirmed; the absent review route refuses present reports. Duplicate review/confirmation/send conflicts are explicit. Demo scores remain static fixture payloads, not a new score implementation. The isolated mocked HTTP tests additionally supply a changed server score and persisted fixture delivery to verify the shared views; they are not real backend acceptance. Private photo retrieval is still unconnected; photos are never fetched from an arbitrary returned URL.
 
 `401`, `403`, `404`, `409`, `422`, `503`, invalid JSON, token acquisition failure, request timeout and network failure have explicit UI outcomes. Live failure never switches to fixtures. Missing Auth0 settings show the existing provider's unconfigured sign-in state. Missing Tiger Data configuration remains a service blocker, not permission for a local database or bypass. Live lists/details share the same view components as demos; authenticated successful real data is not yet verified locally.
 
@@ -72,11 +74,11 @@ From `frontend/`, with Vite running for the browser check:
 ```powershell
 npm run lint
 npm run build
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs
+node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs tests/lifecycle.test.mjs
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Build includes TypeScript. T067A has 44 focused checks (39 prior plus 5 stored-briefing checks); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+Build includes TypeScript. The combined suite has 56 focused checks (39 prior, 5 stored-briefing and 12 mocked HTTP lifecycle tests); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
 
 For the built demo, run `npm run preview -- --host localhost --port 5174 --strictPort` in a second terminal after building, then `node scripts/check-shell.mjs http://localhost:5174/ --production`. This exercises the same demo lifecycle against static production assets and verifies that the mocked auth harness is absent; compile-time mode/provider tests run only against the development server. A fresh committed frontend export at `4a9e44f`, with no `.env`, cache, Python or model artifacts copied, passed `npm ci`, build and this full production-bundle browser check. The existing Auth0 dependency's postinstall allowScripts warning did not prevent installation/build; npm reported zero known vulnerabilities at that check.
 
