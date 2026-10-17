@@ -1,5 +1,11 @@
 # Frontend integration status
 
+## T034A location preparation — 2026-10-17
+
+PR #33 is merged. Separate functional branch `feature/cache-report-device-location` starts at main `681582b`; no unmerged dependency or Claude visual edit. [REPORT_LOCATION_INTEGRATION.md](REPORT_LOCATION_INTEGRATION.md) contains the new hook/controller interface, privacy behavior, exact T053A owner actions and final form acceptance checklist. T034 is checked; T034A/T053A remain unchecked. Published report types/route/persistence lack location source/accuracy/backend distance, so existing ReportForm and HttpClient remain unchanged. No metadata persistence or actual device/form integration claimed.
+
+One-shot live location has an immediate approximate site fallback, validated accuracy,8-second deadline, manual pin priority, site/session reset and close cleanup. Demo avoids requesting real GPS because existing demo reports persist in localStorage; the new logic has no storage/network/Gemini calls. 90 Node tests (19 new),105 backend report/upload/schema/fixture/mirror tests, lint/TypeScript, fixture/API builds and installed Edge desktop/phone/mock lifecycle plus synthetic StrictMode hook pass. Existing Starlette and API554.37kB bundle warnings remain. Browser results/timing and publication refs are in the report-location guide and CROSS_SCOPE_CHANGES. No task checkbox changed and no real Auth0/Tiger/GPS acceptance attempted.
+
 ## Site-scoring verification — 2026-10-17 11:34 UTC
 
 T051A/PR #31 merged `07a459d`. Separate `feature/cache-scoring-integration` worktree branch, no unmerged parent; Claude's primary/`feature/rudra-ui` visual changes preserved. See [SITE_SCORING_INTEGRATION.md](SITE_SCORING_INTEGRATION.md) and [redacted evidence](site-scoring-integration-verification.json) for the current pipeline results, precise owner actions and reproducible acceptance commands.
