@@ -67,16 +67,16 @@ def get_site(site_id: str, session: DbSession, now: Now) -> SiteDetail:
     if site is None:
         raise HTTPException(status_code=404, detail="Site not found")
     score = _latest_scores(session, site_id).get(site_id)
-    alerts = _active_alerts(session, site_id)
+    alerts = load_active_alerts(session, site_id)
     return SiteDetail(
         **_summary(site, score, len(alerts)).model_dump(),
         location_type=site.location_type,
         source=site.source,
         region=site.region,
-        observations=_observations(session, site_id, now),
+        observations=load_observations(session, site_id, now),
         score=_score(score) if score else None,
         alerts=alerts,
-        reports=_reports(session, site_id),
+        reports=load_reports(session, site_id),
         notices=_notices(session, site),
     )
 
@@ -144,7 +144,7 @@ def _score(row: db.HazardScore) -> HazardScore:
     )
 
 
-def _observations(session: Session, site_id: str, now: datetime) -> list[Observation]:
+def load_observations(session: Session, site_id: str, now: datetime) -> list[Observation]:
     """Readings observed in the last 24 hours plus forecasts still ahead, newest first."""
     rows = session.scalars(
         select(db.Observation)
@@ -187,7 +187,7 @@ def _observation(row: db.Observation, now: datetime, stale_after: timedelta) -> 
     )
 
 
-def _active_alerts(session: Session, site_id: str) -> list[Alert]:
+def load_active_alerts(session: Session, site_id: str) -> list[Alert]:
     rows = session.scalars(
         select(db.Alert)
         .where(db.Alert.site_id == site_id, db.Alert.state == AlertState.ACTIVE)
@@ -226,7 +226,7 @@ def _active_alerts(session: Session, site_id: str) -> list[Alert]:
     ]
 
 
-def _reports(session: Session, site_id: str) -> list[CrewReport]:
+def load_reports(session: Session, site_id: str) -> list[CrewReport]:
     rows = session.scalars(
         select(db.CrewReport)
         .where(db.CrewReport.site_id == site_id)

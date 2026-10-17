@@ -1,0 +1,37 @@
+"""Prototype rule and score settings, read from environment variables or backend/.env.
+
+These are configurable prototype values chosen by the team. They are not employer,
+regulatory, or NWS policy. The lightning 10-mile / 30-minute rule is fixed by the brief
+and lives in `app.rules.lightning`, not here.
+"""
+
+from functools import lru_cache
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class RuleSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    # Heat (T049): points scale from heat_min_points at the threshold to heat_max_points
+    # at the extreme value. Below the threshold, heat adds nothing.
+    heat_index_threshold_f: float = 103.0
+    heat_index_extreme_f: float = 125.0
+    heat_min_points: float = 0.5
+    heat_max_points: float = 2.0
+    heat_window_hours: int = 12
+
+    # Flood (T049): points from the strongest active NWS flood alert.
+    flood_warning_points: float = 2.0
+    flood_watch_points: float = 1.0
+
+    # Score weights (T051).
+    lightning_stop_work_points: float = 3.0
+    report_low_points: float = 0.5
+    report_moderate_points: float = 1.0
+    report_high_points: float = 1.5
+
+
+@lru_cache
+def get_rule_settings() -> RuleSettings:
+    return RuleSettings()
