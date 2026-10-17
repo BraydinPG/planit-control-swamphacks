@@ -10,6 +10,7 @@ React + TypeScript UI, built with Vite and Tailwind CSS. API routes, auth checks
 |---|---|---|
 | `frontend/` | Vite + React + TypeScript + Tailwind UI | Nick (`src/pages`, `src/components`, `src/styles`, `src/api`), Braydin (`src/auth`) |
 | `frontend/src/types/api.ts` | TypeScript mirror of the API schemas | Rudra |
+| `frontend/src/fixtures/` | Mock API responses for fixture mode (generated) | Rudra |
 | `backend/app/` | FastAPI app and every API route | Rudra (except `backend/app/security/`, `backend/app/db/`, and `backend/app/ingestion/`, owned by Braydin) |
 | `backend/app/schemas/` | Canonical Pydantic API schemas | Rudra |
 | `backend/tests/` | Backend tests | Rudra |
@@ -47,4 +48,29 @@ pytest
 ```
 
 Health check: `GET http://localhost:8000/health` returns `{"status": "ok"}`.
+
+### Fixtures
+
+`frontend/src/fixtures/*.json` holds mock API responses for frontend fixture mode. They cover stale, simulated, and unavailable data, a lightning alert after a timer reset, pending, confirmed, and absent reports, and Gemini and fallback briefings. They are generated from the Pydantic schemas, so edit `backend/scripts/generate_fixtures.py` and regenerate instead of editing the JSON:
+
+```bash
+cd backend
+python -m scripts.generate_fixtures
+```
+
+`pytest` fails if the JSON is out of date or no longer validates.
+
+## Quality checks
+
+Run these before opening a pull request. All must pass.
+
+| Area | Command (run from) | What it does |
+|---|---|---|
+| Backend lint | `ruff check .` (`backend/`) | Lint with Ruff (pyflakes, pycodestyle, import order, bugbear, pyupgrade) |
+| Backend format | `ruff format --check .` (`backend/`) | Check formatting. Run `ruff format .` to fix. |
+| Backend tests | `pytest` (`backend/`) | Unit tests, including contract and TS-mirror checks |
+| Frontend lint | `npm run lint` (`frontend/`) | Lint with oxlint |
+| Frontend type check and build | `npm run build` (`frontend/`) | `tsc -b` type check, then Vite production build |
+
+Ruff and pytest settings live in `backend/pyproject.toml`. The frontend has no separate formatter configured.
 

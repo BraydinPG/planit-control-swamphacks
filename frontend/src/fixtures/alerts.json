@@ -1,0 +1,88 @@
+[
+  {
+    "id": "alert-ltg-demo",
+    "site_id": "site-demo-everglades",
+    "rule": "lightning_stop_work",
+    "state": "active",
+    "triggered_at": "2026-10-17T17:48:00Z",
+    "latest_event_at": "2026-10-17T17:57:00Z",
+    "clear_after": "2026-10-17T18:27:00Z",
+    "distance_miles": 4.2,
+    "trigger_observation_ids": [
+      "obs-ltg-1",
+      "obs-ltg-2"
+    ],
+    "evidence": [
+      {
+        "id": "obs-ltg-1",
+        "kind": "observation",
+        "label": "Strike 6.8 mi NW",
+        "observed_at": "2026-10-17T17:48:00Z"
+      },
+      {
+        "id": "obs-ltg-2",
+        "kind": "observation",
+        "label": "Strike 4.2 mi W",
+        "observed_at": "2026-10-17T17:57:00Z"
+      }
+    ],
+    "simulated": true,
+    "is_prototype_rule": false,
+    "acknowledgements": [
+      {
+        "id": "ack-1",
+        "alert_id": "alert-ltg-demo",
+        "user_id": "user-crew-1",
+        "acknowledged_at": "2026-10-17T17:50:00Z"
+      }
+    ]
+  },
+  {
+    "id": "alert-flood-demo",
+    "site_id": "site-demo-everglades",
+    "rule": "flood",
+    "state": "active",
+    "triggered_at": "2026-10-17T16:30:00Z",
+    "latest_event_at": "2026-10-17T16:30:00Z",
+    "clear_after": null,
+    "distance_miles": null,
+    "trigger_observation_ids": [
+      "obs-flood-1"
+    ],
+    "evidence": [
+      {
+        "id": "obs-flood-1",
+        "kind": "observation",
+        "label": "Flood Watch",
+        "observed_at": "2026-10-17T16:30:00Z"
+      }
+    ],
+    "simulated": false,
+    "is_prototype_rule": true,
+    "acknowledgements": []
+  },
+  {
+    "id": "alert-ltg-cleared",
+    "site_id": "site-fixture-c",
+    "rule": "lightning_stop_work",
+    "state": "cleared",
+    "triggered_at": "2026-10-17T15:30:00Z",
+    "latest_event_at": "2026-10-17T16:10:00Z",
+    "clear_after": "2026-10-17T16:40:00Z",
+    "distance_miles": 8.9,
+    "trigger_observation_ids": [
+      "obs-ltg-c1"
+    ],
+    "evidence": [
+      {
+        "id": "obs-ltg-c1",
+        "kind": "observation",
+        "label": "Strike 8.9 mi S",
+        "observed_at": "2026-10-17T16:10:00Z"
+      }
+    ],
+    "simulated": true,
+    "is_prototype_rule": false,
+    "acknowledgements": []
+  }
+]

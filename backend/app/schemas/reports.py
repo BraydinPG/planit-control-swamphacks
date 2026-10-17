@@ -8,7 +8,10 @@ from app.schemas.common import GeneratedBy, Schema
 
 
 class ReportCategory(StrEnum):
-    """Crew-reported hazards. Broken poles and on-site fires have no feed; reports are the only source."""
+    """Crew-reported hazards.
+
+    Broken poles and on-site fires have no feed; crew reports are the only source.
+    """
 
     BROKEN_POLE_DOWNED_LINE = "broken_pole_downed_line"
     ON_SITE_FIRE = "on_site_fire"
@@ -66,7 +69,10 @@ class CrewReport(Schema):
 
 
 class ReportCreate(Schema):
-    """Form fields for `POST /api/reports` (multipart). The photo is sent as the `photo` file part."""
+    """Form fields for `POST /api/reports` (multipart).
+
+    The photo is sent as the `photo` file part.
+    """
 
     site_id: str
     category: ReportCategory

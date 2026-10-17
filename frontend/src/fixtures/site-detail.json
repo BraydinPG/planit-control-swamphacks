@@ -1,0 +1,423 @@
+{
+  "id": "site-demo-everglades",
+  "name": "Demo: Everglades-style site (simulated scenario)",
+  "lat": 25.76,
+  "lon": -80.49,
+  "assigned_team": {
+    "id": "team-a",
+    "name": "Line Crew A",
+    "organization_id": "org-sunbelt"
+  },
+  "risk_score": 7.6,
+  "risk_level": "high",
+  "updated_at": "2026-10-17T17:57:00Z",
+  "active_alerts": 2,
+  "top_factors": [
+    {
+      "factor": "lightning",
+      "label": "Lightning stop-work active (simulated replay)",
+      "contribution": 3.0,
+      "value": 4.2,
+      "unit": "mi",
+      "source": "lightning-replay",
+      "observed_at": "2026-10-17T17:57:00Z",
+      "data_state": "simulated",
+      "is_prototype": false,
+      "evidence_id": "obs-ltg-2"
+    },
+    {
+      "factor": "model",
+      "label": "Model: 24 h weather-hazard likelihood",
+      "contribution": 1.6,
+      "value": 0.41,
+      "unit": null,
+      "source": "model baseline-0.1",
+      "observed_at": "2026-10-17T17:30:00Z",
+      "data_state": "observed",
+      "is_prototype": false,
+      "evidence_id": "model-1"
+    },
+    {
+      "factor": "heat_index",
+      "label": "Forecast heat index above prototype threshold (103 °F)",
+      "contribution": 1.5,
+      "value": 108.0,
+      "unit": "°F",
+      "source": "NWS",
+      "observed_at": "2026-10-17T17:00:00Z",
+      "data_state": "forecast",
+      "is_prototype": true,
+      "evidence_id": "obs-fc-1"
+    }
+  ],
+  "data_completeness": 0.71,
+  "model_version": "baseline-0.1",
+  "location_type": "power_plant",
+  "source": "Simulated demo scenario (Everglades-style); not an EIA-860M record",
+  "region": "South Florida",
+  "observations": [
+    {
+      "source": "NWS",
+      "hazard_type": "weather",
+      "value": 94.0,
+      "unit": "°F",
+      "lat": 25.76,
+      "lon": -80.49,
+      "observed_at": "2026-10-17T17:40:00Z",
+      "valid_at": null,
+      "data_state": "observed",
+      "id": "obs-wx-1",
+      "site_id": "site-demo-everglades",
+      "simulated": false,
+      "label": "Air temperature (station KTMB)",
+      "source_ref": null,
+      "fetched_at": "2026-10-17T17:45:00Z"
+    },
+    {
+      "source": "NWS",
+      "hazard_type": "forecast",
+      "value": 108.0,
+      "unit": "°F",
+      "lat": 25.76,
+      "lon": -80.49,
+      "observed_at": "2026-10-17T17:00:00Z",
+      "valid_at": "2026-10-17T19:00:00Z",
+      "data_state": "forecast",
+      "id": "obs-fc-1",
+      "site_id": "site-demo-everglades",
+      "simulated": false,
+      "label": "Forecast heat index, 3 PM",
+      "source_ref": null,
+      "fetched_at": "2026-10-17T17:45:00Z"
+    },
+    {
+      "source": "NWS",
+      "hazard_type": "flood_alert",
+      "value": "Flood Watch",
+      "unit": null,
+      "lat": 25.76,
+      "lon": -80.49,
+      "observed_at": "2026-10-17T16:30:00Z",
+      "valid_at": "2026-10-18T00:00:00Z",
+      "data_state": "observed",
+      "id": "obs-flood-1",
+      "site_id": "site-demo-everglades",
+      "simulated": false,
+      "label": "Flood Watch for Miami-Dade",
+      "source_ref": "nws-alert-fixture-1",
+      "fetched_at": "2026-10-17T17:45:00Z"
+    },
+    {
+      "source": "lightning-replay",
+      "hazard_type": "lightning_strike",
+      "value": 6.8,
+      "unit": "mi",
+      "lat": 25.83,
+      "lon": -80.58,
+      "observed_at": "2026-10-17T17:48:00Z",
+      "valid_at": null,
+      "data_state": "simulated",
+      "id": "obs-ltg-1",
+      "site_id": "site-demo-everglades",
+      "simulated": true,
+      "label": "Strike 6.8 mi NW (replay)",
+      "source_ref": null,
+      "fetched_at": null
+    },
+    {
+      "source": "lightning-replay",
+      "hazard_type": "lightning_strike",
+      "value": 4.2,
+      "unit": "mi",
+      "lat": 25.77,
+      "lon": -80.56,
+      "observed_at": "2026-10-17T17:57:00Z",
+      "valid_at": null,
+      "data_state": "simulated",
+      "id": "obs-ltg-2",
+      "site_id": "site-demo-everglades",
+      "simulated": true,
+      "label": "Strike 4.2 mi W (replay)",
+      "source_ref": null,
+      "fetched_at": null
+    },
+    {
+      "source": "USGS",
+      "hazard_type": "earthquake",
+      "value": null,
+      "unit": "Mw",
+      "lat": 25.76,
+      "lon": -80.49,
+      "observed_at": "2026-10-17T15:00:00Z",
+      "valid_at": null,
+      "data_state": "stale",
+      "id": "obs-eq-1",
+      "site_id": "site-demo-everglades",
+      "simulated": false,
+      "label": "No qualifying earthquakes (last successful fetch 3 h ago)",
+      "source_ref": null,
+      "fetched_at": "2026-10-17T15:00:00Z"
+    },
+    {
+      "source": "NHC",
+      "hazard_type": "hurricane",
+      "value": null,
+      "unit": null,
+      "lat": 25.76,
+      "lon": -80.49,
+      "observed_at": "2026-10-17T17:55:00Z",
+      "valid_at": null,
+      "data_state": "unavailable",
+      "id": "obs-hur-1",
+      "site_id": "site-demo-everglades",
+      "simulated": false,
+      "label": "Hurricane feed unavailable",
+      "source_ref": null,
+      "fetched_at": null
+    }
+  ],
+  "score": {
+    "site_id": "site-demo-everglades",
+    "risk_score": 7.6,
+    "risk_level": "high",
+    "factor_contributions": [
+      {
+        "factor": "lightning",
+        "label": "Lightning stop-work active (simulated replay)",
+        "contribution": 3.0,
+        "value": 4.2,
+        "unit": "mi",
+        "source": "lightning-replay",
+        "observed_at": "2026-10-17T17:57:00Z",
+        "data_state": "simulated",
+        "is_prototype": false,
+        "evidence_id": "obs-ltg-2"
+      },
+      {
+        "factor": "model",
+        "label": "Model: 24 h weather-hazard likelihood",
+        "contribution": 1.6,
+        "value": 0.41,
+        "unit": null,
+        "source": "model baseline-0.1",
+        "observed_at": "2026-10-17T17:30:00Z",
+        "data_state": "observed",
+        "is_prototype": false,
+        "evidence_id": "model-1"
+      },
+      {
+        "factor": "heat_index",
+        "label": "Forecast heat index above prototype threshold (103 °F)",
+        "contribution": 1.5,
+        "value": 108.0,
+        "unit": "°F",
+        "source": "NWS",
+        "observed_at": "2026-10-17T17:00:00Z",
+        "data_state": "forecast",
+        "is_prototype": true,
+        "evidence_id": "obs-fc-1"
+      },
+      {
+        "factor": "flood",
+        "label": "Flood Watch in effect",
+        "contribution": 1.0,
+        "value": "Flood Watch",
+        "unit": null,
+        "source": "NWS",
+        "observed_at": "2026-10-17T16:30:00Z",
+        "data_state": "observed",
+        "is_prototype": true,
+        "evidence_id": "obs-flood-1"
+      },
+      {
+        "factor": "crew_report",
+        "label": "Confirmed wildlife report (alligator near access road)",
+        "contribution": 0.5,
+        "value": null,
+        "unit": null,
+        "source": "crew report",
+        "observed_at": "2026-10-17T15:40:00Z",
+        "data_state": "crew_reported",
+        "is_prototype": false,
+        "evidence_id": "report-wildlife-1"
+      }
+    ],
+    "model_version": "baseline-0.1",
+    "model_is_fallback": false,
+    "confidence": 0.68,
+    "data_completeness": 0.71,
+    "previous_score": 5.9,
+    "created_at": "2026-10-17T17:57:00Z"
+  },
+  "alerts": [
+    {
+      "id": "alert-ltg-demo",
+      "site_id": "site-demo-everglades",
+      "rule": "lightning_stop_work",
+      "state": "active",
+      "triggered_at": "2026-10-17T17:48:00Z",
+      "latest_event_at": "2026-10-17T17:57:00Z",
+      "clear_after": "2026-10-17T18:27:00Z",
+      "distance_miles": 4.2,
+      "trigger_observation_ids": [
+        "obs-ltg-1",
+        "obs-ltg-2"
+      ],
+      "evidence": [
+        {
+          "id": "obs-ltg-1",
+          "kind": "observation",
+          "label": "Strike 6.8 mi NW",
+          "observed_at": "2026-10-17T17:48:00Z"
+        },
+        {
+          "id": "obs-ltg-2",
+          "kind": "observation",
+          "label": "Strike 4.2 mi W",
+          "observed_at": "2026-10-17T17:57:00Z"
+        }
+      ],
+      "simulated": true,
+      "is_prototype_rule": false,
+      "acknowledgements": [
+        {
+          "id": "ack-1",
+          "alert_id": "alert-ltg-demo",
+          "user_id": "user-crew-1",
+          "acknowledged_at": "2026-10-17T17:50:00Z"
+        }
+      ]
+    },
+    {
+      "id": "alert-flood-demo",
+      "site_id": "site-demo-everglades",
+      "rule": "flood",
+      "state": "active",
+      "triggered_at": "2026-10-17T16:30:00Z",
+      "latest_event_at": "2026-10-17T16:30:00Z",
+      "clear_after": null,
+      "distance_miles": null,
+      "trigger_observation_ids": [
+        "obs-flood-1"
+      ],
+      "evidence": [
+        {
+          "id": "obs-flood-1",
+          "kind": "observation",
+          "label": "Flood Watch",
+          "observed_at": "2026-10-17T16:30:00Z"
+        }
+      ],
+      "simulated": false,
+      "is_prototype_rule": true,
+      "acknowledgements": []
+    }
+  ],
+  "reports": [
+    {
+      "id": "report-pole-1",
+      "organization_id": "org-sunbelt",
+      "team_id": "team-a",
+      "site_id": "site-demo-everglades",
+      "reporter_id": "user-crew-2",
+      "category": "broken_pole_downed_line",
+      "hazard_present": true,
+      "note": null,
+      "photo_url": "/fixtures/photos/pole.jpg",
+      "lat": 25.758,
+      "lon": -80.494,
+      "review_status": "pending",
+      "reviewed_by": null,
+      "reviewed_at": null,
+      "confirmed_category": null,
+      "confirmed_severity": null,
+      "enrichment": {
+        "suggested_category": "broken_pole_downed_line",
+        "description": "Leaning wooden pole with a conductor sagging toward the ground.",
+        "severity_suggestion": "high",
+        "confidence": 0.78,
+        "visible_evidence": [
+          "pole leaning about 30 degrees",
+          "conductor below normal height"
+        ],
+        "needs_review": true,
+        "generated_by": "gemini"
+      },
+      "notice_id": "notice-pole-1",
+      "created_at": "2026-10-17T17:54:00Z"
+    },
+    {
+      "id": "report-wildlife-1",
+      "organization_id": "org-sunbelt",
+      "team_id": "team-a",
+      "site_id": "site-demo-everglades",
+      "reporter_id": "user-crew-1",
+      "category": "wildlife",
+      "hazard_present": true,
+      "note": "Alligator on the east access road.",
+      "photo_url": "/fixtures/photos/wildlife.jpg",
+      "lat": 25.762,
+      "lon": -80.487,
+      "review_status": "confirmed",
+      "reviewed_by": "user-supervisor-1",
+      "reviewed_at": "2026-10-17T15:50:00Z",
+      "confirmed_category": "wildlife",
+      "confirmed_severity": "moderate",
+      "enrichment": null,
+      "notice_id": "notice-wildlife-1",
+      "created_at": "2026-10-17T15:40:00Z"
+    }
+  ],
+  "notices": [
+    {
+      "id": "notice-pole-1",
+      "hazard_label": "broken electrical pole",
+      "source": "crew_report",
+      "source_ref": "report-pole-1",
+      "lat": 25.758,
+      "lon": -80.494,
+      "radius_miles": 1.0,
+      "radius_source": "default",
+      "status": "potential",
+      "created_at": "2026-10-17T17:54:00Z",
+      "confirmed_by": null,
+      "confirmed_at": null,
+      "suggested_instruction": null,
+      "instruction": null,
+      "instruction_sent_at": null,
+      "evidence": [
+        {
+          "id": "report-pole-1",
+          "kind": "report",
+          "label": "Crew report: broken pole",
+          "observed_at": null
+        }
+      ]
+    },
+    {
+      "id": "notice-wildlife-1",
+      "hazard_label": "wildlife",
+      "source": "crew_report",
+      "source_ref": "report-wildlife-1",
+      "lat": 25.762,
+      "lon": -80.487,
+      "radius_miles": 0.5,
+      "radius_source": "gemini",
+      "status": "confirmed",
+      "created_at": "2026-10-17T15:40:00Z",
+      "confirmed_by": "user-supervisor-1",
+      "confirmed_at": "2026-10-17T15:50:00Z",
+      "suggested_instruction": "Avoid the east access road; use the west gate.",
+      "instruction": "Avoid the east access road. Use the west gate until wildlife control clears it.",
+      "instruction_sent_at": "2026-10-17T15:52:00Z",
+      "evidence": [
+        {
+          "id": "report-wildlife-1",
+          "kind": "report",
+          "label": "Crew report: alligator",
+          "observed_at": null
+        }
+      ]
+    }
+  ]
+}

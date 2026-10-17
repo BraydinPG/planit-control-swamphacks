@@ -47,9 +47,9 @@ Routes:
 - [ ] **T002 | All | Read the project docs.** Read `spec.md` and `AGENTS.md`. Done when each person confirms owned paths and project scope.
 - [x] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, FastAPI backend, model, auth, and test folders. Done when a placeholder Vite frontend and a FastAPI `GET /health` route run locally.
 - [x] **T004 | Rudra | Add `.env.example`.** List Tiger Data, Auth0, Gemini, and Vultr Object Storage variable names and descriptions, with no secrets. Done when a new member can identify required configuration.
-- [ ] **T005 | Rudra | Add quality commands.** Document existing formatter, linter, and test commands. Done when each command runs locally.
+- [x] **T005 | Rudra | Add quality commands.** Document existing formatter, linter, and test commands. Done when each command runs locally.
 - [x] **T006 | Rudra | Publish API schemas.** Define organization, team, site, observation, alert, score, report, hazard notice, briefing, and explanation types. A site includes its assigned team. A report includes whether the hazard is present. A hazard notice includes the radius and keeps the instruction empty until a supervisor sends it. Done when Nick can build without guessing field names.
-- [ ] **T007 | Rudra | Add API fixtures.** Create sample JSON matching T006, including stale, simulated, and unavailable states. Done when fixtures validate against the schemas.
+- [x] **T007 | Rudra | Add API fixtures.** Create sample JSON matching T006, including stale, simulated, and unavailable states. Done when fixtures validate against the schemas.
 - [ ] **T008 | All | Create separate branches.** Use `feature/rudra-api`, `feature/cache-ml`, `feature/braydin-auth0`, and `feature/nick-ui`. Done when each member confirms their branch.
 
 ## Phase 1: Parallel foundation work
@@ -58,7 +58,7 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 
 ### Rudra: backend foundation
 
-- [ ] **T009 | Rudra | Add API health route.** Implement FastAPI `GET /health` in `backend/app/`. Needs T003. Done when local startup and the health check pass.
+- [x] **T009 | Rudra | Add API health route.** Implement FastAPI `GET /health` in `backend/app/`. Needs T003. Done when local startup and the health check pass.
 
 ### Braydin: Tiger Data setup
 
@@ -132,7 +132,7 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 - [ ] **T054 | Rudra | Implement hazard confirmation.** Any supervisor who received the potential notice can confirm it. The reporting organization’s supervisor still reviews a report that no hazard is present. Record reviewer and time. Needs T053 and T028. Done when crew is denied, a supervisor outside the notice is denied, and an absent report stays with its own organization.
 - [ ] **T054A | Rudra | Send the supervisor’s instruction.** After confirmation, ask Gemini for one concise instruction. Let the confirming supervisor edit it, then send that text to every team inside the stored radius. Needs T054 and T056. Done when the potential notice contains no instruction and teams receive the supervisor’s final text.
 - [ ] **T055 | Rudra | Add confirmed reports to scores.** Count only confirmed reports that the hazard is present. Exclude pending, rejected, and confirmed-absent reports. Needs T051 and T054. Done when only those confirmed reports affect the score.
-- [ ] **T056 | Rudra | Configure Gemini client.** Keep key server-side and define timeouts. Needs T004. Done when missing key returns a controlled unavailable state.
+- [x] **T056 | Rudra | Configure Gemini client.** Keep key server-side and define timeouts. Needs T004. Done when missing key returns a controlled unavailable state.
 - [ ] **T057 | Rudra | Implement briefing endpoint.** Use forecast, score factors, alerts, confirmed reports, timestamps, and unknowns. Validate structured output and evidence IDs. Needs T042, T051, and T056. Done when material claims cite supplied evidence.
 - [ ] **T058 | Rudra | Add deterministic briefing fallback.** Generate a template when Gemini fails or returns invalid output. Needs T057. Done when briefing remains available without Gemini.
 - [ ] **T059 | Rudra | Implement score explanation endpoint.** Explain the existing score without changing score or alert state. Needs T051 and T056. Done when evidence maps to supplied factors.
