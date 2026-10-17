@@ -23,3 +23,25 @@
 .map-shell .leaflet-popup-content-wrapper {
   border-radius: 12px;
 }
+
+.map-shell.leaflet-container .leaflet-control-zoom a,
+.map-shell .leaflet-popup-content-wrapper,
+.map-shell .leaflet-popup-tip {
+  background: var(--pc-surface);
+  color: var(--pc-ink);
+  border-color: var(--pc-line);
+}
+.map-shell.leaflet-container .leaflet-control-zoom a:hover {
+  background: var(--pc-surface-2);
+}
+.map-shell .leaflet-bar {
+  border-color: var(--pc-line-strong);
+}
+.map-shell .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--pc-surface) 85%, transparent);
+  color: var(--pc-muted);
+}
+.map-shell .leaflet-control-attribution a,
+.map-shell .leaflet-popup-close-button {
+  color: var(--pc-link);
+}

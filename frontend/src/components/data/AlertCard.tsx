@@ -52,7 +52,7 @@ function Ring({ alert, left }: { alert: Alert; left: number | null }) {
   const r = 92,
     c = 2 * Math.PI * r
   return (
-    <div className="relative mx-auto size-52 sm:size-56" aria-hidden="true">
+    <div className="relative mx-auto size-52 @lg:size-56" aria-hidden="true">
       <svg viewBox="0 0 210 210" className="size-full -rotate-90">
         <circle
           cx="105"
@@ -109,10 +109,10 @@ export function AlertCard({
       <div className={`flex items-center gap-3 px-4 py-3 ${style.band}`}>
         <RiskShape
           kind={style.kind}
-          className={detail ? 'size-8' : 'size-8 sm:size-10'}
+          className={detail ? 'size-8' : 'size-8 @lg:size-10'}
         />
         <h2
-          className={`font-condensed uppercase leading-[0.95] ${detail ? 'text-3xl' : 'text-[2rem] sm:text-4xl'}`}
+          className={`font-condensed uppercase leading-[0.95] ${detail ? 'text-3xl' : 'text-[2rem] @lg:text-4xl'}`}
         >
           {title}
         </h2>

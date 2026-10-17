@@ -32,7 +32,7 @@ export function BriefingCard({ value }: { value: Briefing }) {
   const fallback = value.generated_by === 'fallback'
   return (
     <article
-      className="space-y-5 rounded-2xl border border-line bg-surface p-5 sm:p-6"
+      className="space-y-5 rounded-2xl border border-line bg-surface p-5 @lg:p-6"
       data-briefing-id={value.id}
     >
       <header className="space-y-3 border-b border-line pb-4">
@@ -62,7 +62,7 @@ export function BriefingCard({ value }: { value: Briefing }) {
         </p>
       </header>
       <p className="text-lg leading-relaxed">{value.summary}</p>
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-5 @3xl:grid-cols-2">
         <Section title="Hazards">
           <ul className="space-y-2">
             {value.hazards.map((h, i) => (
@@ -133,7 +133,7 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
   )
   return (
     <section className="space-y-5" aria-label="Stored briefings">
-      <div className="grid gap-4 rounded-2xl border border-line bg-surface p-4 sm:grid-cols-[minmax(0,22rem)_1fr] sm:items-end">
+      <div className="grid gap-4 rounded-2xl border border-line bg-surface p-4 @lg:grid-cols-[minmax(0,22rem)_1fr] @lg:items-end">
         <label className={labelText}>
           Briefing site or organization
           <select

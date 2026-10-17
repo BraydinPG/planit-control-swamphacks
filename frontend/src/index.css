@@ -3,37 +3,14 @@
 
 /*
  * PlanIT Control design tokens.
- * The crew workspace is dark and phone-first (field use, glare, gloves);
- * the supervisor workspace is light and dense for desktop review.
+ * Both workspaces are dark. The crew workspace keeps its phone layout at
+ * every screen size (field use, glare, gloves); the supervisor workspace
+ * is dense for desktop review.
  * Risk colours are shared and always paired with a shape and a word.
  */
 :root,
+[data-theme='crew'],
 [data-theme='supervisor'] {
-  --pc-bg: #f6f7f8;
-  --pc-surface: #ffffff;
-  --pc-surface-2: #eef1f4;
-  --pc-nav: #ffffff;
-  --pc-line: #dadfe5;
-  --pc-line-strong: #b9c1cb;
-  --pc-ink: #14181d;
-  --pc-ink-2: #2b323b;
-  --pc-muted: #4a5563;
-  --pc-faint: #6b7480;
-  --pc-focus: #2f5bea;
-  --pc-link: #2f5bea;
-  --pc-stop: #c8102e;
-  --pc-stop-text: #a50e26;
-  --pc-warn: #e86a00;
-  --pc-warn-text: #9a4700;
-  --pc-caution: #ffd100;
-  --pc-caution-text: #6b5600;
-  --pc-low: #7b8592;
-  --pc-ok: #1f7a4d;
-  --pc-sim: #4060c8;
-  color-scheme: light;
-}
-
-[data-theme='crew'] {
   --pc-bg: #1a1e24;
   --pc-surface: #242a32;
   --pc-surface-2: #2b323b;

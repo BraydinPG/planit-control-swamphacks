@@ -213,3 +213,10 @@ Explicit user authorization: Rudra takes over frontend visual polish. This is a 
 Not edited: `auth/**`, `api/**`, `application/**`, `demo/**`, `types/**`, fixtures, `App.tsx`, `LiveApplication.tsx`, manifests/lockfiles, backend, ML. No new dependencies.
 
 Verification: `npm run build`, `npm run lint` (clean), the four `node --test` suites (44/44), and `node scripts/check-shell.mjs` at 1440×1000, 390×844 and 320×740 (pass, no browser exceptions, no backend requests). Risk is never color-only: every level has a shape and a word.
+
+### 2026-10-17 — follow-up: crew phone layout, dark supervisor, location suggestions
+
+- The crew workspace keeps its phone layout at every screen size: a centered phone-width column, no sidebar and the bottom navigation always visible. Page layouts now use container queries (`@container` on `<main>`), so they respond to the content column rather than the viewport.
+- The supervisor workspace now uses the same dark tokens as the crew workspace. Leaflet controls, popups and marker outlines are themed for dark surfaces.
+- "Search locations" (`components/data/LocationSearch.tsx`) is an ARIA combobox. With an empty box it suggests the first ranked locations; typing ranks matches by name, then team, then site ID, and still filters the map and list. Arrow keys plus Enter, or a click, open the chosen location.
+- Restored the repo's single-quote, no-semicolon formatting in three files that the previous merge commit reformatted.

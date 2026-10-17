@@ -1,42 +1,42 @@
-import { useState } from "react";
-import type { HazardNotice } from "../../types/api";
-import { useApplication } from "../../application/context";
-import { Action, field, labelText } from "./Interaction";
-import { Timestamp } from "./Status";
-import { RiskShape } from "./Risk";
+import { useState } from 'react'
+import type { HazardNotice } from '../../types/api'
+import { useApplication } from '../../application/context'
+import { Action, field, labelText } from './Interaction'
+import { Timestamp } from './Status'
+import { RiskShape } from './Risk'
 export function NoticeCard({ notice }: { notice: HazardNotice }) {
-  return <NoticeWorkflow key={notice.id} initial={notice} />;
+  return <NoticeWorkflow key={notice.id} initial={notice} />
 }
 function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
-  const [responseNotice, setNotice] = useState<HazardNotice | null>(null);
+  const [responseNotice, setNotice] = useState<HazardNotice | null>(null)
   // Keep the returned server confirmation while its GET refresh is in flight.
   // Equivalent refreshes must not remount the editor and erase a supervisor's draft.
   // A different owner or delivered instruction in a newer GET takes precedence.
   const notice =
     responseNotice &&
-    (initial.status === "potential" ||
+    (initial.status === 'potential' ||
       (initial.confirmed_by === responseNotice.confirmed_by &&
         !initial.instruction_sent_at))
       ? responseNotice
-      : initial;
-  const { client, persona, principalId } = useApplication();
-  const potential = notice.status === "potential";
+      : initial
+  const { client, persona, principalId } = useApplication()
+  const potential = notice.status === 'potential'
   return (
     <article
       data-notice-id={notice.id}
-      className={`space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? "border-dashed border-caution" : "border-line-strong"}`}
+      className={`space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? 'border-dashed border-caution' : 'border-line-strong'}`}
     >
       <div className="flex items-start gap-3">
         <RiskShape
-          kind={potential ? "caution" : "warn"}
+          kind={potential ? 'caution' : 'warn'}
           className="mt-0.5 size-6"
         />
         <div className="min-w-0 flex-1">
           <p className="kicker">
-            {potential ? "Potential notice" : "Confirmed notice"}
+            {potential ? 'Potential notice' : 'Confirmed notice'}
           </p>
           <h3 className="text-xl font-bold">
-            {potential ? "potential " : ""}
+            {potential ? 'potential ' : ''}
             {notice.hazard_label}
           </h3>
         </div>
@@ -47,11 +47,11 @@ function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
         </span>
         <span>
           Radius: {notice.radius_miles} mi ({notice.radius_source}
-          {notice.radius_source === "default" ? " prototype default" : ""})
+          {notice.radius_source === 'default' ? ' prototype default' : ''})
         </span>
       </p>
       <p className="break-words text-xs text-muted">
-        {notice.source} · {notice.source_ref} · Created{" "}
+        {notice.source} · {notice.source_ref} · Created{' '}
         <Timestamp value={notice.created_at} />
       </p>
       {potential ? (
@@ -73,20 +73,20 @@ function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
           Confirmed; no approved instruction has been sent.
         </p>
       )}
-      {persona === "supervisor" && potential && (
+      {persona === 'supervisor' && potential && (
         <Action
           capability="hazards"
           tone="primary"
           run={async () => {
-            const response = await client.confirm(notice.id);
-            setNotice(response.notice);
+            const response = await client.confirm(notice.id)
+            setNotice(response.notice)
           }}
         >
           Confirm potential hazard
         </Action>
       )}
-      {persona === "supervisor" &&
-        notice.status === "confirmed" &&
+      {persona === 'supervisor' &&
+        notice.status === 'confirmed' &&
         notice.confirmed_by !== principalId &&
         !notice.instruction_sent_at && (
           <p className="rounded-xl border border-dashed border-line-strong px-3 py-2.5 text-sm text-ink-2">
@@ -94,8 +94,8 @@ function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
             send the instruction. Refresh for current server state.
           </p>
         )}
-      {persona === "supervisor" &&
-        notice.status === "confirmed" &&
+      {persona === 'supervisor' &&
+        notice.status === 'confirmed' &&
         notice.confirmed_by === principalId &&
         !notice.instruction_sent_at && (
           <InstructionEditor
@@ -105,26 +105,26 @@ function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
           />
         )}
     </article>
-  );
+  )
 }
 
 function InstructionEditor({
   notice,
   sent,
 }: {
-  notice: HazardNotice;
-  sent: (notice: HazardNotice) => void;
+  notice: HazardNotice
+  sent: (notice: HazardNotice) => void
 }) {
-  const { client } = useApplication();
+  const { client } = useApplication()
   const [instruction, setInstruction] = useState(
-    notice.suggested_instruction ?? "",
-  );
+    notice.suggested_instruction ?? '',
+  )
   return (
     <div className="space-y-3 rounded-xl border border-line bg-surface-2 p-3">
       <p className="text-sm font-semibold">
         {notice.suggested_instruction
-          ? "Suggested instruction — review before sending (server draft):"
-          : "No suggestion available; the confirming supervisor writes the instruction."}
+          ? 'Suggested instruction — review before sending (server draft):'
+          : 'No suggestion available; the confirming supervisor writes the instruction.'}
       </p>
       {notice.suggested_instruction && (
         <blockquote className="border-l-2 border-sim pl-3 text-sm italic text-ink-2">
@@ -155,5 +155,5 @@ function InstructionEditor({
         Send approved instruction
       </Action>
     </div>
-  );
+  )
 }

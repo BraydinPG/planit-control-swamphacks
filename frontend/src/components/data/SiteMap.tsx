@@ -44,7 +44,7 @@ export function SiteMap({
       button.onclick = () => select(s.id)
       L.circleMarker([s.lat, s.lon], {
         radius: s.assigned_team ? 9 : 5,
-        color: s.assigned_team ? '#14181d' : '#ffffff',
+        color: s.assigned_team ? '#f2f4f6' : '#1a1e24',
         weight: s.assigned_team ? 2.5 : 1,
         fillColor: levelHex[s.risk_level ?? 'none'],
         fillOpacity: 0.9,
@@ -130,7 +130,7 @@ export function SiteMap({
         ref={container}
         role="region"
         aria-label="Interactive geographic reference map; locations also listed below"
-        className="map-shell relative z-0 h-80 w-full overflow-hidden rounded-xl border border-line lg:h-[26rem]"
+        className="map-shell relative z-0 h-80 w-full overflow-hidden rounded-xl border border-line @3xl:h-[26rem]"
       />
     </section>
   )

@@ -134,7 +134,7 @@ export function Factors({ factors }: { factors: FactorContribution[] }) {
       {factors.map((factor, i) => (
         <li
           key={`${factor.factor}-${i}`}
-          className="grid gap-2 py-3 text-sm sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start"
+          className="grid gap-2 py-3 text-sm @lg:grid-cols-[minmax(0,1fr)_auto] @lg:items-start"
         >
           <div className="min-w-0 space-y-1.5">
             <strong className="block text-base text-ink">
@@ -154,7 +154,7 @@ export function Factors({ factors }: { factors: FactorContribution[] }) {
             </p>
           </div>
           {factor.factor !== 'model' && (
-            <div className="space-y-1.5 sm:w-48 sm:text-right">
+            <div className="space-y-1.5 @lg:w-48 @lg:text-right">
               <p className="text-ink-2">
                 Contribution:{' '}
                 <span className="font-bold tabular-nums text-ink">
@@ -245,7 +245,7 @@ export function Observations({ rows }: { rows: Observation[] }) {
       </p>
     )
   return (
-    <ul className="grid gap-3 sm:grid-cols-2">
+    <ul className="grid gap-3 @lg:grid-cols-2">
       {rows.map((row, index) => {
         const missing = row.value === null || row.data_state === 'unavailable'
         return (
