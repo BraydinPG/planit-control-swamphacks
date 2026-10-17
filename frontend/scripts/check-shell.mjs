@@ -43,12 +43,15 @@ let ws
 const results = []
 const errors = []
 const network = []
+const failedRequests = []
+const inFlightRequests = new Map()
 let id = 0
 let documentGeneration = 0
 const pending = new Map()
 
 async function until(getValue, label) {
-  for (let attempt = 0; attempt < 100; attempt++) {
+  // Isolated Vite graphs measured 13-15s cold; keep assertions intact with a 30s startup allowance.
+  for (let attempt = 0; attempt < 300; attempt++) {
     try {
       const value = await getValue()
       if (value) return value
@@ -117,12 +120,9 @@ async function offModeServer(setting) {
   const child = spawn(
     process.execPath,
     [
-      join(root, 'node_modules/vite/bin/vite.js'),
-      '--host',
-      '127.0.0.1',
-      '--port',
-      String(port),
-      '--strictPort',
+      '--input-type=module',
+      '--eval',
+      `import {createServer} from 'vite'; const server=await createServer({root:${JSON.stringify(root)},cacheDir:${JSON.stringify(join(output, `mode-${setting}-${Date.now()}`))},server:{host:'127.0.0.1',port:${port},strictPort:true}});await server.listen();`,
     ],
     {
       cwd: root,
@@ -174,8 +174,24 @@ try {
       documentGeneration++
     else if (message.method === 'Runtime.exceptionThrown')
       errors.push(message.params.exceptionDetails.text)
-    else if (message.method === 'Network.requestWillBeSent')
+    else if (message.method === 'Network.requestWillBeSent') {
       network.push(message.params.request.url)
+      inFlightRequests.set(message.params.requestId, message.params.request.url)
+    } else if (message.method === 'Network.loadingFinished')
+      inFlightRequests.delete(message.params.requestId)
+    else if (message.method === 'Network.loadingFailed')
+      failedRequests.push({
+        error: message.params.errorText,
+        blocked: message.params.blockedReason,
+      })
+    else if (
+      message.method === 'Network.responseReceived' &&
+      message.params.response.status >= 400
+    )
+      failedRequests.push({
+        url: message.params.response.url,
+        status: message.params.response.status,
+      })
   })
   await send('Page.enable')
   await send('Runtime.enable')
@@ -547,7 +563,24 @@ try {
         "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
       ),
     )
+    await hash('/crew/reports', 'Hazard present or absent')
+    await set('form select[required]', 'present')
+    assert(
+      await evaluate(
+        "document.querySelector('form input[type=file]').required && document.querySelector('form button[type=submit]').disabled",
+      ),
+      'Live present report must require photo',
+    )
+    await set('form select[required]', 'absent')
+    assert(
+      await evaluate(
+        "!document.querySelector('form input[type=file]').required && !document.querySelector('form button[type=submit]').disabled",
+      ),
+      'Live absent report does not require a photo',
+    )
     results.push({
+      reports:
+        'T053 creation enabled separately from unavailable review; mocked live present/absent photo requirement passed',
       alerts:
         'published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified',
     })
@@ -580,6 +613,7 @@ try {
       real_auth: 'not verified; tenant credentials unavailable',
     })
     for (const setting of ['false', 'typo']) {
+      const started = Date.now()
       const url = await offModeServer(setting)
       await navigate(
         url,
@@ -590,6 +624,7 @@ try {
       assert(await evaluate("!document.body.innerText.includes('Line Crew A')"))
       results.push({
         fixture_setting: setting,
+        cold_start_ms: Date.now() - started,
         status: 'explicit configuration/auth state; no silent samples',
       })
     }
@@ -629,14 +664,31 @@ try {
 } catch (error) {
   if (ws?.readyState === WebSocket.OPEN) {
     const diagnostic = await evaluate(
-      "({text:document.body.innerText.slice(0,5000),map:document.querySelectorAll('.leaflet-interactive').length,hash:location.hash})",
+      "({url:location.href,ready:document.readyState,text:document.body.innerText.slice(0,5000),map:document.querySelectorAll('.leaflet-interactive').length,hash:location.hash})",
     ).catch(() => null)
     await writeFile(
       join(output, 'failure.json'),
-      JSON.stringify({ error: String(error), errors, diagnostic }, null, 2),
+      JSON.stringify(
+        {
+          error: String(error),
+          errors,
+          failedRequests,
+          pending_requests: [...inFlightRequests.values()],
+          diagnostic,
+        },
+        null,
+        2,
+      ),
     )
     await screenshot('failure').catch(() => {})
-    console.error(JSON.stringify({ errors, diagnostic }))
+    console.error(
+      JSON.stringify({
+        errors,
+        failedRequests,
+        pending_requests: [...inFlightRequests.values()],
+        diagnostic,
+      }),
+    )
   }
   throw error
 } finally {

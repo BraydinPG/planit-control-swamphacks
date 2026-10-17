@@ -4,14 +4,14 @@ Read this verified index first, then `AGENTS.md`, `spec.md`, `tasks.md` and rele
 
 ## Last verified: 2026-10-17
 - Explicit user transfer: Cache owns remaining frontend implementation/integration, formerly Nick. Prior attribution and T030 remain preserved. Claude's later visual redesign requires separate authorization.
-- Branch `feature/cache-frontend-workflows`, targeting main `723a5b8`. PR #16 (T030) and #17 (`140d118`, ownership/T031) merged during this run; the new branch preserves them and incorporates reviewed main via `dc35458`. T032-T038 implementation: `3fbd98f`.
-- Rudra published T050 (`9d73a77`) and T048 (`944471f`, PR #18). Their canonical backend/fixtures/types were inherited from main unchanged, with no Cache-authored backend/API diff.
+- Phase 4 branch `feature/cache-live-integration-checks`, based on reviewed main `9ba1b7c`. PR #19 merged as `64cf632` during this run; this continuation now targets main, with no duplicate parent diff.
+- Rudra's T050/T048 and new T052/T053 (`db2022e`, `4dec720`, PR #20/#21) are inherited unchanged. Published report list/create is connected separately from still-unavailable review/instructions. Nick now owns T054/T054A/T055 under Rudra review.
 - T031-T038 foundation/demo acceptance passed; T032-T038 checked with implementation/evidence in this checkpoint. T063-T068 remain unchecked, with exact dependencies in `docs/INTEGRATION_STATUS.md`.
 - Vite: http://localhost:5173/; interactive simulated crew/supervisor app, 55 map/list points, reporting/review/instruction flow and exact-site research advisory.
-- 23 focused frontend tests, lint/TypeScript/build and 1440/390/320 browser workflows passed. Current merged branch backend suite: 297 passed, one existing dependency deprecation. Earlier branch/export checks were 266/282 passed. See `docs/frontend-acceptance.json`.
+- Foundation evidence: `docs/frontend-acceptance.json`. Phase 4: 39 frontend checks, 355 backend/probe checks (348+7), lint/TypeScript/build/Ruff and 1440/390/320 browser workflow checks; exact evidence in `docs/phase4-integration-verification.json`.
 - Clean committed frontend export `4a9e44f`: npm ci/build and full static-bundle demo browser acceptance pass without local env/Python/ML artifacts. No whole-app/deployment acceptance claimed.
 - Actual health 200; protected site reads directly and via Vite proxy return 401. No real signed-in site data, report persistence, Auth0 tenant login or Gemini response was verified.
-- Local Auth0/Tiger Data settings and missing report/notice/Gemini routes block real integration. Published alert listing/acknowledgement is connected and mock-tested. No production deployment, bypass, model retraining or ML contract changes.
+- Actual readiness: no local DATABASE_URL, Auth0 SPA/backend values, Gemini settings or Vultr credentials. Seeded organizations/teams/memberships/accounts remain unknown. Five actual anonymous/dev-header denial checks return 401; invalid token returns 503 (Auth0 unavailable), not validated token rejection. No authenticated read or real DB write verified.
 
 ## Ownership and safety
 - Cache: `ml/**` plus remaining frontend composition/data access/pages/components/styles/tests and integration preparation under this explicit transfer.
@@ -33,8 +33,9 @@ npm run dev -- --host localhost --port 5173 --strictPort
 - `pages/ConnectedPages.tsx`: shared views; `components/data/*`: reusable status/alerts/notices/map/advisory; existing `components/shell/*`: responsive navigation.
 - Canonical `frontend/src/types/api.ts` and `src/fixtures/*.json` unchanged. Approved public ML exports in `src/demo/generated/*`; no Python inference in browser.
 - `VITE_USE_FIXTURES=false` uses existing provider/guard and bearer-token API, rejects bypass roles; no fixture fallback. Empty API base uses Vite's /api proxy to existing FastAPI:8000. Production requires owner routing.
-- Live alert reads/acknowledgement enabled for T048, with server Date clock correction; report/notice/AI capabilities disabled until routes exist. T050 canonical compact field displayed if supplied; 2.1 panel is exact-site demo only, with null local probabilities and explicit unknown hazards.
-- Full guide: `frontend/INTEGRATION.md`; task/live matrix: `docs/INTEGRATION_STATUS.md`; visual boundaries: `docs/FRONTEND_REDESIGN_HANDOFF.md`.
+- Live T048 alert calls and T053 report reads/create enabled; live present reports require a photo. Separate review/notice/AI capabilities remain disabled. T050 compact field is separate; 2.1 remains exact-site demo only, with null local probabilities and explicit unknown hazards.
+- Full guide: `frontend/INTEGRATION.md`; real setup/acceptance: `frontend/LIVE_INTEGRATION.md`; task/live matrix: `docs/INTEGRATION_STATUS.md`; visual boundaries: `docs/FRONTEND_REDESIGN_HANDOFF.md`.
+- New CLI: `node frontend/scripts/check-live-integration.mjs --python <backend Python> --check-database`. Redacted settings, source/running OpenAPI, anonymous checks and bounded read-only DB inspection; expected exit 2 while blocked. Private optional token wrapper is documented; no automatic task completion.
 - Browser checks: `node scripts/check-shell.mjs http://localhost:5173/`; focused tests: `node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs`. Screenshots ignored under `.shell-check/`.
 
 ## Existing ML package (unchanged)
@@ -49,8 +50,8 @@ npm run dev -- --host localhost --port 5173 --strictPort
 - Monte Carlo stays offline arithmetic/sensitivity research; never UI trajectories or proof of safety.
 
 ## Current owner handoff and shared-file log
-- Rudra: review T048 client and implement/test report/photo/review and notice confirmation/instruction routes; retain canonical T050 and review Leaflet frontend dependency; keep scores/alerts isolated.
+- Rudra: review T053 client/photo requirement and Nick's backend confirmation/instruction/report-score changes. Nick: T054/T054A/T055 per current backlog. Cache does not edit those backend paths.
 - Braydin: configure real tenant/roles/audience, Tiger Data/seed assignments, durable photo storage and Gemini endpoints/fallbacks. No secrets in Git.
 - Cache: next integration is T063 when real configuration is available, then T064-T068 after actual server prerequisites. No remaining authorized live acceptance can be completed with mock credentials alone.
-- 2026-10-17 UTC: T031 owner transfer/check-off in `140d118` updates AGENTS/tasks/context. `3fbd98f` changes only T032-T038 boxes after their checks and updates the context/coordination docs; no adjacent owner tasks changed.
-- Published review PR [#19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open against main, implementation head `8834867`. Earlier delivery commits: `3fbd98f`, reviewed-main incorporation `dc35458`, T048 client `4a9e44f`. Metadata-only follow-up records this publication. Rudra coordinates review/merge; no automatic merge or deployment.
+- 2026-10-17 UTC: phase-4 diagnostics/tests and T053 frontend wiring update this index/cross-scope docs; Cache leaves every task checkbox unchanged. T052/T053 owner completions arrived from reviewed main. See CROSS_SCOPE_CHANGES for exact paths and publication refs.
+- Foundation PR [#19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19) is merged; its implementation/metadata head was `8af5b9d`. Phase-4 review publication follows below. Rudra coordinates review/merge; no automatic merge or deployment.

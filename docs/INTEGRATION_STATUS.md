@@ -1,59 +1,47 @@
 # Frontend integration status
 
-Verified 2026-10-17. Cache now owns remaining frontend implementation; Nick retains prior attribution. PR #16 and #17 merged during this run (`806676e` and `7021ce2`). Delivery moved to new branch `feature/cache-frontend-workflows`, targeting main `723a5b8`, which includes Rudra's T050 (`9d73a77`) and newly merged T048 (`944471f`, PR #18). Reviewed main was incorporated without conflicts in `dc35458`; no Cache-authored backend/schema changes. No merge of this delivery is authorized.
+Phase-4 checkpoint verified 2026-10-17. PR #19 merged as `64cf632` during this run. Branch `feature/cache-live-integration-checks` now incorporates reviewed main `9ba1b7c` (T052/T053, PR #20/#21) by fast-forward without overwriting the new frontend work. It will target main. Rudra's canonical backend/auth/types/fixtures remain unchanged by Cache.
 
-Review: [PR #19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open against main, implementation head `8834867`. This handoff is reviewable and pushed; no deployed production integration is claimed.
+## Actual readiness and task state
 
-## Task acceptance
+Local process/environment-file audit found no configured DATABASE_URL, Auth0 domain/audience/SPA client, Gemini key/model or Vultr credentials. No local private environment files existed. Global tenant/account/database existence cannot be inferred from that absence: actual accounts, site seed, memberships and database contents are **unknown**, not zero/nonexistent. Development bypass remains false; the known local FastAPI process was restarted from backend/ with false explicitly set to load newly merged routes.
 
-Task IDs and original done criteria are preserved in `tasks.md`. Ownership of the authorized T031-T038/T063-T068 chain changed to Cache. Prerequisites T003/T006/T007/T030 were checked before implementation; each dependent foundation task below passed in order. T031's first checkpoint is `140d118`; `3fbd98f` checks T032-T038 with the code and evidence.
+Health/OpenAPI return 200. Six operations are published and match the running server: site list/detail, alert list/ack and report list/create. Site, alert and report unauthenticated reads, unauthenticated ack, and an attempted development-role header all return 401. Invalid bearer returns 503 because Auth0 is unconfigured, so real token validation/expiry/role enforcement has not been verified. Vite's proxy returns the same 401 boundary. No actual signed-in site query, SQL connection, report/photo write or acknowledgement was performed.
 
-| Task | Exact done check | Verified evidence | Completion |
-| --- | --- | --- | --- |
-| T031 | Observed, stale, simulated, unavailable distinct without color alone | All six canonical source-state labels; null/legacy score tests | Checked |
-| T032 | Main action appears without scrolling on a phone | Inspect/ack link above bottom nav at 320x740 and 390x844; site/status/update/notice/instruction browser flow | Checked |
-| T033 | Fixtures show active, reset, cleared | Ack/reload, additional-strike window reset, explicit server-cleared payload; expiry remains active | Checked |
-| T034 | Submission does not require typed text | Browser submits a photo/present/category report with coordinates and empty note; validation tests | Checked |
-| T035 | Occupied location above empty and team name visible | 55-location ranking (50 exact EIA IDs + 5 simulated); team-first DOM assertion, map popup/list navigation, filters, factor text | Checked |
-| T036 | Supervisor can review fixture report | Pending -> confirmed review, relevant notice confirmation, edited instruction delivery back to crew; raw score/alert invariance | Checked |
-| T037 | Generated and fallback text look distinct | Prerecorded Gemini vs deterministic fallback named headings; evidence, window, unknowns; briefing and explanation browser actions | Checked |
-| T038 | Checklist passes or remaining issues become separate tasks | All 10 destinations at 3 sizes, no overflow, named/labeled controls, >=44px primary/zoom controls, keyboard skip/Tab visible focus, text states | Checked for foundation/demo scope; live recheck remains T068 |
-| T063 | Live API and fixtures render same views | Shared views/HTTP mocked; T041/T042 checked, but no authenticated real site data retrieved | **Unchecked**: real Auth0/Tiger Data configuration |
-| T064 | Acknowledgement updates shared state | T048 is now checked/merged; enabled HTTP all-state listing/ack, shared refetch, server clock estimate and mocked token POST pass; no real authenticated request | **Unchecked**: Auth0/Tiger Data acceptance |
-| T065 | Full report lifecycle works in UI | Complete demo lifecycle; no real photo/report/notice writes | **Unchecked**: T053/T054/T054A |
-| T066 | Both roles see correct screens | Existing provider/guard imports, mocked crew/supervisor/transitions/denials pass | **Unchecked**: T025/T026 acceptance and real tenant accounts/tokens |
-| T067 | Success/failure states work | Fixture Gemini/fallback/evidence; prepared HTTP calls disabled | **Unchecked**: T057-T060 routes/credentials |
-| T068 | No P0 usability issue after real API recheck | Demo foundation checklist passes | **Unchecked**: T063-T067 real integration |
-
-No Rudra/Braydin task was checked off. No T070 clean-application setup, T072 deployed permissions or whole-app demo acceptance is claimed.
-
-## Actual live versus simulated behavior
-
-| Capability | Verified real behavior | Demonstration / limitation |
+| Task | Prerequisites / current evidence | Checkbox |
 | --- | --- | --- |
-| FastAPI health | `/health` 200, `{"status":"ok"}` | Server now runs the current checkout after incorporating main `723a5b8` |
-| Site auth boundary | Direct `/api/sites` and Vite-proxied `/api/sites` return 401 `Sign in required` | No authenticated successful real site query; 55 demo sites render through same views |
-| Auth0 | Existing modules/token validation in source and backend tests | No local tenant values or real login; mocked-provider tests do not prove real roles |
-| Site list/detail | Protected routes exist on main | No configured Tiger Data; live failures stay visible, never fixtures |
-| Alert/list/ack | T048 routes and persistence tests inherited unchanged from main; unauthenticated read returns 401 | Enabled frontend bearer-token all-state list/ack, mocked provider/HTTP workflow passes; real authenticated persistence still unverified |
-| Reports/photo/review/notices | Missing persistence/routes | Simulated reports/review/instructions persist locally; photos memory-only |
-| T050 compact ML | Main schema/detail publication verified | Optional field displayed if supplied; real activated response not retrieved |
-| Comprehensive 2.1 | No approved authenticated endpoint | Two validated exact-site public replay exports, unchanged ML/contract; local hazard probabilities null |
-| Gemini | Server interface/contracts exist, routes not implemented | Prerecorded canonical Gemini and deterministic fallback; no browser API key/request |
-| Map | Geographic Leaflet points/pan/zoom/list work offline | Optional online OSM tiles need network; reference coordinates do not establish local conditions |
+| T063 | T041/T042 checked; existing shared views/client plus new real-response canonical validation/rendering runner are ready. No real account/site response yet. | **Unchecked** |
+| T064 | T048 checked; existing client and new explicit-test-alert independent crew/supervisor read-back checks are ready. No real account or database-backed ack yet. | **Unchecked** |
+| T065 | T053 now checked/published: report listing/create enabled, canonical multipart fields, photo required for live present reports, optional for absent. Full demo flow remains working. T054/T054A review/instructions are absent and owned by Nick under Rudra review. | **Unchecked** |
+| T066 | Existing Auth0 provider/guard reused. T025/T026 remain unchecked and real tenant/role/accounts/memberships are unavailable. Mocked-provider proof is not live acceptance. | **Unchecked** |
+| T067 | T057-T060/Gemini routes still absent. Existing prerecorded/fallback UI is explicit demo; live AI disabled. Radius/instruction functions remain owner work. | **Unchecked** |
+| T068 | Foundation/demo phone/keyboard checks pass; live acceptance still depends on T063-T067. | **Unchecked** |
 
-The existing model output is a conditional recorded-event research advisory, never event onset or safety. No ML behavior was modified or predictive evaluation rerun. Existing model/gating limitations remain in `ml/HAZARD_INTEGRATION.md`, `ml/WORKER_PREVIEW.md` and `ml/EVALUATION.md`. No score/alert mutation or clearance can follow from it.
+T031-T038 remain checked with their original foundation acceptance. Cache changed no task checkboxes in this phase; owner T052/T053 state/ownership changes came from reviewed main. Nick's newly assigned backend T054/T054A/T055 is preserved. No T070/T072/deployment or whole-app live acceptance is claimed.
 
-## Reproducible checks and owner actions
+## Useful implementation around the blockers
 
-Run commands in [frontend/INTEGRATION.md](../frontend/INTEGRATION.md). `docs/frontend-acceptance.json` records the browser run, 23 focused tests, lint/build and merged-checkout backend suite (297 passed, one pre-existing Starlette/httpx deprecation). Earlier pre-merge branch and isolated main-export checks passed 266 and 282 respectively. Reviewed main is now incorporated; its code remains unchanged by Cache. Existing local Python needed its declared PyJWT dependency installed. No new backend dependency/manifest was changed. ML behavior is untouched, so no expensive model refit/backtest was run.
+- `frontend/scripts/check-live-integration.mjs`: redacted local readiness, Vite environment/configuration flags, public tenant discovery when configured, source-versus-running route inventory, actual negative HTTP checks, and optional real-account API orchestration using the app's existing HttpClient.
+- `frontend/scripts/probe-integration.py`: existing backend settings/OpenAPI/Pydantic models and an optional bounded read-only remote PostgreSQL/seed inspection. No local/mock database acceptance, initialization, migration or seed writes. Aggregate EIA-format/coordinate counts do not establish new source reconciliation or cloud-account provenance.
+- `frontend/scripts/run-live-account-check.py`: optional private hidden token prompts and direct stdin pipe; no token argv, environment, saved credential file, user IDs or raw response bodies in the report. It reuses real existing Auth0 tokens and does not authenticate/mint tokens.
+- `frontend/scripts/integration/acceptance.mjs`: reject unsafe/unprotected targets before sending account tokens; actual role reads, known unrelated-site denial, conditional review denial, canonical validation/shared display rendering, and deliberately selected active simulated alert read-back using fresh crew/supervisor clients. Default is no acknowledgement or real report writes. Signature verification remains FastAPI's.
+- T053 frontend capability is separated from unavailable review. Existing report form, API client and components are reused; no second backend/UI/auth implementation or API schema change. Private photo retrieval is still unconnected; frontend currently accepts JPEG/PNG/WebP while backend also supports HEIC.
+- Browser checks add mocked live present/absent photo requirements. Diagnostic/test Vite caches are isolated from the running developer server. Cold configuration-server compilation measured approximately 13-15 seconds; the browser driver now allows 30 seconds with the same assertions and captures timing/network failure diagnostics.
 
-T038 checklist passed: touch targets, keyboard flow/visible focus, labels/announcements, readable non-color states, 320/390/1440 layouts and all demo destinations. This is focused prototype acceptance, not full screen-reader/WCAG certification. Live-state checks are already tracked by T068; no duplicate tasks were added.
+These APIs/fixtures are not work authorization. The ML library/contracts are unchanged, and the existing research/demo labels, source timestamps, explicit unknowns, null probabilities and deterministic alert authority remain intact. Gemini output stays a suggestion. A client acknowledgement, timer expiry or ML result cannot clear an alert.
 
-Clean frontend reproduction: committed export `4a9e44f` contains frontend files only, without local `.env`, `node_modules`, ML artifacts or Python. `npm ci` and production build pass; the full demo browser lifecycle also passes against its static preview using `--production`, with no backend requests/exceptions and no bundled mock-auth harness. This verifies the frontend demo's provisioning, not the whole application's T070 or a production deployment.
+## Checks actually run
 
-**Rudra:** retain `/api/sites` and detail authorization; review the enabled T048 client, and publish/test T053 report creation and multipart photo, T054 review, T054A recipient/confirming-supervisor/instruction routes. Use unchanged canonical fixtures as requests/responses. Assert crew cannot read unassigned sites, review reports or send instructions; only the confirming notified supervisor may send. Provide server persistence/reload tests and deterministic alert isolation. The frontend now imports the canonical T050 type inherited from main. Enable report/hazard/AI capabilities separately only when their routes pass owner tests, then run T063-T065 real acceptance. Alert acknowledgement is already enabled for T048; it remains an authenticated operation, not a fixture fallback. Comprehensive 2.1 still needs separate approved route/schema work; do not silently invent it.
+See `docs/phase4-integration-verification.json` for the exact recorded commands/results and the redacted actual HTTP report. Current totals: **39 Node frontend tests** (23 existing + 16 new orchestration checks), **355 Python checks** (348 existing backend + 7 probe checks), frontend lint/TypeScript/build, Ruff lint/format and complete installed headless Edge workflow at 1440/390/320 widths. One pre-existing Starlette/httpx deprecation remains. New orchestration/SQL unit mocks are explicitly test-only; no real credentials/database verification is substituted.
 
-**Braydin:** provide local/public Auth0 SPA settings, configured audience/claims and crew/supervisor accounts, matching backend validation and assigned-site/organization seed data; no secrets in Git. Configure Tiger Data and durable Vultr photo storage with the owners. Complete T025/T026 verification and T057-T060 Gemini endpoints/fallbacks, radius/suggestion confirmation semantics. Instructions remain human-approved. Re-run mocked and actual login/logout/expired-token/role transition tests; do not enable a bypass to close T066.
+The existing browser workflow still exercises crew ack/report and supervisor review/confirm/send in demo, 55-point map/list, exact-site advisory, generated/fallback text, mock provider transitions/HTTP failures, phone/touch/labels/focus and fixture-off/invalid modes. Early configuration-server checks exceeded the old 10-second cold-start limit; final measured runs pass at 13-15 seconds with isolated caches/30-second allowance. This was developer-server compilation, not a real Auth0 login measurement.
 
-**Cache:** the next integration to unblock is T063 after those credentials and seed prerequisites are available; the shared view/client is ready. Then verify the real lifecycle and T068 without checking tasks from fixtures. Review/publish with Rudra; no merge/deployment authorization is implied. **Nick:** prior work remains preserved; no parallel remaining implementation is assigned. **Claude:** styling boundaries and regression commands are in `FRONTEND_REDESIGN_HANDOFF.md`.
+Backend requirements now include Rudra's declared boto3/python-multipart additions; those were installed into the existing local test environment, with no Cache manifest change. No ML behavior/model/artifact changed or training/evaluation was rerun.
+
+## Precise owner actions and next acceptance
+
+**Braydin:** configure the private Tiger Data URL/TLS and initialized schema, import real EIA records via the existing importer, and supply organizations/teams/memberships linked to actual Auth0 subjects. The existing seed command alone inserts no demo rows. Configure the public SPA/domain/audience, RBAC/roles Action, callback/logout origins and both real accounts; verify T025/T026. Keep DEV_AUTH_BYPASS=false. Provision Vultr storage and implement T057-T060 Gemini endpoints/fallbacks/functions; no credentials in browser or Git.
+
+**Rudra:** review the narrow T053 client/photo requirement and private photo retrieval gap. Keep the published request/response and backend scope authoritative; review Nick's T054/T054A/T055 implementation. **Nick:** implement the newly assigned report review/notice confirmation and confirming-supervisor instruction delivery plus confirmed-report scoring under those task criteria. Those missing routes are not implemented by Cache.
+
+**Cache:** after configuration, run the existing real Auth0 app and the new checker, verify T063/T066 real role views and direct API scope, then T064 with an actual database-stored simulated test alert and browser reload. After Nick/Braydin publish remaining routes, complete T065/T067/T068. No phase-4 task can currently be accepted with real services; the next acceptance to unblock is **T063**. Run and private/manual evidence checklist: [frontend/LIVE_INTEGRATION.md](../frontend/LIVE_INTEGRATION.md). Separate visual redesign remains in the existing Claude handoff.

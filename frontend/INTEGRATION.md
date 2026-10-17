@@ -40,6 +40,8 @@ Legacy canonical fixture scores containing a `model` factor are withheld and exc
 
 ## Real Auth0/API mode
 
+Phase-4 current setup, redacted readiness command, private real-account checker and per-task browser criteria: [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md). PR #19 is now merged; the continuation incorporates main `9ba1b7c` and T053 report list/create. The earlier foundation validation below remains historical evidence.
+
 Set the existing public values in `frontend/.env.local` using `auth/SETUP.md`, then restart Vite:
 
 ```dotenv
@@ -55,7 +57,7 @@ Configure the actual Auth0 application callback/logout URLs for localhost:5173 a
 
 An empty API base uses same-origin `/api`. Vite proxies it to the existing FastAPI at `127.0.0.1:8000`; start that backend using its own documented environment. An absolute API base requires owner-configured CORS. Production hosting must route `/api` to FastAPI; Vite's development proxy is not deployment configuration. HTTP is allowed only for loopback; remote APIs require HTTPS. No tokens are stored by the demo client and no redirects or fake development-role headers are sent.
 
-The shared `HttpClient` supports published canonical request types and routes, multipart `ReportCreate` with `photo`, review/confirmation/instruction bodies, briefing/explanation and the separately published optional T050 `event_outlook`. Verified main `723a5b8` publishes site reads plus T048 alert listing/acknowledgement. The client requests `state=all`, enables acknowledgement only for active alerts, and refreshes shared views after the server responds. Response Date headers correct the display clock estimate; an elapsed countdown still cannot change server state. Separate `capabilities.reports`, `.hazards` and `.ai` remain false until those routes are published and tested. Enable each deliberately after owner review. There is no automatic POST retry.
+The shared `HttpClient` supports published canonical request types and routes, multipart `ReportCreate` with `photo`, review/confirmation/instruction bodies, briefing/explanation and the separately published optional T050 `event_outlook`. Verified main `9ba1b7c` publishes site reads, T048 alert listing/acknowledgement and T053 report listing/create. The client requests `state=all`, enables acknowledgement only for active alerts, and refreshes shared views after the server responds. Response Date headers correct the display clock estimate; an elapsed countdown still cannot change server state. `capabilities.reports` now enables published list/create. Separate `.reviewReports`, `.hazards` and `.ai` remain false until review/confirmation/instruction/Gemini routes are published and tested. Live present reports require a photo; absent reports do not. Enable each deliberately after owner review. There is no automatic POST retry.
 
 `401`, `403`, `404`, `409`, `422`, `503`, invalid JSON, token acquisition failure, request timeout and network failure have explicit UI outcomes. Live failure never switches to fixtures. Missing Auth0 settings show the existing provider's unconfigured sign-in state. Missing Tiger Data configuration remains a service blocker, not permission for a local database or bypass. Live lists/details share the same view components as demos; authenticated successful real data is not yet verified locally.
 
@@ -68,11 +70,11 @@ From `frontend/`, with Vite running for the browser check:
 ```powershell
 npm run lint
 npm run build
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs
+node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Build includes TypeScript. The focused suite has 23 tests. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+Build includes TypeScript. The focused suite now has 39 tests (23 foundation and 16 integration-orchestration tests); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
 
 For the built demo, run `npm run preview -- --host localhost --port 5174 --strictPort` in a second terminal after building, then `node scripts/check-shell.mjs http://localhost:5174/ --production`. This exercises the same demo lifecycle against static production assets and verifies that the mocked auth harness is absent; compile-time mode/provider tests run only against the development server. A fresh committed frontend export at `4a9e44f`, with no `.env`, cache, Python or model artifacts copied, passed `npm ci`, build and this full production-bundle browser check. The existing Auth0 dependency's postinstall allowScripts warning did not prevent installation/build; npm reported zero known vulnerabilities at that check.
 

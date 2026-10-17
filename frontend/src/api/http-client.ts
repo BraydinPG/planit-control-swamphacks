@@ -11,10 +11,11 @@ import { ApiError, type Client, type SiteRecord } from './contracts'
 
 export class HttpClient implements Client {
   mode = 'live' as const
-  // T048 is published; other write routes are still absent. Enable each deliberately after review.
+  // Published T048/T053. Review, notice instructions and AI remain separate owner dependencies.
   capabilities = {
     acknowledge: true,
-    reports: false,
+    reports: true,
+    reviewReports: false,
     hazards: false,
     ai: false,
   }

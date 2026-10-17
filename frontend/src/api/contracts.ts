@@ -18,6 +18,7 @@ export interface Client {
   capabilities: {
     acknowledge: boolean
     reports: boolean
+    reviewReports: boolean
     hazards: boolean
     ai: boolean
   }

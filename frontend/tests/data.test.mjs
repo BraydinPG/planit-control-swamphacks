@@ -282,7 +282,8 @@ test('published T048 client requests all states, sends authenticated acknowledge
   )
   assert(api.capabilities.acknowledge)
   assert(
-    !api.capabilities.reports &&
+    api.capabilities.reports &&
+      !api.capabilities.reviewReports &&
       !api.capabilities.hazards &&
       !api.capabilities.ai,
   )
