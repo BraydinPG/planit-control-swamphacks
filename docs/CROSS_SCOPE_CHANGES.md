@@ -11,9 +11,13 @@ base main `ca99e64`, no unmerged dependency; Rudra PR #38 remains independent.
   this log records ownership. `tasks.md` and all teammate implementation files
   are unchanged. Exact inputs, schemas, examples and acceptance proposals for
   Rudra/Claude are in `ml/EVENT_OUTLOOKS.md` and `ml/fixtures/event_outlooks/`.
-- Initial verification: 50 focused checks; complete ML/backend 1,016 before the
-  final phase-identity check; 103 frontend tests, lint/TypeScript/build pass.
-  Final results/publication: `ml/reports/event_outlooks_verification.json`.
+- Final verification: 51 focused checks; complete ML/backend 1,018; 103 frontend
+  tests, lint/TypeScript/build pass. Offline browser at1440/390 renders16 cases/18
+  cards without external requests/exceptions. Clean tracked-source export with
+  existing pinned dependencies degrades honestly without artifacts, then restores
+  all six via verified local reuse and matches four canonical responses.
+- PR #39 is open against main (no dependency); implementation `9a77360`, hardening
+  `ef35343`; final evidence: `ml/reports/event_outlooks_verification.json`. No merge.
 - No authenticated production integration, event activation feed, score/alert
   change or newly validated local probability. T050A remains pending with Rudra;
   source publication/retrieval and hypothetical activation are separately labeled.

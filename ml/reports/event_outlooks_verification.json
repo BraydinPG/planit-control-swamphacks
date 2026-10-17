@@ -1,0 +1,428 @@
+{
+  "verified_at_utc": "2026-10-17T17:18:21.181056+00:00",
+  "branch": "feature/cache-multi-event-outlooks",
+  "base_commit": "ca99e64d353a0fba83e0c512dcb31141060c2370",
+  "implementation_commit": "ef35343e58127913bd4f5491ec84af95b7becaf6",
+  "pr_status": "open",
+  "python": "3.14.5",
+  "tests": {
+    "baseline_focused": {
+      "command": "python -m pytest ml/tests/test_prediction.py ml/tests/test_multidisaster.py -q",
+      "passed": 29
+    },
+    "new_focused": {
+      "command": "python -m pytest ml/tests/test_event_outlooks.py -q",
+      "passed": 51,
+      "seconds": 1.9
+    },
+    "full_ml_backend": {
+      "command": "python -m pytest -c backend/pyproject.toml ml/tests backend/tests -q",
+      "passed": 1018,
+      "ml_collected": 297,
+      "backend_collected": 721,
+      "seconds": 28.16,
+      "warnings": [
+        "Existing Starlette TestClient/httpx deprecation"
+      ]
+    },
+    "frontend": {
+      "command": "node --test tests/*.test.mjs (frontend/)",
+      "passed": 103,
+      "seconds": 56.6077,
+      "live_integration": false
+    },
+    "python_lint_format": {
+      "commands": [
+        "python -m ruff check ml/event_outlooks ml/event_outlook_preview.py ml/tests/test_event_outlooks.py",
+        "python -m ruff format --check ml/event_outlooks ml/event_outlook_preview.py ml/tests/test_event_outlooks.py"
+      ],
+      "passed": true,
+      "files": 8
+    },
+    "frontend_checks": {
+      "commands": [
+        "npm.cmd run lint",
+        "npm.cmd run build"
+      ],
+      "passed": true,
+      "typescript_included_in_build": true
+    }
+  },
+  "preview": {
+    "contract_version": "ml-event-outlooks-1.0.0",
+    "cases": {
+      "flood": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "flash-flood": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "high-wind": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "heavy-rain": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "winter-storm": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "heat-station-replay": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "nhc-helene-issued": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "usgs-aftershock-issued": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "wildfire-unsupported": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "missing-model": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "corrupt-model": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "no-confirmed-event": {
+        "status": "not_applicable",
+        "events": 0,
+        "available": 0
+      },
+      "warning-only-unconfirmed": {
+        "status": "not_applicable",
+        "events": 1,
+        "available": 0
+      },
+      "multiple-events": {
+        "status": "partial",
+        "events": 4,
+        "available": 3
+      },
+      "nhc-product-unavailable": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "usgs-product-unavailable": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      }
+    },
+    "qualified_models_used": [
+      "Flash Flood",
+      "Flood",
+      "Heat Index Exceedance",
+      "Heavy Rain",
+      "High Wind",
+      "Winter Storm"
+    ],
+    "official_product_examples": [
+      "official_event_forecast",
+      "official_aftershock_forecast"
+    ],
+    "network_requests_during_preview": 0,
+    "production_eligibility": false,
+    "site_hazard_probabilities_validated": false
+  },
+  "browser": {
+    "checks": [
+      {
+        "width": 1440,
+        "sections": 16,
+        "cards": 18,
+        "body_overflow": false,
+        "anchor_navigation": true
+      },
+      {
+        "width": 390,
+        "sections": 16,
+        "cards": 18,
+        "body_overflow": false,
+        "anchor_navigation": true
+      }
+    ],
+    "external_http_requests": 0,
+    "browser_exceptions": 0,
+    "mode": "local file; offline research/replay; no application integration",
+    "html_sha256": "156176509cdcfb6dfd62223b00ef05d13440e5a5e50239bc1715330f1d47b5a8",
+    "html_unchanged_after_final_source_hardening": true
+  },
+  "clean_source": {
+    "models_initially_absent": true,
+    "no_artifact_examples": {
+      "flood": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "flash-flood": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "high-wind": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "heavy-rain": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "winter-storm": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "heat-station-replay": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "nhc-helene-issued": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "usgs-aftershock-issued": {
+        "status": "available",
+        "events": 1,
+        "available": 1
+      },
+      "wildfire-unsupported": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "missing-model": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "corrupt-model": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "no-confirmed-event": {
+        "status": "not_applicable",
+        "events": 0,
+        "available": 0
+      },
+      "warning-only-unconfirmed": {
+        "status": "not_applicable",
+        "events": 1,
+        "available": 0
+      },
+      "multiple-events": {
+        "status": "unavailable",
+        "events": 4,
+        "available": 0
+      },
+      "nhc-product-unavailable": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      },
+      "usgs-product-unavailable": {
+        "status": "unavailable",
+        "events": 1,
+        "available": 0
+      }
+    },
+    "artifact_reuse_verified": [
+      "Flood",
+      "High Wind",
+      "Flash Flood",
+      "Heavy Rain",
+      "Winter Storm",
+      "Heat Index Exceedance"
+    ],
+    "ready_summary": {
+      "contract_version": "ml-event-outlooks-1.0.0",
+      "cases": {
+        "flood": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "flash-flood": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "high-wind": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "heavy-rain": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "winter-storm": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "heat-station-replay": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "nhc-helene-issued": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "usgs-aftershock-issued": {
+          "status": "available",
+          "events": 1,
+          "available": 1
+        },
+        "wildfire-unsupported": {
+          "status": "unavailable",
+          "events": 1,
+          "available": 0
+        },
+        "missing-model": {
+          "status": "unavailable",
+          "events": 1,
+          "available": 0
+        },
+        "corrupt-model": {
+          "status": "unavailable",
+          "events": 1,
+          "available": 0
+        },
+        "no-confirmed-event": {
+          "status": "not_applicable",
+          "events": 0,
+          "available": 0
+        },
+        "warning-only-unconfirmed": {
+          "status": "not_applicable",
+          "events": 1,
+          "available": 0
+        },
+        "multiple-events": {
+          "status": "partial",
+          "events": 4,
+          "available": 3
+        },
+        "nhc-product-unavailable": {
+          "status": "unavailable",
+          "events": 1,
+          "available": 0
+        },
+        "usgs-product-unavailable": {
+          "status": "unavailable",
+          "events": 1,
+          "available": 0
+        }
+      },
+      "qualified_models_used": [
+        "Flash Flood",
+        "Flood",
+        "Heat Index Exceedance",
+        "Heavy Rain",
+        "High Wind",
+        "Winter Storm"
+      ],
+      "official_product_examples": [
+        "official_event_forecast",
+        "official_aftershock_forecast"
+      ],
+      "network_requests_during_preview": 0,
+      "production_eligibility": false,
+      "site_hazard_probabilities_validated": false
+    },
+    "no_artifact_preview_seconds": 0.3103103000030387,
+    "with_artifact_preview_seconds": 0.17627959998208098,
+    "socket_connections_allowed": false,
+    "canonical_response_examples_equal": 4,
+    "training_performed": false,
+    "fresh_dependency_install_this_run": false,
+    "environment": "Existing pinned Python 3.14.5 environment; clean Git export has no private configuration, model files or source archives initially",
+    "source_commit": "ef35343e58127913bd4f5491ec84af95b7becaf6",
+    "clean_source_path": "C:\\Users\\cache\\AppData\\Local\\Temp\\planit-multi-event-clean-final-p6x9_y6b\\repo"
+  },
+  "sources": {
+    "helene-015": {
+      "provider": "NHC",
+      "issued_at_utc": "2024-09-27T03:00:00Z",
+      "retrieved_at_utc": "2026-10-17T17:06:56.115063Z",
+      "source_url": "https://ftp.nhc.noaa.gov/atcf/archive/2024/messages/al092024.fstadv.015",
+      "sha256": "2fb53989a75f7d0045616ba09763f2c60d3af1cec939223fb692be3580800af5",
+      "historical_operational_availability_verified": false
+    },
+    "ridgecrest-oaf": {
+      "provider": "USGS",
+      "issued_at_utc": "2026-09-03T03:30:03.671000Z",
+      "retrieved_at_utc": "2026-10-17T17:06:59.758600Z",
+      "source_url": "https://earthquake.usgs.gov/product/oaf/ci38457511/us/1788406203671/forecast.json",
+      "sha256": "8ad8a8332c8e349ae847b46b831401c9fa0f738fbe9297ed30e590ca02584c0c",
+      "historical_operational_availability_verified": false
+    }
+  },
+  "protected_file_sha256_lf_normalized": {
+    "tasks.md": "bb9ed5df4ccf0e30dffdfe1931ccf92d37ae413b436d902c91cb5be78a7939c8",
+    "AGENTS.md": "ebbf11c8c575882c668c7acac3437f403ba277bcb9f190cfe53d8ecde883ef07",
+    "ml/reports/multidisaster/registry.json": "2f3e3d5ff209a5d23110ab115df503885b7337781e90ac081a2c8c0e73f71571",
+    "ml/model_reference.json": "93a7385abc8d5d0966bb7d6182eb0ae259a6c4e3e8f4dc3e621ff99957f51a4c",
+    "ml/dispatch.py": "04a9996c2cbfd308919022d96dcb21d7c90d2f558a06020df9b728160252d378",
+    "ml/backend_adapter.py": "19d00d4276eb01c43ea133c0ab90f2ffef455a8b19bb07e050c6684819d508c9",
+    "ml/MULTIDISASTER_EVALUATION.md": "9c1b5e34a377311ff1551c4dfbc6c18b8aeb2cefec4cd2917f860dedc4cfc3f4",
+    "ml/EVALUATION.md": "367f854aaf4f8588591036cbc8489f3bd06640943a1c9e26f66848fb24600bba"
+  },
+  "boundaries": {
+    "teammate_implementation_files_changed": false,
+    "tasks_changed": false,
+    "canonical_contracts_changed": false,
+    "ml_models_retrained": false,
+    "holdout_evaluations_rerun": false,
+    "new_monte_carlo_study": false,
+    "new_site_probability_validated": false,
+    "authenticated_server_acceptance": false,
+    "operational_eligibility": false
+  },
+  "limitations": [
+    "16 offline demonstrations, with hypothetical activation/site incident links; genuine official product records are explicitly identified",
+    "Clean tracked-source export uses existing pinned dependencies, not a newly installed environment this run",
+    "USGS captured September 2026 forecast concerns the July 2019 Ridgecrest sequence; it is not an early-response forecast",
+    "Source whitespace preserved exactly; scoped Git whitespace attribute permits original agency blank lines",
+    "T050A and T063-T068 remain unchanged; owner API/authorization/ingestion/UI integration is not completed"
+  ],
+  "implementation_checkpoints": [
+    "9a7736069447c9862d5c14f4ee23117cb1f640d8",
+    "ef35343e58127913bd4f5491ec84af95b7becaf6"
+  ],
+  "pr_url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/39",
+  "git_diff_check_passed": true
+}
