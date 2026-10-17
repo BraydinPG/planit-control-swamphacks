@@ -275,6 +275,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
 | `GET /api/sites/{id}/briefing` | The site's latest stored next-day briefing (crew: their team's site; supervisors: their organization's team sites). When there is none to show, the 403 or 404 carries `{"detail": {"reason", "message"}}`: `not_your_site`, `no_team`, `not_linked`, `other_organization`, `no_supervisor`, or `not_generated`. |
 | `GET /api/briefings` | The latest briefing for every team site in the caller's organization (crew and supervisors). |
+| `GET /api/sites/{id}/species` | Read-only species context for a team site: USFWS IPaC federally listed species whose range overlaps the site (regional context, not a sighting), USFWS critical habitat nearby, curated encounter guidance, and the site's crew wildlife reports kept separate. Same access as site detail; 404 `no_team` for sites without a team. Never affects the score, alerts, or clearance. See `docs/SPECIES_CONTEXT.md`. |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.
 

@@ -1,0 +1,912 @@
+{
+  "site_id": "site-demo-everglades",
+  "source": "USFWS IPaC Location API",
+  "source_url": "https://ipac.ecosphere.fws.gov/location/api",
+  "api_version": "1.2.0",
+  "data_state": "simulated",
+  "simulated": true,
+  "fetched_at": "2026-10-17T18:00:00Z",
+  "footprint_description": "About 1 km square centered on the site (Miami-Dade County, Florida)",
+  "location_description": "Miami-Dade County, Florida",
+  "field_office": {
+    "name": "Florida Ecological Services Field Office",
+    "phone": "(352) 448-9151",
+    "email": null
+  },
+  "species": [
+    {
+      "id": "ipac:Population$Sid[8396]",
+      "common_name": "American alligator",
+      "scientific_name": "Alligator mississippiensis",
+      "group": "Reptiles",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Similarity of Appearance (Threatened)",
+        "status_code": "SAT",
+        "description": "A species that is threatened due to similarity of appearance with another listed species and is listed for its protection",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/776",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[8396]"
+      },
+      "encounter": {
+        "hazard": "Large reptile that can bite. Most active between dusk and dawn.",
+        "actions": [
+          "Keep your distance if you see one.",
+          "Never feed an alligator. Feeding is illegal in Florida.",
+          "Report an alligator that threatens people or property to FWC."
+        ],
+        "contact": "FWC Nuisance Alligator Hotline 866-392-4286 (866-FWC-GATOR)",
+        "source": "Florida Fish and Wildlife Conservation Commission (FWC), Living with Alligators",
+        "source_url": "https://myfwc.com/conservation/you-conserve/wildlife/alligators/",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:american-alligator"
+      },
+      "summary": "American alligator: federal status Similarity of Appearance (Threatened). Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[8396]",
+        "guidance:american-alligator"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[176]",
+      "common_name": "American crocodile",
+      "scientific_name": "Crocodylus acutus",
+      "group": "Reptiles",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/6604",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[176]"
+      },
+      "encounter": {
+        "hazard": "Large reptile that can bite. Most active between dusk and dawn.",
+        "actions": [
+          "Keep your distance if you see one.",
+          "Never feed a crocodile, directly or by leaving fish scraps.",
+          "Report a crocodile that threatens people or property to FWC."
+        ],
+        "contact": "FWC Nuisance Alligator Hotline 866-392-4286 (866-FWC-GATOR)",
+        "source": "Florida Fish and Wildlife Conservation Commission (FWC), American Crocodile",
+        "source_url": "https://myfwc.com/wildlifehabitats/wildlife/american-crocodile/",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:american-crocodile"
+      },
+      "summary": "American crocodile: federal status Threatened. Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[176]",
+        "guidance:american-crocodile"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[173]",
+      "common_name": "Eastern indigo snake",
+      "scientific_name": "Drymarchon couperi",
+      "group": "Reptiles",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/646",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[173]"
+      },
+      "encounter": {
+        "hazard": null,
+        "actions": [
+          "Stop activity near the snake until your site's protection procedure is followed.",
+          "Do not harass, harm, capture, or collect it. Federal penalties apply.",
+          "Notify the USFWS Florida office as your site procedure directs."
+        ],
+        "contact": "USFWS Florida Ecological Services Office (352) 448-9151",
+        "source": "USFWS, Standard Protection Measures for the Eastern Indigo Snake",
+        "source_url": "https://www.fws.gov/story/eastern-indigo-snake-conservation",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:eastern-indigo-snake"
+      },
+      "summary": "Eastern indigo snake: federal status Threatened. Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[173]",
+        "guidance:eastern-indigo-snake"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[9725]",
+      "common_name": "Florida bonneted bat",
+      "scientific_name": "Eumops floridanus",
+      "group": "Mammals",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/8630",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[9725]"
+      },
+      "encounter": {
+        "hazard": "Bats can carry rabies, and a bat bite may not be visible.",
+        "actions": [
+          "Do not touch or handle a bat, alive or dead.",
+          "If you have contact with a bat, wash the area with soap and water.",
+          "Report any bat contact to your supervisor and a health professional promptly."
+        ],
+        "contact": "Local health department or animal control",
+        "source": "U.S. Centers for Disease Control and Prevention (CDC), Rabies",
+        "source_url": "https://www.cdc.gov/rabies/",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:bats"
+      },
+      "summary": "Florida bonneted bat: federal status Endangered. Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[9725]",
+        "guidance:bats"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[8]",
+      "common_name": "Florida panther",
+      "scientific_name": "Puma (=Felis) concolor coryi",
+      "group": "Mammals",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/1763",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[8]"
+      },
+      "encounter": {
+        "hazard": "Large cat. FWC advises how to respond to a close encounter.",
+        "actions": [
+          "Do not run. Give the animal room to leave.",
+          "Face the animal, stand tall, and do not crouch or bend over.",
+          "Make yourself look larger, for example by raising your arms.",
+          "If attacked, fight back without turning your back."
+        ],
+        "contact": "FWC, for a dead or injured panther: 888-404-3922",
+        "source": "Florida Fish and Wildlife Conservation Commission (FWC), Living with Panthers",
+        "source_url": "https://myfwc.com/wildlifehabitats/wildlife/panther/living/",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:florida-panther"
+      },
+      "summary": "Florida panther: federal status Endangered. Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[8]",
+        "guidance:florida-panther"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[8061]",
+      "common_name": "Puma (=mountain lion)",
+      "scientific_name": "Puma (=Felis) concolor (all subsp. except coryi)",
+      "group": "Mammals",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Similarity of Appearance (Threatened)",
+        "status_code": "SAT",
+        "description": "A species that is threatened due to similarity of appearance with another listed species and is listed for its protection",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/6049",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[8061]"
+      },
+      "encounter": {
+        "hazard": "Large cat. FWC advises how to respond to a close encounter.",
+        "actions": [
+          "Do not run. Give the animal room to leave.",
+          "Face the animal, stand tall, and do not crouch or bend over.",
+          "Make yourself look larger, for example by raising your arms.",
+          "If attacked, fight back without turning your back."
+        ],
+        "contact": "FWC, for a dead or injured panther: 888-404-3922",
+        "source": "Florida Fish and Wildlife Conservation Commission (FWC), Living with Panthers",
+        "source_url": "https://myfwc.com/wildlifehabitats/wildlife/panther/living/",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:florida-panther"
+      },
+      "summary": "Puma (=mountain lion): federal status Similarity of Appearance (Threatened). Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[8061]",
+        "guidance:florida-panther"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[11365]",
+      "common_name": "Tricolored bat",
+      "scientific_name": "Perimyotis subflavus",
+      "group": "Mammals",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Proposed Endangered",
+        "status_code": "PE",
+        "description": "Species proposed for official listing as endangered",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/10515",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[11365]"
+      },
+      "encounter": {
+        "hazard": "Bats can carry rabies, and a bat bite may not be visible.",
+        "actions": [
+          "Do not touch or handle a bat, alive or dead.",
+          "If you have contact with a bat, wash the area with soap and water.",
+          "Report any bat contact to your supervisor and a health professional promptly."
+        ],
+        "contact": "Local health department or animal control",
+        "source": "U.S. Centers for Disease Control and Prevention (CDC), Rabies",
+        "source_url": "https://www.cdc.gov/rabies/",
+        "review_status": "pending_review",
+        "reviewed_by": null,
+        "evidence_id": "guidance:bats"
+      },
+      "summary": "Tricolored bat: federal status Proposed Endangered. Known range, not a sighting. See encounter guidance.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[11365]",
+        "guidance:bats"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[11319]",
+      "common_name": "Eastern Black rail",
+      "scientific_name": "Laterallus jamaicensis jamaicensis",
+      "group": "Birds",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/10477",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[11319]"
+      },
+      "encounter": null,
+      "summary": "Eastern Black rail: federal status Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[11319]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1221]",
+      "common_name": "Everglade snail kite",
+      "scientific_name": "Rostrhamus sociabilis plumbeus",
+      "group": "Birds",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/7713",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1221]"
+      },
+      "encounter": null,
+      "summary": "Everglade snail kite: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1221]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[10710]",
+      "common_name": "Monarch butterfly",
+      "scientific_name": "Danaus plexippus",
+      "group": "Insects",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Proposed Threatened",
+        "status_code": "PT",
+        "description": "Species proposed for official listing as threatened",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/9743",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[10710]"
+      },
+      "encounter": null,
+      "summary": "Monarch butterfly: federal status Proposed Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[10710]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[7]",
+      "common_name": "West Indian Manatee",
+      "scientific_name": "Trichechus manatus",
+      "group": "Mammals",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": true,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/4469",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[7]"
+      },
+      "encounter": null,
+      "summary": "West Indian Manatee: federal status Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[7]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[953]",
+      "common_name": "Beach jacquemontia",
+      "scientific_name": "Jacquemontia reclinata",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/1277",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[953]"
+      },
+      "encounter": null,
+      "summary": "Beach jacquemontia: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[953]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[5233]",
+      "common_name": "Blodgett's silverbush",
+      "scientific_name": "Argythamnia blodgettii",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/6823",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[5233]"
+      },
+      "encounter": null,
+      "summary": "Blodgett's silverbush: federal status Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[5233]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[8336]",
+      "common_name": "Cape Sable Thoroughwort",
+      "scientific_name": "Chromolaena frustrata",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/4733",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[8336]"
+      },
+      "encounter": null,
+      "summary": "Cape Sable Thoroughwort: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[8336]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1015]",
+      "common_name": "Carter's mustard",
+      "scientific_name": "Warea carteri",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/5583",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1015]"
+      },
+      "encounter": null,
+      "summary": "Carter's mustard: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1015]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[7206]",
+      "common_name": "Carter's small-flowered flax",
+      "scientific_name": "Linum carteri carteri",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/7208",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[7206]"
+      },
+      "encounter": null,
+      "summary": "Carter's small-flowered flax: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[7206]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1043]",
+      "common_name": "Crenulate lead-plant",
+      "scientific_name": "Amorpha crenulata",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/6470",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1043]"
+      },
+      "encounter": null,
+      "summary": "Crenulate lead-plant: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1043]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1229]",
+      "common_name": "Deltoid spurge",
+      "scientific_name": "Chamaesyce deltoidea ssp. deltoidea",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/199",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1229]"
+      },
+      "encounter": null,
+      "summary": "Deltoid spurge: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1229]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[4395]",
+      "common_name": "Everglades bully",
+      "scientific_name": "Sideroxylon reclinatum ssp. austrofloridense",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/4735",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[4395]"
+      },
+      "encounter": null,
+      "summary": "Everglades bully: federal status Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[4395]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[4420]",
+      "common_name": "Florida brickell-bush",
+      "scientific_name": "Brickellia mosieri",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/956",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[4420]"
+      },
+      "encounter": null,
+      "summary": "Florida brickell-bush: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[4420]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[4712]",
+      "common_name": "Florida pineland crabgrass",
+      "scientific_name": "Digitaria pauciflora",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/3728",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[4712]"
+      },
+      "encounter": null,
+      "summary": "Florida pineland crabgrass: federal status Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[4712]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[5273]",
+      "common_name": "Florida prairie-clover",
+      "scientific_name": "Dalea carthagenensis floridana",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/2300",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[5273]"
+      },
+      "encounter": null,
+      "summary": "Florida prairie-clover: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[5273]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1525]",
+      "common_name": "Florida semaphore Cactus",
+      "scientific_name": "Consolea corallicola",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/4356",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1525]"
+      },
+      "encounter": null,
+      "summary": "Florida semaphore Cactus: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1525]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[4253]",
+      "common_name": "Pineland sandmat",
+      "scientific_name": "Chamaesyce deltoidea pinetorum",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Threatened",
+        "status_code": "T",
+        "description": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/1914",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[4253]"
+      },
+      "encounter": null,
+      "summary": "Pineland sandmat: federal status Threatened. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[4253]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1535]",
+      "common_name": "Sand flax",
+      "scientific_name": "Linum arenicola",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/4313",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1535]"
+      },
+      "encounter": null,
+      "summary": "Sand flax: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1535]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[1044]",
+      "common_name": "Small's milkpea",
+      "scientific_name": "Galactia smallii",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/3360",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[1044]"
+      },
+      "encounter": null,
+      "summary": "Small's milkpea: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[1044]"
+      ]
+    },
+    {
+      "id": "ipac:Population$Sid[989]",
+      "common_name": "Tiny polygala",
+      "scientific_name": "Polygala smallii",
+      "group": "Flowering Plants",
+      "match_basis": "regional_range",
+      "match_note": "Listed by IPaC because its known range overlaps the area around this site. Not a sighting.",
+      "protection": {
+        "jurisdiction": "U.S. federal (Endangered Species Act)",
+        "status": "Endangered",
+        "status_code": "E",
+        "description": "A species in danger of extinction throughout all or a significant portion of its range",
+        "critical_habitat_here": false,
+        "source": "USFWS IPaC Location API 1.2.0",
+        "source_url": "https://ecos.fws.gov/ecp/species/996",
+        "as_of": "2026-10-17T18:00:00Z",
+        "evidence_id": "ipac:Population$Sid[989]"
+      },
+      "encounter": null,
+      "summary": "Tiny polygala: federal status Endangered. Known range, not a sighting.",
+      "summary_by": "fallback",
+      "evidence_ids": [
+        "ipac:Population$Sid[989]"
+      ]
+    }
+  ],
+  "critical_habitat": [
+    {
+      "id": "crithab:proposed:72",
+      "common_name": "West Indian Manatee",
+      "scientific_name": "Trichechus manatus",
+      "status": "Proposed",
+      "listing_status": "Threatened",
+      "federal_register": "89FR78134 78198",
+      "published": "2024-09-24",
+      "source": "USFWS Critical Habitat map service",
+      "source_url": "https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/USFWS_Critical_Habitat/FeatureServer/2",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                -80.46008,
+                25.73305
+              ],
+              [
+                -80.46008,
+                25.76134
+              ],
+              [
+                -80.4979,
+                25.76115
+              ],
+              [
+                -80.49696,
+                25.73305
+              ],
+              [
+                -80.49707,
+                25.73305
+              ],
+              [
+                -80.4982,
+                25.76123
+              ],
+              [
+                -80.5024,
+                25.7613
+              ],
+              [
+                -80.4982,
+                25.76151
+              ],
+              [
+                -80.48331,
+                25.77516
+              ],
+              [
+                -80.48253,
+                25.7829
+              ],
+              [
+                -80.48288,
+                25.78695
+              ],
+              [
+                -80.48256,
+                25.78695
+              ],
+              [
+                -80.48213,
+                25.78335
+              ],
+              [
+                -80.48296,
+                25.77508
+              ],
+              [
+                -80.49774,
+                25.7622
+              ],
+              [
+                -80.49774,
+                25.7613
+              ],
+              [
+                -80.49644,
+                25.76128
+              ],
+              [
+                -80.46008,
+                25.76129
+              ],
+              [
+                -80.46008,
+                25.73305
+              ]
+            ]
+          ]
+        ]
+      },
+      "geometry_note": null
+    }
+  ],
+  "critical_habitat_state": "simulated",
+  "critical_habitat_source": "USFWS Critical Habitat map service",
+  "wildlife_reports": [
+    {
+      "report_id": "report-wildlife-1",
+      "reported_at": "2026-10-17T15:40:00Z",
+      "hazard_present": true,
+      "confirmation": "confirmed",
+      "match_basis": "confirmed_report",
+      "note": "Alligator on the east access road."
+    }
+  ],
+  "generated_by": "fallback",
+  "unknowns": [
+    "Demo fixture: a recorded IPaC and critical habitat snapshot (retrieved 2026-10-17), not a live lookup.",
+    "IPaC covers only federally listed species. Species that are not federally listed, such as the water moccasin, never appear here, so their absence says nothing about local wildlife.",
+    "State protection status (for example Florida FWC listings) is not supplied by IPaC.",
+    "IPaC gives no date for its range data. The date shown is when PlanIT Control retrieved it."
+  ],
+  "caveat": "Regional context, not a sighting. These species are listed because their known range or critical habitat overlaps the area around this site. Verify locally and follow your site's wildlife procedures. This is not legal advice and does not clear work."
+}

@@ -10,6 +10,7 @@ import type {
   ReportCreate,
   ReportReview,
   SiteDetail,
+  SiteSpeciesContext,
   SiteSummary,
 } from '../types/api'
 
@@ -38,6 +39,8 @@ export interface Client {
   instruct(id: string, instruction: string): Promise<HazardNotice>
   briefing(id: string): Promise<Briefing | null>
   briefings(): Promise<Briefing[]>
+  /** Regional species context for a team site; null when the site has no team. */
+  species(id: string): Promise<SiteSpeciesContext | null>
   /** Where the signed-in account belongs; nulls until it joins a team. */
   me(): Promise<Account>
   /** Supervisor: the organization's supervisors, teams, members and active join codes. */

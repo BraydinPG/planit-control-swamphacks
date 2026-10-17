@@ -160,6 +160,7 @@ Adapter rules:
 - `POST /api/hazards/{id}/instruction`
 - `GET /api/sites/{id}/briefing`
 - `GET /api/briefings`
+- `GET /api/sites/{id}/species` (read-only species context for team sites; see `docs/SPECIES_CONTEXT.md`)
 
 These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Rudra consumes these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
 

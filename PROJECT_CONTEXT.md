@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Site species context - 2026-10-17
+- Rudra branch `feature/rudra-species-context`: `GET /api/sites/{id}/species` for team sites only. USFWS IPaC (federal ESA listings whose range overlaps a 1 km square; regional context, never a sighting), USFWS critical habitat (final/proposed, clipped to 6 km, drawn on `SiteMap`), curated cited encounter guidance (`pending_review`), crew wildlife reports kept separate. Gemini only rewords facts; ungrounded lines fall back to a template.
+- Water moccasin is not federally listed, so IPaC never returns it; responses say so instead of inventing a row. State status unknown. No DB changes; in-memory 24 h cache.
+- Read-only: no score/alert/clearance effect (tested). Cross-scope files and review requests in CROSS_SCOPE_CHANGES top entry; details in [docs/SPECIES_CONTEXT.md](docs/SPECIES_CONTEXT.md). 782 backend / 118 frontend tests pass.
+
 ## Multi-event outlook preview - 2026-10-17
 - Cache branch `feature/cache-multi-event-outlooks` started at main `ca99e64`, then incorporated reviewed main `a7759c9` as `7c30618` after maintainers merged Rudra PR #38 and the report/map update. No unmerged dependency; both team log entries preserved. Claude's primary checkout and existing server processes are untouched. Historical branch/PR notes below are previous checkpoints, not current status.
 - [EVENT_OUTLOOKS.md](ml/EVENT_OUTLOOKS.md): `from ml.event_outlooks import EventOutlookAdapter, OutlookRequest, TrustPolicy`; independent internal `ml-event-outlooks-1.0.0`, no canonical API change. One card per event: six existing qualified duration models, issued NHC track/wind, USGS regional aftershock forecast or explicit unavailable. Default trust allowlists are empty; replay requires explicit caller policy.

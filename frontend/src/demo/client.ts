@@ -4,6 +4,7 @@ import reportsJSON from '../fixtures/reports.json'
 import alertsJSON from '../fixtures/alerts.json'
 import noticesJSON from '../fixtures/hazard-notices.json'
 import briefingsJSON from '../fixtures/briefings.json'
+import speciesJSON from '../fixtures/species-context.json'
 import references from './generated/references.json'
 import type {
   Account,
@@ -15,6 +16,7 @@ import type {
   OrganizationTeams,
   ReportCreate,
   ReportReview,
+  SiteSpeciesContext,
   SiteSummary,
   TeamMember,
   TeamRoster,
@@ -452,6 +454,13 @@ export class DemoClient implements Client {
   async briefings() {
     // Public archived fixture examples, including a template; never generated here.
     return clone(briefingsJSON as Briefing[])
+  }
+  async species(id: string) {
+    this.allowed(id)
+    // Recorded IPaC snapshot for the demo team site only; labeled simulated.
+    if (!this.state.sites.find((s) => s.id === id)?.assigned_team) return null
+    const fixture = speciesJSON as SiteSpeciesContext
+    return fixture.site_id === id ? clone(fixture) : null
   }
   async me(): Promise<Account> {
     const team = this.roster.teams[0]
