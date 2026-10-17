@@ -15,6 +15,8 @@ class SiteSummary(Schema):
     """Item of `GET /api/sites`. Field names are frozen by the AGENTS.md shared contract.
 
     The list is ordered with assigned sites first, then by risk_score descending.
+    `risk_score`, `risk_level`, and `updated_at` are null until the site has a computed
+    score. Null means "not scored yet", never "low risk".
     """
 
     id: str
@@ -22,9 +24,9 @@ class SiteSummary(Schema):
     lat: float = Field(ge=-90, le=90)
     lon: float = Field(ge=-180, le=180)
     assigned_team: TeamRef | None
-    risk_score: float = Field(ge=0, le=10)
-    risk_level: RiskLevel
-    updated_at: datetime
+    risk_score: float | None = Field(ge=0, le=10)
+    risk_level: RiskLevel | None
+    updated_at: datetime | None
     active_alerts: int = Field(ge=0)
     top_factors: list[FactorContribution]
     data_completeness: float = Field(ge=0, le=1)

@@ -314,16 +314,20 @@ export interface Explanation {
 
 // ---- sites ----
 
-/** Item of GET /api/sites. Assigned sites first, then by risk_score descending. */
+/**
+ * Item of GET /api/sites. Assigned sites first, then by risk_score descending.
+ * risk_score, risk_level, and updated_at are null until the site is scored.
+ * Show null as "Not scored yet", never as low risk.
+ */
 export interface SiteSummary {
   id: string
   name: string
   lat: number
   lon: number
   assigned_team: TeamRef | null
-  risk_score: number
-  risk_level: RiskLevel
-  updated_at: string
+  risk_score: number | null
+  risk_level: RiskLevel | null
+  updated_at: string | null
   active_alerts: number
   top_factors: FactorContribution[]
   data_completeness: number
