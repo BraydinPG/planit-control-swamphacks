@@ -1,6 +1,14 @@
-# PlanIT Control: shared project context
+# FORESITE: shared project context
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
+
+## FORESITE rebrand review - 2026-10-17
+- Official display name **FORESITE**; branch `feature/cache-foresite-rebrand` from current main `ea6dcfa`, independent of open PR50. Explicit user authorization covers application-wide branding and documentation. Prior branches/worktrees/configuration are preserved.
+- Shared shell, app-owned sign-in messages, exact browser tab, metadata/favicon title, API descriptions/errors, species note and ML preview labels updated. Existing symbol/design retained. Canonical fixture regeneration changes only one species note; six outlooks, 6.1/10 rules-0.2, alerts/report/photo/team behavior remain intact.
+- **168 frontend / 881 backend / 297 ML tests pass**; frontend lint/TypeScript/live and demo builds, backend Ruff/147-file format, desktop/phone Edge development and built-demo checks pass at 1440/390/320. Browser checks include all eleven destinations and no legacy display branding, exceptions or real backend calls. ML previews: 16 cases and 150 outputs/50 sites.
+- [Branding/deployment handoff](docs/REBRANDING.md) classifies legacy identifiers/history: Auth0 audiences/claims/IDs, storage/package/repository names, provider IDs and asset path remain. No task checkbox, runtime configuration, schema fields, scoring/ML behavior, Gemini/photo storage or infrastructure change. Local environment fingerprints unchanged; no other server stopped.
+- Deployment owner: normal frontend/backend release picks up display changes. Braydin must separately inspect/update hosted Auth0 login display branding if its legacy SPA name is shown; no tenant changes or real-role acceptance in this run. Demo remains http://localhost:5177/; do not replace another owner's 5173/8000 servers.
+- Published [PR51](https://github.com/BraydinPG/planit-control-swamphacks/pull/51), **Rebrand PlanIT Control to FORESITE**, open against main; verified implementation `e4f5555`, base `ea6dcfa`. No automatic merge or deployment.
 
 ## Frontend readability review - 2026-10-17
 - Explicit Cache authorization: application-wide copy, typography and progressive disclosure; Rudra retains frontend maintenance. Branch `feature/cache-ui-readability-polish`, initial base `5045790` (merged PR44/45), isolated functional checkout. No teammate checkout/server changes.

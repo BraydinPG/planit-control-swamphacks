@@ -1,4 +1,4 @@
-// PlanIT Control API types. Mirror of the canonical Pydantic schemas in backend/app/schemas/.
+// FORESITE API types. Mirror of the canonical Pydantic schemas in backend/app/schemas/.
 // Owned by Rudra. Do not edit field names here without a versioned contract change in AGENTS.md.
 // Timestamps are ISO-8601 strings. Fields marked `| null` are always present in responses.
 
@@ -659,7 +659,7 @@ export interface ProtectionStatus {
   critical_habitat_here: boolean | null
   source: string
   source_url: string | null
-  /** When PlanIT Control retrieved the record; IPaC gives no data vintage. */
+  /** When FORESITE retrieved the record; IPaC gives no data vintage. */
   as_of: string
   evidence_id: string
 }

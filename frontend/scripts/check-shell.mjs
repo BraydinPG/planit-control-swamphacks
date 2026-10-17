@@ -114,6 +114,19 @@ async function screenshot(name) {
   })
   await writeFile(join(output, `${name}.png`), Buffer.from(data, 'base64'))
 }
+async function checkBranding() {
+  assert.equal(await evaluate('document.title'), 'FORESITE')
+  assert.equal(
+    await evaluate("document.querySelector('meta[name=application-name]')?.content"),
+    'FORESITE',
+  )
+  assert(
+    await evaluate(
+      String.raw`!(/\bplan[ -]?it(?:[ -]?control)?\b/i.test(document.body.innerText.replace(/https?:\/\/\S+/g, ''))) && !Array.from(document.querySelectorAll('[aria-label],[alt],[title]')).some(e=>/\bplan[ -]?it(?:[ -]?control)?\b/i.test([e.getAttribute('aria-label'),e.getAttribute('alt'),e.getAttribute('title')].join(' ')))`,
+    ),
+    'Legacy branding in visible text or accessible names',
+  )
+}
 async function offModeServer(setting) {
   const listener = createServer()
   await new Promise((done) => listener.listen(0, '127.0.0.1', done))
@@ -588,6 +601,7 @@ try {
           await evaluate('document.documentElement.scrollWidth <= innerWidth'),
           `Page overflow: ${width}/${persona}/${page}`,
         )
+        await checkBranding()
         assert(
           await evaluate(
             "Array.from(document.querySelectorAll('input,select,textarea')).every(e=>e.closest('label')||e.getAttribute('aria-label')||(e.id&&document.querySelector('label[for=\"'+e.id+'\"]')))",
@@ -831,6 +845,10 @@ try {
     await loaded('Checking sign-in')
     await evaluate("window.harness.mount('no-role')")
     await loaded('No role assigned')
+    assert(
+      await evaluate("document.body.innerText.includes('FORESITE role')"),
+      'No-role sign-in message must use the current brand',
+    )
     await evaluate("window.harness.mount('dev')")
     await loaded('Development bypass roles are not accepted')
     await evaluate("window.harness.mount('crew')")

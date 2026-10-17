@@ -125,7 +125,7 @@ Protection status alone never raises the rank. Red is always paired with the tex
 
 ## Demo wording
 
-> "For the Everglades crew, PlanIT pulls the federally listed species whose range overlaps
+> "For the Everglades crew, FORESITE pulls the federally listed species whose range overlaps
 > the site from the Fish and Wildlife Service's IPaC API, plus nearby critical habitat.
 > Protection status and encounter guidance are separate and sourced. This is regional
 > context, not a sighting. The crew's own confirmed alligator report is shown apart from it.

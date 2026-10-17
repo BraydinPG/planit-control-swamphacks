@@ -1,3 +1,58 @@
+## FORESITE application rebrand (Cache for Rudra and Braydin) - 2026-10-17
+
+Explicit user authorization covers application-wide brand text and current docs.
+Branch `feature/cache-foresite-rebrand` begins at main `ea6dcfa`; open PR50 remains
+independent and preserved. Another teammate's active Vultr work is untouched.
+
+- **Rudra/frontend:** `components/shell/AppShell.tsx` wordmark/header/footer/ARIA and
+  exact document title; `index.html` and `auth-check.html` metadata; existing
+  `public/planit-mark.svg` title only (no geometry); `index.css` comment and
+  `types/api.ts` documentation only. No page layout/class/style behavior changed.
+- **Braydin/auth:** `auth/{AuthCheckPage,RequireRole}.tsx` display strings and
+  `auth/{context,roles,index}.ts` comments only; `backend/app/security/{roles,
+  dependencies}.py` documentation and the human-readable 403 message only.
+  Role/audience/claim/client/tenant/callback/guard/token logic remains unchanged.
+- **Rudra/backend:** `app/main.py` docstring/FastAPI title; `app/outlook/events.py`
+  fallback source/vintage labels; `app/schemas/{__init__,common,species}.py`
+  descriptions only. No schema field or endpoint changes.
+- **Braydin/species:** `app/species/service.py` retrieval note. Existing offline
+  canonical generator regenerates `frontend/src/fixtures/species-context.json`;
+  only that note differs, all other generated fixtures are byte-unchanged.
+- **Cache/ML:** `ml/__init__.py` docstring, `event_outlook_preview.py` and
+  `worker_preview.py` display titles, `worker/impacts.py` derived publisher label,
+  `ml/EVENT_OUTLOOKS.md` product wording. No algorithm, model name/hash/artifact,
+  gate, ID, probability, time or statistical claim changed. Local previews refreshed.
+- **Shared docs:** README product title/intro; AGENTS/spec/tasks/context product
+  titles (task checkboxes/ownership unchanged); frontend/SHELL, auth/SETUP and
+  docs/SPECIES_CONTEXT demo wording. Both `.env.example` files change comments only;
+  no configuration values changed. New `docs/REBRANDING.md` records all intentional
+  compatibility names, historical exceptions and the deployment/hosted-login handoff.
+- **Browser tests:** existing `frontend/scripts/check-shell.mjs` adds exact
+  FORESITE title/metadata and no-old-visible/accessible-name assertions across
+  eleven destinations, plus missing-role wording. No new test framework/server.
+
+Checks: **168 frontend, 881 backend and 297 ML tests pass**, frontend lint/TypeScript
+and live/demo builds, backend Ruff lint/147-file format. Installed Edge development
+and built-demo suites pass at 1440/390/320, retaining six cards, 6.1/10, alerts,
+report/photo/confirmation/instruction, teams and briefings; zero browser exceptions
+or real backend calls. Screenshots inspected. ML previews validate 16 cases and 150
+outputs/50 sites without network. Existing Starlette/bundle warnings remain.
+PowerShell required npm.cmd instead of blocked npm.ps1; policy was not changed.
+Ignored environment fingerprints unchanged; no secrets, deployment files, schemas,
+routes, model artifacts or private data added. Existing servers retained; temporary
+built-preview server closed. Detailed evidence/commands: `docs/REBRANDING.md`.
+
+**Rudra:** review text/metadata only; preserve independent PR50 context notes when
+merging. **Braydin/deployment:** normal frontend/backend build/release; independently
+inspect the external Auth0 login display name and coordinate its FORESITE branding,
+preserving all technical settings. No Vultr, tenant, DNS, secret or workflow edits.
+No tasks checked off and no real Auth0/Tiger/deployed acceptance claim. PR/commit
+publication reference follows; no automatic merge.
+
+Published [PR51](https://github.com/BraydinPG/planit-control-swamphacks/pull/51),
+**Rebrand PlanIT Control to FORESITE**, open against main; implementation `e4f5555`,
+base `ea6dcfa`. No merge, hosting/tenant update or live acceptance by Cache.
+
 ## Application-wide UI readability (Cache for Rudra) — 2026-10-17 22:23 UTC
 
 Explicit user authorization expands this run to frontend copy, typography and
