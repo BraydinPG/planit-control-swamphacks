@@ -58,6 +58,36 @@ test('missing site briefing is empty; permission/auth/service errors never subst
     }
   }
 })
+test("backend reasons pass through; only a 'not generated' 404 is the plain empty state", async () => {
+  const reply = (status, reason, message) => async () =>
+    Response.json({ detail: { reason, message } }, { status })
+  assert.equal(
+    await client(
+      reply(404, 'not_generated', 'No briefing yet. Briefings are generated at 6 PM site-local time.'),
+    ).briefing('site-a'),
+    null,
+  )
+  const cases = [
+    [404, 'no_supervisor', 'No supervisor is assigned to this organization, so no briefing is generated.'],
+    [404, 'no_team', 'This site has no assigned team, so no briefing is generated for it.'],
+    [403, 'not_linked', "Your account isn't linked to an organization yet, so briefings can't be shown."],
+  ]
+  for (const [status, reason, message] of cases) {
+    await assert.rejects(
+      () => client(reply(status, reason, message)).briefing('site-a'),
+      (e) => e.status === status && e.reason === reason && e.detail === message,
+    )
+  }
+  await assert.rejects(
+    () => client(reply(403, 'not_linked', 'not linked')).briefings(),
+    (e) => e.status === 403 && e.reason === 'not_linked',
+  )
+  // Without a reason the generic message stays and nothing is attached.
+  await assert.rejects(
+    () => client(async () => new Response('', { status: 403 })).briefing('x'),
+    (e) => e.status === 403 && e.reason === undefined && e.detail === undefined,
+  )
+})
 test('invalid DTO, wrong site, contradictory forecast dates and invalid JSON fail closed', async () => {
   for (const value of [
     {},

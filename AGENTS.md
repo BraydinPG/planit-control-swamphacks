@@ -226,9 +226,9 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Build the P1 live feeds when P0 is stable: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
 - Wrap each of your feeds in Rudra's `cache.FeedCache`, so it tracks freshness per feed and marks stale and unavailable states. A failed refresh must never appear current. Keep each adapter replaceable.
 - Do not implement alert rules or scores. Rudra's rules read your Observations.
-- Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, enrichment, notice-radius, and instruction-suggestion calls. Briefings are generated automatically at 6 PM site-local time for every team site whose organization has a supervisor, and stored; there is no manual generation. There is no score-explanation call: the score is a deterministic weighted algorithm shown as its factor breakdown. Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
+- Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, enrichment, notice-radius, and instruction-suggestion calls. Briefings are generated automatically at 6 PM site-local time for every team site whose organization has a supervisor, and stored; there is no manual generation. There is no score-explanation call: the score is a deterministic weighted algorithm shown as its factor breakdown. Briefings and instruction suggestions include the advisory event outlook when one exists (T058B). Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
 - Register the Gemini router from `backend/app/main.py` without changing Rudra’s other routes.
-- Own Vultr deployment: deployment config, backend deploy, and the deployed security and CORS check. Rudra owns the photo storage helper (T052), and Braydin provisions the Vultr Object Storage bucket and its credentials for deployment. Nick still deploys the frontend. Rudra still writes the root README and Devpost submission.
+- Own Vultr deployment: deployment config, backend deploy, and the deployed security and CORS check. Rudra owns the photo storage helper (T052), and Braydin provisions the Vultr Object Storage bucket and its credentials for deployment. Braydin also deploys the frontend (T082, reassigned from Nick). Rudra still writes the root README and Devpost submission.
 
 **Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module and ingestion adapters after Rudra publishes the API schemas. Adapters can return fixture Observations until the database is ready. The Gemini package can grow from the existing client before the routes that call it are finished.
 
@@ -243,7 +243,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 **Tasks:**
 
 - Build mobile-first crew screens and desktop/tablet supervisor screens.
-- Include crew home, alert detail and timer, hazard report with a present-or-absent choice, supervisor full map, the location list with each assigned team, site detail with the score's weighted factor breakdown, and briefing views. Locations with a team appear above locations without one.
+- Include crew home, alert detail and timer, hazard report with a present-or-absent choice, supervisor full map, the location list with each assigned team, site detail with the score's weighted factor breakdown, briefing views, and, for a confirmed event, how much longer it is expected to last in plain language (T036B). Locations with a team appear above locations without one.
 - Use mock JSON that follows the shared contract. Add a fixture switch so the interface works before backend integration.
 - Show data freshness, source, simulated/stale/unavailable status, score factors, and evidence references. Show source and state separately for each feed: weather, forecast, flood, lightning, hurricane, and earthquake.
 - Include report categories for broken electrical pole or downed line, on-site fire, wildlife, flooding, and other. These hazards come only from crew reports.
@@ -329,6 +329,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 - A detected hazard or a crew member marking a hazard present sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius.
 - Any notified supervisor can confirm it. Teams inside that radius then receive the instruction that supervisor accepted or edited.
 - A supervisor sees the full map and every location with its assigned team, occupied locations first, and makes the final call on that organization’s reports that no hazard is present.
+- A confirmed flood shows its expected remaining duration to crew and supervisors in plain words, labeled as an estimate, never an all-clear.
 - Gemini briefings cite supplied evidence, state unknowns, validate against schemas, and fall back safely. Gemini never explains or interprets the hazard score.
 - Auth0 roles change available actions and backend permissions.
 - The interface works on mobile and desktop and includes stale, unavailable, loading, and error states.
