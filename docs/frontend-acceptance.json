@@ -237,5 +237,14 @@
     "frontend/tests/status.test.mjs",
     "frontend/vite.config.ts",
     "tasks.md"
-  ]
+  ],
+  "publication": {
+    "branch": "feature/cache-frontend-workflows",
+    "base": "main",
+    "base_sha": "723a5b8294b1015d232551ad5664e6df761a8209",
+    "implementation_head": "88348675cf786d6fe8d094928b7c651940689475",
+    "pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/19",
+    "status_at_publication": "open",
+    "merged_by_agent": false
+  }
 }

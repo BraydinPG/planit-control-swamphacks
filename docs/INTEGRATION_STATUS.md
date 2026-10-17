@@ -2,6 +2,8 @@
 
 Verified 2026-10-17. Cache now owns remaining frontend implementation; Nick retains prior attribution. PR #16 and #17 merged during this run (`806676e` and `7021ce2`). Delivery moved to new branch `feature/cache-frontend-workflows`, targeting main `723a5b8`, which includes Rudra's T050 (`9d73a77`) and newly merged T048 (`944471f`, PR #18). Reviewed main was incorporated without conflicts in `dc35458`; no Cache-authored backend/schema changes. No merge of this delivery is authorized.
 
+Review: [PR #19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open against main, implementation head `8834867`. This handoff is reviewable and pushed; no deployed production integration is claimed.
+
 ## Task acceptance
 
 Task IDs and original done criteria are preserved in `tasks.md`. Ownership of the authorized T031-T038/T063-T068 chain changed to Cache. Prerequisites T003/T006/T007/T030 were checked before implementation; each dependent foundation task below passed in order. T031's first checkpoint is `140d118`; `3fbd98f` checks T032-T038 with the code and evidence.

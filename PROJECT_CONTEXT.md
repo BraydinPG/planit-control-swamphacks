@@ -53,4 +53,4 @@ npm run dev -- --host localhost --port 5173 --strictPort
 - Braydin: configure real tenant/roles/audience, Tiger Data/seed assignments, durable photo storage and Gemini endpoints/fallbacks. No secrets in Git.
 - Cache: next integration is T063 when real configuration is available, then T064-T068 after actual server prerequisites. No remaining authorized live acceptance can be completed with mock credentials alone.
 - 2026-10-17 UTC: T031 owner transfer/check-off in `140d118` updates AGENTS/tasks/context. `3fbd98f` changes only T032-T038 boxes after their checks and updates the context/coordination docs; no adjacent owner tasks changed.
-- Commit/PR publication references are recorded below after pushing. Rudra coordinates review/merge; no automatic merge.
+- Published review PR [#19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open against main, implementation head `8834867`. Earlier delivery commits: `3fbd98f`, reviewed-main incorporation `dc35458`, T048 client `4a9e44f`. Metadata-only follow-up records this publication. Rudra coordinates review/merge; no automatic merge or deployment.

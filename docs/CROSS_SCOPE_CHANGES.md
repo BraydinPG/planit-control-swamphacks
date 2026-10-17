@@ -2,6 +2,8 @@
 
 Current delivery update (2026-10-17): PR #16 and the T031 checkpoint PR #17 merged during this run. Delivery is now `feature/cache-frontend-workflows` against main `723a5b8`; T032-T038 implementation `3fbd98f`, reviewed-main incorporation `dc35458`. Rudra's newly merged T048 is connected with an acknowledgement capability; report/hazard/AI routes remain unavailable. The canonical T050 type is inherited directly. Earlier branch/status statements below record their original checkpoints.
 
+Publication: [PR #19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open/ready against main, implementation head `8834867`, with `4a9e44f` T048 integration and clean-export identity. This metadata follow-up records the exact review URL; no merge, reviewer acceptance, deployment or actual authenticated workflow is claimed. Shared-file changes are for Cache's authorized tasks; Rudra/Braydin should use the explicit owner actions in INTEGRATION_STATUS.
+
 ## Full frontend transfer — 2026-10-17
 
 The user explicitly transferred Nick's remaining frontend responsibilities to Cache and authorized the dependent T031-T038/T063-T068 chain. Prior contributions and PR #16 remain attributed and preserved. Cache owns frontend implementation/integration; Rudra retains canonical backend/API ownership and Braydin retains Auth0 internals, Gemini, database and deployment. Claude's future redesign requires a separate authorization.
