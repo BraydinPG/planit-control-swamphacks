@@ -6,6 +6,10 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    // Auth0 only accepts the registered callback URLs (http://localhost:5173), so fail
+    // instead of silently moving to another port. See auth/SETUP.md.
+    port: 5173,
+    strictPort: true,
     proxy: { '/api': { target: 'http://127.0.0.1:8000', changeOrigin: false } },
   },
 })
