@@ -111,8 +111,8 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 - [ ] **T024 | Braydin | Document Auth0 setup.** Add tenant, callback, logout, audience, role, permission, and environment-variable instructions to `auth/SETUP.md`. Needs T004 and T006. Done when another member can configure the tenant from the guide.
 - [ ] **T025 | Braydin | Implement frontend auth provider.** Export `AuthProvider` and `useAuth()` with user, role, loading, login, logout, and token access. Needs T006. Done when an isolated page can sign in and read the role.
 - [ ] **T026 | Braydin | Add frontend role guard.** Export `RequireRole` or the agreed equivalent. Needs T025. Done when the wrong role sees an access state.
-- [ ] **T027 | Braydin | Implement backend token validation.** Add reusable FastAPI security dependencies. Needs T024. Done when missing, invalid, expired, and valid tokens return expected results.
-- [ ] **T028 | Braydin | Add permission helpers.** Support crew and supervisor actions in `AGENTS.md`. Needs T027. Done when tests reject crew access to supervisor-only actions.
+- [x] **T027 | Braydin | Implement backend token validation.** Add reusable FastAPI security dependencies. Needs T024. Done when missing, invalid, expired, and valid tokens return expected results.
+- [x] **T028 | Braydin | Add permission helpers.** Support crew and supervisor actions in `AGENTS.md`. Needs T027. Done when tests reject crew access to supervisor-only actions.
 - [ ] **T029 | Braydin | Document demo account setup.** Explain how to test both roles without committing credentials. Needs T024 and T025. Done when setup steps are clear.
 
 ### Nick: frontend and UI/UX

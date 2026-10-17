@@ -1,0 +1,216 @@
+# Auth0 setup for PlanIT Control
+
+This guide sets up the Auth0 tenant, both roles, the demo accounts, and the local environment. Auth0 is the only identity provider. It takes about 20 minutes in the Auth0 dashboard.
+
+Never commit Auth0 secrets, demo passwords, or `.env` files. The frontend values below are public: they are compiled into the browser bundle.
+
+## How it fits together
+
+1. The React app signs in with Auth0 (Authorization Code + PKCE, through `@auth0/auth0-react`).
+2. Auth0 issues an **access token** for the PlanIT Control API. A post-login Action adds the user's roles, and RBAC adds their permissions.
+3. The FastAPI backend validates every token: signature (RS256, from the tenant's JWKS), issuer, audience, and expiry. Then it checks the role or permission for the action.
+4. The frontend reads the role from the ID token only to choose screens. **The backend is the authority.** Hiding a button is not authorization.
+
+Organization and team scope ("own organization only", "assigned site only") comes from the `memberships` table, keyed by the Auth0 user id. See [Demo accounts](#7-demo-accounts).
+
+## 1. Create the tenant
+
+1. Sign in at https://manage.auth0.com and create a tenant, for example `planit-control`. Pick the region nearest the team (US).
+2. Note the **tenant domain**, for example `planit-control.us.auth0.com`. This is `AUTH0_DOMAIN`.
+
+## 2. Create the API (audience)
+
+**Applications → APIs → Create API**
+
+| Field | Value |
+|---|---|
+| Name | `PlanIT Control API` |
+| Identifier | `https://api.planit-control` (any URI; it is never called. This is `AUTH0_AUDIENCE`.) |
+| JSON Web Token Profile | Auth0 |
+| Signing Algorithm | `RS256` |
+
+Then, on the API:
+
+- **Settings → RBAC Settings**: turn on **Enable RBAC** and **Add Permissions in the Access Token**.
+- **Settings → Access Settings**: turn on **Allow Offline Access**, so the app can use refresh tokens.
+- **Permissions**: add each permission below.
+
+| Permission | Description | Crew | Supervisor |
+|---|---|:---:|:---:|
+| `read:assigned_sites` | Read assigned sites and alerts | ✓ | ✓ |
+| `acknowledge:alerts` | Acknowledge alerts | ✓ | ✓ |
+| `submit:reports` | Submit hazard reports | ✓ | ✓ |
+| `request:explanations` | Request score explanations (crew: assigned site only) | ✓ | ✓ |
+| `read:all_sites` | Read all sites, assigned teams, and the full map | | ✓ |
+| `review:reports` | Review reports that no hazard is present (own organization) | | ✓ |
+| `confirm:hazards` | Confirm a potential hazard from a received notice | | ✓ |
+| `send:instructions` | Edit and send the instruction for a confirmed hazard | | ✓ |
+| `generate:briefings` | Generate organization-wide briefings (own organization) | | ✓ |
+
+These match `backend/app/security/roles.py` and the role policy in `spec.md` section 8. If you change one, change both.
+
+## 3. Create the roles
+
+**User Management → Roles → Create Role**, twice:
+
+- `crew`: description "Field crew". Under **Permissions → Add Permissions**, choose PlanIT Control API and add the four crew permissions.
+- `supervisor`: description "Supervisor". Add all nine permissions.
+
+Role names must be exactly `crew` and `supervisor`.
+
+## 4. Create the single-page application
+
+**Applications → Applications → Create Application**, then choose **Single Page Web Applications**. Name it `PlanIT Control Web`.
+
+On its **Settings** tab:
+
+| Field | Local development value |
+|---|---|
+| Allowed Callback URLs | `http://localhost:5173, http://localhost:5173/auth-check.html` |
+| Allowed Logout URLs | `http://localhost:5173, http://localhost:5173/auth-check.html` |
+| Allowed Web Origins | `http://localhost:5173` |
+| Refresh Token Rotation | turn on **Allow Refresh Token Rotation** |
+
+Save, then note the **Client ID**. A single-page app has no client secret; do not create one.
+
+Under **Connections**, keep **Username-Password-Authentication** enabled for this app. The demo accounts use it.
+
+Deployed URLs are added in T081 once the Vultr URL exists. Use exact URLs, with no wildcards.
+
+## 5. Add the roles claim (post-login Action)
+
+Auth0 does not put role names in tokens by default. The app reads them from the custom claim `https://planit-control/roles`.
+
+**Actions → Library → Create Action → Build from scratch**: name it `Add PlanIT roles`, choose trigger **Login / Post Login**, and paste:
+
+```js
+exports.onExecutePostLogin = async (event, api) => {
+  const claim = 'https://planit-control/roles';
+  const roles = (event.authorization && event.authorization.roles) || [];
+  api.idToken.setCustomClaim(claim, roles);
+  api.accessToken.setCustomClaim(claim, roles);
+};
+```
+
+Click **Deploy**. Then open **Actions → Triggers → post-login**, drag `Add PlanIT roles` into the flow, and click **Apply**. Without this step, every user sees "No role assigned".
+
+## 6. Environment variables
+
+Backend (`backend/.env`, never committed):
+
+```dotenv
+AUTH0_DOMAIN=planit-control.us.auth0.com
+AUTH0_AUDIENCE=https://api.planit-control
+DEV_AUTH_BYPASS=false
+```
+
+Frontend (`frontend/.env.local`, never committed; all values are public):
+
+```dotenv
+VITE_AUTH0_DOMAIN=planit-control.us.auth0.com
+VITE_AUTH0_CLIENT_ID=<Client ID from step 4>
+VITE_AUTH0_AUDIENCE=https://api.planit-control
+```
+
+`VITE_AUTH0_AUDIENCE` must equal `AUTH0_AUDIENCE`, or the backend rejects every token with 401.
+
+Without these values, the backend answers 503 for token-protected requests (it never lets requests through), and the frontend shows "Sign-in is not configured".
+
+## 7. Demo accounts
+
+The demo needs one account per role (`spec.md` section 8). Create them in the dashboard. **Do not commit their emails, passwords, or user ids anywhere public.** Keep the passwords in the team's password manager or a private team chat.
+
+1. **User Management → Users → Create User**, with connection **Username-Password-Authentication**:
+   - Crew: an address the team controls, for example `yourteam+crew@gmail.com`, with a strong unique password.
+   - Supervisor: for example `yourteam+supervisor@gmail.com`.
+2. Open each user, then **Roles → Assign Roles**: give `crew` to the crew account and `supervisor` to the supervisor account.
+3. Copy each user's **user_id** (it looks like `auth0|65f…`). The backend uses it to find the person's organization and team.
+4. Link each account to an organization, and the crew account to a team, in the `memberships` table. Rudra's demo seed (T069) should do this from private configuration. To do it by hand on Tiger Data:
+
+   ```sql
+   -- Replace the placeholders. A crew membership needs a team; a supervisor's team_id is NULL.
+   INSERT INTO memberships (id, user_id, organization_id, team_id, role) VALUES
+     ('m-demo-crew', '<crew user_id>', '<organization id>', '<team id>', 'crew'),
+     ('m-demo-supervisor', '<supervisor user_id>', '<organization id>', NULL, 'supervisor');
+   ```
+
+   Auth0 decides the role. The membership decides the organization and team. A signed-in user with no membership row gets no organization data.
+
+### Check both roles
+
+1. `cd frontend && npm run dev`, then open http://localhost:5173/auth-check.html.
+2. Click **Sign in** and use the crew account. The page should show **Role: Crew**. The crew guard shows its content, and the supervisor guard shows "Not available for your role".
+3. Click **Get access token**. It should report an access token with 4 permissions.
+4. Sign out, sign in as the supervisor, and confirm **Role: Supervisor** and 9 permissions.
+
+The backend tests (`backend/tests/test_security.py`) cover missing, invalid, expired, and valid tokens, and crew being refused supervisor actions, without a tenant.
+
+## Local development without Auth0
+
+Use this only on your own machine, for building screens before the tenant exists.
+
+- Backend: `DEV_AUTH_BYPASS=true` in `backend/.env`. A request **without** an `Authorization` header may then send `X-Dev-Role: crew` or `X-Dev-Role: supervisor`. It is accepted only from `127.0.0.1` or `::1` with no proxy forwarding headers, and every use is logged as a warning. A request that sends a token is always validated normally.
+- Frontend: `VITE_DEV_AUTH_ROLE=crew` (or `supervisor`) in `frontend/.env.local`. `useAuth()` then reports a fake local user with that role, and `getAuthHeaders()` returns the `X-Dev-Role` header. This only works on the Vite dev server (`npm run dev`), never in a production build.
+
+Crew only see the site assigned to their team, so the dev crew user (`dev|crew`) sees no sites until it has a membership row in your local database:
+
+```sql
+INSERT INTO memberships (id, user_id, organization_id, team_id, role)
+VALUES ('m-dev-crew', 'dev|crew', '<organization id>', '<team id with a site>', 'crew');
+```
+
+**Never set `DEV_AUTH_BYPASS=true` on Vultr or any shared server.** Keep it `false` in every deployed environment.
+
+## Using the auth module in code
+
+Frontend (`frontend/src/auth/`):
+
+```tsx
+import { AuthProvider, RequireRole, useAuth } from './auth'
+
+// Once, near the root:
+<AuthProvider><App /></AuthProvider>
+
+// In a screen:
+<RequireRole role="supervisor"><SupervisorMap /></RequireRole>
+
+// In an API call:
+const { getAuthHeaders } = useAuth()
+fetch(`${API}/api/alerts`, { headers: await getAuthHeaders() })
+```
+
+`useAuth()` returns `user`, `role`, `isAuthenticated`, `isLoading`, `error`, `mode`, `login()`, `logout()`, `getAccessToken()`, and `getAuthHeaders()`.
+
+Backend (`backend/app/security/`):
+
+```python
+from typing import Annotated
+from fastapi import Depends
+from app.security import AuthenticatedUser, CurrentUser, membership_for, require_permission, roles
+
+@router.get("/api/alerts")
+def list_alerts(user: AuthenticatedUser): ...
+
+@router.post("/api/reports/{report_id}/review")
+def review(user: Annotated[CurrentUser, Depends(require_permission(roles.REVIEW_REPORTS))]): ...
+```
+
+Responses: **401** missing, invalid, or expired token; **403** valid token without the role or permission (or with no PlanIT role); **503** Auth0 not configured or its keys unreachable. Scope checks such as "own organization only" use `membership_for(session, user)`. Treat `None` as no access.
+
+## Security notes
+
+- Tokens are RS256 only. The backend rejects HS256 and unsigned tokens, other tenants' tokens, and tokens for other APIs.
+- When the access token has a `permissions` claim (RBAC on), it decides what the user may do. Without it, the backend falls back to the role's default permissions in `roles.py`.
+- Session storage: the app keeps Auth0 tokens in `localStorage`, with refresh-token rotation, so a crew member's session survives a page reload on a phone. The cost is that malicious script on the page could read the tokens. Keep third-party scripts off the app. If that trade-off changes, switch `cacheLocation` to `memory` in `AuthProvider.tsx`; users then sign in again after each reload.
+- Personal data: the app keeps only the Auth0 user id, name, and email in memory, and stores only the user id in the database.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| "Callback URL mismatch" on sign-in | Add the exact URL (including `/auth-check.html` for the check page) to Allowed Callback URLs. |
+| Signed in, but "No role assigned" | Assign the role to the user, and check that the Action is deployed **and** in the post-login flow. Sign out and in again. |
+| Backend 401 "Token is not valid for this API" | `VITE_AUTH0_AUDIENCE` and `AUTH0_AUDIENCE` differ, or `AUTH0_DOMAIN` points at another tenant. |
+| Backend 403 "Missing permission" | The role is missing that permission on the API in Auth0 (step 3). |
+| "Missing Refresh Token" in the browser | Turn on Allow Offline Access on the API and Refresh Token Rotation on the app. |
+| Backend 503 "Auth0 is not configured" | Set `AUTH0_DOMAIN` and `AUTH0_AUDIENCE` in `backend/.env` and restart. |
