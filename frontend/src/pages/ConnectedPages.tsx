@@ -47,6 +47,7 @@ import {
 import { RiskBadge, RiskShape } from '../components/data/Risk'
 import { LocationSearch } from '../components/data/LocationSearch'
 import { evidenceOf } from '../components/data/evidence'
+import { Masonry } from '../components/data/Masonry'
 import { Icon, type IconName } from '../components/shell/Icon'
 import {
   displayLabel,
@@ -291,13 +292,13 @@ function SitePage({
       <section className="space-y-3">
         <SectionHead kicker="Crew reports" title="Reports at this site" />
         {site.reports.length ? (
-          <ul className="grid items-start gap-4 @3xl:grid-cols-2 @7xl:grid-cols-3">
-            {site.reports.map((r) => (
-              <li key={r.id} className="min-w-0">
-                <ReportCard report={r} />
-              </li>
-            ))}
-          </ul>
+          <Masonry
+            label="Reports at this site"
+            items={site.reports.map((r) => ({
+              key: r.id,
+              node: <ReportCard report={r} />,
+            }))}
+          />
         ) : (
           <Empty>No reports supplied.</Empty>
         )}
@@ -1313,15 +1314,12 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
         <SectionHead kicker="Review queue" title="Reports and review" />
         {result.data ? (
           result.data.length ? (
-            <ul className="grid items-start gap-4 @3xl:grid-cols-2 @6xl:grid-cols-3">
-              {result.data
+            <Masonry
+              label="Submitted reports"
+              items={result.data
                 .filter((r) => sites.some((s) => s.id === r.site_id))
-                .map((r) => (
-                  <li key={r.id} className="min-w-0">
-                    <ReportCard report={r} />
-                  </li>
-                ))}
-            </ul>
+                .map((r) => ({ key: r.id, node: <ReportCard report={r} /> }))}
+            />
           ) : (
             <Empty>No reports returned.</Empty>
           )
