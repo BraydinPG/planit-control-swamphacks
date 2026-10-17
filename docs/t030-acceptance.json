@@ -1,0 +1,79 @@
+{
+  "task": "T030",
+  "checked_at": "2026-10-17T08:41:45.223Z",
+  "url": "http://localhost:5173/",
+  "browser": "Installed headless Edge/Chrome via CDP",
+  "results": [
+    {
+      "viewport": "1440x1000",
+      "navigation": "10 workspace destinations passed",
+      "overflow": false,
+      "navigation_targets": ">=44px"
+    },
+    {
+      "viewport": "390x844",
+      "navigation": "10 workspace destinations passed",
+      "overflow": false,
+      "navigation_targets": ">=44px"
+    },
+    {
+      "viewport": "320x740",
+      "navigation": "10 workspace destinations passed",
+      "overflow": false,
+      "navigation_targets": ">=44px"
+    },
+    {
+      "null_score": "Not scored yet; never zero or low risk",
+      "fixture_mutation": "browser memory only; no fixture file changed",
+      "deep_links_reload_back_skip_link": "passed"
+    },
+    {
+      "fixture_setting": "false",
+      "status": "explicit unavailable; no silent fixture fallback"
+    },
+    {
+      "fixture_setting": "typo",
+      "status": "explicit unavailable; no silent fixture fallback"
+    }
+  ],
+  "browser_exceptions": [],
+  "backend_api_requests": 0,
+  "screenshots": ".shell-check/*.png (ignored)",
+  "branch": "feature/cache-t030-app-shell",
+  "base_commit": "3dd52cc",
+  "task_was_checked": false,
+  "prerequisites": {
+    "T003": "checked",
+    "T007": "checked"
+  },
+  "done_criterion": "app renders on phone and desktop sizes",
+  "frontend_lint": {
+    "command": "npm run lint",
+    "result": "passed"
+  },
+  "frontend_build": {
+    "command": "npm run build",
+    "result": "passed; TypeScript and Vite"
+  },
+  "environment": "Existing portable Node 24.22.0; npm ci used the unchanged main lockfile; no new project dependency",
+  "source_scope": "T030 only; auth/backend/shared types/fixtures/ML/manifests/lockfiles unchanged",
+  "screenshots_inspected": [
+    "desktop.png",
+    "phone.png"
+  ],
+  "visible_browser_launch": "Automatic approval review rejected explicit Edge new-window localhost launch without a reason; headless rendering and HTTP checks passed",
+  "initial_check_correction": "Browser wait normalized CSS uppercase innerText; final complete suite passed",
+  "limits": [
+    "Preview workspace selection is not authentication",
+    "No site list/detail, score factors, alert controls, report writes, briefings or API integration delivered"
+  ],
+  "implementation_commit": "9d94f75e78b33c1a73d31ed2d35e02138ecf5785",
+  "review_pr": {
+    "number": 16,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/16",
+    "state": "open",
+    "base": "main",
+    "requested_reviewer": "n1ckbown",
+    "merged": false
+  }
+}
