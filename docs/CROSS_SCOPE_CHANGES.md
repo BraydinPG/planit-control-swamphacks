@@ -1,3 +1,45 @@
+## Canonical demo scores and prediction failure handling (Cache) — 2026-10-17
+
+Explicit user authorization: fix the obsolete fixture score and both reproduced
+prediction bugs, regenerate canonical fixtures, test and publish a review PR.
+Branch `feature/cache-demo-score-prediction-fixes` started at main `0a0d5c8` and
+incorporated reviewed main `3272930`; no unmerged dependency. Team/species and the
+new supervisor Overview are preserved; both concurrent change-log entries retained.
+
+- **Rudra review:** `backend/scripts/generate_fixtures.py` uses `compute_score` with
+  declared default weights and T069's simulated weather inputs. Generated sites,
+  site-detail and briefings JSON agree on **6.1/10 high, rules-0.2**, no ML factor,
+  and 0 current live completeness. Breakdown: 3 lightning + 1.11 heat + 1 Flood Watch
+  + 1 confirmed moderate wildlife, rounded by the approved algorithm. Other synthetic
+  sites also use the scorer.
+- **Rudra review:** `backend/app/outlook/events.py` contains per-card conversion
+  failures and missing/duplicate results. Valid siblings, site response, score and
+  alerts survive. `frontend/src/api/live-read-validation.ts` checks nested forecast
+  shapes, source/time/coordinate/probability fields before rendering. Archived cards
+  retain original EIA associations only as explicitly simulated reference replays.
+- Existing fixture/outlook/client/read/briefing tests and
+  `frontend/scripts/check-shell.mjs` cover the regressions. The browser runner
+  recreates obsolete saved data in its own profile, uses **Reset demo**, verifies
+  reload and retains a synthetic Auth0 storage sentinel. It checks 6.1, incomplete
+  evidence and six cards at 1440/390/320; no browser exceptions/backend requests.
+  After incorporating main's new supervisor Overview, restrict the map assertion
+  to Worksites: Overview deliberately has no map. No presentation component edit.
+- `backend/tests/score_scenarios.py` and its checked evaluation JSON update the
+  changed fixture comparison/wording; 35 fixed algorithm scenarios and weights are
+  unchanged. `docs/SITE_RISK_SCORING.md` documents the corrected fixture and reset.
+- No presentation component/style, schema/type mirror, model, weight, alert rule,
+  authorization, private configuration, migration/seed or teammate checkout change.
+  No task checkbox changed; live T050A/T063–T068 acceptance remains separate.
+
+Checks on incorporated main: 874 backend tests, backend Ruff and format checks of
+145 files pass. Before incorporating main, the combined run
+also passed 297 ML and 10 diagnostic tests; its old evaluation-fixture comparison
+failed, was regenerated, and passed in the subsequent full backend run. Six existing
+model hash/load/reference checks and 16 offline preview cases pass. All 155 frontend
+tests, oxlint, TypeScript, production build and Edge demo/mock checks pass.
+Existing Starlette deprecation and Vite
+bundle-size warnings remain. Real-service setup is outside this simulated bug fix.
+
 ## Team onboarding, supervisor Overview, and supervisor UI cleanup (Braydin) — 2026-10-17
 
 Explicit user requests (Braydin): join codes (`XXXX-XXXX`, 7 days); supervisors see exactly who is on each team; the supervisor UI should follow Rudra's design but be functional, logical and free of bloat, covering spec.md and tasks.md. Rudra now owns all frontend/UI (Cache's ownership update), so every change below is focused and listed for his review.
@@ -238,6 +280,16 @@ T067A verification: lint/TypeScript/build, 44 Node checks, 65 focused backend fi
 Historical records below retain their original as-of facts; current status is INTEGRATION_STATUS.
 
 # Cross-scope changes
+
+### 2026-10-17 - Access mat deterioration category
+
+Explicit user request to add timber access mat deterioration as a report category.
+Focused coordinated edits span Rudra's report enum, services, TypeScript mirror and
+spec; Cache's form, analysis labels, validation and demo client; and Braydin's Gemini
+category labels, radius reference and prompt. The additive value is
+`access_mat_deterioration`; the prototype fallback radius is 1 mile. Existing string
+DB columns and generated fixtures remain compatible. Crew stage notes stay unchanged
+by Gemini. Structured A-D grading is tracked separately as T034B, not claimed complete.
 
 ## T034A device-location preparation — 2026-10-17 12:30 UTC
 

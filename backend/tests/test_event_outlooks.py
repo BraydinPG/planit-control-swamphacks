@@ -17,7 +17,7 @@ from app.api.deps import get_db, get_now
 from app.db import models as db
 from app.demo import DEMO_SITE_ID
 from app.main import app
-from app.outlook import EventOutlooksService, event_inputs
+from app.outlook import EventOutlooksService, event_inputs, get_event_outlooks_service
 from app.outlook import events as outlook_events
 from app.outlook.context import event_context_from_notice
 from app.schemas import CrewReport, EventOutlookCard, HazardNotice, Observation, SiteSummary
@@ -167,6 +167,42 @@ def test_a_failing_batch_never_raises() -> None:
     assert (card.status, card.forecast.reason_code) == ("unavailable", "prediction_failed")
 
 
+@pytest.mark.parametrize("damage", ["missing_fields", "nested_forecast", "invalid_limitations"])
+def test_malformed_output_is_unavailable_and_keeps_valid_siblings(damage) -> None:
+    from scripts.generate_fixtures import EVENT_OUTLOOKS
+
+    inputs = event_inputs(SITE, [notice("a"), notice("b")], [], [warning("Flood Warning")], T)
+    good = EVENT_OUTLOOKS[0].model_dump(mode="json")
+    good["event_id"] = "b"
+    good["association"]["site_id"] = SITE.id
+    broken = {**good, "event_id": "a"}
+    if damage == "missing_fields":
+        broken = {"event_id": "a"}
+    elif damage == "nested_forecast":
+        broken["forecast"] = {"kind": "historical_duration_research"}
+    else:
+        broken["limitations"] = None
+    cards = EventOutlooksService(
+        builder=lambda request, products: [broken, good], archived_examples=False
+    ).cards(SITE, inputs, T)
+    assert [c.event_id for c in cards] == ["a", "b"]
+    assert cards[0].status == "unavailable"
+    assert cards[0].forecast.reason_code == "invalid_prediction_output"
+    assert cards[1].status == "available"
+    assert cards[1].forecast.model_dump(mode="json") == good["forecast"]
+    assert all(c.site_hazard_probability is None for c in cards)
+
+
+@pytest.mark.parametrize("output", [None, {}, [], [{"event_id": "n-1"}] * 2])
+def test_missing_or_ambiguous_output_keeps_one_unavailable_card_per_event(output) -> None:
+    inputs = event_inputs(SITE, [notice()], [], [warning("Flood Warning")], T)
+    [card] = EventOutlooksService(
+        builder=lambda request, products: output, archived_examples=False
+    ).cards(SITE, inputs, T)
+    assert (card.event_id, card.status) == ("n-1", "unavailable")
+    assert card.forecast.reason_code == "invalid_prediction_output"
+
+
 def test_unidentified_flood_is_explained_not_guessed() -> None:
     inputs = event_inputs(SITE, [notice()], [], [], T)
     [card] = EventOutlooksService(builder=lambda r, p: []).cards(SITE, inputs, T)
@@ -257,3 +293,21 @@ def test_demo_site_shows_independent_cards_without_touching_score(
     for example in [c for c in cards if c.presentation == "historical_example"]:
         assert example.is_simulated
         assert example.limitations[0].startswith("Historical example")
+
+
+def test_site_route_keeps_score_and_alerts_when_adapter_returns_malformed_output(api) -> None:
+    baseline = api.get(f"/api/sites/{DEMO_SITE_ID}", headers=crew(CREW)).json()
+    app.dependency_overrides[get_event_outlooks_service] = lambda: EventOutlooksService(
+        builder=lambda request, products: [{"event_id": "demo-notice-flood"}],
+        archived_examples=False,
+    )
+    response = api.get(f"/api/sites/{DEMO_SITE_ID}", headers=crew(CREW))
+    assert response.status_code == 200
+    detail = response.json()
+    assert detail["score"] == baseline["score"]
+    assert detail["alerts"] == baseline["alerts"]
+    assert len(detail["event_outlooks"]) >= 3
+    for card in detail["event_outlooks"]:
+        typed = EventOutlookCard.model_validate(card)
+        assert typed.status == "unavailable"
+        assert typed.site_hazard_probability is None

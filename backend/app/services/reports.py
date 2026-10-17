@@ -47,6 +47,7 @@ MAX_RADIUS_MILES = 50.0
 DEFAULT_RADIUS_MILES = {
     ReportCategory.BROKEN_POLE_DOWNED_LINE: 1.0,
     ReportCategory.ON_SITE_FIRE: 1.0,
+    ReportCategory.ACCESS_MAT_DETERIORATION: 1.0,
     ReportCategory.WILDLIFE: 1.0,
     ReportCategory.FLOODING: 5.0,
     ReportCategory.OTHER: 1.0,
@@ -54,6 +55,7 @@ DEFAULT_RADIUS_MILES = {
 HAZARD_LABELS = {
     ReportCategory.BROKEN_POLE_DOWNED_LINE: "broken electrical pole or downed line",
     ReportCategory.ON_SITE_FIRE: "on-site fire",
+    ReportCategory.ACCESS_MAT_DETERIORATION: "access mat deterioration",
     ReportCategory.WILDLIFE: "wildlife",
     ReportCategory.FLOODING: "flooding",
     ReportCategory.OTHER: "hazard",

@@ -33,6 +33,7 @@ REFERENCE_RADII = {
     "earthquake": 25,
     "broken electrical pole or downed line": 1,
     "on-site fire": 1,
+    "access mat deterioration": 1,
     "any other category": 1,
 }
 
