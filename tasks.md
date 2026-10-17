@@ -62,7 +62,7 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 
 ### Braydin: Tiger Data setup
 
-- [ ] **T010 | Braydin | Configure the Tiger Data connection.** Read `DATABASE_URL` from the environment and require `sslmode=require` for Tiger Cloud. Needs T004 and T006. Done when the backend starts with documented settings.
+- [x] **T010 | Braydin | Configure the Tiger Data connection.** Read `DATABASE_URL` from the environment and require `sslmode=require` for Tiger Cloud. Needs T004 and T006. Done when the backend starts with documented settings.
 - [ ] **T011 | Braydin | Define database models.** Add Organization, Team, Site, Observation, Alert, HazardPrediction, HazardScore, CrewReport, HazardNotice, Acknowledgement, Briefing, and AuditEvent. A crew member belongs to one team. A team is assigned to one location. A supervisor belongs to one organization. Needs T006. Done when models import successfully.
 - [ ] **T012 | Braydin | Add database initialization.** Create migrations or a schema setup command on Tiger Data. Enable TimescaleDB and convert `Observation`, `Alert`, and `AuditEvent` into hypertables. Needs T011. Done when a clean database initializes from scratch.
 - [ ] **T013 | Braydin | Add a seed command.** Provide one runnable command. Leave demo scenario contents for Rudra. Needs T012. Done when the command runs against a clean database.
