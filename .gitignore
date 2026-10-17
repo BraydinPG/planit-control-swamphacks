@@ -34,3 +34,6 @@ venv/
 .env
 .env.*
 !.env.example
+
+# Local development photo uploads
+.photos/

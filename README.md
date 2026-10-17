@@ -14,6 +14,13 @@ React + TypeScript UI, built with Vite and Tailwind CSS. API routes, auth checks
 | `ml/` | Model training, prediction, evaluation | Cache |
 | `auth/` | Auth0 setup notes | Braydin |
 
+## Configuration
+
+Copy the templates and fill in values. Each variable is commented with its purpose and owner. Never commit the filled-in files.
+
+- `backend/.env.example` → `backend/.env`: Tiger Data, Auth0, Gemini, Vultr Object Storage, live feeds, CORS.
+- `frontend/.env.example` → `frontend/.env.local`: API URL, fixture mode, public Auth0 SPA values.
+
 ## Frontend
 
 ```bash
