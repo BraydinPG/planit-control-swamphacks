@@ -1,0 +1,121 @@
+[
+  {
+    "site_id": "site-demo-everglades",
+    "score_created_at": "2026-10-17T17:57:00Z",
+    "explanation": "The score rose from 5.9 to 7.6, mainly because the simulated lightning replay triggered a stop-work alert 4.2 miles away. Forecast heat and the Flood Watch add smaller amounts.",
+    "top_factors": [
+      {
+        "factor": "lightning",
+        "label": "Lightning stop-work active (simulated replay)",
+        "contribution": 3.0,
+        "value": 4.2,
+        "unit": "mi",
+        "source": "lightning-replay",
+        "observed_at": "2026-10-17T17:57:00Z",
+        "data_state": "simulated",
+        "is_prototype": false,
+        "evidence_id": "obs-ltg-2"
+      },
+      {
+        "factor": "model",
+        "label": "Model: 24 h weather-hazard likelihood",
+        "contribution": 1.6,
+        "value": 0.41,
+        "unit": null,
+        "source": "model baseline-0.1",
+        "observed_at": "2026-10-17T17:30:00Z",
+        "data_state": "observed",
+        "is_prototype": false,
+        "evidence_id": "model-1"
+      },
+      {
+        "factor": "heat_index",
+        "label": "Forecast heat index above prototype threshold (103 °F)",
+        "contribution": 1.5,
+        "value": 108.0,
+        "unit": "°F",
+        "source": "NWS",
+        "observed_at": "2026-10-17T17:00:00Z",
+        "data_state": "forecast",
+        "is_prototype": true,
+        "evidence_id": "obs-fc-1"
+      }
+    ],
+    "change_since_previous": "+1.7 since the previous score",
+    "evidence": [
+      {
+        "id": "obs-ltg-2",
+        "kind": "observation",
+        "label": "Strike 4.2 mi W (replay)",
+        "observed_at": null
+      },
+      {
+        "id": "model-1",
+        "kind": "model_output",
+        "label": "Model component 1.6",
+        "observed_at": null
+      },
+      {
+        "id": "obs-fc-1",
+        "kind": "observation",
+        "label": "Forecast heat index 108 °F",
+        "observed_at": null
+      }
+    ],
+    "unknowns": [
+      "Hurricane feed unavailable; its contribution is unknown."
+    ],
+    "generated_by": "gemini",
+    "created_at": "2026-10-17T18:00:00Z"
+  },
+  {
+    "site_id": "site-demo-everglades",
+    "score_created_at": "2026-10-17T17:57:00Z",
+    "explanation": null,
+    "top_factors": [
+      {
+        "factor": "lightning",
+        "label": "Lightning stop-work active (simulated replay)",
+        "contribution": 3.0,
+        "value": 4.2,
+        "unit": "mi",
+        "source": "lightning-replay",
+        "observed_at": "2026-10-17T17:57:00Z",
+        "data_state": "simulated",
+        "is_prototype": false,
+        "evidence_id": "obs-ltg-2"
+      },
+      {
+        "factor": "model",
+        "label": "Model: 24 h weather-hazard likelihood",
+        "contribution": 1.6,
+        "value": 0.41,
+        "unit": null,
+        "source": "model baseline-0.1",
+        "observed_at": "2026-10-17T17:30:00Z",
+        "data_state": "observed",
+        "is_prototype": false,
+        "evidence_id": "model-1"
+      },
+      {
+        "factor": "heat_index",
+        "label": "Forecast heat index above prototype threshold (103 °F)",
+        "contribution": 1.5,
+        "value": 108.0,
+        "unit": "°F",
+        "source": "NWS",
+        "observed_at": "2026-10-17T17:00:00Z",
+        "data_state": "forecast",
+        "is_prototype": true,
+        "evidence_id": "obs-fc-1"
+      }
+    ],
+    "change_since_previous": null,
+    "evidence": [],
+    "unknowns": [
+      "Gemini unavailable; showing the factor breakdown only."
+    ],
+    "generated_by": "fallback",
+    "created_at": "2026-10-17T18:00:00Z"
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "notice-pole-1",
+    "hazard_label": "broken electrical pole",
+    "source": "crew_report",
+    "source_ref": "report-pole-1",
+    "lat": 25.758,
+    "lon": -80.494,
+    "radius_miles": 1.0,
+    "radius_source": "default",
+    "status": "potential",
+    "created_at": "2026-10-17T17:54:00Z",
+    "confirmed_by": null,
+    "confirmed_at": null,
+    "suggested_instruction": null,
+    "instruction": null,
+    "instruction_sent_at": null,
+    "evidence": [
+      {
+        "id": "report-pole-1",
+        "kind": "report",
+        "label": "Crew report: broken pole",
+        "observed_at": null
+      }
+    ]
+  },
+  {
+    "id": "notice-wildlife-1",
+    "hazard_label": "wildlife",
+    "source": "crew_report",
+    "source_ref": "report-wildlife-1",
+    "lat": 25.762,
+    "lon": -80.487,
+    "radius_miles": 0.5,
+    "radius_source": "gemini",
+    "status": "confirmed",
+    "created_at": "2026-10-17T15:40:00Z",
+    "confirmed_by": "user-supervisor-1",
+    "confirmed_at": "2026-10-17T15:50:00Z",
+    "suggested_instruction": "Avoid the east access road; use the west gate.",
+    "instruction": "Avoid the east access road. Use the west gate until wildlife control clears it.",
+    "instruction_sent_at": "2026-10-17T15:52:00Z",
+    "evidence": [
+      {
+        "id": "report-wildlife-1",
+        "kind": "report",
+        "label": "Crew report: alligator",
+        "observed_at": null
+      }
+    ]
+  }
+]

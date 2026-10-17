@@ -1,4 +1,7 @@
-"""Canonical PlanIT Control API schemas. Rudra owns these; the TS mirror is frontend/src/types/api.ts."""
+"""Canonical PlanIT Control API schemas, owned by Rudra.
+
+The TypeScript mirror is frontend/src/types/api.ts.
+"""
 
 from app.schemas.alerts import Acknowledgement, Alert, AlertRule, AlertState
 from app.schemas.briefings import (

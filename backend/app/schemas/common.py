@@ -38,7 +38,10 @@ class EvidenceKind(StrEnum):
 
 
 class GeneratedBy(StrEnum):
-    """Who produced a piece of text. `fallback` is the deterministic template used when Gemini fails."""
+    """Who produced a piece of text.
+
+    `fallback` is the deterministic template used when Gemini fails.
+    """
 
     GEMINI = "gemini"
     FALLBACK = "fallback"
@@ -65,6 +68,7 @@ class FactorContribution(Schema):
     observed_at: datetime | None = None
     data_state: DataState
     is_prototype: bool = Field(
-        default=False, description="True when the threshold is a configurable prototype, not policy."
+        default=False,
+        description="True when the threshold is a configurable prototype, not policy.",
     )
     evidence_id: str | None = None

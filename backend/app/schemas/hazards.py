@@ -59,7 +59,7 @@ class HazardConfirmResponse(Schema):
 
     notice: HazardNotice
     suggested_instruction: str | None = Field(
-        description="Gemini draft for the supervisor to edit. Null when Gemini fails; supervisor writes it."
+        description="Gemini draft for the supervisor to edit. Null when Gemini fails."
     )
     generated_by: GeneratedBy | None = None
 

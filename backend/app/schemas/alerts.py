@@ -38,7 +38,9 @@ class Alert(Schema):
     rule: AlertRule
     state: AlertState
     triggered_at: datetime
-    latest_event_at: datetime = Field(description="Latest qualifying event, e.g. the newest strike.")
+    latest_event_at: datetime = Field(
+        description="Latest qualifying event, e.g. the newest strike."
+    )
     clear_after: datetime | None = Field(
         default=None, description="Lightning: latest_event_at + 30 minutes. Resets on each strike."
     )
