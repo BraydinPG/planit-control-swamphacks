@@ -76,6 +76,15 @@ def send_feed_notices(
         audit(session, RULE_ACTOR, "notice.create", notice.id, now)
         for team_id in recipients.team_ids:
             audit(session, RULE_ACTOR, "notice.deliver", f"{notice.id}->{team_id}", now)
+        for supervisor_id in recipients.supervisor_ids:
+            # T054 checks receipt-time authority, not today's team assignments.
+            audit(
+                session,
+                "system:notices",
+                "notice.supervisor.deliver",
+                f"{notice.id}->{supervisor_id}",
+                now,
+            )
         sent.append((notice, recipients))
     session.commit()
     return sent

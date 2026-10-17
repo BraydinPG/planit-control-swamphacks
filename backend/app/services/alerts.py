@@ -9,7 +9,7 @@ site's stored lightning alert and writes the result:
 - none, unchanged, or held: writes nothing
 
 Triggers, resets, clears, and acknowledgements each add an `AuditEvent`. The refresh loop
-that calls this on a schedule is separate work.
+(`app.services.refresh`, T049B) calls this on a schedule.
 """
 
 from datetime import datetime

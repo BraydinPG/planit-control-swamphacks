@@ -140,6 +140,15 @@ def create_report(
         audit(session, reporter.user_id, "notice.create", notice.id, now)
         for team_id in recipients.team_ids:
             audit(session, "system:notices", "notice.deliver", f"{notice.id}->{team_id}", now)
+        # Snapshot actual recipients: later team moves must not grant confirmation access.
+        for supervisor_id in recipients.supervisor_ids:
+            audit(
+                session,
+                "system:notices",
+                "notice.supervisor.deliver",
+                f"{notice.id}->{supervisor_id}",
+                now,
+            )
     session.commit()
     return CreatedReport(report, notice, recipients)
 

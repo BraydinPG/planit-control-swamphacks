@@ -90,7 +90,7 @@ def get_site(
     score = _latest_scores(session, site_id).get(site_id)
     alerts = load_active_alerts(session, site_id)
     summary = _summary(site, score, len(alerts))
-    notices = _notices(session, site)
+    notices = _notices(session, site, viewer=user)
     return SiteDetail(
         **summary.model_dump(),
         location_type=site.location_type,
@@ -99,7 +99,7 @@ def get_site(
         observations=load_observations(session, site_id, now),
         score=_score(score) if score else None,
         alerts=alerts,
-        reports=load_reports(session, site_id),
+        reports=load_reports(session, site_id, viewer=user),
         notices=notices,
         event_outlook=_event_outlook(outlooks, summary, notices, now),
     )
@@ -283,12 +283,21 @@ def alert_schemas(session: Session, rows: list[db.Alert]) -> list[Alert]:
     ]
 
 
-def load_reports(session: Session, site_id: str) -> list[CrewReport]:
+def load_reports(
+    session: Session, site_id: str, *, viewer: CurrentUser | None = None
+) -> list[CrewReport]:
+    query = select(db.CrewReport).where(db.CrewReport.site_id == site_id)
+    if viewer is not None:
+        membership = membership_for(session, viewer)
+        organization_id = membership.organization_id if membership else None
+        query = query.where(
+            or_(
+                db.CrewReport.hazard_present.is_(True),
+                db.CrewReport.organization_id == organization_id,
+            )
+        )
     rows = session.scalars(
-        select(db.CrewReport)
-        .where(db.CrewReport.site_id == site_id)
-        .order_by(db.CrewReport.created_at.desc())
-        .limit(REPORT_LIMIT)
+        query.order_by(db.CrewReport.created_at.desc()).limit(REPORT_LIMIT)
     ).all()
     return [report_schema(r) for r in rows]
 
@@ -318,7 +327,9 @@ def report_schema(r: db.CrewReport) -> CrewReport:
     )
 
 
-def _notices(session: Session, site: db.Site) -> list[HazardNotice]:
+def _notices(
+    session: Session, site: db.Site, *, viewer: CurrentUser | None = None
+) -> list[HazardNotice]:
     """Notices whose radius covers the site. Notices store coordinates, not a site ID."""
     rows = session.scalars(
         select(db.HazardNotice).order_by(db.HazardNotice.created_at.desc())
@@ -340,7 +351,11 @@ def _notices(session: Session, site: db.Site) -> list[HazardNotice]:
             created_at=_aware(n.created_at),
             confirmed_by=n.confirmed_by,
             confirmed_at=_aware(n.confirmed_at) if n.confirmed_at else None,
-            suggested_instruction=n.suggested_instruction,
+            suggested_instruction=(
+                n.suggested_instruction
+                if viewer and viewer.role == "supervisor" and viewer.sub == n.confirmed_by
+                else None
+            ),
             instruction=n.instruction,
             instruction_sent_at=_aware(n.instruction_sent_at) if n.instruction_sent_at else None,
             evidence=n.evidence or [],

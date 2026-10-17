@@ -1,26 +1,43 @@
 """Compute and store a site's score from its stored data (T051).
 
-Reads the site's recent Observations (freshness applied), active alerts, and crew reports
-through the same loaders `GET /api/sites/{id}` uses, then saves a new `HazardScore` row.
-`GET /api/sites` shows the newest row. The refresh loop that fetches feeds and calls this
-on a schedule is separate work.
+Reads the site's recent Observations (freshness applied) and active alerts through the
+site-detail loaders, plus all confirmed-present reports without the UI's display limit,
+then saves a new `HazardScore` row. T055 can join a report-confirmation transaction.
+`GET /api/sites` shows the newest row.
+
+The refresh loop (`app.services.refresh`, T049B) passes `observations`: the readings it
+just fetched, which hold each feed's current state. Stored history would also hold older
+"none" rows and expired alerts.
 """
 
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
+from uuid import uuid4
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.sites import load_active_alerts, load_observations, load_reports
+from app.api.sites import load_active_alerts, load_observations, report_schema
 from app.db import models as db
 from app.rules.score import compute_score
 from app.rules.settings import RuleSettings
-from app.schemas import HazardScore
+from app.schemas import HazardScore, Observation, ReviewStatus
 
 
 def score_site(
-    session: Session, site_id: str, now: datetime, settings: RuleSettings | None = None
+    session: Session,
+    site_id: str,
+    now: datetime,
+    settings: RuleSettings | None = None,
+    observations: list[Observation] | None = None,
+    *,
+    commit: bool = True,
 ) -> HazardScore:
+    """Persist one refresh; commit=False joins the caller's confirmation transaction.
+
+    Serialize refreshes per site on PostgreSQL so concurrent confirmations retain
+    every committed contribution. Scoring must not use the UI's 50-report display limit.
+    """
+    session.execute(select(db.Site.id).where(db.Site.id == site_id).with_for_update())
     previous_row = session.scalars(
         select(db.HazardScore)
         .where(db.HazardScore.site_id == site_id)
@@ -40,19 +57,34 @@ def score_site(
             data_completeness=previous_row.data_completeness,
             created_at=previous_row.created_at,
         )
+    reports = session.scalars(
+        select(db.CrewReport).where(
+            db.CrewReport.site_id == site_id,
+            db.CrewReport.review_status == ReviewStatus.CONFIRMED,
+            db.CrewReport.hazard_present.is_(True),
+        )
+    ).all()
     score = compute_score(
         site_id,
-        load_observations(session, site_id, now),
+        observations if observations is not None else load_observations(session, site_id, now),
         load_active_alerts(session, site_id),
-        load_reports(session, site_id),
+        [report_schema(report) for report in reports],
         now,
         previous,
         settings,
         site=session.get(db.Site, site_id),
     )
+    # Multiple confirmations may share a request timestamp. Keep versions uniquely
+    # ordered for existing latest-score reads without changing the canonical API.
+    if previous_row is not None:
+        previous_at = previous_row.created_at
+        if previous_at.tzinfo is None:
+            previous_at = previous_at.replace(tzinfo=UTC)
+        if score.created_at <= previous_at:
+            score = score.model_copy(update={"created_at": previous_at + timedelta(microseconds=1)})
     session.add(
         db.HazardScore(
-            id=f"score:{site_id}:{now.isoformat()}",
+            id=f"score:{site_id}:{uuid4().hex}",
             site_id=site_id,
             risk_score=score.risk_score,
             risk_level=score.risk_level,
@@ -65,5 +97,8 @@ def score_site(
             created_at=score.created_at,
         )
     )
-    session.commit()
+    if commit:
+        session.commit()
+    else:
+        session.flush()
     return score
