@@ -12,6 +12,8 @@ Fresh actual FastAPI starts on8052 with no credentials and background jobs/bypas
 
 Shared documentation: PROJECT_CONTEXT, frontend/INTEGRATION, INTEGRATION_STATUS, this log; new WINDOWS_QUICKSTART and redacted clean-setup-verification.json. **No tasks.md change**: T070 requires pending tasks/actual services and another teammate's reproduction; real Auth0/Tiger memberships/T069 and enrichment/location/photo-analysis/live acceptance remain owner work. No pages/components/styles/App/auth/API/schema/backend/DB/migration/ML/manifest/lock/deployment edits. Rudra handoff: link guide from README/T077 and supply T069/contract readiness; Braydin: approved private settings/memberships; Claude: no interface or layout change required. Publication refs follow below.
 
+Published [PR #35](https://github.com/BraydinPG/planit-control-swamphacks/pull/35), open against main. Implementation checkpoint `447f5ca`, reviewed-main feature merge `167ac4b`, finalized evidence `8c636fd`. Publication-only follow-up records refs in this log/context/evidence; no task completion, main merge or production activation. Owned test servers5177/5178/8052 are stopped; original5173 PID22668,5176 PID64004 and8000 PID65924 still listen. Claude's primary checkout remains clean/unchanged.
+
 ## Site-scoring integration verification — 2026-10-17 11:34 UTC
 
 Explicit user scope: verify existing ingestion -> scoring -> persistence -> API -> UI -> confirmed report, fix functional defects without touching Claude's visual files or Rudra/Braydin production modules. PR #31 merged `07a459d`. Separate `feature/cache-scoring-integration` from that main; no unmerged parent. Reviewed Claude `feature/rudra-ui` `ac5861c` without merging/editing it; primary checkout/server preserved.

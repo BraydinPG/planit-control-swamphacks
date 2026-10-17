@@ -270,5 +270,13 @@
       "matches_clean_snapshot": true,
       "sha256_lf": "c70431227a0405ac21a48b838f930806b2c4bf003f738cebe4f7ea082eb2d3e5"
     }
+  },
+  "publication": {
+    "pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/35",
+    "status": "open for review",
+    "implementation_checkpoint": "447f5ca",
+    "reviewed_main_feature_merge": "167ac4b",
+    "finalized_evidence": "8c636fd",
+    "merged_by_codex": false
   }
 }
