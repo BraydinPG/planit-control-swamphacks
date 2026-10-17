@@ -1,0 +1,537 @@
+{
+  "High Wind": {
+    "context": {
+      "event_id": "1294658",
+      "event_type": "High Wind",
+      "event_status": "historical_replay",
+      "event_start_utc": "2025-03-19T11:00:00Z",
+      "as_of_utc": "2025-03-19T12:00:00Z",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "is_simulated": true,
+      "location": {
+        "region": "NOBLES, MINNESOTA",
+        "spatial_match_quality": "region_only"
+      }
+    },
+    "prediction": {
+      "site_id": null,
+      "event_id": "1294658",
+      "event_type": "High Wind",
+      "as_of_utc": "2025-03-19T12:00:00Z",
+      "generated_at_utc": "2026-10-17T05:13:18.450288Z",
+      "is_simulated": true,
+      "production_eligibility": false,
+      "contract_version": "1.1",
+      "event_category": "high_wind",
+      "applicable_location": {
+        "region": "NOBLES, MINNESOTA",
+        "spatial_match_quality": "region_only"
+      },
+      "research_only": true,
+      "operational_evaluation_eligible": false,
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration High Wind recorded-interval persistence; not intensity or site safety",
+      "status": "ok",
+      "scope": "conditional_on_confirmed_active_event",
+      "outcomes": {
+        "recorded_event_ongoing_probability": {
+          "6h": 0.4327292696320697,
+          "12h": 0.21823174080175664,
+          "24h": 0.08204283360790751
+        },
+        "recorded_event_ended_probability": {
+          "6h": 0.5672707303679303,
+          "12h": 0.7817682591982433,
+          "24h": 0.9179571663920925
+        },
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 5.0,
+          "p90": 23.0,
+          "tail_horizon_hours": 168,
+          "max_remaining_hours": 167.0,
+          "tail_beyond_24h": true
+        },
+        "baseline_recorded_event_ongoing_probability": {
+          "6h": 0.4327292696320697,
+          "12h": 0.21823174080175664,
+          "24h": 0.08204283360790751
+        },
+        "trend": "unknown",
+        "trend_basis": "no_validated_time_varying_severity_labels"
+      },
+      "estimator": "kaplan_meier",
+      "model_version": "active-high_wind-pooled-logistic-v1:kaplan_meier",
+      "artifact_version": "active-high_wind-pooled-logistic-v1",
+      "selection_basis": "fixed_validation_rule;_test_not_used_to_tune",
+      "worker_context": {
+        "summary": "Conditional historical event outlook for the stated research target.",
+        "limitations": [
+          "Recorded/observed episode end is not worksite clearance.",
+          "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+          "Historical source revision/availability is not verified as of the past decision time.",
+          "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+          "NOAA regional recorded interval, not verified worksite exposure or safety.",
+          "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+        ],
+        "never_interpret_as_all_clear": true
+      },
+      "evidence_quality": {
+        "status": "retrospective_research;_local_transfer_not_validated",
+        "training_event_count": 12269,
+        "training_episode_count": 2961,
+        "support_at_current_event_age": 9105,
+        "data_completeness": null,
+        "completeness_status": "not_a_calibrated_scalar",
+        "confidence": null,
+        "uncertainty_basis": "heldout_group_bootstrap_intervals_and_reliability_in_model_card",
+        "model_card": "ml/reports/multidisaster/high_wind.json",
+        "spatial_match_quality": "region_only",
+        "available_features": [
+          "event_type",
+          "elapsed_hours",
+          "start_month"
+        ],
+        "missing_features": [
+          "worksite_exposure",
+          "historical_issue_time_vintage",
+          "severity_trajectory"
+        ],
+        "historical_asof_availability_verified": false,
+        "evidence_ids": [],
+        "evidence_references": [],
+        "provenance_status": "historical_replay_only"
+      }
+    }
+  },
+  "Flash Flood": {
+    "context": {
+      "event_id": "1249961",
+      "event_type": "Flash Flood",
+      "event_status": "historical_replay",
+      "event_start_utc": "2025-03-15T14:52:00Z",
+      "as_of_utc": "2025-03-15T15:52:00Z",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "is_simulated": true,
+      "location": {
+        "region": "TATE, MISSISSIPPI",
+        "spatial_match_quality": "region_only"
+      }
+    },
+    "prediction": {
+      "site_id": null,
+      "event_id": "1249961",
+      "event_type": "Flash Flood",
+      "as_of_utc": "2025-03-15T15:52:00Z",
+      "generated_at_utc": "2026-10-17T05:13:18.471147Z",
+      "is_simulated": true,
+      "production_eligibility": false,
+      "contract_version": "1.1",
+      "event_category": "flash_flood",
+      "applicable_location": {
+        "region": "TATE, MISSISSIPPI",
+        "spatial_match_quality": "region_only"
+      },
+      "research_only": true,
+      "operational_evaluation_eligible": false,
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Flash Flood recorded-interval persistence; not intensity or site safety",
+      "status": "ok",
+      "scope": "conditional_on_confirmed_active_event",
+      "outcomes": {
+        "recorded_event_ongoing_probability": {
+          "1h": 0.6018591598702097,
+          "3h": 0.1975795843199159,
+          "6h": 0.05051302288871352
+        },
+        "recorded_event_ended_probability": {
+          "1h": 0.39814084012979034,
+          "3h": 0.802420415680084,
+          "6h": 0.9494869771112865
+        },
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 2.0,
+          "p90": 5.0,
+          "tail_horizon_hours": 168,
+          "max_remaining_hours": 167.0,
+          "tail_beyond_24h": true
+        },
+        "baseline_recorded_event_ongoing_probability": {
+          "1h": 0.6018591598702097,
+          "3h": 0.1975795843199159,
+          "6h": 0.05051302288871352
+        },
+        "trend": "unknown",
+        "trend_basis": "no_validated_time_varying_severity_labels"
+      },
+      "estimator": "kaplan_meier",
+      "model_version": "active-flash_flood-pooled-logistic-v1:kaplan_meier",
+      "artifact_version": "active-flash_flood-pooled-logistic-v1",
+      "selection_basis": "fixed_validation_rule;_test_not_used_to_tune",
+      "worker_context": {
+        "summary": "Conditional historical event outlook for the stated research target.",
+        "limitations": [
+          "Recorded/observed episode end is not worksite clearance.",
+          "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+          "Historical source revision/availability is not verified as of the past decision time.",
+          "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+          "NOAA regional recorded interval, not verified worksite exposure or safety.",
+          "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+        ],
+        "never_interpret_as_all_clear": true
+      },
+      "evidence_quality": {
+        "status": "retrospective_research;_local_transfer_not_validated",
+        "training_event_count": 14894,
+        "training_episode_count": 4015,
+        "support_at_current_event_age": 11403,
+        "data_completeness": null,
+        "completeness_status": "not_a_calibrated_scalar",
+        "confidence": null,
+        "uncertainty_basis": "heldout_group_bootstrap_intervals_and_reliability_in_model_card",
+        "model_card": "ml/reports/multidisaster/flash_flood.json",
+        "spatial_match_quality": "region_only",
+        "available_features": [
+          "event_type",
+          "elapsed_hours",
+          "start_month"
+        ],
+        "missing_features": [
+          "worksite_exposure",
+          "historical_issue_time_vintage",
+          "severity_trajectory"
+        ],
+        "historical_asof_availability_verified": false,
+        "evidence_ids": [],
+        "evidence_references": [],
+        "provenance_status": "historical_replay_only"
+      }
+    }
+  },
+  "Heavy Rain": {
+    "context": {
+      "event_id": "1251312",
+      "event_type": "Heavy Rain",
+      "event_status": "historical_replay",
+      "event_start_utc": "2025-06-04T23:00:00Z",
+      "as_of_utc": "2025-06-05T00:00:00Z",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "is_simulated": true,
+      "location": {
+        "region": "DENVER, COLORADO",
+        "spatial_match_quality": "region_only"
+      }
+    },
+    "prediction": {
+      "site_id": null,
+      "event_id": "1251312",
+      "event_type": "Heavy Rain",
+      "as_of_utc": "2025-06-05T00:00:00Z",
+      "generated_at_utc": "2026-10-17T05:13:18.485572Z",
+      "is_simulated": true,
+      "production_eligibility": false,
+      "contract_version": "1.1",
+      "event_category": "heavy_rain",
+      "applicable_location": {
+        "region": "DENVER, COLORADO",
+        "spatial_match_quality": "region_only"
+      },
+      "research_only": true,
+      "operational_evaluation_eligible": false,
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Heavy Rain recorded-interval persistence; not intensity or site safety",
+      "status": "ok",
+      "scope": "conditional_on_confirmed_active_event",
+      "outcomes": {
+        "recorded_event_ongoing_probability": {
+          "1h": 0.8733624454148474,
+          "3h": 0.7272727272727283,
+          "6h": 0.6165144898769366
+        },
+        "recorded_event_ended_probability": {
+          "1h": 0.12663755458515258,
+          "3h": 0.2727272727272717,
+          "6h": 0.3834855101230634
+        },
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 13.0,
+          "p90": 26.0,
+          "tail_horizon_hours": 168,
+          "max_remaining_hours": 167.0,
+          "tail_beyond_24h": true
+        },
+        "baseline_recorded_event_ongoing_probability": {
+          "1h": 0.8733624454148474,
+          "3h": 0.7272727272727283,
+          "6h": 0.6165144898769366
+        },
+        "trend": "unknown",
+        "trend_basis": "no_validated_time_varying_severity_labels"
+      },
+      "estimator": "kaplan_meier",
+      "model_version": "active-heavy_rain-pooled-logistic-v1:kaplan_meier",
+      "artifact_version": "active-heavy_rain-pooled-logistic-v1",
+      "selection_basis": "fixed_validation_rule;_test_not_used_to_tune",
+      "worker_context": {
+        "summary": "Conditional historical event outlook for the stated research target.",
+        "limitations": [
+          "Recorded/observed episode end is not worksite clearance.",
+          "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+          "Historical source revision/availability is not verified as of the past decision time.",
+          "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+          "NOAA regional recorded interval, not verified worksite exposure or safety.",
+          "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+        ],
+        "never_interpret_as_all_clear": true
+      },
+      "evidence_quality": {
+        "status": "retrospective_research;_local_transfer_not_validated",
+        "training_event_count": 2775,
+        "training_episode_count": 750,
+        "support_at_current_event_age": 2519,
+        "data_completeness": null,
+        "completeness_status": "not_a_calibrated_scalar",
+        "confidence": null,
+        "uncertainty_basis": "heldout_group_bootstrap_intervals_and_reliability_in_model_card",
+        "model_card": "ml/reports/multidisaster/heavy_rain.json",
+        "spatial_match_quality": "region_only",
+        "available_features": [
+          "event_type",
+          "elapsed_hours",
+          "start_month"
+        ],
+        "missing_features": [
+          "worksite_exposure",
+          "historical_issue_time_vintage",
+          "severity_trajectory"
+        ],
+        "historical_asof_availability_verified": false,
+        "evidence_ids": [],
+        "evidence_references": [],
+        "provenance_status": "historical_replay_only"
+      }
+    }
+  },
+  "Winter Storm": {
+    "context": {
+      "event_id": "1236639",
+      "event_type": "Winter Storm",
+      "event_status": "historical_replay",
+      "event_start_utc": "2025-01-10T10:30:00Z",
+      "as_of_utc": "2025-01-10T11:30:00Z",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "is_simulated": true,
+      "location": {
+        "region": "HARALSON, GEORGIA",
+        "spatial_match_quality": "region_only"
+      }
+    },
+    "prediction": {
+      "site_id": null,
+      "event_id": "1236639",
+      "event_type": "Winter Storm",
+      "as_of_utc": "2025-01-10T11:30:00Z",
+      "generated_at_utc": "2026-10-17T05:13:18.496686Z",
+      "is_simulated": true,
+      "production_eligibility": false,
+      "contract_version": "1.1",
+      "event_category": "winter_storm",
+      "applicable_location": {
+        "region": "HARALSON, GEORGIA",
+        "spatial_match_quality": "region_only"
+      },
+      "research_only": true,
+      "operational_evaluation_eligible": false,
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Winter Storm recorded-interval persistence; not intensity or site safety",
+      "status": "ok",
+      "scope": "conditional_on_confirmed_active_event",
+      "outcomes": {
+        "recorded_event_ongoing_probability": {
+          "6h": 0.9582413539367182,
+          "12h": 0.7701434878587197,
+          "24h": 0.3853016924208967
+        },
+        "recorded_event_ended_probability": {
+          "6h": 0.041758646063281835,
+          "12h": 0.22985651214128033,
+          "24h": 0.6146983075791033
+        },
+        "remaining_duration_hours": {
+          "p10": 9.0,
+          "median": 21.0,
+          "p90": 43.0,
+          "tail_horizon_hours": 168,
+          "max_remaining_hours": 167.0,
+          "tail_beyond_24h": true
+        },
+        "baseline_recorded_event_ongoing_probability": {
+          "6h": 0.9582413539367182,
+          "12h": 0.7701434878587197,
+          "24h": 0.3853016924208967
+        },
+        "trend": "unknown",
+        "trend_basis": "no_validated_time_varying_severity_labels"
+      },
+      "estimator": "kaplan_meier",
+      "model_version": "active-winter_storm-pooled-logistic-v1:kaplan_meier",
+      "artifact_version": "active-winter_storm-pooled-logistic-v1",
+      "selection_basis": "fixed_validation_rule;_test_not_used_to_tune",
+      "worker_context": {
+        "summary": "Conditional historical event outlook for the stated research target.",
+        "limitations": [
+          "Recorded/observed episode end is not worksite clearance.",
+          "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+          "Historical source revision/availability is not verified as of the past decision time.",
+          "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+          "NOAA regional recorded interval, not verified worksite exposure or safety.",
+          "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+        ],
+        "never_interpret_as_all_clear": true
+      },
+      "evidence_quality": {
+        "status": "retrospective_research;_local_transfer_not_validated",
+        "training_event_count": 10880,
+        "training_episode_count": 1786,
+        "support_at_current_event_age": 10872,
+        "data_completeness": null,
+        "completeness_status": "not_a_calibrated_scalar",
+        "confidence": null,
+        "uncertainty_basis": "heldout_group_bootstrap_intervals_and_reliability_in_model_card",
+        "model_card": "ml/reports/multidisaster/winter_storm.json",
+        "spatial_match_quality": "region_only",
+        "available_features": [
+          "event_type",
+          "elapsed_hours",
+          "start_month"
+        ],
+        "missing_features": [
+          "worksite_exposure",
+          "historical_issue_time_vintage",
+          "severity_trajectory"
+        ],
+        "historical_asof_availability_verified": false,
+        "evidence_ids": [],
+        "evidence_references": [],
+        "provenance_status": "historical_replay_only"
+      }
+    }
+  },
+  "Heat Index Exceedance": {
+    "context": {
+      "event_id": "heat:722020-12839:2025-03-10T19:00:00Z",
+      "event_type": "Heat Index Exceedance",
+      "event_status": "historical_replay",
+      "event_start_utc": "2025-03-10T19:00:00Z",
+      "as_of_utc": "2025-03-10T19:00:00Z",
+      "event_definition": "observed_station_hourly_heat_index_at_or_above_90f",
+      "is_simulated": true,
+      "location": {
+        "region": "MIAMI INTERNATIONAL AIRPORT",
+        "spatial_match_quality": "region_only"
+      },
+      "station_id": "722020-12839"
+    },
+    "prediction": {
+      "site_id": null,
+      "event_id": "heat:722020-12839:2025-03-10T19:00:00Z",
+      "event_type": "Heat Index Exceedance",
+      "as_of_utc": "2025-03-10T19:00:00Z",
+      "generated_at_utc": "2026-10-17T05:13:18.538556Z",
+      "is_simulated": true,
+      "production_eligibility": false,
+      "contract_version": "1.1",
+      "event_category": "heat",
+      "applicable_location": {
+        "region": "MIAMI INTERNATIONAL AIRPORT",
+        "spatial_match_quality": "region_only"
+      },
+      "research_only": true,
+      "operational_evaluation_eligible": false,
+      "data_version": "NOAA-ISD-Lite-2021-2025:81caf434714c00959f8c48cad9838565ca750111a51723e6d77395a57676914f",
+      "event_definition": "observed_station_hourly_heat_index_at_or_above_90f",
+      "target": "Observed hourly station heat-index >=90F threshold-episode persistence, not NOAA administrative Heat duration or worksite safety",
+      "status": "ok",
+      "scope": "conditional_on_confirmed_active_event",
+      "outcomes": {
+        "recorded_event_ongoing_probability": {
+          "1h": 0.5162998103206635,
+          "3h": 0.1624695868581047,
+          "6h": 0.03428249893618995
+        },
+        "recorded_event_ended_probability": {
+          "1h": 0.4837001896793365,
+          "3h": 0.8375304131418952,
+          "6h": 0.96571750106381
+        },
+        "remaining_duration_hours": {
+          "p10": 1.0,
+          "median": 2.0,
+          "p90": 4.0,
+          "tail_horizon_hours": 168,
+          "max_remaining_hours": 168.0,
+          "tail_beyond_24h": true
+        },
+        "baseline_recorded_event_ongoing_probability": {
+          "1h": 0.8378995433789954,
+          "3h": 0.7073059360730592,
+          "6h": 0.5484018264840181
+        },
+        "trend": "unknown",
+        "trend_basis": "no_validated_time_varying_severity_labels"
+      },
+      "estimator": "logistic",
+      "model_version": "active-heat_index_exceedance-pooled-logistic-v1:logistic",
+      "artifact_version": "active-heat_index_exceedance-pooled-logistic-v1",
+      "selection_basis": "fixed_validation_rule;_test_not_used_to_tune",
+      "worker_context": {
+        "summary": "Conditional historical event outlook for the stated research target.",
+        "limitations": [
+          "Recorded/observed episode end is not worksite clearance.",
+          "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+          "Historical source revision/availability is not verified as of the past decision time.",
+          "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+          "Three airport stations in FL/TX/AZ, not a nationwide site-exposure model.",
+          "2025 legacy station archives end in August; no complete-year claim.",
+          "Hourly rounded archived observations; individual QC flags and original issue/acquisition times are unavailable in ISD-Lite.",
+          "Threshold 90F is a configurable research definition, not work/rest or employer policy.",
+          "Heat index is derived from observed temperature/dewpoint; it is not a directly measured WBGT.",
+          "Station/week clusters reduce repeated-cycle dependence but are not independent regional heatwaves."
+        ],
+        "never_interpret_as_all_clear": true
+      },
+      "evidence_quality": {
+        "status": "retrospective_research;_local_transfer_not_validated",
+        "training_event_count": 2190,
+        "training_episode_count": 357,
+        "support_at_current_event_age": 2190,
+        "data_completeness": null,
+        "completeness_status": "not_a_calibrated_scalar",
+        "confidence": null,
+        "uncertainty_basis": "heldout_group_bootstrap_intervals_and_reliability_in_model_card",
+        "model_card": "ml/reports/multidisaster/heat_index_exceedance.json",
+        "spatial_match_quality": "region_only",
+        "available_features": [
+          "event_type",
+          "elapsed_hours",
+          "start_month"
+        ],
+        "missing_features": [
+          "worksite_exposure",
+          "historical_issue_time_vintage",
+          "severity_trajectory"
+        ],
+        "historical_asof_availability_verified": false,
+        "evidence_ids": [],
+        "evidence_references": [],
+        "provenance_status": "historical_replay_only"
+      }
+    }
+  }
+}

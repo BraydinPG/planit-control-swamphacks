@@ -1,0 +1,321 @@
+{
+  "status": "REAL_ARTIFACT_SMOKE_CHECKS_PASSED",
+  "flood_reference_verified": true,
+  "one_worker": true,
+  "inference": {
+    "High Wind": {
+      "first_call_ms": 10.349200019845739,
+      "warm_calls": 200,
+      "warm_median_ms": 0.08009999874047935,
+      "warm_p95_ms": 0.08689999231137335
+    },
+    "Flash Flood": {
+      "first_call_ms": 11.4365000044927,
+      "warm_calls": 200,
+      "warm_median_ms": 0.07730000652372837,
+      "warm_p95_ms": 0.09270000737160444
+    },
+    "Heavy Rain": {
+      "first_call_ms": 3.4561999782454222,
+      "warm_calls": 200,
+      "warm_median_ms": 0.0788999896030873,
+      "warm_p95_ms": 0.09389998740516603
+    },
+    "Winter Storm": {
+      "first_call_ms": 9.134899999480695,
+      "warm_calls": 200,
+      "warm_median_ms": 0.08250000246334821,
+      "warm_p95_ms": 0.09519999730400741
+    },
+    "Heat Index Exceedance": {
+      "first_call_ms": 6.500499992398545,
+      "warm_calls": 200,
+      "warm_median_ms": 0.18109999655280262,
+      "warm_p95_ms": 0.22080002236180007
+    }
+  },
+  "monte_carlo": {
+    "High Wind": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "6h": 0.4327292696320697,
+        "12h": 0.21823174080175664,
+        "24h": 0.08204283360790751
+      },
+      "simulated_ongoing_proportion": {
+        "6h": 0.43165,
+        "12h": 0.21515,
+        "24h": 0.07885
+      },
+      "absolute_probability_error": {
+        "6h": 0.0010792696320697237,
+        "12h": 0.003081740801756633,
+        "24h": 0.003192833607907508
+      },
+      "remaining_duration_hours": {
+        "p10": 1.0,
+        "median": 5.0,
+        "p90": 22.0,
+        "unresolved_beyond_simulation_horizon_count": 8,
+        "unresolved_beyond_simulation_horizon_probability": 0.0004
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "active-high_wind-pooled-logistic-v1",
+      "scope": "offline_internal_only",
+      "estimator": "kaplan_meier",
+      "historical_evaluation_reference": "ml/reports/multidisaster/high_wind.json",
+      "historical_duration_metrics": {
+        "snapshot_count": 6952,
+        "episode_count": 580,
+        "median_remaining_time_mae_hours": 5.947269370924434,
+        "median_prediction_count": 6952,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 580,
+          "replicates": 500,
+          "lower_95": 5.1115405174257,
+          "upper_95": 7.216390737015834
+        },
+        "p10_p90_interval_coverage": 0.8787399309551208,
+        "interval_prediction_count": 6952,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 580,
+          "replicates": 500,
+          "lower_95": 0.8563016963409505,
+          "upper_95": 0.8995330051748075
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "historical_example_observed_remaining_hours": 4.5,
+      "single_replay_median_absolute_error_hours": 0.5
+    },
+    "Flash Flood": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "1h": 0.6018591598702097,
+        "3h": 0.1975795843199159,
+        "6h": 0.050513022888713524
+      },
+      "simulated_ongoing_proportion": {
+        "1h": 0.60275,
+        "3h": 0.19615,
+        "6h": 0.0499
+      },
+      "absolute_probability_error": {
+        "1h": 0.000890840129790349,
+        "3h": 0.0014295843199159108,
+        "6h": 0.0006130228887135242
+      },
+      "remaining_duration_hours": {
+        "p10": 1.0,
+        "median": 2.0,
+        "p90": 5.0,
+        "unresolved_beyond_simulation_horizon_count": 9,
+        "unresolved_beyond_simulation_horizon_probability": 0.00045
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "active-flash_flood-pooled-logistic-v1",
+      "scope": "offline_internal_only",
+      "estimator": "kaplan_meier",
+      "historical_evaluation_reference": "ml/reports/multidisaster/flash_flood.json",
+      "historical_duration_metrics": {
+        "snapshot_count": 5041,
+        "episode_count": 880,
+        "median_remaining_time_mae_hours": 3.2672121933478806,
+        "median_prediction_count": 5041,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 880,
+          "replicates": 500,
+          "lower_95": 1.9179216018048504,
+          "upper_95": 5.052187979454339
+        },
+        "p10_p90_interval_coverage": 0.673279111287443,
+        "interval_prediction_count": 5041,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 880,
+          "replicates": 500,
+          "lower_95": 0.6493938208838482,
+          "upper_95": 0.6956681350954479
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "historical_example_observed_remaining_hours": 0.6333333333333333,
+      "single_replay_median_absolute_error_hours": 1.3666666666666667
+    },
+    "Heavy Rain": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "1h": 0.8733624454148474,
+        "3h": 0.7272727272727283,
+        "6h": 0.6165144898769366
+      },
+      "simulated_ongoing_proportion": {
+        "1h": 0.87265,
+        "3h": 0.7297,
+        "6h": 0.62045
+      },
+      "absolute_probability_error": {
+        "1h": 0.0007124454148473847,
+        "3h": 0.002427272727271723,
+        "6h": 0.003935510123063368
+      },
+      "remaining_duration_hours": {
+        "p10": 1.0,
+        "median": 14.0,
+        "p90": 27.0,
+        "unresolved_beyond_simulation_horizon_count": 12,
+        "unresolved_beyond_simulation_horizon_probability": 0.0006
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "active-heavy_rain-pooled-logistic-v1",
+      "scope": "offline_internal_only",
+      "estimator": "kaplan_meier",
+      "historical_evaluation_reference": "ml/reports/multidisaster/heavy_rain.json",
+      "historical_duration_metrics": {
+        "snapshot_count": 821,
+        "episode_count": 103,
+        "median_remaining_time_mae_hours": 23.88394234673163,
+        "median_prediction_count": 821,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 103,
+          "replicates": 500,
+          "lower_95": 8.378968253968255,
+          "upper_95": 40.61299463447351
+        },
+        "p10_p90_interval_coverage": 0.5785627283800243,
+        "interval_prediction_count": 821,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 103,
+          "replicates": 500,
+          "lower_95": 0.3893405600722674,
+          "upper_95": 0.7972768532526475
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "historical_example_observed_remaining_hours": 2.0,
+      "single_replay_median_absolute_error_hours": 12.0
+    },
+    "Winter Storm": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "6h": 0.9582413539367182,
+        "12h": 0.7701434878587197,
+        "24h": 0.3853016924208967
+      },
+      "simulated_ongoing_proportion": {
+        "6h": 0.9571,
+        "12h": 0.77055,
+        "24h": 0.38395
+      },
+      "absolute_probability_error": {
+        "6h": 0.0011413539367182146,
+        "12h": 0.0004065121412802908,
+        "24h": 0.0013516924208966663
+      },
+      "remaining_duration_hours": {
+        "p10": 9.0,
+        "median": 21.0,
+        "p90": 43.0,
+        "unresolved_beyond_simulation_horizon_count": 9,
+        "unresolved_beyond_simulation_horizon_probability": 0.00045
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "active-winter_storm-pooled-logistic-v1",
+      "scope": "offline_internal_only",
+      "estimator": "kaplan_meier",
+      "historical_evaluation_reference": "ml/reports/multidisaster/winter_storm.json",
+      "historical_duration_metrics": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "median_remaining_time_mae_hours": 8.642995118911621,
+        "median_prediction_count": 9629,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 7.764860426929392,
+          "upper_95": 9.623680437653272
+        },
+        "p10_p90_interval_coverage": 0.8283310831862083,
+        "interval_prediction_count": 9629,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.7786565547128927,
+          "upper_95": 0.8695174343091218
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "historical_example_observed_remaining_hours": 6.0,
+      "single_replay_median_absolute_error_hours": 15.0
+    },
+    "Heat Index Exceedance": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "1h": 0.5162998103206635,
+        "3h": 0.1624695868581047,
+        "6h": 0.03428249893618995
+      },
+      "simulated_ongoing_proportion": {
+        "1h": 0.51725,
+        "3h": 0.16015,
+        "6h": 0.0327
+      },
+      "absolute_probability_error": {
+        "1h": 0.0009501896793364661,
+        "3h": 0.0023195868581047108,
+        "6h": 0.0015824989361899466
+      },
+      "remaining_duration_hours": {
+        "p10": 1.0,
+        "median": 2.0,
+        "p90": 4.0,
+        "unresolved_beyond_simulation_horizon_count": 0,
+        "unresolved_beyond_simulation_horizon_probability": 0.0
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "active-heat_index_exceedance-pooled-logistic-v1",
+      "scope": "offline_internal_only",
+      "estimator": "logistic",
+      "historical_evaluation_reference": "ml/reports/multidisaster/heat_index_exceedance.json",
+      "historical_duration_metrics": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "median_remaining_time_mae_hours": 6.261648745519714,
+        "median_prediction_count": 1116,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 5.1055363321799305,
+          "upper_95": 7.755597014925373
+        },
+        "p10_p90_interval_coverage": 0.921146953405018,
+        "interval_prediction_count": 1116,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.8996478873239436,
+          "upper_95": 0.9432989690721649
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "historical_example_observed_remaining_hours": 1.0,
+      "single_replay_median_absolute_error_hours": 1.0
+    }
+  },
+  "parallelism_decision": "No multiprocessing introduced; existing 1-worker benchmark and short serial timings do not justify it.",
+  "note": "Monte Carlo checks arithmetic, separate historical metrics assess predictive error; neither establishes worksite safety."
+}

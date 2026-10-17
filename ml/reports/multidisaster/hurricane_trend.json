@@ -1,0 +1,698 @@
+{
+  "status": "evaluated_retrospective_experiment",
+  "live_dispatch_status": "unavailable_no_historical_operational_vintage_validation",
+  "event_type": "North Atlantic Tropical Cyclone",
+  "target": "24h_cyclone_max_wind_change_10kt_classes",
+  "split_policy": "whole_storm_2000_2019_train;_2020_2022_validation;_2023_2025_test",
+  "split": {
+    "train": {
+      "snapshots": 6522,
+      "storm_count": 325,
+      "labels": {
+        "stable": 2610,
+        "worsening": 2044,
+        "improving": 1868
+      }
+    },
+    "validation": {
+      "snapshots": 1191,
+      "storm_count": 67,
+      "labels": {
+        "stable": 509,
+        "worsening": 373,
+        "improving": 309
+      }
+    },
+    "test": {
+      "snapshots": 976,
+      "storm_count": 50,
+      "labels": {
+        "stable": 347,
+        "improving": 298,
+        "worsening": 331
+      }
+    }
+  },
+  "exclusions": {
+    "missing_exact_past_or_future_measurement": 1024,
+    "boundary_crossing_storms_purged": 0
+  },
+  "feature_names": [
+    "current_wind_kt",
+    "previous_6h_wind_change_kt",
+    "current_pressure_hpa",
+    "lat",
+    "lon",
+    "month"
+  ],
+  "selected_estimator": "logistic",
+  "validation": {
+    "logistic": {
+      "improving": {
+        "snapshot_count": 1191,
+        "episode_count": 67,
+        "brier_score": 0.15876249014080301,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.08159936828390925,
+            "observed_frequency": 0.02564102564102564,
+            "count": 78
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.15514671014224127,
+            "observed_frequency": 0.08527131782945736,
+            "count": 258
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.2448107637920589,
+            "observed_frequency": 0.1296928327645051,
+            "count": 293
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3503806699461323,
+            "observed_frequency": 0.2722222222222222,
+            "count": 180
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4422053117102502,
+            "observed_frequency": 0.40816326530612246,
+            "count": 147
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.547678573720069,
+            "observed_frequency": 0.5056179775280899,
+            "count": 89
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6511971587093203,
+            "observed_frequency": 0.5584415584415584,
+            "count": 77
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7600382865481128,
+            "observed_frequency": 0.6,
+            "count": 45
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8307733895217463,
+            "observed_frequency": 0.9444444444444444,
+            "count": 18
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9151245258590673,
+            "observed_frequency": 1.0,
+            "count": 6
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 67,
+          "replicates": 500,
+          "lower_95": 0.14444126289475753,
+          "upper_95": 0.17371322958684365
+        },
+        "positive_labels": 309,
+        "negative_labels": 882,
+        "expected_calibration_error": 0.08046808241431577
+      },
+      "stable": {
+        "snapshot_count": 1191,
+        "episode_count": 67,
+        "brier_score": 0.2208438972254033,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.07461851701884356,
+            "observed_frequency": 0.2692307692307692,
+            "count": 52
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.1500897789485712,
+            "observed_frequency": 0.25471698113207547,
+            "count": 106
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.2527485419261001,
+            "observed_frequency": 0.22941176470588234,
+            "count": 170
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.353159066987934,
+            "observed_frequency": 0.36,
+            "count": 225
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.450230581690758,
+            "observed_frequency": 0.38345864661654133,
+            "count": 266
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5502962084084317,
+            "observed_frequency": 0.6,
+            "count": 240
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6332281088158628,
+            "observed_frequency": 0.7741935483870968,
+            "count": 124
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7198171185210346,
+            "observed_frequency": 0.75,
+            "count": 8
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 67,
+          "replicates": 500,
+          "lower_95": 0.2061435390052676,
+          "upper_95": 0.23568932763060285
+        },
+        "positive_labels": 509,
+        "negative_labels": 682,
+        "expected_calibration_error": 0.06224030635768783
+      },
+      "worsening": {
+        "snapshot_count": 1191,
+        "episode_count": 67,
+        "brier_score": 0.19105512679451625,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.06407114264115747,
+            "observed_frequency": 0.017543859649122806,
+            "count": 57
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.16342302165652958,
+            "observed_frequency": 0.140625,
+            "count": 320
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.25267362552235223,
+            "observed_frequency": 0.25970873786407767,
+            "count": 412
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.34189180316052586,
+            "observed_frequency": 0.4944237918215613,
+            "count": 269
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.43436563493158653,
+            "observed_frequency": 0.6296296296296297,
+            "count": 108
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5325056700067031,
+            "observed_frequency": 0.85,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6518287414282926,
+            "observed_frequency": 0.5,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7574409046225756,
+            "observed_frequency": 0.0,
+            "count": 1
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 67,
+          "replicates": 500,
+          "lower_95": 0.17190908726302706,
+          "upper_95": 0.20723888401533527
+        },
+        "positive_labels": 373,
+        "negative_labels": 818,
+        "expected_calibration_error": 0.06942077849944182
+      },
+      "multiclass_brier_score": 0.5706615141607225
+    },
+    "train_frequency_baseline": {
+      "improving": {
+        "snapshot_count": 1191,
+        "episode_count": 67,
+        "brier_score": 0.1931192753103585,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.29083975026989095,
+            "observed_frequency": 0.2594458438287154,
+            "count": 1191
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 67,
+          "replicates": 500,
+          "lower_95": 0.17832512978131546,
+          "upper_95": 0.205216437247166
+        },
+        "positive_labels": 309,
+        "negative_labels": 882,
+        "expected_calibration_error": 0.03139390644117557
+      },
+      "stable": {
+        "snapshot_count": 1191,
+        "episode_count": 67,
+        "brier_score": 0.24491461040581203,
+        "reliability": [
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.44113579053631974,
+            "observed_frequency": 0.42737195633921077,
+            "count": 1191
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 67,
+          "replicates": 500,
+          "lower_95": 0.23851535465707158,
+          "upper_95": 0.25223164981464025
+        },
+        "positive_labels": 509,
+        "negative_labels": 682,
+        "expected_calibration_error": 0.013763834197108972
+      },
+      "worsening": {
+        "snapshot_count": 1191,
+        "episode_count": 67,
+        "brier_score": 0.2171383310799714,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.26802445919378926,
+            "observed_frequency": 0.3131821998320739,
+            "count": 1191
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 67,
+          "replicates": 500,
+          "lower_95": 0.19649231317446483,
+          "upper_95": 0.23482867146751327
+        },
+        "positive_labels": 373,
+        "negative_labels": 818,
+        "expected_calibration_error": 0.04515774063828465
+      },
+      "multiclass_brier_score": 0.6551722167961419
+    }
+  },
+  "test": {
+    "logistic": {
+      "improving": {
+        "snapshot_count": 976,
+        "episode_count": 50,
+        "brier_score": 0.15058242205133548,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.0849895786715163,
+            "observed_frequency": 0.0,
+            "count": 58
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.154965727285455,
+            "observed_frequency": 0.099601593625498,
+            "count": 251
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.24388067746271094,
+            "observed_frequency": 0.13934426229508196,
+            "count": 244
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.34879932387616414,
+            "observed_frequency": 0.3333333333333333,
+            "count": 102
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4428113228446168,
+            "observed_frequency": 0.4742268041237113,
+            "count": 97
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5495297481282522,
+            "observed_frequency": 0.6216216216216216,
+            "count": 74
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6537303377882995,
+            "observed_frequency": 0.6440677966101694,
+            "count": 59
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7369953154539992,
+            "observed_frequency": 0.7317073170731707,
+            "count": 41
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8422825612228245,
+            "observed_frequency": 0.9318181818181818,
+            "count": 44
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9282816680669077,
+            "observed_frequency": 0.6666666666666666,
+            "count": 6
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 50,
+          "replicates": 500,
+          "lower_95": 0.13419411602258388,
+          "upper_95": 0.16963154402726516
+        },
+        "positive_labels": 298,
+        "negative_labels": 678,
+        "expected_calibration_error": 0.06207834523378041
+      },
+      "stable": {
+        "snapshot_count": 976,
+        "episode_count": 50,
+        "brier_score": 0.20565909408685235,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.0649621493144527,
+            "observed_frequency": 0.07575757575757576,
+            "count": 66
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.1528881735869392,
+            "observed_frequency": 0.20618556701030927,
+            "count": 97
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.25598541538360287,
+            "observed_frequency": 0.21774193548387097,
+            "count": 124
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3550657169515842,
+            "observed_frequency": 0.2191780821917808,
+            "count": 146
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.45051495428699073,
+            "observed_frequency": 0.37264150943396224,
+            "count": 212
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5454264728187794,
+            "observed_frequency": 0.4803921568627451,
+            "count": 204
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6340289249700881,
+            "observed_frequency": 0.672,
+            "count": 125
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7151266929432243,
+            "observed_frequency": 1.0,
+            "count": 2
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 50,
+          "replicates": 500,
+          "lower_95": 0.1912556019887451,
+          "upper_95": 0.2197939400643556
+        },
+        "positive_labels": 347,
+        "negative_labels": 629,
+        "expected_calibration_error": 0.06716847668702525
+      },
+      "worsening": {
+        "snapshot_count": 976,
+        "episode_count": 50,
+        "brier_score": 0.19841981501561104,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.0673879251395523,
+            "observed_frequency": 0.011764705882352941,
+            "count": 85
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.15313613599038275,
+            "observed_frequency": 0.12552301255230125,
+            "count": 239
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.25843450868160944,
+            "observed_frequency": 0.3553459119496855,
+            "count": 318
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.34321456249197607,
+            "observed_frequency": 0.48695652173913045,
+            "count": 230
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.43891429282815525,
+            "observed_frequency": 0.7317073170731707,
+            "count": 82
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5351353570324693,
+            "observed_frequency": 0.7647058823529411,
+            "count": 17
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6482798096297951,
+            "observed_frequency": 0.5,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7649640707296206,
+            "observed_frequency": 0.0,
+            "count": 1
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 50,
+          "replicates": 500,
+          "lower_95": 0.18356346069616128,
+          "upper_95": 0.21669330403537432
+        },
+        "positive_labels": 331,
+        "negative_labels": 645,
+        "expected_calibration_error": 0.10704487421357092
+      },
+      "multiclass_brier_score": 0.5546613311537989
+    },
+    "train_frequency_baseline": {
+      "improving": {
+        "snapshot_count": 976,
+        "episode_count": 50,
+        "brier_score": 0.2125561350377724,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.2840352954218524,
+            "observed_frequency": 0.305327868852459,
+            "count": 976
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 50,
+          "replicates": 500,
+          "lower_95": 0.18980579350753624,
+          "upper_95": 0.23109236086019105
+        },
+        "positive_labels": 298,
+        "negative_labels": 678,
+        "expected_calibration_error": 0.021292573430606587
+      },
+      "stable": {
+        "snapshot_count": 976,
+        "episode_count": 50,
+        "brier_score": 0.2374341968245755,
+        "reliability": [
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4466644086732908,
+            "observed_frequency": 0.3555327868852459,
+            "count": 976
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 50,
+          "replicates": 500,
+          "lower_95": 0.22924246533561993,
+          "upper_95": 0.2465395088081208
+        },
+        "positive_labels": 347,
+        "negative_labels": 629,
+        "expected_calibration_error": 0.0911316217880449
+      },
+      "worsening": {
+        "snapshot_count": 976,
+        "episode_count": 50,
+        "brier_score": 0.22900134211110823,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.26930029590485677,
+            "observed_frequency": 0.3391393442622951,
+            "count": 976
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 50,
+          "replicates": 500,
+          "lower_95": 0.20848360351202003,
+          "upper_95": 0.25099702675513497
+        },
+        "positive_labels": 331,
+        "negative_labels": 645,
+        "expected_calibration_error": 0.06983904835743832
+      },
+      "multiclass_brier_score": 0.6789916739734562
+    }
+  },
+  "qualification_failures": [],
+  "production_eligibility": false,
+  "operational_evaluation_eligible": false,
+  "historical_asof_availability_verified": false,
+  "limitations": [
+    "Post-analysis HURDAT features were not necessarily known at the historical decision time.",
+    "Exact past 6h and future 24h wind measurements required; missing future tracks are excluded, not declared improving.",
+    "Trend means cyclone-maximum wind change, not geographic development or local worker danger.",
+    "All hurricane/typhoon live interface calls remain unavailable; no Pacific extrapolation.",
+    "Duration and interval coverage are inapplicable to this categorical wind-change target."
+  ],
+  "elapsed_seconds": 0.21741250000195578,
+  "example": {
+    "trend_probability": {
+      "improving": 0.3908210850481243,
+      "stable": 0.4547736929457678,
+      "worsening": 0.1544052220061079
+    },
+    "trend_basis": "24h_change_in_cyclone_maximum_wind;_not_worksite_severity",
+    "research_only": true,
+    "operational_evaluation_eligible": false,
+    "historical_asof_availability_verified": false
+  },
+  "reference_features": {
+    "current_wind_kt": 50,
+    "previous_6h_wind_change_kt": 0,
+    "current_pressure_hpa": 982,
+    "lat": 37.1,
+    "lon": -66.1,
+    "month": 1
+  },
+  "reference_storm_id": "AL012023",
+  "reference_as_of_utc": "2023-01-16T12:00:00Z",
+  "data_version": "75202780ce56c8458f16fbef5fb8a026b99b00878dbb95c458211b3e6ef125b4",
+  "artifact_sha256": "a717fac63b7e58fec25827d19587c5b4b0cf7a8811268590251ba109e56de003"
+}

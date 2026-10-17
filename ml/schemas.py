@@ -110,13 +110,36 @@ def validate_event_context(context: Any) -> dict[str, Any]:
 
 def prediction_metadata(context: Any) -> dict[str, Any]:
     source = context if isinstance(context, dict) else {}
+    from ml.event_types import NOAA_EVENT_TYPES
+    event_type = source.get("event_type")
+    spec = NOAA_EVENT_TYPES.get(event_type) if isinstance(event_type, str) else None
+    location = source.get("location")
+    # This helper is also called for invalid inputs; never echo unsafe numbers.
+    safe_location = None
+    if isinstance(location, dict):
+        safe_location = {k: v for k, v in location.items() if k in ("region", "spatial_match_quality") and isinstance(v, str)}
+        for key in ("lat", "lon"):
+            if type(location.get(key)) in (float, int) and math.isfinite(location[key]):
+                safe_location[key] = location[key]
     return {
         **{key: source.get(key) if isinstance(source.get(key), str) else None
            for key in ("site_id", "event_id", "event_type", "as_of_utc")},
         "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "is_simulated": source.get("is_simulated") is True or source.get("event_status") == "historical_replay",
         "production_eligibility": False,
+        "contract_version": "1.1",
+        "event_category": spec.category if spec else "unknown",
+        "applicable_location": safe_location,
+        "research_only": True,
+        "operational_evaluation_eligible": False,
+        "data_version": "NOAA-2021-2025-pinned-purged-v2" if isinstance(event_type, str) and event_type.casefold() == "flood" else None,
     }
+
+
+def evidence_references(context: dict) -> list[dict]:
+    """Return only validated evidence fields, never arbitrary caller extensions."""
+    return [{key: item[key] for key in ("id", "source", "available_at_utc", "valid_time_utc") if key in item}
+            for item in context.get("evidence", [])]
 
 
 def not_applicable_result(context: Any, reason: str) -> dict[str, Any]:

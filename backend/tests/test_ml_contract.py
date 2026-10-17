@@ -13,6 +13,7 @@ from ml.backend_adapter import ActiveEventPredictor
 from ml.predict import predict_site
 from ml.tests.test_prediction import active_context, training_events
 from ml.train import fit_models, save_models
+from unittest.mock import patch
 
 
 @pytest.mark.parametrize("active", [False, True])
@@ -48,3 +49,21 @@ def test_published_site_summary_passes_the_cached_ml_boundary_unchanged(tmp_path
     assert outlook["status"] == "ok"
     assert outlook["site_id"] == site.id
     assert site.model_dump_json() == original
+
+
+@pytest.mark.parametrize("event_type", ["Flash Flood", "Heat Index Exceedance"])
+def test_expansion_horizons_fit_existing_contract_and_stay_excluded(event_type):
+    from ml.tests.test_multidisaster import entry, context
+    rows = [{**row, "event_type": event_type} for row in training_events() * 3]
+    model = fit_models(rows, event_type=event_type, minimum_events=1, minimum_episodes=1)
+    record = {**entry(model), "event_type": event_type}
+    event = {**context(), "event_type": event_type}
+    if event_type == "Heat Index Exceedance":
+        record["category"] = "heat"
+        event["station_id"] = "722020-12839"
+    with patch("ml.dispatch.read_registry", return_value={"events": {event_type: record}}):
+        payload = predict_site({"active_event_context": event}, model=model)
+    canonical = ModelOutput.model_validate(payload)
+    assert set(canonical.hazard_probabilities) == {"active_event_persists_1", "active_event_persists_3", "active_event_persists_6"}
+    assert not canonical.data_quality.include_model_component_in_site_score
+    assert canonical.confidence is None

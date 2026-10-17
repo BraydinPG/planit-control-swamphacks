@@ -11,7 +11,8 @@ from typing import Any, Sequence
 
 from ml.config import MODEL_PATH, REPORT_DIR
 from ml.schemas import validate_event_context
-from ml.train import SurvivalModels, load_models, logistic_hourly_hazard
+from ml.train import (SurvivalModels, conditional_km_survival_curve,
+                      conditional_logistic_survival_curve, load_models, logistic_hourly_hazard)
 
 
 def _quantile(values: list[float], quantile: float, total_draws: int) -> float | None:
@@ -74,15 +75,26 @@ def simulate_hazards(hazards: Sequence[float], *, trials: int = 5000, seed: int 
 
 
 def simulate_model(models: SurvivalModels, *, elapsed_hours: float, start_month: int,
-                   trials: int = 5000, seed: int = 42) -> dict[str, Any]:
+                   trials: int = 5000, seed: int = 42, estimator: str = "logistic",
+                   horizons: tuple[int, ...] = (6, 12, 24)) -> dict[str, Any]:
     remaining = models.max_followup_hours - elapsed_hours
-    if remaining < 24:
+    if remaining < max(horizons):
         raise ValueError("model support does not cover requested horizons from this event age")
-    steps = math.floor(remaining)
-    hazards = [logistic_hourly_hazard(models, elapsed_hours + step, start_month) for step in range(steps)]
-    result = simulate_hazards(hazards, trials=trials, seed=seed)
+    if estimator not in ("logistic", "kaplan_meier"):
+        raise ValueError("unknown estimator")
+    curve = (conditional_km_survival_curve(models, elapsed_hours) if estimator == "kaplan_meier"
+             else conditional_logistic_survival_curve(models, elapsed_hours, start_month))
+    if curve is None or len(curve) < max(horizons):
+        raise ValueError("model risk-set support does not cover horizons")
+    previous = 1.0
+    hazards = []
+    for value in curve:
+        hazards.append(max(0.0, min(1.0, 1-value/previous)) if previous else 0.0)
+        previous = value
+    result = simulate_hazards(hazards, trials=trials, seed=seed, horizons=horizons)
     result["model_version"] = models.model_version
     result["scope"] = "offline_internal_only"
+    result["estimator"] = estimator
     return result
 
 

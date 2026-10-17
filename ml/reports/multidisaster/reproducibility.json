@@ -1,0 +1,52 @@
+{
+  "status": "verified",
+  "models": {
+    "High Wind": {
+      "status": "rebuilt",
+      "sha256": "f1747096ad30d175c39131d28e32cfef600da89da681668c4c21a07bd7c9ed5a",
+      "reference_verified": true
+    },
+    "Strong Wind": {
+      "status": "rebuilt",
+      "sha256": "e846181a2ef508cc39db84fd3f244e0bf975416ceaa4439de44f017f91e91f2f",
+      "reference_verified": false
+    },
+    "Flash Flood": {
+      "status": "rebuilt",
+      "sha256": "b0d0fb70077ccaf2d9eadd234278c34ac88928393682465dc00d146a2032af7f",
+      "reference_verified": true
+    },
+    "Heavy Rain": {
+      "status": "rebuilt",
+      "sha256": "fbdee08c9e7dbc93a061f007f15045679e585950cc204197b3effc4ec8488120",
+      "reference_verified": true
+    },
+    "Winter Storm": {
+      "status": "rebuilt",
+      "sha256": "17e614428e1051c9af8ae5e38f3e02027699d9aad4c200167906bb8ab67b4110",
+      "reference_verified": true
+    },
+    "Ice Storm": {
+      "status": "rebuilt",
+      "sha256": "143100e02cca8d68bab7331b3709d0545c361c21c5c8609b5fb016575b74ced9",
+      "reference_verified": false
+    },
+    "Heavy Snow": {
+      "status": "rebuilt",
+      "sha256": "eb808f2ba7f5235dde0a3eeb7adcacb5f33c95576eab517d371f59c9f4f8aa6c",
+      "reference_verified": false
+    },
+    "Heat Index Exceedance": {
+      "status": "rebuilt",
+      "sha256": "50b6c8423a6239b59bd38d822e03b6a005dc0074fc81eb17685a6f4390876f06",
+      "reference_verified": true
+    }
+  },
+  "backtests_rerun": false,
+  "production_eligibility": false,
+  "original_flood_reference_verified": true,
+  "acceptance_tests": {
+    "passed": 145,
+    "command": "python -m pytest ml/tests backend/tests -q"
+  }
+}
