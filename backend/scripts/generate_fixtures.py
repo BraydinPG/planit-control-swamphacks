@@ -20,6 +20,7 @@ from app.schemas import (
     Briefing,
     BriefingHazard,
     CrewReport,
+    EventOutlook,
     Evidence,
     Explanation,
     FactorContribution,
@@ -387,7 +388,49 @@ NOTICE_WILDLIFE_CONFIRMED = HazardNotice(
     instruction_sent_at=ago(128),
     evidence=[Evidence(id="report-wildlife-1", kind="report", label="Crew report: alligator")],
 )
-NOTICES = [NOTICE_POLE_POTENTIAL, NOTICE_WILDLIFE_CONFIRMED]
+NOTICE_FLOOD_CONFIRMED = HazardNotice(
+    id="notice-flood-1",
+    hazard_label="flooding",
+    source="feed",
+    source_ref="obs-flood-1",
+    lat=DEMO_LAT,
+    lon=DEMO_LON,
+    radius_miles=5,
+    radius_source="default",
+    status="confirmed",
+    created_at=ago(90),
+    confirmed_by="user-supervisor-1",
+    confirmed_at=ago(60),
+    suggested_instruction="Keep crews off low-lying access roads.",
+    instruction="Keep crews off low-lying access roads until the Flood Watch ends.",
+    instruction_sent_at=ago(58),
+    evidence=[
+        Evidence(id="obs-flood-1", kind="observation", label="Flood Watch (simulated scenario)")
+    ],
+)
+NOTICES = [NOTICE_POLE_POTENTIAL, NOTICE_WILDLIFE_CONFIRMED, NOTICE_FLOOD_CONFIRMED]
+
+# T050 advisory for the confirmed flood notice. Values are Cache's published synthetic
+# adapter example (ml/INTEGRATION.md), not a prediction for a real event.
+EVENT_OUTLOOK = EventOutlook(
+    status="ok",
+    event_id="notice-flood-1",
+    event_type="Flood",
+    as_of_utc=NOW,
+    generated_at_utc=NOW,
+    ongoing_probability={"6h": 0.709, "12h": 0.605, "24h": 0.473},
+    remaining_hours_p10=2.0,
+    remaining_hours_median=22.0,
+    remaining_hours_p90=None,
+    trend="unknown",
+    model_version="noaa-flood-conditional-km-v2",
+    is_simulated=True,
+    limitations=[
+        "Simulated scenario: synthetic example values, not a real event.",
+        "NOAA event intervals describe regional recorded events, not verified site conditions.",
+        "Recorded event resolution does not mean site conditions are safe or work may resume.",
+    ],
+)
 
 # ---- sites ----
 
@@ -488,6 +531,7 @@ SITE_DETAIL = SiteDetail(
     alerts=[ALERT_LIGHTNING_ACTIVE, ALERT_FLOOD],
     reports=[REPORT_POLE_PENDING, REPORT_WILDLIFE_CONFIRMED],
     notices=NOTICES,
+    event_outlook=EVENT_OUTLOOK,
 )
 
 # ---- briefings and explanations: one Gemini-generated, one deterministic fallback ----

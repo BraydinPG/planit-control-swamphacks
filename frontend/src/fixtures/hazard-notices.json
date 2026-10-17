@@ -48,5 +48,30 @@
         "observed_at": null
       }
     ]
+  },
+  {
+    "id": "notice-flood-1",
+    "hazard_label": "flooding",
+    "source": "feed",
+    "source_ref": "obs-flood-1",
+    "lat": 25.76,
+    "lon": -80.49,
+    "radius_miles": 5.0,
+    "radius_source": "default",
+    "status": "confirmed",
+    "created_at": "2026-10-17T16:30:00Z",
+    "confirmed_by": "user-supervisor-1",
+    "confirmed_at": "2026-10-17T17:00:00Z",
+    "suggested_instruction": "Keep crews off low-lying access roads.",
+    "instruction": "Keep crews off low-lying access roads until the Flood Watch ends.",
+    "instruction_sent_at": "2026-10-17T17:02:00Z",
+    "evidence": [
+      {
+        "id": "obs-flood-1",
+        "kind": "observation",
+        "label": "Flood Watch (simulated scenario)",
+        "observed_at": null
+      }
+    ]
   }
 ]
