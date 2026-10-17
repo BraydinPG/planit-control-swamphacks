@@ -16,7 +16,12 @@ from app.db.models import Base
 
 # Columns added after a table was first created. `create_all` never alters existing
 # tables, so each runs as an idempotent ALTER.
-ADDED_COLUMNS = (("sites", "timezone", "VARCHAR"),)
+ADDED_COLUMNS = (
+    ("sites", "timezone", "VARCHAR"),
+    ("crew_reports", "location_source", "VARCHAR"),  # T053A
+    ("crew_reports", "location_accuracy_m", "DOUBLE PRECISION"),
+    ("crew_reports", "site_distance_miles", "DOUBLE PRECISION"),
+)
 
 HYPERTABLES = (
     ("observations", "observed_at"),

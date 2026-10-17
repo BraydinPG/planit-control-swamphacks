@@ -1,9 +1,11 @@
 """Report creation/listing (T053) and supervisor absent-report review (T054).
 
 `POST /api/reports` takes a multipart form: `site_id`, `category`, `hazard_present`,
-`lat`, `lon`, optional `note`, and a `photo` file. A photo is required when the hazard is
-marked present and optional when it is marked absent. Photos pass the T052 type and size
-checks before anything is stored.
+`lat`, `lon`, optional `note`, `location_source` (`device`, `site`, or `pin`; default
+`site`), `location_accuracy_m` (device only), and a `photo` file. A photo is required when
+the hazard is marked present and optional when it is marked absent. Photos pass the T052
+type and size checks before anything is stored. After the report is saved, Braydin's
+Gemini analysis (T060) runs in the background and fills the report's `enrichment`.
 
 Access (spec.md section 8):
 - Submitting needs `submit:reports`. Crew report only for their team's site, as their
@@ -17,7 +19,16 @@ Access (spec.md section 8):
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    UploadFile,
+)
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -25,7 +36,9 @@ from sqlalchemy.orm import selectinload
 from app.api.deps import get_now
 from app.api.sites import DbSession, report_schema, visible_site_ids
 from app.db import models as db
-from app.schemas import CrewReport, ReportCategory, ReportCreate, ReportReview
+from app.gemini import GeminiClient, get_gemini_client
+from app.gemini.report_analysis import run_report_analysis
+from app.schemas import CrewReport, LocationSource, ReportCategory, ReportCreate, ReportReview
 from app.security import (
     AuthenticatedUser,
     CurrentUser,
@@ -43,6 +56,7 @@ router = APIRouter(prefix="/api/reports", tags=["reports"])
 Now = Annotated[datetime, Depends(get_now)]
 Submitter = Annotated[CurrentUser, Depends(require_permission(roles.SUBMIT_REPORTS))]
 Photos = Annotated[PhotoStore, Depends(get_photo_store)]
+Gemini = Annotated[GeminiClient, Depends(get_gemini_client)]
 REPORT_LIMIT = 200
 Reviewer = Annotated[CurrentUser, Depends(require_permission(roles.REVIEW_REPORTS))]
 
@@ -64,12 +78,16 @@ def submit_report(
     session: DbSession,
     now: Now,
     photos: Photos,
+    client: Gemini,
+    background: BackgroundTasks,
     site_id: Annotated[str, Form()],
     category: Annotated[ReportCategory, Form()],
     hazard_present: Annotated[bool, Form()],
     lat: Annotated[float, Form()],
     lon: Annotated[float, Form()],
     note: Annotated[str | None, Form()] = None,
+    location_source: Annotated[LocationSource, Form()] = LocationSource.SITE,
+    location_accuracy_m: Annotated[float | None, Form()] = None,
     photo: Annotated[UploadFile | None, File()] = None,
 ) -> CrewReport:
     try:
@@ -80,9 +98,13 @@ def submit_report(
             lat=lat,
             lon=lon,
             note=note or None,
+            location_source=location_source,
+            location_accuracy_m=location_accuracy_m,
         )
     except ValidationError as exc:
-        raise HTTPException(status_code=422, detail=exc.errors(include_url=False)) from exc
+        raise HTTPException(
+            status_code=422, detail=exc.errors(include_url=False, include_context=False)
+        ) from exc
 
     site = session.scalar(
         select(db.Site)
@@ -119,6 +141,12 @@ def submit_report(
         form.note,
         photo_key,
         now,
+        location_source=form.location_source,
+        location_accuracy_m=form.location_accuracy_m,
+    )
+    # T060: Gemini's analysis runs after the response, so the crew member never waits on it.
+    background.add_task(
+        run_report_analysis, session.get_bind(), created.report.id, photos, client, now
     )
     return report_schema(created.report)
 

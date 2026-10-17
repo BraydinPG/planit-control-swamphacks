@@ -7,6 +7,9 @@ A briefing covers the next workday (07:00–19:00 site-local time). It is built 
 - the score's factors, active alerts, and confirmed crew reports that say a hazard is
   present.
 - the NWS hourly forecast for the workday, reduced to the peak reading of each metric.
+- for a confirmed event the model supports, how much longer it is expected to last
+  (T058B, `outlooks.py`). It is an advisory estimate; when it is unavailable, that is
+  listed in `unknowns`.
 
 Each input becomes an `Evidence` item with an id. Gemini drafts the summary, hazards,
 and recommended actions, citing those ids. A draft is rejected, and the deterministic
@@ -31,6 +34,8 @@ from sqlalchemy.orm import Session
 from app.api.sites import load_active_alerts, load_reports
 from app.db import models as db
 from app.gemini.client import GeminiClient
+from app.gemini.outlooks import missing_estimate, outlook_evidence, site_outlook
+from app.outlook import EventOutlookService
 from app.schemas import (
     Alert,
     Briefing,
@@ -114,13 +119,14 @@ def generate_site_briefing(
     now: datetime,
     gemini: GeminiClient,
     forecasts: ForecastSource,
+    outlooks: EventOutlookService | None = None,
 ) -> Briefing:
     """Generate and store the next-day briefing for one site. Idempotent per workday."""
     workday, _, _ = next_workday(now, tz)
     existing = session.get(db.Briefing, briefing_id(site.id, workday))
     if existing is not None:
         return to_schema(existing)
-    inputs = gather_inputs(session, site, tz, now, forecasts)
+    inputs = gather_inputs(session, site, tz, now, forecasts, outlooks)
     draft, generated_by = draft_with_gemini(inputs, gemini), GeneratedBy.GEMINI
     if draft is None:
         draft, generated_by = template_draft(inputs), GeneratedBy.FALLBACK
@@ -145,7 +151,12 @@ def generate_site_briefing(
 
 
 def gather_inputs(
-    session: Session, site: db.Site, tz: ZoneInfo, now: datetime, forecasts: ForecastSource
+    session: Session,
+    site: db.Site,
+    tz: ZoneInfo,
+    now: datetime,
+    forecasts: ForecastSource,
+    outlooks: EventOutlookService | None = None,
 ) -> BriefingInputs:
     workday, start, end = next_workday(now, tz)
     score = score_site(session, site.id, now)
@@ -198,6 +209,12 @@ def gather_inputs(
                 observed_at=report.created_at,
             )
         )
+    outlook = site_outlook(session, site, now, outlooks) if outlooks else None
+    if outlook is not None:
+        if (evidence := outlook_evidence(outlook)) is not None:
+            inputs.evidence.append(evidence)
+        else:
+            inputs.unknowns.append(missing_estimate(outlook))
     peaks = _forecast_peaks(forecasts(site, now), start, end, tz)
     inputs.evidence.extend(peaks)
     if not peaks:
@@ -234,7 +251,7 @@ def template_draft(inputs: BriefingInputs) -> BriefingDraft:
     hazards = [
         BriefingHazard(hazard=e.label, risk_level=level, evidence_ids=[e.id])
         for e in inputs.evidence
-        if e.kind in (EvidenceKind.ALERT, EvidenceKind.REPORT)
+        if e.kind in (EvidenceKind.ALERT, EvidenceKind.REPORT, EvidenceKind.MODEL_OUTPUT)
         or (e.kind == EvidenceKind.SCORE_FACTOR and e.id.startswith("factor:"))
     ]
     actions: list[RecommendedAction] = []
@@ -354,6 +371,9 @@ def _prompt(inputs: BriefingInputs) -> str:
         "is clear or over. Alerts are cleared only by the system.\n"
         "- Keep the summary to 2-3 short sentences in plain language.\n"
         "- Recommended actions are practical planning steps for the crew, at most 4.\n"
+        "- If the evidence includes an expected-duration estimate (kind model_output), say in "
+        "plain words how much longer the event is expected to last, call it an estimate, "
+        "and cite it. Never turn it into a time when work can resume.\n"
         "- List anything important that the evidence does not cover in unknowns.\n\n"
         f"Evidence:\n{json.dumps(evidence, indent=1)}\n\n"
         f"Known gaps (already reported to the crew):\n{json.dumps(inputs.unknowns)}\n"

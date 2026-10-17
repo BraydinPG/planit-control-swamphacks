@@ -9,7 +9,8 @@ watches or warnings on their own don't count as a confirmed active event.
 from datetime import datetime
 from typing import Any
 
-from app.schemas import HazardNotice, NoticeStatus, SiteSummary
+from app.ingestion import SiteLike
+from app.schemas import HazardNotice, NoticeStatus
 
 SUPPORTED_EVENT_TYPE = "Flood"
 CONFIRMATION_SOURCE = "supervisor_confirmed_hazard_notice"
@@ -25,7 +26,7 @@ def is_confirmed_flood(notice: HazardNotice, now: datetime) -> bool:
 
 
 def event_context_from_notice(
-    notice: HazardNotice, site: SiteSummary, now: datetime
+    notice: HazardNotice, site: SiteLike, now: datetime
 ) -> dict[str, Any] | None:
     """`EventContext` for a confirmed flood notice covering the site, or None."""
     if not is_confirmed_flood(notice, now):

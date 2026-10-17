@@ -3,7 +3,7 @@ import pytest
 from pydantic import BaseModel
 
 from app.config import Settings
-from app.gemini import GeminiClient, Unavailable
+from app.gemini import GeminiClient, Image, Unavailable
 
 
 class Answer(BaseModel):
@@ -65,3 +65,22 @@ def test_settings_default_to_unconfigured(monkeypatch) -> None:
     for name in ("GEMINI_API_KEY", "GEMINI_MODEL"):
         monkeypatch.delenv(name, raising=False)
     assert not GeminiClient.from_settings(Settings(_env_file=None)).configured
+
+
+def test_images_reach_the_transport() -> None:
+    seen = []
+
+    def transport(prompt: str, schema: type[BaseModel], images) -> str:
+        seen.extend(images)
+        return '{"radius_miles": 1}'
+
+    photo = Image(b"\xff\xd8\xff", "image/jpeg")
+    assert client(transport).generate_structured("p", Answer, [photo]).ok
+    assert seen == [photo]
+
+
+def test_with_timeout_only_shortens() -> None:
+    base = GeminiClient("k", "m", timeout_seconds=20)
+    assert base.with_timeout(8)._timeout_seconds == 8
+    assert base.with_timeout(60)._timeout_seconds == 20
+    assert base.with_timeout(8).configured

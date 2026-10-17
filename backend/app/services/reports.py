@@ -32,6 +32,7 @@ from app.db import models as db
 from app.schemas import (
     Evidence,
     EvidenceKind,
+    LocationSource,
     NoticeSource,
     NoticeStatus,
     RadiusSource,
@@ -90,6 +91,9 @@ def create_report(
     note: str | None,
     photo_key: str | None,
     now: datetime,
+    *,
+    location_source: LocationSource = LocationSource.SITE,
+    location_accuracy_m: float | None = None,
 ) -> CreatedReport:
     report = db.CrewReport(
         id=f"report:{uuid4().hex}",
@@ -103,6 +107,9 @@ def create_report(
         photo_url=photo_key,
         lat=lat,
         lon=lon,
+        location_source=location_source,
+        location_accuracy_m=location_accuracy_m,
+        site_distance_miles=round(miles_between(site.lat, site.lon, lat, lon), 3),
         review_status=ReviewStatus.PENDING,
         created_at=now,
     )

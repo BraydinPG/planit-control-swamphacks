@@ -146,6 +146,13 @@ export function createMockService() {
           reviewed_at: null,
           confirmed_category: null,
           confirmed_severity: null,
+          // T053A: the backend defaults to `site` and computes the site distance.
+          location_source: (form.get('location_source') ??
+            'site') as CrewReport['location_source'],
+          location_accuracy_m: form.get('location_accuracy_m')
+            ? Number(form.get('location_accuracy_m'))
+            : null,
+          site_distance_miles: null,
           enrichment: null,
           notice_id: present ? `mock-notice-${service.reports.length}` : null,
           created_at: '2026-10-17T19:00:00Z',

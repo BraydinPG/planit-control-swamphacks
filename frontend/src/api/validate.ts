@@ -69,6 +69,32 @@ export function validateBriefing(v: unknown, site?: string): Briefing {
 }
 
 const nullableText = (v: unknown) => v === null || text(v)
+const nullableDistance = (v: unknown) =>
+  v === null || (typeof v === 'number' && Number.isFinite(v) && v >= 0)
+const points = (v: unknown) =>
+  Array.isArray(v) &&
+  v.every((p) => record(p) && text(p.statement) && strings(p.evidence_ids))
+/** T060 report analysis: complete with a verdict, or unavailable. */
+const analysis = (v: unknown) =>
+  record(v) &&
+  v.needs_review === true &&
+  ['gemini', 'fallback'].includes(String(v.generated_by)) &&
+  date(v.analyzed_at) &&
+  points(v.supporting) &&
+  points(v.contradicting) &&
+  strings(v.also_visible) &&
+  strings(v.unknowns) &&
+  evidence(v.evidence) &&
+  (v.suggested_category === null || category(v.suggested_category)) &&
+  (v.severity_suggestion === null ||
+    ['low', 'moderate', 'high'].includes(String(v.severity_suggestion))) &&
+  (v.confidence === null ||
+    (typeof v.confidence === 'number' && v.confidence >= 0 && v.confidence <= 1)) &&
+  (v.status === 'unavailable'
+    ? v.verdict === null
+    : v.status === 'complete' &&
+      ['supports', 'contradicts', 'inconclusive'].includes(String(v.verdict)) &&
+      text(v.summary))
 const nullableDate = (v: unknown) => v === null || date(v)
 const category = (v: unknown) =>
   [
@@ -103,20 +129,12 @@ export function validateReport(v: unknown, id?: string): CrewReport {
       ['low', 'moderate', 'high'].includes(String(v.confirmed_severity))
     ) ||
     !(
-      v.enrichment === null ||
-      (record(v.enrichment) &&
-        category(v.enrichment.suggested_category) &&
-        text(v.enrichment.description) &&
-        strings(v.enrichment.visible_evidence) &&
-        v.enrichment.needs_review === true &&
-        ['gemini', 'fallback'].includes(String(v.enrichment.generated_by)) &&
-        ['low', 'moderate', 'high'].includes(
-          String(v.enrichment.severity_suggestion),
-        ) &&
-        typeof v.enrichment.confidence === 'number' &&
-        v.enrichment.confidence >= 0 &&
-        v.enrichment.confidence <= 1)
-    )
+      v.location_source === null ||
+      ['device', 'site', 'pin'].includes(String(v.location_source))
+    ) ||
+    !nullableDistance(v.location_accuracy_m) ||
+    !nullableDistance(v.site_distance_miles) ||
+    !(v.enrichment === null || analysis(v.enrichment))
   )
     throw new ApiError(
       502,

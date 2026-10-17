@@ -18,7 +18,8 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from app.schemas import EventOutlook, SiteSummary
+from app.ingestion import SiteLike
+from app.schemas import EventOutlook
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class EventOutlookService:
         self._loaded = predictor is not None
         self._lock = Lock()
 
-    def outlook(self, site: SiteSummary, event_context: dict[str, Any]) -> EventOutlook:
+    def outlook(self, site: SiteLike, event_context: dict[str, Any]) -> EventOutlook:
         predictor = self._get_predictor()
         if predictor is None:
             return unavailable(event_context, self._load_error or "model unavailable")

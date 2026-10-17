@@ -170,15 +170,39 @@ export type ReviewStatus = 'pending' | 'confirmed' | 'rejected'
 
 export type Severity = 'low' | 'moderate' | 'high'
 
-/** Gemini suggestion. Always pending human review; never affects the score. */
+/** Where a report's coordinates came from (T053A). `site` is approximate. */
+export type LocationSource = 'device' | 'site' | 'pin'
+
+export type AnalysisVerdict = 'supports' | 'contradicts' | 'inconclusive'
+
+/** One reason for the verdict, citing ids from `ReportEnrichment.evidence`. */
+export interface AnalysisPoint {
+  statement: string
+  evidence_ids: string[]
+}
+
+/**
+ * Gemini's side-panel analysis of a crew report (T060): does the photo and site data
+ * support or contradict the report, and why. A suggestion for the supervisor only; it
+ * never changes the report, its review state, or the score. `status: 'unavailable'`
+ * means the analysis failed ("Photo analysis unavailable").
+ */
 export interface ReportEnrichment {
-  suggested_category: ReportCategory
-  description: string
-  severity_suggestion: Severity
-  confidence: number
-  visible_evidence: string[]
+  status: 'complete' | 'unavailable'
+  verdict: AnalysisVerdict | null
+  summary: string | null
+  supporting: AnalysisPoint[]
+  contradicting: AnalysisPoint[]
+  also_visible: string[]
+  suggested_category: ReportCategory | null
+  severity_suggestion: Severity | null
+  confidence: number | null
+  unknowns: string[]
+  evidence: Evidence[]
+  unavailable_reason: string | null
   needs_review: true
   generated_by: GeneratedBy
+  analyzed_at: string
 }
 
 export interface CrewReport {
@@ -198,6 +222,12 @@ export interface CrewReport {
   reviewed_at: string | null
   confirmed_category: ReportCategory | null
   confirmed_severity: Severity | null
+  /** Null for reports filed before T053A. */
+  location_source: LocationSource | null
+  location_accuracy_m: number | null
+  /** Backend-computed distance from the report to its site, in miles. */
+  site_distance_miles: number | null
+  /** Null while the analysis runs (it starts after the report is saved). */
   enrichment: ReportEnrichment | null
   notice_id: string | null
   created_at: string
@@ -211,6 +241,10 @@ export interface ReportCreate {
   lat: number
   lon: number
   note?: string | null
+  /** Defaults to `site` on the backend. */
+  location_source?: LocationSource
+  /** Only with `location_source: 'device'`. */
+  location_accuracy_m?: number | null
 }
 
 /** Body for POST /api/reports/{id}/review. */

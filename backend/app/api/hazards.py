@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends
 from app.api.deps import get_now
 from app.api.sites import DbSession
 from app.gemini import GeminiClient, get_gemini_client
+from app.outlook import EventOutlookService, get_event_outlook_service
 from app.schemas import HazardConfirmResponse, HazardNotice, InstructionSend
 from app.security import CurrentUser, require_permission, require_role, roles
 from app.services.hazards import confirm_hazard
@@ -18,6 +19,7 @@ Confirmer = Annotated[CurrentUser, Depends(require_permission(roles.CONFIRM_HAZA
 Now = Annotated[datetime, Depends(get_now)]
 Gemini = Annotated[GeminiClient, Depends(get_gemini_client)]
 Sender = Annotated[CurrentUser, Depends(require_permission(roles.SEND_INSTRUCTIONS))]
+OutlookService = Annotated[EventOutlookService, Depends(get_event_outlook_service)]
 
 
 @router.post(
@@ -25,9 +27,16 @@ Sender = Annotated[CurrentUser, Depends(require_permission(roles.SEND_INSTRUCTIO
     response_model=HazardConfirmResponse,
     dependencies=[Depends(require_role("supervisor"))],
 )
-def confirm_notice(notice_id: str, user: Confirmer, session: DbSession, now: Now, client: Gemini):
+def confirm_notice(
+    notice_id: str,
+    user: Confirmer,
+    session: DbSession,
+    now: Now,
+    client: Gemini,
+    outlooks: OutlookService,
+):
     notice = confirm_hazard(session, notice_id, user, now)
-    generated_by = draft_instruction(session, notice, client, now)
+    generated_by = draft_instruction(session, notice, client, now, outlooks)
     return HazardConfirmResponse(
         notice=HazardNotice.model_validate(notice, from_attributes=True),
         suggested_instruction=notice.suggested_instruction,

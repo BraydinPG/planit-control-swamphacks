@@ -331,17 +331,56 @@
       "reviewed_at": null,
       "confirmed_category": null,
       "confirmed_severity": null,
+      "location_source": "device",
+      "location_accuracy_m": 12.0,
+      "site_distance_miles": 0.21,
       "enrichment": {
+        "status": "complete",
+        "verdict": "supports",
+        "summary": "The photo shows a leaning wooden pole with a sagging conductor, which matches the reported downed line.",
+        "supporting": [
+          {
+            "statement": "The pole leans about 30 degrees and a conductor hangs below normal height.",
+            "evidence_ids": [
+              "photo",
+              "crew:category"
+            ]
+          }
+        ],
+        "contradicting": [],
+        "also_visible": [
+          "Standing water near the base of the pole"
+        ],
         "suggested_category": "broken_pole_downed_line",
-        "description": "Leaning wooden pole with a conductor sagging toward the ground.",
         "severity_suggestion": "high",
         "confidence": 0.78,
-        "visible_evidence": [
-          "pole leaning about 30 degrees",
-          "conductor below normal height"
+        "unknowns": [
+          "Whether the conductor is energized cannot be seen in a photo."
         ],
+        "evidence": [
+          {
+            "id": "crew:category",
+            "kind": "report",
+            "label": "Crew member's category: broken electrical pole or downed line",
+            "observed_at": "2026-10-17T17:54:00Z"
+          },
+          {
+            "id": "crew:hazard_present",
+            "kind": "report",
+            "label": "Crew member marked the hazard present",
+            "observed_at": "2026-10-17T17:54:00Z"
+          },
+          {
+            "id": "photo",
+            "kind": "report",
+            "label": "Crew member's photo",
+            "observed_at": "2026-10-17T17:54:00Z"
+          }
+        ],
+        "unavailable_reason": null,
         "needs_review": true,
-        "generated_by": "gemini"
+        "generated_by": "gemini",
+        "analyzed_at": "2026-10-17T17:54:00Z"
       },
       "notice_id": "notice-pole-1",
       "created_at": "2026-10-17T17:54:00Z"
@@ -363,7 +402,26 @@
       "reviewed_at": "2026-10-17T15:50:00Z",
       "confirmed_category": "wildlife",
       "confirmed_severity": "moderate",
-      "enrichment": null,
+      "location_source": null,
+      "location_accuracy_m": null,
+      "site_distance_miles": null,
+      "enrichment": {
+        "status": "unavailable",
+        "verdict": null,
+        "summary": null,
+        "supporting": [],
+        "contradicting": [],
+        "also_visible": [],
+        "suggested_category": null,
+        "severity_suggestion": null,
+        "confidence": null,
+        "unknowns": [],
+        "evidence": [],
+        "unavailable_reason": "timeout",
+        "needs_review": true,
+        "generated_by": "fallback",
+        "analyzed_at": "2026-10-17T15:40:00Z"
+      },
       "notice_id": "notice-wildlife-1",
       "created_at": "2026-10-17T15:40:00Z"
     }

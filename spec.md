@@ -177,17 +177,17 @@ Schedule: generated automatically at 6 PM in each site's local time zone, once p
 
 Gemini does not explain or interpret the hazard score. The 0–10 score is a deterministic weighted algorithm over current risk factors and confirmed reports. The interface shows its factor breakdown as the explanation: each factor's weighted contribution, source, time, data state, and prototype label. There is no score-explanation route.
 
-### Crew report photo analysis (side by side)
+### Crew report analysis (side panel)
 
 Crew report: a photo, the category the crew member selects, whether the hazard is present, an optional note, and a location. The form asks the device for its precise location (browser geolocation) when a report is opened, and only with the crew member's permission. If granted, the report carries the device coordinates and their accuracy (`location_source="device"`). If declined or unavailable, it uses the site's location, labeled approximate, and the crew member may move the pin (`location_source="site"` or `"pin"`). Location is never tracked outside a report.
 
-Gemini input: the photo, the selected category, the present-or-absent answer, the optional note, and site context. Not the location: a photo cannot verify where it was taken.
+Gemini input: the photo, the selected category, the present-or-absent answer, the optional note, and the site's current data: active alerts and the latest reading of each feed. Not the location: a photo cannot verify where it was taken. The analysis runs in the background after the report is saved, so the crew member never waits on it.
 
-Output fields: `comparisons[]`, `also_visible[]`, `suggested_category`, `severity_suggestion`, `confidence`, `unknowns[]`, `needs_review`. Each comparison row covers one crew claim (`category`, `hazard_present`, `note`) with `crew_reported`, `photo_shows`, and `agreement`: `consistent`, `inconsistent`, or `cannot_tell`. `also_visible[]` lists hazards in the photo that the crew member did not report.
+Output (`CrewReport.enrichment`, schema `ReportEnrichment`): `verdict` (`supports`, `contradicts`, or `inconclusive`), a 1–2 sentence `summary`, `supporting[]` and `contradicting[]` points that each cite evidence ids (`photo`, the crew member's claims, alert and reading ids), `also_visible[]` (hazards in the photo the crew member did not report), `suggested_category`, `severity_suggestion`, `confidence`, `unknowns[]`, and the `evidence[]` Gemini was given. `status` is `complete` or `unavailable`; `enrichment` is null while the analysis runs.
 
-Supervisor view: the crew member's report on one side and Gemini's reading of the photo on the other, row by row, with agreement in words and icons, never color alone. Beside it: the location source, accuracy, and distance from the site, computed by the backend, not Gemini.
+Supervisor view: the crew member's report as submitted, with Gemini's analysis in a side panel: the verdict in words and an icon, never color alone, the summary, and the reasons for and against, each linked to its evidence. Beside it: the location source, accuracy, and distance from the site, computed by the backend, not Gemini.
 
-Rules: the analysis is a labeled suggestion. It never changes the report, its review state, or the score, and "inconsistent" never rejects a report by itself; the supervisor confirms the category and severity. On failure, save and show the report without the analysis ("Photo analysis unavailable").
+Rules: the analysis is a labeled suggestion. It never changes the report, its review state, or the score, and "contradicts" never rejects a report by itself; the supervisor confirms the category and severity. A missing feed reading never contradicts an on-site report, since no feed detects downed lines, fires, or wildlife. An answer that cites evidence it was not given, or that says work is safe or an alert is clear, is discarded. On failure, save and show the report without the analysis ("Photo analysis unavailable").
 
 ### Notice radius
 
@@ -268,7 +268,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `GET /api/sites/{id}` | Site details, observations, score, reports. |
 | `GET /api/alerts` | Visible alerts and countdown state. |
 | `POST /api/alerts/{id}/acknowledge` | Record user and acknowledgement time. |
-| `POST /api/reports` | Submit category, photo, coordinates with their source and accuracy, whether the hazard is present, and an optional note. Starts Gemini's side-by-side photo analysis. |
+| `POST /api/reports` | Submit category, photo, coordinates with their source and accuracy, whether the hazard is present, and an optional note. Starts Gemini's report analysis in the background. |
 | `GET /api/reports` | List reports visible to the caller, optionally filtered by site. |
 | `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
