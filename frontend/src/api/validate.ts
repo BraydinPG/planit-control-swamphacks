@@ -32,6 +32,10 @@ export const evidence = (v: unknown) =>
   )
 const risk = (v: unknown) =>
   ['low', 'moderate', 'high', 'critical'].includes(String(v))
+/** Null, or a number from 0 to `max` (T058C index, points, completeness). */
+const inRange = (v: unknown, max: number) =>
+  v === null ||
+  (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= max)
 export function validateBriefing(v: unknown, site?: string): Briefing {
   if (
     !record(v) ||
@@ -45,6 +49,8 @@ export function validateBriefing(v: unknown, site?: string): Briefing {
     !date(v.forecast_window_end) ||
     Date.parse(v.forecast_window_end) <= Date.parse(v.forecast_window_start) ||
     !risk(v.risk_level) ||
+    !inRange(v.risk_score, 10) ||
+    !inRange(v.data_completeness, 1) ||
     !['gemini', 'fallback'].includes(String(v.generated_by)) ||
     !strings(v.unknowns) ||
     !evidence(v.evidence) ||
@@ -53,7 +59,7 @@ export function validateBriefing(v: unknown, site?: string): Briefing {
       (h) =>
         record(h) &&
         text(h.hazard) &&
-        risk(h.risk_level) &&
+        inRange(h.points, 10) &&
         strings(h.evidence_ids),
     ) ||
     !Array.isArray(v.recommended_actions) ||

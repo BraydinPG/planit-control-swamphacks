@@ -1,3 +1,13 @@
+## Briefing index and hazard points (T058C, Braydin) — 2026-10-17
+
+Explicit user decision (Braydin): briefings show the site's 0–10 index and each hazard's points, both from Cache's deterministic score; Gemini's per-hazard level word is removed.
+
+- Rudra's `app/schemas/briefings.py`: `Briefing.risk_score` and `data_completeness` (nullable); `BriefingHazard.points` replaces `risk_level`. `frontend/src/types/api.ts`, `scripts/generate_fixtures.py`, and regenerated `briefings.json` mirror it.
+- Cache's `frontend/src/api/validate.ts` (`validateBriefing`) and `frontend/src/components/data/StoredBriefings.tsx` (headline "Site hazard index: x / 10 · level", "+n pts" or "not in score" per hazard, "Not enough current data to score" at 0% completeness; old briefings without an index still show the level).
+- Braydin's own: `app/gemini/briefings.py`, `app/db/models.py`, `app/db/init.py` (two `briefings` columns, applied to Tiger). Score factor evidence ids stay `factor:{site}:{factor}`, with a suffix only when two factors share a name (one per confirmed report).
+
+Checks: 701 backend tests, 97 frontend tests, Ruff, oxlint, `tsc -b`, and build clean; one live Gemini briefing verified.
+
 ## Gemini calls, report analysis, and report location (Braydin) — 2026-10-17
 
 Explicit user authorization (Braydin): finish the Gemini tasks end to end, including focused edits in Rudra's and Cache's files, with this log for review. T057, T058B, T053A, and T060 are done; T061 waits on a live run.

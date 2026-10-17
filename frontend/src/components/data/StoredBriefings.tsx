@@ -58,8 +58,33 @@ export function BriefingCard({ value }: { value: Briefing }) {
           <Timestamp value={value.forecast_window_end} />
         </p>
         <p className="text-sm">
-          Risk level at generation:{' '}
-          <strong className="capitalize">{value.risk_level}</strong>
+          {value.risk_score === null ? (
+            <>
+              Risk level at generation:{' '}
+              <strong className="capitalize">{value.risk_level}</strong>
+            </>
+          ) : (
+            <>
+              Site hazard index at generation:{' '}
+              <strong>
+                {value.risk_score.toFixed(1)} / 10 ·{' '}
+                <span className="capitalize">{value.risk_level}</span>
+              </strong>
+              {value.data_completeness !== null &&
+                (value.data_completeness === 0 ? (
+                  <span className="text-ink-2">
+                    {' '}
+                    · Not enough current data to score
+                  </span>
+                ) : (
+                  <span className="text-ink-2">
+                    {' '}
+                    · {Math.round(value.data_completeness * 100)}% of inputs
+                    current
+                  </span>
+                ))}
+            </>
+          )}
         </p>
       </header>
       <p className="text-lg leading-relaxed">{value.summary}</p>
@@ -69,7 +94,12 @@ export function BriefingCard({ value }: { value: Briefing }) {
             {value.hazards.map((h, i) => (
               <li key={i} className="rounded-xl bg-surface-2 px-3 py-2">
                 <span className="font-semibold">{h.hazard}</span> ·{' '}
-                {h.risk_level} · {ids(h.evidence_ids)}
+                {h.points === null ? (
+                  <span className="text-ink-2">not in score</span>
+                ) : (
+                  <strong>+{h.points.toFixed(1)} pts</strong>
+                )}{' '}
+                · {ids(h.evidence_ids)}
               </li>
             ))}
           </ul>

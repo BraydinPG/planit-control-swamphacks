@@ -300,7 +300,11 @@ export interface InstructionSend {
 
 export interface BriefingHazard {
   hazard: string
-  risk_level: RiskLevel
+  /**
+   * Points this hazard adds to the site's 0–10 index, from the deterministic score (T058C).
+   * Null when none of its evidence is a score factor, e.g. a forecast. Never Gemini's.
+   */
+  points: number | null
   evidence_ids: string[]
 }
 
@@ -317,6 +321,9 @@ export interface Briefing {
   forecast_window_end: string
   summary: string
   risk_level: RiskLevel
+  /** The site's 0–10 hazard index at generation; null for briefings stored before T058C. */
+  risk_score: number | null
+  data_completeness: number | null
   hazards: BriefingHazard[]
   recommended_actions: RecommendedAction[]
   evidence: Evidence[]

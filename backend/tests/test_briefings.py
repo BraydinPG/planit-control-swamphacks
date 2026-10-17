@@ -17,7 +17,7 @@ from sqlalchemy.pool import StaticPool
 from app.api.deps import get_db
 from app.db import models as db
 from app.gemini.briefing_schedule import is_due, run_due_briefings, site_timezone
-from app.gemini.briefings import briefing_id, generate_site_briefing, next_workday
+from app.gemini.briefings import briefing_id, generate_site_briefing, next_workday, to_schema
 from app.gemini.client import GeminiClient
 from app.main import app
 from app.schemas import DataState, GeneratedBy, HazardType, Observation
@@ -132,7 +132,7 @@ PEAK_ID = FORECASTS[1].id
 def draft(**overrides) -> dict:
     value = {
         "summary": "Hot afternoon with a chance of storms after 14:00.",
-        "hazards": [{"hazard": "Heat", "risk_level": "moderate", "evidence_ids": [PEAK_ID]}],
+        "hazards": [{"hazard": "Heat", "evidence_ids": [PEAK_ID]}],
         "recommended_actions": [
             {"action": "Schedule heavy work before noon.", "evidence_ids": [PEAK_ID]}
         ],
@@ -439,3 +439,120 @@ def test_there_is_no_manual_generation_route(client: TestClient) -> None:
     east = supervisor("auth0|sup-east")
     for path in ("/api/sites/site-ny/briefings", "/api/sites/site-ny/briefing", "/api/briefings"):
         assert client.post(path, headers=east).status_code in (404, 405)
+
+
+# ---- T058C: the 0–10 index and each hazard's points ----
+
+
+def seed_alert(factory) -> None:
+    with factory() as session:
+        session.add(
+            db.Alert(
+                id="alert-ny", site_id="site-ny", rule="lightning_stop_work", state="active",
+                triggered_at=EVENING_EAST - timedelta(minutes=5),
+                latest_event_at=EVENING_EAST - timedelta(minutes=5),
+                clear_after=EVENING_EAST + timedelta(minutes=25), distance_miles=4.0,
+            )
+        )  # fmt: skip
+        session.commit()
+
+
+def seed_confirmed_reports(factory, count: int) -> None:
+    with factory() as session:
+        for n in range(count):
+            session.add(
+                db.CrewReport(
+                    id=f"report-{n}", organization_id="org-1", team_id="team-ny",
+                    site_id="site-ny", reporter_id="auth0|crew-ny", category="wildlife",
+                    hazard_present=True, lat=40.0, lon=-75.0, review_status="confirmed",
+                    confirmed_category="wildlife", confirmed_severity="high",
+                    reviewed_by="auth0|sup-east", reviewed_at=EVENING_EAST - timedelta(hours=1),
+                    created_at=EVENING_EAST - timedelta(hours=2),
+                )
+            )  # fmt: skip
+        session.commit()
+
+
+def factor_id(briefing, label_start: str) -> str:
+    return next(
+        e.id
+        for e in briefing.evidence
+        if e.kind == "score_factor" and e.label.startswith(label_start)
+    )
+
+
+def test_briefing_records_the_index_it_was_generated_with(factory) -> None:
+    seed_alert(factory)
+    briefing = generate(factory, NO_GEMINI)
+    with factory() as session:
+        score = session.scalars(
+            select(db.HazardScore).where(db.HazardScore.site_id == "site-ny")
+        ).one()
+        stored = to_schema(session.get(db.Briefing, briefing.id))
+    assert briefing.risk_score == score.risk_score > 0
+    assert briefing.data_completeness == score.data_completeness
+    assert (stored.risk_score, stored.data_completeness) == (
+        briefing.risk_score,
+        briefing.data_completeness,
+    )
+    assert stored.hazards == briefing.hazards
+
+
+def test_template_hazards_carry_their_points(factory) -> None:
+    seed_alert(factory)
+    briefing = generate(factory, NO_GEMINI)
+    lightning = factor_id(briefing, "Lightning stop-work")
+    (hazard,) = [h for h in briefing.hazards if lightning in h.evidence_ids]
+    assert hazard.points == 3.0  # default lightning stop-work points
+    assert "alert-ny" in hazard.evidence_ids  # the alert is covered, not listed twice
+    assert not [h for h in briefing.hazards if h.evidence_ids == ["alert-ny"]]
+
+
+def test_gemini_hazards_get_points_from_the_factors_they_cite(factory) -> None:
+    seed_alert(factory)
+    lightning = "factor:site-ny:lightning"
+    reply = draft(
+        hazards=[
+            {"hazard": "Lightning nearby", "evidence_ids": [lightning, "alert-ny"]},
+            {"hazard": "Afternoon heat", "evidence_ids": [PEAK_ID]},
+        ]
+    )
+    briefing = generate(factory, gemini(reply))
+    assert briefing.generated_by == GeneratedBy.GEMINI
+    points = {h.hazard: h.points for h in briefing.hazards}
+    assert points == {"Lightning nearby": 3.0, "Afternoon heat": None}  # counted once
+
+
+def test_each_confirmed_report_is_its_own_factor(factory) -> None:
+    seed_confirmed_reports(factory, 2)
+    briefing = generate(factory, NO_GEMINI)
+    ids = [e.id for e in briefing.evidence]
+    assert len(ids) == len(set(ids))
+    report_hazards = [h for h in briefing.hazards if {"report-0", "report-1"} & set(h.evidence_ids)]
+    assert len(report_hazards) == 2
+    assert all(h.points and h.points > 0 for h in report_hazards)
+
+
+@pytest.mark.parametrize("extra", [{"points": 9.0}, {"risk_level": "low"}])
+def test_gemini_cannot_set_a_hazard_level_or_points(factory, extra) -> None:
+    reply = draft(hazards=[{"hazard": "Heat", "evidence_ids": [PEAK_ID], **extra}])
+    assert generate(factory, gemini(reply)).generated_by == GeneratedBy.FALLBACK
+
+
+def test_briefings_stored_before_the_index_still_read(factory) -> None:
+    with factory() as session:
+        session.add(
+            db.Briefing(
+                id="briefing:site-ny:old", site_id="site-ny",
+                forecast_window_start=WORKDAY_START,
+                forecast_window_end=WORKDAY_START + timedelta(hours=12),
+                summary="Old briefing.", risk_level="high",
+                hazards=[{"hazard": "Heat", "risk_level": "high", "evidence_ids": ["x"]}],
+                recommended_actions=[], evidence=[], unknowns=[], generated_by="fallback",
+                created_at=EVENING_EAST,
+            )
+        )  # fmt: skip
+        session.commit()
+        old = to_schema(session.get(db.Briefing, "briefing:site-ny:old"))
+    assert old.risk_score is None
+    assert old.hazards[0].points is None

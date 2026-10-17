@@ -7,7 +7,11 @@ from app.schemas.common import Evidence, GeneratedBy, RiskLevel, Schema
 
 class BriefingHazard(Schema):
     hazard: str
-    risk_level: RiskLevel
+    points: float | None = Field(
+        description="Points this hazard adds to the site's 0–10 index, from the deterministic "
+        "score. Null when none of its evidence is a score factor, e.g. a forecast. Never "
+        "Gemini's."
+    )
     evidence_ids: list[str] = Field(min_length=1)
 
 
@@ -29,6 +33,14 @@ class Briefing(Schema):
     forecast_window_end: datetime
     summary: str
     risk_level: RiskLevel
+    risk_score: float | None = Field(
+        default=None,
+        ge=0,
+        le=10,
+        description="The site's 0–10 hazard index when the briefing was generated. Null for "
+        "briefings stored before it was recorded.",
+    )
+    data_completeness: float | None = Field(default=None, ge=0, le=1)
     hazards: list[BriefingHazard]
     recommended_actions: list[RecommendedAction]
     evidence: list[Evidence]

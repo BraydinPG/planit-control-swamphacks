@@ -615,6 +615,9 @@ BRIEF_EVIDENCE = [
     Evidence(id="obs-flood-1", kind="observation", label="Flood Watch"),
     Evidence(id="alert-ltg-demo", kind="alert", label="Lightning stop-work (simulated)"),
     Evidence(id="report-wildlife-1", kind="report", label="Confirmed wildlife report"),
+    Evidence(
+        id="obs-fc-2", kind="observation", label="Forecast thunderstorm chance 70% after 14:00"
+    ),
 ]
 WINDOW = dict(
     forecast_window_start=datetime(2026, 10, 18, 11, 0, tzinfo=UTC),
@@ -630,11 +633,20 @@ BRIEFINGS = [
             "possible. Wildlife remains near the east access road."
         ),
         risk_level="high",
+        risk_score=7.6,
+        data_completeness=0.71,
+        # Points match the demo site's score factors; a forecast is not part of the score.
         hazards=[
-            BriefingHazard(hazard="Heat", risk_level="high", evidence_ids=["obs-fc-1"]),
-            BriefingHazard(hazard="Flooding", risk_level="moderate", evidence_ids=["obs-flood-1"]),
             BriefingHazard(
-                hazard="Wildlife", risk_level="moderate", evidence_ids=["report-wildlife-1"]
+                hazard="Lightning stop-work (simulated)",
+                points=3.0,
+                evidence_ids=["alert-ltg-demo"],
+            ),
+            BriefingHazard(hazard="Heat", points=1.5, evidence_ids=["obs-fc-1"]),
+            BriefingHazard(hazard="Flooding", points=1.0, evidence_ids=["obs-flood-1"]),
+            BriefingHazard(hazard="Wildlife", points=0.5, evidence_ids=["report-wildlife-1"]),
+            BriefingHazard(
+                hazard="Afternoon thunderstorms", points=None, evidence_ids=["obs-fc-2"]
             ),
         ],
         recommended_actions=[
@@ -661,13 +673,11 @@ BRIEFINGS = [
         **WINDOW,
         summary="Gemini unavailable. Template briefing built from current site data.",
         risk_level="high",
+        risk_score=7.6,
+        data_completeness=0.71,
         hazards=[
-            BriefingHazard(
-                hazard="Heat index 108 °F", risk_level="high", evidence_ids=["obs-fc-1"]
-            ),
-            BriefingHazard(
-                hazard="Flood Watch", risk_level="moderate", evidence_ids=["obs-flood-1"]
-            ),
+            BriefingHazard(hazard="Heat index 108 °F", points=1.5, evidence_ids=["obs-fc-1"]),
+            BriefingHazard(hazard="Flood Watch", points=1.0, evidence_ids=["obs-flood-1"]),
         ],
         recommended_actions=[
             RecommendedAction(

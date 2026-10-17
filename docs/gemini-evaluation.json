@@ -1,8 +1,8 @@
 {
-  "run_at": "2026-10-17T15:42:51.912806+00:00",
+  "run_at": "2026-10-17T16:23:25.817717+00:00",
   "model": "gemini-3.5-flash-lite",
   "thinking_level": "low",
-  "photos": true,
+  "photos": false,
   "results": [
     {
       "call": "notice_radius",
@@ -91,37 +91,6 @@
         "expected_range": [
           0.1,
           50
-        ]
-      }
-    },
-    {
-      "call": "briefing",
-      "case": "forecast only",
-      "answered": true,
-      "hard_pass": true,
-      "soft_pass": null,
-      "seconds": 1.6,
-      "detail": {
-        "summary": "Field operations at the Everglades reference plant face significant environmental challenges today. High heat and heavy precipitation are expected during the afternoon hours. Data completeness is currently at zero percent.",
-        "unknowns": [
-          "Lightning status unknown (feed stale or unavailable): unavailable",
-          "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair): unavailable",
-          "Flood alerts unknown (NWS feed unavailable): unavailable"
-        ]
-      }
-    },
-    {
-      "call": "briefing",
-      "case": "active flood warning",
-      "answered": true,
-      "hard_pass": true,
-      "soft_pass": true,
-      "seconds": 1.6,
-      "detail": {
-        "summary": "The Everglades reference plant has an active flood warning and a low computed hazard score with incomplete data. Crews must prepare for high heat and high precipitation probabilities during the shift.",
-        "unknowns": [
-          "Lightning status unknown (feed stale or unavailable): unavailable",
-          "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair): unavailable"
         ]
       }
     },
@@ -494,6 +463,37 @@
           "expos"
         ],
         "unavailable": null
+      }
+    },
+    {
+      "call": "briefing",
+      "case": "forecast only",
+      "answered": true,
+      "hard_pass": true,
+      "soft_pass": null,
+      "seconds": 2.3,
+      "detail": {
+        "summary": "Field crews are scheduled to work at the Everglades reference plant on October 18, 2026. Weather forecasts indicate high heat and a significant chance of precipitation during the afternoon. Data completeness for this site is currently at zero percent.",
+        "unknowns": [
+          "Lightning status unknown (feed stale or unavailable): unavailable",
+          "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair): unavailable",
+          "Flood alerts unknown (NWS feed unavailable): unavailable"
+        ]
+      }
+    },
+    {
+      "call": "briefing",
+      "case": "active flood warning",
+      "answered": true,
+      "hard_pass": true,
+      "soft_pass": true,
+      "seconds": 2.0,
+      "detail": {
+        "summary": "Today's shift at the Everglades reference plant involves managing active flood warnings, high heat indices, and heavy precipitation risks. Field crews must remain vigilant as critical data feeds are partially incomplete.",
+        "unknowns": [
+          "Lightning status unknown (feed stale or unavailable): unavailable",
+          "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair): unavailable"
+        ]
       }
     }
   ]

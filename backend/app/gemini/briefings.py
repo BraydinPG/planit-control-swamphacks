@@ -2,8 +2,9 @@
 
 A briefing covers the next workday (07:00–19:00 site-local time). It is built from:
 
-- a fresh deterministic score from Rudra's `score_site()`. Its risk level becomes the
-  briefing's `risk_level`; Gemini never sets or changes it.
+- a fresh deterministic score from Rudra's `score_site()`. Its 0–10 index and level become
+  the briefing's `risk_score` and `risk_level`, and each hazard's `points` are the score
+  factors it cites (T058C). Gemini never sets or changes any of them.
 - the score's factors, active alerts, and confirmed crew reports that say a hazard is
   present.
 - the NWS hourly forecast for the workday, reduced to the peak reading of each metric.
@@ -28,7 +29,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 
 from app.api.sites import load_active_alerts, load_reports
@@ -78,9 +79,21 @@ class BriefingDraft(BaseModel):
     """What Gemini writes. Validated, then checked against the supplied evidence."""
 
     summary: str = Field(min_length=1, max_length=700)
-    hazards: list[BriefingHazard] = Field(max_length=8)
+    hazards: list["DraftHazard"] = Field(max_length=8)
     recommended_actions: list[RecommendedAction] = Field(max_length=6)
     unknowns: list[str] = Field(default_factory=list, max_length=8)
+
+
+class DraftHazard(BaseModel):
+    """A hazard as drafted: text and the evidence it rests on. Points are added afterwards."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    hazard: str = Field(min_length=1)
+    evidence_ids: list[str] = Field(min_length=1)
+
+
+BriefingDraft.model_rebuild()
 
 
 @dataclass
@@ -95,6 +108,16 @@ class BriefingInputs:
     reports: list[CrewReport]
     evidence: list[Evidence] = field(default_factory=list)
     unknowns: list[str] = field(default_factory=list)
+    # Evidence id -> index of the score factor it stands for, and that factor's points.
+    factor_of: dict[str, int] = field(default_factory=dict)
+    points: dict[int, float] = field(default_factory=dict)
+
+    def hazard_points(self, evidence_ids: list[str]) -> float | None:
+        """Points the cited score factors add, each counted once; None when none is cited."""
+        factors = {self.factor_of[i] for i in evidence_ids if i in self.factor_of}
+        if not factors:
+            return None
+        return round(sum(self.points[f] for f in factors), 1)
 
     def ids(self, kind: EvidenceKind) -> list[str]:
         return [e.id for e in self.evidence if e.kind == kind]
@@ -137,7 +160,16 @@ def generate_site_briefing(
         forecast_window_end=inputs.window_end,
         summary=draft.summary,
         risk_level=inputs.score.risk_level,
-        hazards=draft.hazards,
+        risk_score=inputs.score.risk_score,
+        data_completeness=inputs.score.data_completeness,
+        hazards=[
+            BriefingHazard(
+                hazard=h.hazard,
+                points=inputs.hazard_points(h.evidence_ids),
+                evidence_ids=h.evidence_ids,
+            )
+            for h in draft.hazards
+        ],
         recommended_actions=draft.recommended_actions,
         evidence=inputs.evidence,
         unknowns=_merge(inputs.unknowns, draft.unknowns),
@@ -176,18 +208,26 @@ def gather_inputs(
             observed_at=score.created_at,
         )
     )
-    for factor in score.factor_contributions:
+    for index, factor in enumerate(score.factor_contributions):
         if factor.data_state in UNKNOWN_STATES:
             inputs.unknowns.append(f"{factor.label}: {factor.data_state.value}")
         elif factor.contribution > 0:
+            # Several factors can share a name (one per confirmed report), so ids stay unique.
+            evidence_id = f"factor:{site.id}:{factor.factor}"
+            if evidence_id in inputs.factor_of:
+                evidence_id += f":{factor.evidence_id or index}"
             inputs.evidence.append(
                 Evidence(
-                    id=f"factor:{site.id}:{factor.factor}",
+                    id=evidence_id,
                     kind=EvidenceKind.SCORE_FACTOR,
                     label=f"{factor.label} (+{factor.contribution:g} points, {factor.source})",
                     observed_at=factor.observed_at,
                 )
             )
+            inputs.factor_of[evidence_id] = index
+            if factor.evidence_id:  # citing the alert or report behind it counts the same
+                inputs.factor_of.setdefault(factor.evidence_id, index)
+            inputs.points[index] = factor.contribution
     for alert in alerts:
         simulated = " (simulated)" if alert.simulated else ""
         inputs.evidence.append(
@@ -247,13 +287,24 @@ def draft_with_gemini(inputs: BriefingInputs, gemini: GeminiClient) -> BriefingD
 
 def template_draft(inputs: BriefingInputs) -> BriefingDraft:
     """Deterministic briefing from the same inputs (T058). No generated text."""
-    level = inputs.score.risk_level
-    hazards = [
-        BriefingHazard(hazard=e.label, risk_level=level, evidence_ids=[e.id])
-        for e in inputs.evidence
-        if e.kind in (EvidenceKind.ALERT, EvidenceKind.REPORT, EvidenceKind.MODEL_OUTPUT)
-        or (e.kind == EvidenceKind.SCORE_FACTOR and e.id.startswith("factor:"))
-    ]
+    # One hazard per score factor; an alert or report only when no factor covers it.
+    supplied = {e.id for e in inputs.evidence}
+    behind = {
+        source: factor_id
+        for factor_id, index in inputs.factor_of.items()
+        if factor_id.startswith("factor:")
+        for source, i in inputs.factor_of.items()
+        if i == index and not source.startswith("factor:") and source in supplied
+    }
+    hazards = []
+    for e in inputs.evidence:
+        if e.kind == EvidenceKind.SCORE_FACTOR and e.id in inputs.factor_of:
+            cited = [e.id, *(s for s, f in behind.items() if f == e.id)]
+            hazards.append(DraftHazard(hazard=e.label, evidence_ids=cited))
+        elif e.kind in (EvidenceKind.ALERT, EvidenceKind.REPORT) and e.id not in behind:
+            hazards.append(DraftHazard(hazard=e.label, evidence_ids=[e.id]))
+        elif e.kind == EvidenceKind.MODEL_OUTPUT:
+            hazards.append(DraftHazard(hazard=e.label, evidence_ids=[e.id]))
     actions: list[RecommendedAction] = []
     if alert_ids := inputs.ids(EvidenceKind.ALERT):
         actions.append(
@@ -297,7 +348,15 @@ def to_schema(row: db.Briefing) -> Briefing:
         forecast_window_end=_aware(row.forecast_window_end),
         summary=row.summary,
         risk_level=row.risk_level,
-        hazards=row.hazards,
+        risk_score=row.risk_score,
+        data_completeness=row.data_completeness,
+        # Hazards stored before T058C carry a level word and no points.
+        hazards=[
+            BriefingHazard(
+                hazard=h["hazard"], points=h.get("points"), evidence_ids=h["evidence_ids"]
+            )
+            for h in row.hazards
+        ],
         recommended_actions=row.recommended_actions,
         evidence=row.evidence,
         unknowns=row.unknowns,
@@ -316,6 +375,8 @@ def _to_row(briefing: Briefing) -> db.Briefing:
         forecast_window_end=briefing.forecast_window_end,
         summary=briefing.summary,
         risk_level=briefing.risk_level,
+        risk_score=briefing.risk_score,
+        data_completeness=briefing.data_completeness,
         hazards=data["hazards"],
         recommended_actions=data["recommended_actions"],
         evidence=data["evidence"],
@@ -362,11 +423,13 @@ def _prompt(inputs: BriefingInputs) -> str:
         f"Site: {inputs.site_name}. Workday: {inputs.workday.isoformat()}, 07:00-19:00 local.\n"
         f"The site's computed hazard score is {inputs.score.risk_score:.1f}/10 "
         f"({inputs.score.risk_level}), with {inputs.score.data_completeness:.0%} of its inputs "
-        "current. Do not restate, change, or reinterpret this score, and never present "
-        "missing data as low risk.\n\n"
+        "current. The briefing shows this index and each hazard's points itself, so do not "
+        "write any score, points, or risk level, and never present missing data as low "
+        "risk.\n\n"
         "Rules:\n"
         "- Use only the evidence below. Every hazard and recommended action must cite one "
-        "or more evidence ids from this list in evidence_ids.\n"
+        "or more evidence ids from this list in evidence_ids. A hazard that a score factor "
+        "describes (ids starting with factor:) must cite that factor.\n"
         "- Never say or imply that work is safe, that the site is safe, or that an alert "
         "is clear or over. Alerts are cleared only by the system.\n"
         "- Keep the summary to 2-3 short sentences in plain language.\n"

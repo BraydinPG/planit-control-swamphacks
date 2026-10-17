@@ -248,6 +248,8 @@ class Briefing(Base):
     forecast_window_end: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     summary: Mapped[str] = mapped_column(String, nullable=False)
     risk_level: Mapped[str] = mapped_column(String, nullable=False)
+    risk_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    data_completeness: Mapped[float | None] = mapped_column(Float, nullable=True)
     hazards: Mapped[list] = mapped_column(JSON, nullable=False)
     recommended_actions: Mapped[list] = mapped_column(JSON, nullable=False)
     evidence: Mapped[list] = mapped_column(JSON, nullable=False)

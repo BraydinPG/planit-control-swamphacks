@@ -13,6 +13,7 @@ const server = await createServer({
 after(() => server.close())
 const { HttpClient } = await server.ssrLoadModule('/src/api/http-client.ts')
 const { DemoClient } = await server.ssrLoadModule('/src/demo/client.ts')
+const { validateBriefing } = await server.ssrLoadModule('/src/api/validate.ts')
 const { BriefingCard } = await server.ssrLoadModule(
   '/src/components/data/StoredBriefings.tsx',
 )
@@ -146,4 +147,37 @@ test('demo stored fixtures are read-only and unavailable reference sites stay em
   const first = await api.briefings()
   first[0].summary = 'mutated'
   assert.notEqual((await api.briefings())[0].summary, 'mutated')
+})
+test('briefings show the 0–10 index and each hazard’s points, never a level per hazard', () => {
+  const gemini = fixtures.find((f) => f.generated_by === 'gemini')
+  const text = renderToStaticMarkup(
+    React.createElement(BriefingCard, { value: gemini }),
+  ).replace(/<[^>]+>/g, '')
+  assert(text.includes('Site hazard index at generation: 7.6 / 10 · high'))
+  assert(text.includes('71% of inputs current'))
+  assert(text.includes('Lightning stop-work (simulated) · +3.0 pts'))
+  assert(text.includes('Afternoon thunderstorms · not in score'))
+  const empty = renderToStaticMarkup(
+    React.createElement(BriefingCard, {
+      value: { ...gemini, risk_score: 0, data_completeness: 0 },
+    }),
+  ).replace(/<[^>]+>/g, '')
+  assert(empty.includes('Not enough current data to score'))
+  const legacy = renderToStaticMarkup(
+    React.createElement(BriefingCard, {
+      value: { ...gemini, risk_score: null, data_completeness: null },
+    }),
+  ).replace(/<[^>]+>/g, '')
+  assert(legacy.includes('Risk level at generation: high'))
+})
+test('briefing index and points are validated', () => {
+  const gemini = fixtures.find((f) => f.generated_by === 'gemini')
+  assert.equal(validateBriefing(gemini).risk_score, 7.6)
+  for (const bad of [
+    { risk_score: 11 },
+    { data_completeness: 1.5 },
+    { hazards: [{ hazard: 'Heat', points: -1, evidence_ids: ['x'] }] },
+    { hazards: [{ hazard: 'Heat', risk_level: 'high', evidence_ids: ['x'] }] },
+  ])
+    assert.throws(() => validateBriefing({ ...gemini, ...bad }), (e) => e.status === 502)
 })

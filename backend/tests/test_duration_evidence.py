@@ -162,9 +162,7 @@ def test_gemini_briefing_may_cite_the_estimate(factory) -> None:
     add_notice(factory)
     draft = {
         "summary": "Flooding is expected to continue for about six more hours (estimate).",
-        "hazards": [
-            {"hazard": "Flooding", "risk_level": "low", "evidence_ids": [f"outlook:{NOTICE_ID}"]}
-        ],
+        "hazards": [{"hazard": "Flooding", "evidence_ids": [f"outlook:{NOTICE_ID}"]}],
         "recommended_actions": [],
         "unknowns": [],
     }

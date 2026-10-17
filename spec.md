@@ -167,7 +167,7 @@ All Gemini calls run server-side. Send only the evidence needed for the task. Va
 
 Input: forecast observations, site score and factors, active alerts, confirmed crew reports, the advisory event outlook for a confirmed event when available, timestamps, and missing-data flags.
 
-Output fields: `summary`, `risk_level`, `hazards[]`, `recommended_actions[]`, `evidence[]`, `unknowns[]`.
+Output fields: `summary`, `risk_level`, `risk_score` (the site's 0–10 index), `data_completeness`, `hazards[]`, `recommended_actions[]`, `evidence[]`, `unknowns[]`. Each hazard has its text, its evidence ids, and `points`: what the score factors it cites add to the index, or null when it cites none (a forecast, for example). The index, level, completeness, and points all come from the deterministic score; Gemini writes only the text, and the briefing shows the numbers itself.
 
 Rules: each material claim must reference supplied evidence. The model must state unknowns and must not declare work safe or clear an alert. On failure, generate a deterministic template briefing from the same data.
 
