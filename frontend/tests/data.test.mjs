@@ -4,7 +4,10 @@ import { createServer } from 'vite'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 const server = await createServer({
-  server: { middlewareMode: true, hmr: false },
+  configFile: false,
+  cacheDir: '.shell-check/data-unit-cache',
+  logLevel: 'silent',
+  server: { middlewareMode: true, hmr: false, watch: null },
   appType: 'custom',
 })
 after(() => server.close())
@@ -285,7 +288,7 @@ test('published T048 client requests all states, sends authenticated acknowledge
     api.capabilities.reports &&
       !api.capabilities.reviewReports &&
       !api.capabilities.hazards &&
-      !api.capabilities.ai,
+      api.capabilities.briefings,
   )
   await api.alerts()
   assert(Math.abs(api.now() - Date.parse(serverTime)) < 1000)

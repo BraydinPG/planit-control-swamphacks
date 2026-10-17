@@ -1,0 +1,67 @@
+{
+  "task": "T067A",
+  "checked_at": "2026-10-17T10:30:51.208Z",
+  "url": "http://localhost:5173/",
+  "browser": "Installed headless Edge/Chrome via CDP",
+  "results": [
+    {
+      "viewport": "1440x1000",
+      "primary_action_visible": true,
+      "overflow": false,
+      "nav_targets": ">=44px"
+    },
+    {
+      "viewport": "390x844",
+      "primary_action_visible": true,
+      "overflow": false,
+      "nav_targets": ">=44px"
+    },
+    {
+      "viewport": "320x740",
+      "primary_action_visible": true,
+      "overflow": false,
+      "nav_targets": ">=44px"
+    },
+    {
+      "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+    },
+    {
+      "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+      "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+      "briefings": "read-only archived Gemini/template fixtures with citations",
+      "persistence": "local demo namespace only; no server writes",
+      "keyboard": "skip navigation and Tab to visible focused control passed"
+    },
+    {
+      "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+    },
+    {
+      "reports": "T053 creation enabled separately from unavailable review; mocked live present/absent photo requirement passed",
+      "alerts": "published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified"
+    },
+    {
+      "auth": "mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions",
+      "api": "mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation",
+      "real_auth": "not verified; tenant credentials unavailable"
+    },
+    {
+      "fixture_setting": "false",
+      "cold_start_ms": 20855,
+      "status": "explicit configuration/auth state; no silent samples"
+    },
+    {
+      "fixture_setting": "typo",
+      "cold_start_ms": 15863,
+      "status": "explicit configuration/auth state; no silent samples"
+    }
+  ],
+  "browser_exceptions": [],
+  "backend_api_requests": 0,
+  "screenshots": ".shell-check/*.png (ignored)",
+  "source_base": "70c20ff",
+  "parent_pr": 24,
+  "node_tests": 44,
+  "focused_backend_tests": 65,
+  "lint_build": "passed",
+  "live_authenticated_persistence": "not verified"
+}

@@ -4,7 +4,10 @@ import { createServer } from 'vite'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 const server = await createServer({
-  server: { middlewareMode: true, hmr: false },
+  configFile: false,
+  cacheDir: '.shell-check/status-unit-cache',
+  logLevel: 'silent',
+  server: { middlewareMode: true, hmr: false, watch: null },
   appType: 'custom',
 })
 after(() => server.close())

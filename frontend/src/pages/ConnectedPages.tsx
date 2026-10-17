@@ -3,17 +3,10 @@ import {
   Suspense,
   useCallback,
   useMemo,
-  useRef,
   useState,
   type FormEvent,
 } from 'react'
-import type {
-  Briefing,
-  CrewReport,
-  Explanation,
-  ReportCategory,
-  SiteSummary,
-} from '../types/api'
+import type { CrewReport, ReportCategory, SiteSummary } from '../types/api'
 import {
   useApplication,
   useResource,
@@ -21,6 +14,7 @@ import {
   demoClient,
   useClock,
 } from '../application/context'
+import { StoredBriefings } from '../components/data/StoredBriefings'
 import { sortSites } from '../api/contracts'
 import {
   Action,
@@ -735,166 +729,7 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   )
 }
 function BriefingsPage({ sites }: { sites: SiteSummary[] }) {
-  const { client } = useApplication()
-  const [site, setSite] = useState(sites[0].id),
-    [fallback, setFallback] = useState(false),
-    [briefing, setBriefing] = useState<Briefing | null>(null),
-    [explanation, setExplanation] = useState<Explanation | null>(null),
-    [error, setError] = useState(''),
-    [busy, setBusy] = useState(false)
-  const requestVersion = useRef(0)
-  async function load(kind: 'briefing' | 'explanation') {
-    const version = ++requestVersion.current
-    setBusy(true)
-    setError('')
-    try {
-      if (kind === 'briefing') {
-        const value = await client.briefing(site, fallback)
-        if (version === requestVersion.current) setBriefing(value)
-      } else {
-        const value = await client.explanation(site, fallback)
-        if (version === requestVersion.current) setExplanation(value)
-      }
-    } catch (e) {
-      if (version === requestVersion.current)
-        setError(e instanceof Error ? e.message : 'AI service unavailable')
-    } finally {
-      if (version === requestVersion.current) setBusy(false)
-    }
-  }
-  function clear() {
-    requestVersion.current++
-    setBriefing(null)
-    setExplanation(null)
-    setError('')
-    setBusy(false)
-  }
-  return (
-    <div className="space-y-4">
-      <label>
-        Briefing site
-        <select
-          className={control + ' block w-full'}
-          value={site}
-          onChange={(e) => {
-            setSite(e.target.value)
-            clear()
-          }}
-        >
-          {sites.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      {client.mode === 'demo' && (
-        <>
-          <p>
-            Pre-existing simulated Gemini/fallback content. No Gemini request is
-            made and these texts are not regenerated for demo mutations. Example
-            text is not employer policy or a current instruction.
-          </p>
-          <label className="flex min-h-11 items-center gap-2">
-            <input
-              type="checkbox"
-              checked={fallback}
-              onChange={(e) => {
-                setFallback(e.target.checked)
-                clear()
-              }}
-            />
-            Show deterministic fallback fixture
-          </label>
-        </>
-      )}
-      <div className="flex flex-wrap gap-3">
-        <button
-          className={control}
-          disabled={busy || !client.capabilities.ai}
-          onClick={() => void load('briefing')}
-        >
-          Request next-day briefing
-        </button>
-        <button
-          className={control}
-          disabled={busy || !client.capabilities.ai}
-          onClick={() => void load('explanation')}
-        >
-          Request score explanation
-        </button>
-      </div>
-      {!client.capabilities.ai && (
-        <p>
-          Live briefing and explanation endpoints are unavailable. No simulated
-          response is substituted.
-        </p>
-      )}
-      {busy && <p role="status">Loading server/fixture response…</p>}
-      {error && <p role="alert">{error}</p>}
-      {briefing && (
-        <section className="space-y-3 rounded border bg-white p-4">
-          <h2 className="text-xl font-semibold">
-            Next-day briefing ·{' '}
-            {briefing.generated_by === 'fallback'
-              ? 'Deterministic fallback'
-              : 'Gemini output'}
-          </h2>
-          <p>
-            Window: <Timestamp value={briefing.forecast_window_start} /> to{' '}
-            <Timestamp value={briefing.forecast_window_end} />
-          </p>
-          <p>{briefing.summary}</p>
-          <h3 className="font-semibold">Actions supplied for human review</h3>
-          <ul>
-            {briefing.recommended_actions.map((a, i) => (
-              <li key={i}>
-                {a.action} · evidence: {a.evidence_ids.join(', ')}
-              </li>
-            ))}
-          </ul>
-          <EvidenceAndUnknowns value={briefing} />
-        </section>
-      )}
-      {explanation && (
-        <section className="space-y-3 rounded border bg-white p-4">
-          <h2 className="text-xl font-semibold">
-            Score explanation · {explanation.generated_by}
-          </h2>
-          <p>
-            {explanation.explanation ??
-              'No generated explanation; supplied factors remain available.'}
-          </p>
-          <Factors factors={explanation.top_factors} />
-          <EvidenceAndUnknowns value={explanation} />
-        </section>
-      )}
-    </div>
-  )
-}
-function EvidenceAndUnknowns({ value }: { value: Briefing | Explanation }) {
-  return (
-    <>
-      <h3 className="font-semibold">Evidence references</h3>
-      <ul>
-        {value.evidence.map((e) => (
-          <li key={e.id}>
-            {e.id} · {e.label} · <Timestamp value={e.observed_at} />
-          </li>
-        ))}
-      </ul>
-      <h3 className="font-semibold">Unknowns</h3>
-      <ul>
-        {value.unknowns.map((u, i) => (
-          <li key={i}>{u}</li>
-        ))}
-      </ul>
-      <p className="text-xs">
-        Generated <Timestamp value={value.created_at} />. AI output cannot
-        authorize work or clear alerts.
-      </p>
-    </>
-  )
+  return <StoredBriefings sites={sites} />
 }
 export function DemoClock() {
   const now = useClock()

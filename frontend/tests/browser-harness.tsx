@@ -5,6 +5,7 @@ import { LiveApplication } from '../src/application/LiveApplication'
 import sitesJSON from '../src/fixtures/sites.json'
 import detailJSON from '../src/fixtures/site-detail.json'
 import alertsJSON from '../src/fixtures/alerts.json'
+import briefingsJSON from '../src/fixtures/briefings.json'
 import reportsJSON from '../src/fixtures/reports.json'
 import '../src/index.css'
 const root = createRoot(document.getElementById('auth-test')!)
@@ -24,6 +25,12 @@ window.fetch = async (input, options) => {
       ?.startsWith('Bearer mock-')
   )
     return new Response('', { status: 401 })
+  if (url.pathname === '/api/briefings') return Response.json(briefingsJSON)
+  if (url.pathname.endsWith('/briefing')) {
+    if (controls.briefingStatus !== 200)
+      return new Response('', { status: controls.briefingStatus })
+    return Response.json(controls.invalidBriefing ? {} : briefingsJSON[0])
+  }
   if (url.pathname === '/api/sites')
     return Response.json(role === 'crew' ? [sitesJSON[0]] : sitesJSON)
   if (url.pathname === '/api/reports')
@@ -79,6 +86,8 @@ window.fetch = async (input, options) => {
 }
 const controls = {
   requests,
+  briefingStatus: 200,
+  invalidBriefing: false,
   mount(
     kind: 'crew' | 'supervisor' | 'logged-out' | 'loading' | 'no-role' | 'dev',
     httpStatus = 200,

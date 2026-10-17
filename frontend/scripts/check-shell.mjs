@@ -405,20 +405,14 @@ try {
     `document.querySelector('[data-notice-id="${noticeId}"] button').click()`,
   )
   await loaded('Demo reviewed instruction: await qualified field inspection.')
-  await hash('/supervisor/briefings', 'Request next-day briefing')
+  await hash('/supervisor/briefings', 'Read-only stored briefings')
   await set('main select', 'site-demo-everglades')
-  await click('Request next-day briefing')
   await loaded('Gemini output')
+  await set('main select', 'organization')
+  await loaded('Deterministic template fallback')
   await click('Crew')
   await loaded('Demo reviewed instruction: await qualified field inspection.')
-  await hash('/crew/briefings', 'Request next-day briefing')
-  await click('Request next-day briefing')
-  await loaded('Gemini output')
-  await evaluate("document.querySelector('main input[type=checkbox]').click()")
-  await click('Request next-day briefing')
-  await loaded('Next-day briefing ? Deterministic fallback')
-  await click('Request score explanation')
-  await loaded('Score explanation ? fallback')
+  await hash('/crew/briefings', 'Gemini output')
   await evaluate('document.querySelector(\'a[href="#main-content"]\').focus()')
   await send('Input.dispatchKeyEvent', {
     type: 'keyDown',
@@ -459,7 +453,7 @@ try {
     crew: 'assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction',
     supervisor:
       '55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction',
-    ai: 'prerecorded Gemini and deterministic fallback with citations',
+    briefings: 'read-only archived Gemini/template fixtures with citations',
     persistence: 'local demo namespace only; no server writes',
     keyboard: 'skip navigation and Tab to visible focused control passed',
   })
@@ -485,7 +479,7 @@ try {
         await hash(
           `/${persona}/${page}`,
           page === 'briefings'
-            ? 'Request next-day briefing'
+            ? 'Read-only stored briefings'
             : page === 'reports'
               ? 'Hazard present or absent'
               : page === 'alerts'
@@ -562,6 +556,36 @@ try {
       await evaluate(
         "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
       ),
+    )
+    await hash('/crew/briefings', 'Gemini output')
+    await set('main select', 'organization')
+    await loaded('Deterministic template fallback')
+    for (const [code, message] of [
+      [
+        404,
+        'No briefing yet. Briefings are generated at 6 PM site-local time.',
+      ],
+      [401, 'Session expired'],
+      [403, 'Permission denied'],
+      [503, 'service or database is unavailable'],
+    ]) {
+      await evaluate(`window.harness.briefingStatus=${code}`)
+      await set('main select', 'site-demo-everglades')
+      await loaded(message)
+      await set('main select', 'organization')
+      await loaded('Deterministic template fallback')
+    }
+    await evaluate(
+      'window.harness.briefingStatus=200; window.harness.invalidBriefing=true',
+    )
+    await set('main select', 'site-demo-everglades')
+    await loaded('Invalid stored briefing response')
+    await evaluate('window.harness.invalidBriefing=false')
+    assert(
+      await evaluate(
+        "window.harness.requests.filter(r=>r.includes('brief')).every(r=>r.startsWith('GET '))",
+      ),
+      'Stored briefings must only use GET',
     )
     await hash('/crew/reports', 'Hazard present or absent')
     await set('form select[required]', 'present')

@@ -1,8 +1,7 @@
+import { validateBriefing } from './validate'
 import type {
   Alert,
-  Briefing,
   CrewReport,
-  Explanation,
   ReportCreate,
   ReportReview,
   SiteSummary,
@@ -17,7 +16,7 @@ export class HttpClient implements Client {
     reports: true,
     reviewReports: false,
     hazards: false,
-    ai: false,
+    briefings: true,
   }
   private base: URL
   private headers: () => Promise<Record<string, string>>
@@ -197,16 +196,23 @@ export class HttpClient implements Client {
       body: JSON.stringify({ instruction }),
     })
   }
-  briefing(id: string) {
-    return this.request<Briefing>(
-      `/api/sites/${encodeURIComponent(id)}/briefings`,
-      { method: 'POST', body: JSON.stringify({ scope: 'site' }) },
-    )
+  async briefing(id: string) {
+    try {
+      return validateBriefing(
+        await this.request<unknown>(
+          `/api/sites/${encodeURIComponent(id)}/briefing`,
+        ),
+        id,
+      )
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) return null
+      throw error
+    }
   }
-  explanation(id: string) {
-    return this.request<Explanation>(
-      `/api/sites/${encodeURIComponent(id)}/explanations`,
-      { method: 'POST' },
-    )
+  async briefings() {
+    const rows = await this.request<unknown>('/api/briefings')
+    if (!Array.isArray(rows))
+      throw new ApiError(502, 'Invalid organization briefing response')
+    return rows.map((row) => validateBriefing(row))
   }
 }

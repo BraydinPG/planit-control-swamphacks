@@ -8,6 +8,7 @@ Current implementation owner: Cache (transferred from Nick on 2026-10-17). Nick'
 | `frontend/src/components/data/Status.tsx` | Score/source/missingness/factor/observation display | Cards/badges; retain all text states, nulls, provenance and legacy-score withholding |
 | `frontend/src/components/data/AlertCard.tsx` | Server state/evidence/countdown/ack action | Alert hierarchy; keep primary action above the small-phone fold and no timer-driven clearance |
 | `frontend/src/components/data/NoticeCard.tsx` | Potential vs confirmed notice and approved instruction | Notice layout; retain confirming-principal check and no instruction on potential notices |
+| `frontend/src/components/data/StoredBriefings.tsx` | Read-only scheduled site/organization briefing retrieval and Gemini/template cards | Preserve GET-only transport, 404 empty state, forecast window, evidence and generation provenance |
 | `frontend/src/components/data/Interaction.tsx` | Shared controls, loading/error/retry and action state | Button/form design; retain busy/disabled/live-unavailable states and accessible names |
 | `frontend/src/components/data/SiteMap.tsx`, `styles/map.css` | Geographic points, optional basemap and linked list alternative | Map framing; preserve attribution, opt-in network, 44px zoom controls and keyboard alternative |
 | `frontend/src/components/data/Advisory.tsx` | Exact-site 2.1 demo/T050 compact advisory | Evidence layout; preserve research/demo labels, site match, times, unknown hazards and limitations |
