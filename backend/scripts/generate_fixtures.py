@@ -12,6 +12,7 @@ import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import httpx
 from pydantic import BaseModel
 
 from app.schemas import (
@@ -21,6 +22,7 @@ from app.schemas import (
     Briefing,
     BriefingHazard,
     CrewReport,
+    DataState,
     EventOutlook,
     Evidence,
     FactorContribution,
@@ -30,9 +32,13 @@ from app.schemas import (
     RecommendedAction,
     ReportEnrichment,
     SiteDetail,
+    SiteSpeciesContext,
     SiteSummary,
     TeamRef,
 )
+from app.species import crithab, ipac
+from app.species.service import SpeciesContextService
+from app.species.settings import SpeciesSettings
 
 OUT_DIR = Path(__file__).resolve().parents[2] / "frontend" / "src" / "fixtures"
 
@@ -692,6 +698,51 @@ BRIEFINGS = [
     ),
 ]
 
+
+def species_context() -> SiteSpeciesContext:
+    """The demo site's species context, built by the real service from recorded responses.
+
+    The IPaC and critical habitat responses in `app/species/fixtures/` were recorded for
+    these coordinates on 2026-10-17. Wording is the deterministic template, so the fixture
+    never changes between runs. Labeled simulated: it is a snapshot, not a live lookup.
+    """
+    recorded = Path(__file__).resolve().parents[1] / "app" / "species" / "fixtures"
+    ipac_json = json.loads((recorded / "ipac_everglades.json").read_text(encoding="utf-8"))
+    crithab_json = json.loads((recorded / "crithab_everglades_proposed.geojson").read_text())
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("/resources"):
+            return httpx.Response(200, json=ipac_json)
+        layer = request.url.path.split("/")[-2]
+        empty = {"type": "FeatureCollection", "features": []}
+        return httpx.Response(200, json=crithab_json if layer == "2" else empty)
+
+    settings = SpeciesSettings(_env_file=None)
+    transport = httpx.MockTransport(respond)
+    service = SpeciesContextService(
+        settings,
+        ipac.IpacClient(settings.ipac_resources_url, 5, transport),
+        crithab.CritHabClient(settings.crithab_service_url, 5, transport),
+        wording=lambda facts: None,
+    )
+    site = SITE_DETAIL
+    context = service.context(site, NOW, reports=REPORTS, notices=NOTICES)
+    return context.model_copy(
+        update={
+            "data_state": DataState.SIMULATED,
+            "critical_habitat_state": DataState.SIMULATED,
+            "simulated": True,
+            "unknowns": [
+                "Demo fixture: a recorded IPaC and critical habitat snapshot "
+                "(retrieved 2026-10-17), not a live lookup.",
+                *context.unknowns,
+            ],
+        }
+    )
+
+
+SPECIES_CONTEXT = species_context()
+
 FIXTURES: dict[str, BaseModel | list[BaseModel]] = {
     "sites.json": SITES,
     "site-detail.json": SITE_DETAIL,
@@ -699,6 +750,7 @@ FIXTURES: dict[str, BaseModel | list[BaseModel]] = {
     "reports.json": REPORTS,
     "hazard-notices.json": NOTICES,
     "briefings.json": BRIEFINGS,
+    "species-context.json": SPECIES_CONTEXT,
 }
 
 

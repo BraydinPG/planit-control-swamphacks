@@ -7,6 +7,7 @@ import type {
   ReportCreate,
   ReportReview,
   SiteDetail,
+  SiteSpeciesContext,
   SiteSummary,
 } from '../types/api'
 
@@ -34,6 +35,8 @@ export interface Client {
   instruct(id: string, instruction: string): Promise<HazardNotice>
   briefing(id: string): Promise<Briefing | null>
   briefings(): Promise<Briefing[]>
+  /** Regional species context for a team site; null when the site has no team. */
+  species(id: string): Promise<SiteSpeciesContext | null>
 }
 export interface DemoSnapshot {
   version: 1

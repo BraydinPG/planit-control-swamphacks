@@ -1,4 +1,15 @@
-## Report form and map cleanup (Braydin, for Cache/Rudra UI) — 2026-10-17
+## Site species context (Rudra; cross-scope into Braydin's Gemini and Cache's frontend) — 2026-10-17
+
+Explicit user request (Rudra): a read-only, site-aware species guide for team sites using the USFWS IPaC Location API, USFWS critical habitat boundaries on the existing map, and the existing Gemini client. Guide: [SPECIES_CONTEXT.md](SPECIES_CONTEXT.md).
+
+- **Rudra (owned):** new route `GET /api/sites/{id}/species` (`backend/app/api/species.py`, registered in `main.py`), schemas `backend/app/schemas/species.py` + TS mirror, `backend/app/species/**`, fixture generator (`species-context.json`), `.env.example`, AGENTS.md/spec.md route lists. No database models or migrations.
+- **Braydin (review requested):** new `backend/app/gemini/species.py` only. It uses the existing `GeminiClient.generate_structured` and changes no other Gemini file. Please review the grounding rules and confirm the IPaC source/provenance notes.
+- **Cache (review requested):** new `frontend/src/components/data/SpeciesPanel.tsx` and `frontend/tests/species.test.mjs`. Focused edits: `Client.species()` in `api/contracts.ts`, `api/http-client.ts`, `api/validate.ts`, `demo/client.ts`; optional `habitat` overlay prop in `components/data/SiteMap.tsx` (no change when omitted); one `SpeciesSection` line in `pages/ConnectedPages.tsx`. Formatted with the existing prettier style.
+- **Safety lead (open):** curated encounter guidance in `backend/app/species/guidance.py` is `pending_review` until signed off.
+- Score, alerts, report review and clearance are untouched; a test compares site detail, list, alerts and row counts before and after species reads.
+
+Checks: 782 backend tests (47 new), ruff check/format; 118 frontend tests (9 new), oxlint, `tsc -b`, fixture- and API-mode builds; browser check at 1510 px and 390 px with no console errors.
+
 
 Explicit user requests (Braydin):
 - **Report step 2:** the present/absent `<select>` became two large radio choices styled like the category step. The select's selected colors (`bg-stop text-white`) conflicted with the shared `field` class (`bg-surface text-ink`), so a choice rendered as white on white.

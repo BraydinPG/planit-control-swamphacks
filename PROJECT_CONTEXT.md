@@ -2,7 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
-## Current clean setup / T070 preparation - 2026-10-17
+## Site species context - 2026-10-17
+- Rudra branch `feature/rudra-species-context`: `GET /api/sites/{id}/species` for team sites only. USFWS IPaC (federal ESA listings whose range overlaps a 1 km square; regional context, never a sighting), USFWS critical habitat (final/proposed, clipped to 6 km, drawn on `SiteMap`), curated cited encounter guidance (`pending_review`), crew wildlife reports kept separate. Gemini only rewords facts; ungrounded lines fall back to a template.
+- Water moccasin is not federally listed, so IPaC never returns it; responses say so instead of inventing a row. State status unknown. No DB changes; in-memory 24 h cache.
+- Read-only: no score/alert/clearance effect (tested). Cross-scope files and review requests in CROSS_SCOPE_CHANGES top entry; details in [docs/SPECIES_CONTEXT.md](docs/SPECIES_CONTEXT.md). 782 backend / 118 frontend tests pass.
+
 - Independent `feature/cache-clean-setup` began at main `681582b` in the functional worktree. Maintainers merged PR #34 as `a7e2e72` during verification; incoming main is incorporated with its geolocation code preserved. No unmerged dependency, API or form integration added.
 - [Windows PowerShell quick start](docs/WINDOWS_QUICKSTART.md) covers credential-free demo, venv tests, health-only FastAPI, configured env-file startup, fixed proxy target, stale builds/processes, and real restart checks. [Verification record](docs/clean-setup-verification.json) gives exact commands, versions, source hashes and limits.
 - Clean tracked-file snapshot: fresh npm install and Python 3.12 venv, no copied environment/ML artifacts/dependencies. Initial 71 Node tests; final 90 after incorporating PR #34. 637 backend tests with 2 optional ML skips, 10 probe tests, pip check, Ruff/117-file format, lint/TypeScript, fixture/API builds pass. Backend/dependencies unchanged by incoming main; no dependency/lock edits needed. Existing Starlette/API chunk/npm warnings recorded.

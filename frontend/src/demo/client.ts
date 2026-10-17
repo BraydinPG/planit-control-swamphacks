@@ -4,6 +4,7 @@ import reportsJSON from '../fixtures/reports.json'
 import alertsJSON from '../fixtures/alerts.json'
 import noticesJSON from '../fixtures/hazard-notices.json'
 import briefingsJSON from '../fixtures/briefings.json'
+import speciesJSON from '../fixtures/species-context.json'
 import references from './generated/references.json'
 import type {
   Alert,
@@ -12,6 +13,7 @@ import type {
   HazardNotice,
   ReportCreate,
   ReportReview,
+  SiteSpeciesContext,
   SiteSummary,
 } from '../types/api'
 import {
@@ -394,6 +396,13 @@ export class DemoClient implements Client {
   async briefings() {
     // Public archived fixture examples, including a template; never generated here.
     return clone(briefingsJSON as Briefing[])
+  }
+  async species(id: string) {
+    this.allowed(id)
+    // Recorded IPaC snapshot for the demo team site only; labeled simulated.
+    if (!this.state.sites.find((s) => s.id === id)?.assigned_team) return null
+    const fixture = speciesJSON as SiteSpeciesContext
+    return fixture.site_id === id ? clone(fixture) : null
   }
   replay(kind: 'strike' | 'cleared') {
     const a = this.state.alerts.find((a) => a.id === 'alert-ltg-demo')!

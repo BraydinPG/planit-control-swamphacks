@@ -4,6 +4,7 @@ import type {
   CrewReport,
   HazardNotice,
   HazardConfirmResponse,
+  SiteSpeciesContext,
 } from '../types/api'
 
 export const record = (v: unknown): v is Record<string, unknown> =>
@@ -95,7 +96,9 @@ const analysis = (v: unknown) =>
   (v.severity_suggestion === null ||
     ['low', 'moderate', 'high'].includes(String(v.severity_suggestion))) &&
   (v.confidence === null ||
-    (typeof v.confidence === 'number' && v.confidence >= 0 && v.confidence <= 1)) &&
+    (typeof v.confidence === 'number' &&
+      v.confidence >= 0 &&
+      v.confidence <= 1)) &&
   (v.status === 'unavailable'
     ? v.verdict === null
     : v.status === 'complete' &&
@@ -208,4 +211,76 @@ export function validateConfirmation(
       'Invalid confirmation response. Refresh before retrying.',
     )
   return v as unknown as HazardConfirmResponse
+}
+
+const dataStates = [
+  'observed',
+  'forecast',
+  'crew_reported',
+  'simulated',
+  'stale',
+  'unavailable',
+]
+const optionalText = (v: unknown) => v === null || text(v)
+/**
+ * GET /api/sites/{id}/species. Background species context may never claim a crew
+ * report: `confirmed_report` is valid only on `wildlife_reports`.
+ */
+export function validateSpeciesContext(
+  v: unknown,
+  site: string,
+): SiteSpeciesContext {
+  const valid =
+    record(v) &&
+    v.site_id === site &&
+    text(v.source) &&
+    text(v.caveat) &&
+    text(v.footprint_description) &&
+    optionalText(v.api_version) &&
+    (v.fetched_at === null || date(v.fetched_at)) &&
+    dataStates.includes(String(v.data_state)) &&
+    dataStates.includes(String(v.critical_habitat_state)) &&
+    typeof v.simulated === 'boolean' &&
+    ['gemini', 'fallback'].includes(String(v.generated_by)) &&
+    strings(v.unknowns) &&
+    Array.isArray(v.species) &&
+    v.species.every(
+      (s) =>
+        record(s) &&
+        text(s.id) &&
+        text(s.summary) &&
+        text(s.match_note) &&
+        ['regional_range', 'possible_regional_context', 'unknown'].includes(
+          String(s.match_basis),
+        ) &&
+        strings(s.evidence_ids) &&
+        (s.protection === null ||
+          (record(s.protection) &&
+            optionalText(s.protection.status) &&
+            text(s.protection.source) &&
+            date(s.protection.as_of))) &&
+        (s.encounter === null ||
+          (record(s.encounter) &&
+            strings(s.encounter.actions) &&
+            text(s.encounter.source) &&
+            text(s.encounter.source_url))),
+    ) &&
+    Array.isArray(v.critical_habitat) &&
+    v.critical_habitat.every(
+      (a) =>
+        record(a) &&
+        text(a.id) &&
+        text(a.source) &&
+        (a.geometry === null || record(a.geometry)),
+    ) &&
+    Array.isArray(v.wildlife_reports) &&
+    v.wildlife_reports.every(
+      (r) =>
+        record(r) &&
+        text(r.report_id) &&
+        date(r.reported_at) &&
+        ['confirmed', 'pending', 'rejected'].includes(String(r.confirmation)),
+    )
+  if (!valid) throw new ApiError(502, 'Invalid species context response')
+  return v as unknown as SiteSpeciesContext
 }

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../../styles/map.css'
-import type { SiteSummary } from '../../types/api'
+import type { CriticalHabitatArea, SiteSummary } from '../../types/api'
 import { levelHex, RiskShape } from './Risk'
 import { evidenceOf } from './evidence'
 // The basemap loads by default when online. Offline, or when the tile server can't be
@@ -23,12 +23,19 @@ function subscribe(changed: () => void) {
 }
 const network = () => (navigator.onLine ? reconnects : -1)
 
+// Critical habitat outlines: dashed for proposed, solid for final, so status never
+// depends on colour alone. Each outline also carries its name as a tooltip.
+const HABITAT_COLOR = '#5e4b8b'
+
 export function SiteMap({
   sites,
   select,
+  habitat,
 }: {
   sites: SiteSummary[]
   select: (id: string) => void
+  /** Optional critical habitat overlay, already clipped to the map window. */
+  habitat?: CriticalHabitatArea[]
 }) {
   const container = useRef<HTMLDivElement>(null)
   const connection = useSyncExternalStore(subscribe, network, () => 0)
@@ -37,11 +44,30 @@ export function SiteMap({
   const hidden = connection < 0 || failedOn === connection
   useEffect(() => {
     if (hidden || !container.current || !sites.length) return
-    const map = L.map(container.current, { scrollWheelZoom: false }).fitBounds(
-      L.latLngBounds(sites.map((s) => [s.lat, s.lon] as [number, number])).pad(
-        0.15,
-      ),
+    const bounds = L.latLngBounds(
+      sites.map((s) => [s.lat, s.lon] as [number, number]),
     )
+    const outlines = (habitat ?? []).flatMap((area) => {
+      if (!area.geometry) return []
+      const layer = L.geoJSON(area.geometry as GeoJSON.GeoJsonObject, {
+        interactive: true,
+        style: {
+          color: HABITAT_COLOR,
+          weight: 2,
+          dashArray: area.status === 'Proposed' ? '6 5' : undefined,
+          fillColor: HABITAT_COLOR,
+          fillOpacity: 0.12,
+        },
+      }).bindTooltip(
+        `${area.common_name ?? area.scientific_name ?? 'Species'}: ${area.status ?? 'status unknown'} critical habitat`,
+      )
+      bounds.extend(layer.getBounds())
+      return [layer]
+    })
+    const map = L.map(container.current, { scrollWheelZoom: false }).fitBounds(
+      bounds.pad(0.15),
+    )
+    outlines.forEach((layer) => layer.addTo(map))
     for (let lon = -180; lon <= 180; lon += 30)
       L.polyline(
         [
@@ -95,7 +121,7 @@ export function SiteMap({
     return () => {
       map.remove()
     }
-  }, [sites, select, hidden, connection])
+  }, [sites, select, habitat, hidden, connection])
   if (hidden) return null
   return (
     <section
@@ -142,12 +168,30 @@ export function SiteMap({
             />
             Team assigned (large, outlined)
           </li>
+          {habitat && habitat.length > 0 && (
+            <>
+              <li className="inline-flex items-center gap-1.5">
+                <span
+                  className="h-3 w-5 border-2 border-[#5e4b8b] bg-[#5e4b8b]/15"
+                  aria-hidden="true"
+                />
+                Final critical habitat (solid)
+              </li>
+              <li className="inline-flex items-center gap-1.5">
+                <span
+                  className="h-3 w-5 border-2 border-dashed border-[#5e4b8b] bg-[#5e4b8b]/15"
+                  aria-hidden="true"
+                />
+                Proposed critical habitat (dashed)
+              </li>
+            </>
+          )}
         </ul>
       </div>
       <p className="text-sm text-muted">
-        Interactive geographic reference map · {sites.length} supplied points.
-        Use the equivalent location list below for keyboard access. Points do
-        not establish worksite conditions.
+        {habitat?.length
+          ? 'Site point and USFWS critical habitat boundaries, clipped to about 3 km. The same areas are listed above for keyboard access. Boundaries are not sightings.'
+          : `Interactive geographic reference map · ${sites.length} supplied points. Use the equivalent location list below for keyboard access. Points do not establish worksite conditions.`}
       </p>
       <div
         ref={container}
