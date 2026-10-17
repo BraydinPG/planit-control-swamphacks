@@ -1,4 +1,7 @@
 .map-shell.leaflet-container {
+  /* Keep Leaflet's pane z-indexes inside the map, under sticky filters. */
+  isolation: isolate;
+  z-index: 0;
   background: var(--pc-surface-2);
   background-image:
     linear-gradient(var(--pc-line) 1px, transparent 1px),

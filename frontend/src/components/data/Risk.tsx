@@ -1,4 +1,5 @@
 import type { RiskLevel } from '../../types/api'
+import type { Evidence } from './evidence'
 
 /**
  * Risk is never shown by colour alone: every level has its own shape and word.
@@ -128,27 +129,40 @@ export const levelHex: Record<RiskLevel | 'none', string> = {
   none: '#9aa3ad',
 }
 
-/** Shape + word for a server risk level. Null renders "Not scored yet". */
+/**
+ * Shape + word for a server risk level. Null renders "Not scored yet".
+ * With no supporting evidence the band is shown as unknown; with partial
+ * evidence the supplied band is kept and qualified as incomplete.
+ */
 export function RiskBadge({
   level,
   withheld = false,
   size = 'sm',
+  evidence = null,
 }: {
   level: RiskLevel | null
   withheld?: boolean
   size?: 'sm' | 'lg'
+  evidence?: Evidence | null
 }) {
+  const unknown = evidence === 'none'
   const text = withheld
     ? 'Withheld'
-    : level
-      ? levelWord[level]
-      : 'Not scored yet'
-  const kind: RiskShapeKind = withheld || !level ? 'nodata' : levelShape[level]
+    : unknown
+      ? 'Unknown: no evidence'
+      : level
+        ? levelWord[level] + (evidence === 'partial' ? ' · incomplete' : '')
+        : 'Not scored yet'
+  const kind: RiskShapeKind =
+    withheld || unknown || !level ? 'nodata' : levelShape[level]
   return (
     <span
       className={`inline-flex items-center gap-1.5 font-semibold text-ink-2 ${size === 'lg' ? 'text-base' : 'text-sm'}`}
     >
-      <RiskShape kind={kind} className={size === 'lg' ? 'size-5' : 'size-3.5'} />
+      <RiskShape
+        kind={kind}
+        className={size === 'lg' ? 'size-5' : 'size-3.5'}
+      />
       {text}
     </span>
   )
@@ -158,16 +172,23 @@ export function RiskBadge({
 export function ScoreBar({
   score,
   level,
+  evidence = null,
 }: {
   score: number | null
   level: RiskLevel | null
+  evidence?: Evidence | null
 }) {
-  const fill = level ? `var(--pc-${levelVar[level]})` : 'var(--pc-low)'
+  const color = level ? `var(--pc-${levelVar[level]})` : 'var(--pc-low)'
+  // Partial evidence: hatched fill, so the bar never reads as a settled value.
+  const fill =
+    evidence === 'partial'
+      ? `repeating-linear-gradient(135deg, ${color} 0 4px, transparent 4px 7px)`
+      : color
+  if (evidence === 'none') score = null
   return (
     <div className="flex h-2.5 w-full gap-0.5" aria-hidden="true">
       {Array.from({ length: 10 }, (_, i) => {
-        const part =
-          score === null ? 0 : Math.max(0, Math.min(1, score - i))
+        const part = score === null ? 0 : Math.max(0, Math.min(1, score - i))
         return (
           <span
             key={i}

@@ -2,6 +2,7 @@ import {
   lazy,
   Suspense,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -38,6 +39,7 @@ import {
 } from '../components/data/Status'
 import { RiskBadge, RiskShape } from '../components/data/Risk'
 import { LocationSearch } from '../components/data/LocationSearch'
+import { evidenceOf } from '../components/data/evidence'
 import { Icon, type IconName } from '../components/shell/Icon'
 const Advisory = lazy(() =>
   import('../components/data/Advisory').then((m) => ({ default: m.Advisory })),
@@ -142,8 +144,30 @@ function SitePage({
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
     active = site.alerts.filter((a) => a.state === 'active')
+  const actions = (
+    <div className="space-y-3">
+      <div className="grid gap-3 @lg:grid-cols-2">
+        <a className={primary + big} href={`#/${persona}/reports`}>
+          <Icon name="camera" className="size-6" />
+          Report a hazard
+        </a>
+        <a className={control + big} href={`#/${persona}/briefings`}>
+          <Icon name="briefings" className="size-6" />
+          View briefing
+        </a>
+      </div>
+      <button
+        type="button"
+        className={control + ' w-full border-dashed @lg:w-auto'}
+        onClick={refresh}
+      >
+        <Icon name="refresh" className="size-4" />
+        Refresh server state
+      </button>
+    </div>
+  )
   return (
-    <div className="space-y-5">
+    <div className="pc-enter space-y-5">
       {compact && (
         <div>
           <h2 className="text-xl font-bold leading-tight tracking-tight">
@@ -163,14 +187,18 @@ function SitePage({
       )}
       <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
         <div className="space-y-5 @3xl:col-span-7">
+          {compact && actions}
           <section className={`${card} p-5`}>
             <p className="kicker mb-1.5">
               {site.location_type?.replaceAll('_', ' ') || 'Location'}
             </p>
-            <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
-            <p className="mt-1 text-ink-2">
-              {site.assigned_team?.name ?? 'No team assigned'} ·{' '}
-              {site.region ?? 'Region not supplied'}
+            {!compact && (
+              <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
+            )}
+            <p className={compact ? 'text-ink-2' : 'mt-1 text-ink-2'}>
+              {compact
+                ? (site.region ?? 'Region not supplied')
+                : `${site.assigned_team?.name ?? 'No team assigned'} · ${site.region ?? 'Region not supplied'}`}
             </p>
             <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 break-words font-mono text-xs text-muted">
               <span className="inline-flex items-center gap-1">
@@ -180,27 +208,7 @@ function SitePage({
               <span>{site.source}</span>
             </p>
           </section>
-          <div className="grid gap-3 @lg:grid-cols-2">
-            <a className={primary + big} href={`#/${persona}/reports`}>
-              <Icon name="camera" className="size-6" />
-              Report a hazard
-            </a>
-            <a
-              className={control + ' min-h-[72px] rounded-2xl text-lg'}
-              href={`#/${persona}/briefings`}
-            >
-              <Icon name="briefings" className="size-6" />
-              View briefing
-            </a>
-          </div>
-          <button
-            type="button"
-            className={control + ' w-full @lg:w-auto'}
-            onClick={refresh}
-          >
-            <Icon name="clock" className="size-4" />
-            Refresh server state
-          </button>
+          {!compact && actions}
           <ScorePanel site={site} demo={client.mode === 'demo'} />
           <section className="space-y-3">
             <SectionHead
@@ -276,21 +284,43 @@ function Stat({
   value,
   label,
   shape,
+  pressed,
+  onToggle,
 }: {
   value: number
   label: string
   shape: Parameters<typeof RiskShape>[0]['kind']
+  /** When set, the stat doubles as a filter toggle. */
+  pressed?: boolean
+  onToggle?: () => void
 }) {
-  return (
-    <div className={`${card} flex items-start gap-3 p-4`}>
+  const body = (
+    <>
       <RiskShape kind={shape} className="mt-1.5 size-4" />
-      <p className="leading-tight">
+      <span className="leading-tight">
         <span className="block text-3xl font-bold tabular-nums tracking-tight">
           {value}
         </span>
         <span className="text-sm text-ink-2">{label}</span>
-      </p>
-    </div>
+        {onToggle && (
+          <span className="mt-1.5 block font-mono text-[11px] font-semibold tracking-wider text-muted uppercase">
+            {pressed ? 'Filter on · show all' : 'Filter list'}
+          </span>
+        )}
+      </span>
+    </>
+  )
+  return onToggle ? (
+    <button
+      type="button"
+      aria-pressed={pressed}
+      onClick={onToggle}
+      className={`pc-press flex items-start gap-3 rounded-2xl border p-4 text-left hover:border-line-strong ${pressed ? 'border-ink bg-surface-2' : 'border-line bg-surface'}`}
+    >
+      {body}
+    </button>
+  ) : (
+    <div className={`${card} flex items-start gap-3 p-4`}>{body}</div>
   )
 }
 
@@ -339,13 +369,15 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
       (s) => !legacy(s) && s.risk_score !== null && s.risk_score >= 7,
     ).length,
     alerting: sites.filter((s) => s.active_alerts > 0).length,
-    unscored: sites.filter((s) => s.risk_score === null || legacy(s)).length,
+    unscored: sites.filter(
+      (s) => s.risk_score === null || legacy(s) || evidenceOf(s) === 'none',
+    ).length,
     teams: sites.filter((s) => s.assigned_team).length,
   }
   const columns =
     '@2xl:grid @2xl:grid-cols-[2.5rem_minmax(0,1.5fr)_10rem_minmax(0,1.6fr)_minmax(0,1fr)] @2xl:items-start @2xl:gap-4'
   return (
-    <div className="space-y-6">
+    <div className="pc-enter space-y-6">
       <div className="space-y-2">
         <p className="text-base font-semibold">
           {sites.length}{' '}
@@ -367,6 +399,8 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
           value={counts.alerting}
           label="sites with active alerts"
           shape="stop"
+          pressed={alerts}
+          onToggle={() => setAlerts(!alerts)}
         />
         <Stat
           value={counts.high}
@@ -377,16 +411,20 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
           value={counts.teams}
           label="locations with an assigned team"
           shape="low"
+          pressed={assignment === 'assigned'}
+          onToggle={() =>
+            setAssignment(assignment === 'assigned' ? 'all' : 'assigned')
+          }
         />
         <Stat
           value={counts.unscored}
-          label="not scored yet or withheld"
+          label="not scored, withheld or without evidence"
           shape="nodata"
         />
       </div>
       <section
         aria-label="Location filters"
-        className={`${card} grid gap-3 p-4 @lg:grid-cols-2 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end`}
+        className={`${card} grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end @3xl:shadow-xl @3xl:shadow-black/30`}
       >
         <LocationSearch
           sites={ranked}
@@ -494,7 +532,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
             {shown.map((s, i) => (
               <li
                 key={s.id}
-                className={`grid gap-2 px-4 py-3 ${columns} ${s.active_alerts > 0 ? 'shadow-[inset_4px_0_0_var(--pc-stop)]' : ''}`}
+                className={`grid gap-2 px-4 py-3 ${columns} transition-colors hover:bg-surface-2/60 ${s.active_alerts > 0 ? 'bg-stop/10' : ''}`}
               >
                 <span className="hidden pt-2.5 text-sm tabular-nums text-muted @2xl:block">
                   {i + 1}
@@ -511,17 +549,35 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                   </p>
                 </div>
                 <div className="space-y-1 @2xl:pt-2">
-                  <p className="text-base font-bold tabular-nums">
-                    {s.risk_score === null
-                      ? 'Not scored yet'
-                      : legacy(s)
-                        ? 'Legacy fixture score withheld'
-                        : `${s.risk_score} / 10 · ${s.risk_level ?? 'level unavailable'}`}
-                  </p>
-                  <RiskBadge
-                    level={s.risk_score === null ? null : s.risk_level}
-                    withheld={legacy(s)}
-                  />
+                  {s.risk_score === null ? (
+                    <RiskBadge level={null} size="lg" />
+                  ) : legacy(s) ? (
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-ink-2">
+                      <RiskShape kind="nodata" className="size-3.5" />
+                      Legacy fixture score withheld
+                    </p>
+                  ) : evidenceOf(s) === 'none' ? (
+                    <>
+                      <RiskBadge level={s.risk_level} evidence="none" />
+                      <p className="text-xs text-muted tabular-nums">
+                        Server value {s.risk_score} / 10 ·{' '}
+                        {s.risk_level ?? 'level unavailable'}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-lg leading-none font-bold tabular-nums">
+                        {s.risk_score}{' '}
+                        <span className="text-sm font-semibold text-muted">
+                          / 10
+                        </span>
+                      </p>
+                      <RiskBadge
+                        level={s.risk_level}
+                        evidence={evidenceOf(s)}
+                      />
+                    </>
+                  )}
                 </div>
                 <p className="text-sm leading-snug text-ink-2 @2xl:pt-2">
                   <span className="@2xl:sr-only">Top supplied factors: </span>
@@ -541,6 +597,12 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                       s.active_alerts > 0 ? 'font-bold text-stop-text' : ''
                     }
                   >
+                    {s.active_alerts > 0 && (
+                      <RiskShape
+                        kind="stop"
+                        className="mr-1 inline size-3.5 align-[-2px]"
+                      />
+                    )}
                     {s.active_alerts}{' '}
                     {client.mode === 'demo' ? 'demo' : 'supplied'} active alerts
                   </span>{' '}
@@ -569,7 +631,7 @@ function AlertsPage({ id }: { id: string | null }) {
   if (!alerts.data) return <LoadState error={alerts.error} />
   const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
   return (
-    <div className="space-y-5">
+    <div className="pc-enter space-y-5">
       {id && (
         <a
           href={`#${location.hash.split('/').slice(0, 3).join('/').slice(1)}`}
@@ -648,6 +710,21 @@ function ReportForm({ site }: { site: SiteSummary }) {
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('')
   const inFlight = useRef(false)
+  // Local preview of the selected photo; the object URL never leaves the page.
+  const [preview, setPreview] = useState<string | null>(null)
+  const previewUrl = useRef<string | null>(null)
+  useEffect(
+    () => () => {
+      if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
+    },
+    [],
+  )
+  function choosePhoto(file: File | null) {
+    if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
+    previewUrl.current = file ? URL.createObjectURL(file) : null
+    setPreview(previewUrl.current)
+    setPhoto(file)
+  }
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (!presence || inFlight.current) return
@@ -761,14 +838,23 @@ function ReportForm({ site }: { site: SiteSummary }) {
             required={client.mode === 'live' && presence === 'present'}
             accept="image/jpeg,image/png,image/webp"
             className={`${field} py-2.5`}
-            onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
+            onChange={(e) => choosePhoto(e.target.files?.[0] ?? null)}
           />
         </label>
         {photo && (
-          <p className="mt-2 text-sm text-ink-2">
-            {photo.name} selected · {Math.ceil(photo.size / 1024)} KB. Allowed
-            JPEG/PNG/WebP, maximum 5 MB.
-          </p>
+          <div className="mt-3 flex items-center gap-3 rounded-xl bg-surface-2 p-2.5">
+            {preview && (
+              <img
+                src={preview}
+                alt="Preview of the selected photo"
+                className="size-16 shrink-0 rounded-lg object-cover ring-1 ring-line-strong"
+              />
+            )}
+            <p className="min-w-0 text-sm text-ink-2">
+              {photo.name} selected · {Math.ceil(photo.size / 1024)} KB. Allowed
+              JPEG/PNG/WebP, maximum 5 MB.
+            </p>
+          </div>
         )}
       </div>
       <fieldset>
@@ -844,7 +930,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
         <p
           role="status"
           aria-live="polite"
-          className="rounded-xl border-l-4 border-ink bg-surface-2 px-3 py-2.5 font-semibold"
+          className="rounded-xl bg-surface-2 px-3 py-2.5 font-semibold ring-1 ring-line-strong"
         >
           {message}
         </p>
@@ -1027,7 +1113,7 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const [siteId, setSiteId] = useState(sites[0].id)
   const site = sites.find((s) => s.id === siteId) ?? sites[0]
   return (
-    <div className="grid gap-6 @3xl:grid-cols-12 @3xl:items-start">
+    <div className="pc-enter grid gap-6 @3xl:grid-cols-12 @3xl:items-start">
       <div className="space-y-4 @3xl:col-span-7">
         <label className={labelText}>
           Report location
@@ -1045,7 +1131,7 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
           </select>
         </label>
         <button type="button" className={control} onClick={refresh}>
-          <Icon name="clock" className="size-4" />
+          <Icon name="refresh" className="size-4" />
           Refresh reports and server state
         </button>
         <ReportForm key={site.id} site={site} />

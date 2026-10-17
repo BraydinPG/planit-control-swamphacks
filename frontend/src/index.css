@@ -91,6 +91,16 @@
     background: var(--pc-bg);
     color: var(--pc-ink);
   }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
   :focus-visible {
     outline: 3px solid var(--pc-focus);
     outline-offset: 2px;
@@ -116,6 +126,71 @@
   }
 }
 
+/*
+ * Motion: one easing and three durations. Motion only gives feedback
+ * (press), orients (page entry) or marks live state (active stop-work).
+ * All of it collapses under prefers-reduced-motion below.
+ */
+:root {
+  --pc-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --pc-fast: 120ms;
+  --pc-base: 200ms;
+  --pc-slow: 420ms;
+}
+.pc-press {
+  transition:
+    background-color var(--pc-base) var(--pc-ease),
+    border-color var(--pc-base) var(--pc-ease),
+    color var(--pc-base) var(--pc-ease),
+    opacity var(--pc-base) var(--pc-ease),
+    transform var(--pc-fast) var(--pc-ease);
+}
+.pc-press:not(:disabled):active {
+  transform: translateY(1px) scale(0.985);
+}
+@keyframes pc-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.pc-enter > * {
+  animation: pc-enter var(--pc-slow) var(--pc-ease) backwards;
+}
+.pc-enter > :nth-child(2) {
+  animation-delay: 40ms;
+}
+.pc-enter > :nth-child(3) {
+  animation-delay: 80ms;
+}
+.pc-enter > :nth-child(n + 4) {
+  animation-delay: 120ms;
+}
+/* Live stop-work beacon: a ring that expands from the octagon. */
+@keyframes pc-beacon {
+  from {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+.pc-beacon {
+  position: relative;
+  display: inline-flex;
+}
+.pc-beacon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 30%;
+  border: 2px solid #fff;
+  animation: pc-beacon 1.8s var(--pc-ease) infinite;
+  pointer-events: none;
+}
+
 @keyframes pc-shimmer {
   from {
     background-position: -200% 0;
@@ -136,6 +211,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .pc-beacon::after {
+    display: none;
+  }
+  .pc-press:not(:disabled):active {
+    transform: none;
+  }
   *,
   *::before,
   *::after {

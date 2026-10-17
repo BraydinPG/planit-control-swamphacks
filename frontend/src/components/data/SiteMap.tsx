@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css'
 import '../../styles/map.css'
 import type { SiteSummary } from '../../types/api'
 import { levelHex, RiskShape } from './Risk'
+import { evidenceOf } from './evidence'
 export function SiteMap({
   sites,
   select,
@@ -40,13 +41,18 @@ export function SiteMap({
     sites.forEach((s) => {
       const button = document.createElement('button')
       button.textContent = s.name
-      button.className = 'min-h-11 px-2 py-2 font-semibold text-[#14181d] underline'
+      button.className = 'min-h-11 px-2 py-2 font-semibold text-ink underline'
       button.onclick = () => select(s.id)
       L.circleMarker([s.lat, s.lon], {
         radius: s.assigned_team ? 9 : 5,
         color: s.assigned_team ? '#f2f4f6' : '#1a1e24',
         weight: s.assigned_team ? 2.5 : 1,
-        fillColor: levelHex[s.risk_level ?? 'none'],
+        // No evidence reads as unknown; partial evidence gets a dashed outline.
+        fillColor:
+          levelHex[
+            evidenceOf(s) === 'none' ? 'none' : (s.risk_level ?? 'none')
+          ],
+        dashArray: evidenceOf(s) === 'partial' ? '2 3' : undefined,
         fillOpacity: 0.9,
       })
         .bindPopup(button)
@@ -93,7 +99,14 @@ export function SiteMap({
           </li>
           <li className="inline-flex items-center gap-1.5">
             <RiskShape kind="nodata" className="size-3.5" />
-            Not scored
+            Not scored or no evidence
+          </li>
+          <li className="inline-flex items-center gap-1.5">
+            <span
+              className="size-3.5 rounded-full border-2 border-dashed border-ink-2"
+              aria-hidden="true"
+            />
+            Dashed outline: evidence incomplete
           </li>
           <li className="inline-flex items-center gap-1.5">
             <span

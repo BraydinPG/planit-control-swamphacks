@@ -250,3 +250,16 @@ Verification: `npm run build`, `npm run lint` (clean), the four `node --test` su
 - The supervisor workspace now uses the same dark tokens as the crew workspace. Leaflet controls, popups and marker outlines are themed for dark surfaces.
 - "Search locations" (`components/data/LocationSearch.tsx`) is an ARIA combobox. With an empty box it suggests the first ranked locations; typing ranks matches by name, then team, then site ID, and still filters the map and list. Arrow keys plus Enter, or a click, open the chosen location.
 - Restored the repo's single-quote, no-semicolon formatting in three files that the previous merge commit reformatted.
+
+### 2026-10-17 — second polish pass (guided by the garden-skills web-design skill, "Redesign · Preserve")
+
+- **Scoring display issue from FRONTEND_REDESIGN_HANDOFF.md is addressed (presentation only).** New `components/data/evidence.ts` classifies a supplied score by `data_completeness`: none (0%), partial, or full. Nothing is recalculated and DTOs are unchanged; the backend number and band always stay visible.
+  - No evidence: ScorePanel headline reads "Unknown" with "Server value x / 10 · band", a dashed bar and an explicit note that the number is not a low or safe reading. RiskBadge reads "Unknown: no evidence"; ranked list, search suggestions and map (grey fill) match.
+  - Partial: the band is kept and qualified ("Low · incomplete"), the bar is hatched, a note gives the reported percentage, and map markers get a dashed outline.
+  - Stale or replayed inputs add a "Includes stale or simulated (replay) inputs" line. Null and legacy-withheld handling is unchanged.
+- Large field buttons now actually render 72px/large text (important modifiers; the base size was winning). Crew home puts Report/View briefing directly after the alert and no longer repeats the site name.
+- Removed left-border accent callouts; observations are one divided list instead of a card per reading; alert detail hides the ring when the server supplies no countdown and colors it by alert tone; active stop-work gets a beacon ring.
+- Supervisor: "sites with active alerts" and "assigned team" stats double as filter toggles (`aria-pressed`); filter bar is sticky on wide layouts (map isolated under it); alerting rows are tinted; map popup link fixed for the dark theme.
+- Motion tokens (one easing, three durations): button press feedback, page entry fade, stop-work beacon. All disabled under `prefers-reduced-motion`. Report form shows a local photo preview thumbnail (object URL revoked on change/unmount).
+
+Verification: build, lint (clean), 90/90 Node tests, `check-shell.mjs` pass with no browser exceptions; before/after screenshots at 390 and 1440.

@@ -59,7 +59,7 @@ function NoticeWorkflow({ initial }: { initial: HazardNotice }) {
           No instruction: supervisor confirmation is pending.
         </p>
       ) : notice.instruction_sent_at && notice.instruction ? (
-        <div className="rounded-xl border-l-4 border-ink bg-surface-2 p-3">
+        <div className="rounded-xl bg-surface-2 p-3 ring-1 ring-line-strong">
           <strong className="kicker text-ink!">
             Supervisor-approved instruction
           </strong>

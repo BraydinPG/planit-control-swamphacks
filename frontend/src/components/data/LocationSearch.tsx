@@ -2,6 +2,7 @@ import { useId, useMemo, useState, type KeyboardEvent } from 'react'
 import type { SiteSummary } from '../../types/api'
 import { field, labelText } from './Interaction'
 import { RiskBadge } from './Risk'
+import { evidenceOf } from './evidence'
 import { Icon } from '../shell/Icon'
 
 const LIMIT = 6
@@ -170,6 +171,7 @@ export function LocationSearch({
               <RiskBadge
                 level={site.risk_score === null ? null : site.risk_level}
                 withheld={withheld(site)}
+                evidence={evidenceOf(site)}
               />
             </li>
           ))}

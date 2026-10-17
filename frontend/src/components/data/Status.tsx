@@ -4,7 +4,8 @@ import type {
   FactorContribution,
   Observation,
 } from '../../types/api'
-import { RiskBadge, ScoreBar } from './Risk'
+import { RiskBadge, RiskShape, ScoreBar } from './Risk'
+import { evidenceLabel, evidenceOf, hasStaleOrReplay } from './evidence'
 
 const stateLabels: Record<DataState, string> = {
   observed: 'Observed',
@@ -190,20 +191,39 @@ export function ScorePanel({
   const legacy =
     demo && site.top_factors.some((factor) => factor.factor === 'model')
   const score = legacy ? null : site.risk_score
+  const evidence = legacy ? null : evidenceOf(site)
+  const percent = Math.round(site.data_completeness * 100)
+  const supplied =
+    site.risk_score === null
+      ? null
+      : `${site.risk_score.toFixed(1)} / 10 · ${site.risk_level ?? 'level unavailable'}`
   return (
     <section
       aria-label="Site score"
-      className="rounded-2xl border border-line bg-surface p-5"
+      className={`rounded-2xl border bg-surface p-5 ${evidence === 'none' || evidence === 'partial' ? 'border-dashed border-caution' : 'border-line'}`}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="kicker">Site score</h2>
-        <RiskBadge level={site.risk_level} withheld={legacy} />
+        <RiskBadge
+          level={site.risk_level}
+          withheld={legacy}
+          evidence={evidence}
+        />
       </div>
-      <p className="mt-3 flex items-baseline gap-2">
+      <p className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
         {legacy ? (
           <span className="text-2xl font-bold">Score withheld</span>
         ) : site.risk_score === null ? (
           <span className="text-2xl font-bold">Not scored yet</span>
+        ) : evidence === 'none' ? (
+          <>
+            <span className="font-condensed text-5xl leading-none">
+              Unknown
+            </span>
+            <span className="text-base text-muted">
+              Server value {supplied}
+            </span>
+          </>
         ) : (
           <>
             <span className="font-condensed text-6xl leading-none tabular-nums">
@@ -216,8 +236,39 @@ export function ScorePanel({
         )}
       </p>
       <div className="mt-4">
-        <ScoreBar score={score} level={legacy ? null : site.risk_level} />
+        <ScoreBar
+          score={score}
+          level={legacy ? null : site.risk_level}
+          evidence={evidence}
+        />
       </div>
+      {(evidence === 'none' || evidence === 'partial') && (
+        <div
+          role="note"
+          className="mt-4 flex gap-3 rounded-xl bg-surface-2 p-3 text-sm"
+        >
+          <RiskShape
+            kind={evidence === 'none' ? 'nodata' : 'caution'}
+            className="mt-0.5 size-5"
+          />
+          <p className="text-ink-2">
+            <strong className="block text-ink">
+              {evidenceLabel[evidence]}
+              {evidence === 'partial'
+                ? ` · ${percent}% of inputs reported`
+                : ''}
+            </strong>
+            {evidence === 'none'
+              ? 'No scoring inputs reported. This number is not a low or safe reading; conditions are unknown until evidence arrives.'
+              : 'Missing inputs count as unknown, not zero. This band may understate current conditions.'}
+          </p>
+        </div>
+      )}
+      {!legacy && site.risk_score !== null && hasStaleOrReplay(site) && (
+        <p className="mt-3 flex items-center gap-2 text-sm text-ink-2">
+          <Status state="stale" /> Includes stale or simulated (replay) inputs.
+        </p>
+      )}
       {legacy && (
         <p className="mt-3 text-sm text-ink-2">
           This legacy fixture includes an unapproved ML score component. The
@@ -228,8 +279,7 @@ export function ScorePanel({
         {demo
           ? 'Historical demonstration payload, not live scoring.'
           : 'Server-provided score; never calculated by the frontend.'}{' '}
-        Completeness: {Math.round(site.data_completeness * 100)}%. Model:{' '}
-        {site.model_version}
+        Completeness: {percent}%. Model: {site.model_version}
       </p>
       <p className="text-xs text-muted">
         Updated: <Timestamp value={site.updated_at} />
@@ -245,20 +295,23 @@ export function Observations({ rows }: { rows: Observation[] }) {
       </p>
     )
   return (
-    <ul className="grid gap-3 @lg:grid-cols-2">
+    <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
       {rows.map((row, index) => {
         const missing = row.value === null || row.data_state === 'unavailable'
         return (
-          <li
-            key={row.id ?? index}
-            className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-4"
-          >
+          <li key={row.id ?? index} className="space-y-2 px-4 py-3.5">
             <div className="flex items-start justify-between gap-3">
-              <p className="min-w-0 font-semibold text-ink">
-                {row.label ?? row.hazard_type}
-              </p>
+              <div className="min-w-0 space-y-1.5">
+                <p className="font-semibold text-ink">
+                  {row.label ?? row.hazard_type}
+                </p>
+                <p className="flex flex-wrap gap-1.5">
+                  <Status state={row.data_state} />{' '}
+                  {row.simulated && <Status state="simulated" />}
+                </p>
+              </div>
               <p
-                className={`shrink-0 text-right text-2xl font-bold leading-none tracking-tight ${missing ? 'text-faint' : ''}`}
+                className={`shrink-0 text-right text-2xl font-bold leading-none tracking-tight tabular-nums ${missing ? 'text-faint' : ''}`}
               >
                 {row.value ?? 'Unknown'}{' '}
                 <span className="text-sm font-semibold text-muted">
@@ -266,19 +319,20 @@ export function Observations({ rows }: { rows: Observation[] }) {
                 </span>
               </p>
             </div>
-            <p className="flex flex-wrap gap-1.5">
-              <Status state={row.data_state} />{' '}
-              {row.simulated && <Status state="simulated" />}
-            </p>
-            <p className="text-xs leading-relaxed text-muted">
-              Source: {row.source} ·{' '}
-              {row.source_ref ?? 'record reference unavailable'}
-              <br />
-              Observed: <Timestamp value={row.observed_at} />
-              <br />
-              Valid: <Timestamp value={row.valid_at} />
-              <br />
-              Fetched: <Timestamp value={row.fetched_at} />
+            <p className="grid gap-x-4 text-xs leading-relaxed text-muted @lg:grid-cols-2">
+              <span>
+                Source: {row.source} ·{' '}
+                {row.source_ref ?? 'record reference unavailable'}
+              </span>
+              <span>
+                Observed: <Timestamp value={row.observed_at} />
+              </span>
+              <span>
+                Valid: <Timestamp value={row.valid_at} />
+              </span>
+              <span>
+                Fetched: <Timestamp value={row.fetched_at} />
+              </span>
             </p>
           </li>
         )

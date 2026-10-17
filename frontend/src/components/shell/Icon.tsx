@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react'
 
 export type IconName =
+  | 'refresh'
   | 'overview'
   | 'sites'
   | 'alerts'
@@ -33,6 +34,8 @@ const paths: Record<IconName, string> = {
   back: 'M15 18 9 12l6-6',
   pin: 'M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
   clock: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Z M12 7v5l3 2',
+  refresh:
+    'M20 11a8 8 0 0 0-14.6-4.5 M4 4v3h3 M4 13a8 8 0 0 0 14.6 4.5 M20 20v-3h-3',
   check: 'M5 12.5 10 17.5 19 7',
   spark:
     'M12 3v4 M12 17v4 M3 12h4 M17 12h4 M6 6l2.5 2.5 M15.5 15.5 18 18 M18 6l-2.5 2.5 M8.5 15.5 6 18',

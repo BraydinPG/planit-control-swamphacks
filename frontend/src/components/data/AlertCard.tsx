@@ -44,11 +44,20 @@ function look(alert: Alert): {
 }
 
 /** Visual-only progress ring for the server-supplied all-clear window. */
-function Ring({ alert, left }: { alert: Alert; left: number | null }) {
+function Ring({
+  alert,
+  left,
+  color,
+}: {
+  alert: Alert
+  left: number
+  color: string
+}) {
   const start = Date.parse(alert.latest_event_at)
   const end = alert.clear_after ? Date.parse(alert.clear_after) : NaN
-  const total = Number.isFinite(start) && Number.isFinite(end) ? (end - start) / 1000 : 1800
-  const fraction = left === null ? 0 : Math.max(0, Math.min(1, left / Math.max(total, 1)))
+  const total =
+    Number.isFinite(start) && Number.isFinite(end) ? (end - start) / 1000 : 1800
+  const fraction = Math.max(0, Math.min(1, left / Math.max(total, 1)))
   const r = 92,
     c = 2 * Math.PI * r
   return (
@@ -67,7 +76,7 @@ function Ring({ alert, left }: { alert: Alert; left: number | null }) {
           cy="105"
           r={r}
           fill="none"
-          stroke="var(--pc-stop-text)"
+          stroke={color}
           strokeWidth="12"
           strokeLinecap="round"
           strokeDasharray={c}
@@ -77,7 +86,7 @@ function Ring({ alert, left }: { alert: Alert; left: number | null }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-5xl font-bold tabular-nums tracking-tight">
-          {left === null ? '--:--' : clock(left)}
+          {clock(left)}
         </span>
         <span className="text-sm text-muted">until all-clear</span>
       </div>
@@ -107,10 +116,18 @@ export function AlertCard({
       className={`overflow-hidden rounded-2xl border-[3px] bg-surface ${style.ring}`}
     >
       <div className={`flex items-center gap-3 px-4 py-3 ${style.band}`}>
-        <RiskShape
-          kind={style.kind}
-          className={detail ? 'size-8' : 'size-8 @lg:size-10'}
-        />
+        <span
+          className={
+            style.kind === 'stop' && alert.state === 'active'
+              ? 'pc-beacon'
+              : 'inline-flex'
+          }
+        >
+          <RiskShape
+            kind={style.kind}
+            className={detail ? 'size-8' : 'size-8 @lg:size-10'}
+          />
+        </span>
         <h2
           className={`font-condensed uppercase leading-[0.95] ${detail ? 'text-3xl' : 'text-[2rem] @lg:text-4xl'}`}
         >
@@ -138,7 +155,17 @@ export function AlertCard({
             </span>
           </div>
         )}
-        {detail && <Ring alert={alert} left={left} />}
+        {detail && left !== null && (
+          <Ring
+            alert={alert}
+            left={left}
+            color={
+              style.kind === 'stop'
+                ? 'var(--pc-stop-text)'
+                : 'var(--pc-warn-text)'
+            }
+          />
+        )}
         <p className="text-sm text-ink-2">
           {source}: <strong className="text-ink">{alert.state}</strong>
           {alert.is_prototype_rule ? ' · Prototype rule' : ''}
@@ -153,8 +180,8 @@ export function AlertCard({
           {countdown(alert, now)}
         </p>
         <p className="text-xs leading-relaxed text-muted">
-          Countdown is a display estimate. A zero countdown never clears an alert
-          or authorizes work. Follow the authoritative alert and employer
+          Countdown is a display estimate. A zero countdown never clears an
+          alert or authorizes work. Follow the authoritative alert and employer
           procedures.
         </p>
         {detail && (

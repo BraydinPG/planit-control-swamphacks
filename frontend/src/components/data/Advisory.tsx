@@ -13,7 +13,7 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
       <h2 id="advisory-title" className="text-xl font-bold text-ink">
         Event outlook and site evidence
       </h2>
-      <p className="rounded-xl border-l-4 border-warn bg-surface-2 px-3 py-2 font-semibold text-ink">
+      <p className="rounded-xl border border-dashed border-warn bg-surface-2 px-3 py-2 font-semibold text-ink">
         Research advisory only. Recorded event end is not worksite clearance. No
         local injury/hazard probabilities are validated.
       </p>
