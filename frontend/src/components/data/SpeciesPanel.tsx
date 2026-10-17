@@ -123,7 +123,7 @@ export function SpeciesPanel({
           <p>
             Wording:{' '}
             {context.generated_by === 'gemini'
-              ? 'Gemini, checked line by line against the sources below'
+              ? `${context.simulated ? 'recorded Gemini response' : 'Gemini'}, checked line by line against the sources below`
               : 'deterministic template'}
             . Statuses and guidance are shown exactly as sourced.
           </p>

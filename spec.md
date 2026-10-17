@@ -287,6 +287,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `GET /api/team` | Supervisor: the organization's supervisors and, per team, its site, members (name, email, joined), and active join codes. |
 | `POST /api/teams/{id}/join-codes` | Supervisor: create an `XXXX-XXXX` join code for a team in their organization. Expires after 7 days. |
 | `DELETE /api/join-codes/{code}` | Supervisor: revoke one of their organization's codes. Existing members stay. |
+| `PATCH /api/organization` | Supervisor: rename their organization. |
 | `POST /api/teams`, `PATCH /api/teams/{id}`, `DELETE /api/teams/{id}` | Supervisor: add a team to their organization, rename it or change its site (a site has at most one team), or remove a team with no members and no reports. |
 | `GET /api/sites/{id}/species` | Read-only species context for a team site: USFWS IPaC federally listed species whose range overlaps the site (regional context, not a sighting), USFWS critical habitat nearby, curated encounter guidance, and the site's crew wildlife reports kept separate. Same access as site detail; 404 `no_team` for sites without a team. Never affects the score, alerts, or clearance. See `docs/SPECIES_CONTEXT.md`. |
 

@@ -556,3 +556,22 @@ def test_briefings_stored_before_the_index_still_read(factory) -> None:
         old = to_schema(session.get(db.Briefing, "briefing:site-ny:old"))
     assert old.risk_score is None
     assert old.hazards[0].points is None
+
+
+def test_schedule_is_off_by_default() -> None:
+    from app.gemini.briefing_schedule import BriefingSettings
+
+    assert BriefingSettings(_env_file=None).briefing_schedule_enabled is False
+
+
+def test_scheduled_generation_is_audited_with_the_backend_that_ran_it(factory) -> None:
+    from app.gemini.briefing_schedule import SCHEDULE_ACTOR
+
+    with factory() as session:
+        made = run_due_briefings(session, EVENING_EAST, NO_GEMINI, forecasts, None)
+        rows = session.scalars(
+            select(db.AuditEvent).where(db.AuditEvent.action == "briefing.generate")
+        ).all()
+    assert {r.entity for r in rows} == {b.id for b in made} and made
+    assert all(r.actor == SCHEDULE_ACTOR for r in rows)
+    assert SCHEDULE_ACTOR.startswith("system:briefing-schedule@")

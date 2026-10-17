@@ -14,6 +14,7 @@ being saved, so the next run tries NWS again.
 """
 
 import logging
+import socket
 import threading
 from collections.abc import Callable
 from datetime import UTC, datetime, time
@@ -30,10 +31,12 @@ from app.ingestion.nws import NwsClient
 from app.ingestion.settings import get_ingestion_settings
 from app.outlook import EventOutlookService, get_event_outlook_service
 from app.schemas import Briefing, DataState, HazardType
+from app.services.alerts import audit
 
 logger = logging.getLogger(__name__)
 
 BRIEFING_TIME = time(18)
+SCHEDULE_ACTOR = f"system:briefing-schedule@{socket.gethostname()[:60]}"
 
 # Main time zone per state, used only when the NWS lookup fails.
 STATE_TIMEZONES = {
@@ -62,7 +65,10 @@ PointLookup = Callable[[db.Site], dict]
 class BriefingSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    briefing_schedule_enabled: bool = True
+    # Off by default: every backend shares one database, so exactly one of them (the
+    # deployed server, or one named laptop) turns this on. Otherwise backends race to write
+    # the same briefings, and the first one wins whatever its own feeds could fetch.
+    briefing_schedule_enabled: bool = False
     briefing_check_seconds: float = 60.0
     # The 6 PM run needs forecasts through 19:00 tomorrow: about 25 hours, plus margin.
     briefing_forecast_hours: int = 36
@@ -121,9 +127,11 @@ def run_due_briefings(
             workday, _, _ = next_workday(now, tz)
             if session.get(db.Briefing, briefing_id(site.id, workday)) is not None:
                 continue
-            generated.append(
-                generate_site_briefing(session, site, tz, now, gemini, forecasts, outlooks)
-            )
+            briefing = generate_site_briefing(session, site, tz, now, gemini, forecasts, outlooks)
+            # spec.md section 10: log scheduled briefing generation, and which backend did it.
+            audit(session, SCHEDULE_ACTOR, "briefing.generate", briefing.id, now)
+            session.commit()
+            generated.append(briefing)
         except Exception:
             session.rollback()
             logger.exception("Briefing for %s failed; it will be retried", site.id)
