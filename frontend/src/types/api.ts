@@ -312,6 +312,32 @@ export interface Explanation {
   created_at: string
 }
 
+// ---- active-event outlook (T050) ----
+
+/**
+ * Compact view of Cache's predict_active_event() for a supervisor-confirmed active event.
+ * Advisory only: never a score factor, never clears alerts, not a return-to-work countdown.
+ * ongoing_probability is the chance the recorded event is still ongoing at each horizon.
+ */
+export interface EventOutlook {
+  status: 'ok' | 'unavailable' | 'not_applicable_no_confirmed_event'
+  event_id: string | null
+  event_type: string | null
+  as_of_utc: string | null
+  generated_at_utc: string
+  /** Horizon ("6h", "12h", "24h") -> probability (0–1). */
+  ongoing_probability: Record<string, number>
+  remaining_hours_p10: number | null
+  remaining_hours_median: number | null
+  remaining_hours_p90: number | null
+  trend: string
+  model_version: string
+  is_simulated: boolean
+  production_eligible: false
+  limitations: string[]
+  advisory_notice: 'Advisory only. Does not change the score, clear alerts, or authorize work.'
+}
+
 // ---- sites ----
 
 /**
@@ -344,4 +370,6 @@ export interface SiteDetail extends SiteSummary {
   alerts: Alert[]
   reports: CrewReport[]
   notices: HazardNotice[]
+  /** Advisory outlook for a supervisor-confirmed active event. Null when none. */
+  event_outlook: EventOutlook | null
 }
