@@ -1,3 +1,11 @@
+.map-shell.leaflet-container {
+  background: var(--pc-surface-2);
+  background-image:
+    linear-gradient(var(--pc-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pc-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  font-family: var(--font-sans);
+}
 .map-shell.leaflet-container .leaflet-control-zoom a {
   width: 44px;
   height: 44px;
@@ -5,10 +13,13 @@
 }
 .map-shell a:focus-visible,
 .map-shell button:focus-visible {
-  outline: 2px solid #0f766e;
+  outline: 3px solid var(--pc-focus);
   outline-offset: 2px;
 }
 .map-shell .leaflet-control-attribution {
   max-width: 100%;
   overflow-wrap: anywhere;
+}
+.map-shell .leaflet-popup-content-wrapper {
+  border-radius: 12px;
 }

@@ -1,1 +1,169 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=swap');
+@import 'tailwindcss';
+
+/*
+ * PlanIT Control design tokens.
+ * The crew workspace is dark and phone-first (field use, glare, gloves);
+ * the supervisor workspace is light and dense for desktop review.
+ * Risk colours are shared and always paired with a shape and a word.
+ */
+:root,
+[data-theme='supervisor'] {
+  --pc-bg: #f6f7f8;
+  --pc-surface: #ffffff;
+  --pc-surface-2: #eef1f4;
+  --pc-nav: #ffffff;
+  --pc-line: #dadfe5;
+  --pc-line-strong: #b9c1cb;
+  --pc-ink: #14181d;
+  --pc-ink-2: #2b323b;
+  --pc-muted: #4a5563;
+  --pc-faint: #6b7480;
+  --pc-focus: #2f5bea;
+  --pc-link: #2f5bea;
+  --pc-stop: #c8102e;
+  --pc-stop-text: #a50e26;
+  --pc-warn: #e86a00;
+  --pc-warn-text: #9a4700;
+  --pc-caution: #ffd100;
+  --pc-caution-text: #6b5600;
+  --pc-low: #7b8592;
+  --pc-ok: #1f7a4d;
+  --pc-sim: #4060c8;
+  color-scheme: light;
+}
+
+[data-theme='crew'] {
+  --pc-bg: #1a1e24;
+  --pc-surface: #242a32;
+  --pc-surface-2: #2b323b;
+  --pc-nav: #15191e;
+  --pc-line: #2e353e;
+  --pc-line-strong: #5a6470;
+  --pc-ink: #f2f4f6;
+  --pc-ink-2: #d3d9e0;
+  --pc-muted: #b4bcc6;
+  --pc-faint: #8a949f;
+  --pc-focus: #8fc1ff;
+  --pc-link: #8fc1ff;
+  --pc-stop: #d6152f;
+  --pc-stop-text: #ff7383;
+  --pc-warn: #ff7900;
+  --pc-warn-text: #ffa04d;
+  --pc-caution: #ffd100;
+  --pc-caution-text: #ffd84d;
+  --pc-low: #8a949f;
+  --pc-ok: #4cc38a;
+  --pc-sim: #cfe0ff;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-bg: var(--pc-bg);
+  --color-surface: var(--pc-surface);
+  --color-surface-2: var(--pc-surface-2);
+  --color-nav: var(--pc-nav);
+  --color-line: var(--pc-line);
+  --color-line-strong: var(--pc-line-strong);
+  --color-ink: var(--pc-ink);
+  --color-ink-2: var(--pc-ink-2);
+  --color-muted: var(--pc-muted);
+  --color-faint: var(--pc-faint);
+  --color-focus: var(--pc-focus);
+  --color-link: var(--pc-link);
+  --color-stop: var(--pc-stop);
+  --color-stop-text: var(--pc-stop-text);
+  --color-warn: var(--pc-warn);
+  --color-warn-text: var(--pc-warn-text);
+  --color-caution: var(--pc-caution);
+  --color-caution-text: var(--pc-caution-text);
+  --color-low: var(--pc-low);
+  --color-ok: var(--pc-ok);
+  --color-sim: var(--pc-sim);
+}
+
+/* Uppercase mono label used for section kickers, sources and timestamps. */
+@utility kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pc-muted);
+}
+
+/* Condensed heavy display face for status words (STOP WORK, scores). */
+@utility font-condensed {
+  font-stretch: 70%;
+  font-variation-settings: 'wdth' 70;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    background: var(--pc-bg);
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--pc-bg);
+    color: var(--pc-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--pc-focus);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--pc-stop);
+    color: #fff;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    accent-color: var(--pc-ink);
+  }
+  input[type='file']::file-selector-button {
+    margin-right: 0.75rem;
+    min-height: 2.25rem;
+    border: 1px solid var(--pc-line-strong);
+    border-radius: 0.6rem;
+    background: var(--pc-surface-2);
+    color: var(--pc-ink);
+    padding: 0 0.85rem;
+    font: 600 0.875rem var(--font-sans);
+    cursor: pointer;
+  }
+}
+
+@keyframes pc-shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+.pc-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--pc-surface) 25%,
+    var(--pc-surface-2) 50%,
+    var(--pc-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: pc-shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

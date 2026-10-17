@@ -120,3 +120,18 @@ Limits: the app shell remains a demonstration. Preview workspace selection grant
 Next owner work: **Nick T031**, prerequisites T006/T007 checked. T032 then needs T030 and T031. Rudra's T050 and API integration remain separate; Braydin's Auth0 module requires T066 wiring before the application can claim an authenticated session. Review the main fixture score wording with Rudra before any future scoring display; do not change or approve ML semantics through this shell.
 
 Implementation checkpoint: `9d94f75e78b33c1a73d31ed2d35e02138ecf5785`. Review PR: [#16](https://github.com/BraydinPG/planit-control-swamphacks/pull/16), open against `main`; review requested from verified Nick handle `n1ckbown`. No acceptance by Nick or merge is claimed. Rudra coordinates merge after review.
+
+## 2026-10-17 — Rudra frontend visual redesign (branch `feature/rudra-ui`)
+
+Explicit user authorization: Rudra takes over frontend visual polish. This is a visual-only pass; Codex continues functional integration. Design references were Rudra's supplied crew/supervisor mockups and landing-page brand language (Archivo, JetBrains Mono, ink/bone/signal palette, mono kickers, distinct data-state marks).
+
+| Path | Change |
+|---|---|
+| `frontend/src/index.css`, `frontend/src/styles/map.css` | Theme tokens per workspace (`data-theme` crew = dark, supervisor = light), fonts, focus rings, skeleton, reduced motion. |
+| `frontend/src/components/shell/{AppShell,Icon}.tsx` | Sidebar/header/bottom-nav restyle and new icons. Routing, props, skip link, nav labels and heading focus unchanged. |
+| `frontend/src/components/data/*` | Restyled cards; new `Risk.tsx` (shape + word risk badges, score bar). All safety copy, roles, labels and client calls kept. |
+| `frontend/src/pages/ConnectedPages.tsx` | Markup/classes only: crew home order, two-column site detail, supervisor stat row and ranked table, report category tiles. Same state, handlers, required/disabled rules and strings. |
+
+Not edited: `auth/**`, `api/**`, `application/**`, `demo/**`, `types/**`, fixtures, `App.tsx`, `LiveApplication.tsx`, manifests/lockfiles, backend, ML. No new dependencies.
+
+Verification: `npm run build`, `npm run lint` (clean), the four `node --test` suites (44/44), and `node scripts/check-shell.mjs` at 1440×1000, 390×844 and 320×740 (pass, no browser exceptions, no backend requests). Risk is never color-only: every level has a shape and a word.
