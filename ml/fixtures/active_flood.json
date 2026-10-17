@@ -1,0 +1,31 @@
+{
+  "fixture_status": "SYNTHETIC SHAPE-ONLY EXAMPLE; NOT A REAL EVENT OR SITE REPORT",
+  "site_id": "eia-example-site-01",
+  "event_id": "fixture-flood-001",
+  "event_type": "Flood",
+  "event_status": "historical_replay",
+  "event_start_utc": "2024-09-10T10:00:00Z",
+  "as_of_utc": "2024-09-10T16:00:00Z",
+  "location": {
+    "lat": 28.0,
+    "lon": -82.7,
+    "region": "example county",
+    "spatial_match_quality": "region_only"
+  },
+  "recent_observations": [
+    {
+      "type": "precipitation_6h",
+      "value": 18.0,
+      "unit": "mm",
+      "valid_time_utc": "2024-09-10T16:00:00Z",
+      "acquired_at_utc": "2024-09-10T16:00:00Z",
+      "source": "synthetic_fixture"
+    }
+  ],
+  "evidence": [{
+    "id": "fixture-active-confirmation",
+    "source": "synthetic_fixture_not_real_event_evidence",
+    "available_at_utc": "2024-09-10T16:00:00Z"
+  }],
+  "is_simulated": true
+}

@@ -5,15 +5,15 @@ This file assigns implementation ownership to the four coding agents. Read `spec
 ## Task workflow
 
 Before coding, read `spec.md`, `AGENTS.md`, and `tasks.md`.
-Work on one task ID per run. Check its prerequisites first.
-Implement only that task, run its acceptance checks, and mark it complete only when they pass.
-Follow the file ownership rules in `AGENTS.md`. If a task conflicts with the spec or shared contract, stop and report the conflict.
+Use the backlog to track work, but an explicit task-specific user authorization may revise scope, dependencies, and ownership boundaries. Update affected docs/contracts when scope changes; do not leave known conflicts in place.
+Keep changes focused, preserve teammate work, run acceptance checks, and mark tasks complete only after their checks pass.
+Default ownership is a coordination boundary, not a reason to block explicitly authorized project work. Do not rewrite unrelated teammate features.
 
 ## Project-wide rules
 
 1. Use React + TypeScript with Vite and Tailwind CSS for the frontend, and FastAPI for every backend route. Tiger Data is the application database, Vultr hosts the app and photo object storage, and Auth0 is the only identity provider. Auth0, Tiger Data, and Vultr are sponsors for tracks. Gemini API and scikit-learn complete the stack. Style UI with Tailwind utility classes. Do not add a second CSS framework, database, identity provider, or application host. The existing Vite app does not replace the API. Do not implement routes in Next.js, Express, Flask, or another server. Preserve other repository conventions.
-2. Work only in your assigned paths. Do not edit another owner’s files. Ask the owner for a change or submit a focused integration request.
-3. Do not edit root `package.json`, lockfiles, shared environment templates, or API contracts unless you own them or Rudra approves the change. Braydin owns the Tiger Data migrations. Do not edit them unless you are Braydin or Braydin approves the change.
+2. Respect the ownership map as the default. Explicit project-level authorization can permit focused edits outside an owner's paths; preserve unrelated work and coordinate interface changes.
+3. Avoid root manifests, lockfiles, shared environment templates, migrations, and API contracts by default. Explicit project-level authorization permits focused changes when required; notify the relevant owner and preserve unrelated work. Braydin owns Tiger Data migrations.
 4. Begin with fixtures and stable interfaces. Do not wait for another agent’s implementation to finish before building your independent module.
 5. Do not commit secrets, API keys, tokens, private photos, or real personal data.
 6. Label simulated, stale, mocked, and unavailable data in code and UI.
@@ -60,7 +60,19 @@ predict_site(features) -> {
 }
 ```
 
-Cache returns the model component. Rudra computes the final site score and alert state.
+Primary active-event interface:
+
+```text
+predict_active_event(event_context) -> {
+  status, scope, event_id, event_type, as_of_utc,
+  outcomes: { recorded_event_ongoing_probability,
+              recorded_event_ended_probability,
+              remaining_duration_hours, trend, trend_basis },
+  evidence_quality, model_version, is_simulated
+}
+```
+
+The outcome target is conditional on a verified/confirmed active event or an explicitly labeled historical replay. `recorded_event_end` is not worksite clearance. Trend is `unknown` unless valid time-varying severity labels exist. The compatibility `predict_site` must use explicit active-event persistence keys, return no conditional probabilities when no event is confirmed, and mark its model component excluded until Rudra explicitly approves its semantics. Rudra owns the final site score and deterministic alert state; neither ML nor Gemini may suppress or clear an alert.
 
 ### Ingestion interface
 
@@ -104,6 +116,7 @@ RequireRole
 Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra imports them into protected routes and owns endpoint policy.
 
 ## Ownership and individual instructions
+The `Do not edit` lists below are default coordination boundaries. An explicit project-level user authorization may permit focused changes outside them; preserve unrelated work and notify affected owners of integration changes.
 
 ### Cache: AI/ML
 
@@ -113,14 +126,15 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 
 **Tasks:**
 
-- Build a reproducible baseline model predicting weather-related hazard likelihood for the next 24 hours near each monitored site.
-- Use historical weather/environmental features and event labels such as NOAA Storm Events where available.
-- Document how locations and time windows join to labels. State that weather-event labels are proxies, not worker-injury outcomes.
-- Use a chronological holdout split and compare with a simple baseline.
-- Report precision, recall, PR-AUC where supported, and calibration such as Brier score if feasible.
-- Implement `predict_site(features)` with the shared result schema.
-- Add a transparent fallback when the model artifact or required features are missing.
-- Provide `ml/EVALUATION.md` with data provenance, features, metrics, limitations, and run instructions.
+- Build a reproducible model conditional on a confirmed active event. Do not predict event onset or normal-day hazard occurrence.
+- Prioritize recorded-event persistence/resolution and remaining duration. Estimate worsening/stable/improving only when matched time-varying outcome labels support it.
+- Use trustworthy historical events and as-of environmental features. Treat regional event matching as uncertain and event records as proxies, not worker-injury or worksite-safety outcomes.
+- Compare a training-only conditional survival baseline with any fitted model using episode/storm-grouped chronological holdout backtests.
+- Report Brier/calibration, support counts, duration errors and interval coverage where valid; never invent or overstate metrics.
+- Implement `predict_active_event(event_context)` as the primary callable. Keep `predict_site(features)` only as a compatibility adapter; it must not emit event-onset probabilities or an unapproved safety-score contribution.
+- Add unavailable/fallback behavior when evidence, artifacts, or supported event types are missing.
+- Keep Monte Carlo offline/internal. Production inference returns compact deterministic summaries, never simulation trajectories.
+- Provide `ml/EVALUATION.md`, `ml/METHODOLOGY.md`, `ml/INTEGRATION.md`, and runnable instructions.
 
 **Can start immediately:** Yes. Use mock feature rows until Braydin’s site ingestion is ready.
 
@@ -244,7 +258,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 ## Cross-feature acceptance checklist
 
 - 50+ validated site points appear in both map and ranked list.
-- Site risk includes model output, deterministic factors, confirmed reports, freshness, and explainable contributions.
+- Site risk includes current deterministic factors, confirmed reports, freshness, and explainable contributions. Any conditional active-event outlook stays separate unless Rudra explicitly approves score semantics; it can never reduce risk or clear an alert.
 - Lightning within 10 miles triggers stop-work, and a new strike resets the 30-minute countdown.
 - Each live feed (weather, forecast, flood, lightning, and when built, hurricane and earthquake) shows its source, timestamp, and stale or unavailable state.
 - Crew can report a broken electrical pole, downed line, or on-site fire. These hazards come only from crew reports.

@@ -1,0 +1,2307 @@
+{
+  "status": "RETROSPECTIVE_WEATHER_EXPERIMENT",
+  "production_eligibility": false,
+  "cache_only": true,
+  "test_interpretation": "corrected rerun of previously inspected 2025 data; not a fresh untouched holdout",
+  "training_policy": "episode_grouped_with_boundary_outcomes_purged",
+  "source": "Open-Meteo Historical Weather API ERA5 retrospective reanalysis, joined to NOAA reported Flood points",
+  "weather_is_not_archived_issued_forecast": true,
+  "comparison_population_rule": "At each horizon, compare only the intersection of snapshots with defined weather, age/month logistic, and KM predictions.",
+  "duration_comparison_rule": "duration_on_common_finite_intervals uses identical rows across all three estimators; duration also reports each estimator's identifiable-tail coverage separately",
+  "event_site_interpretation": "NOAA report coordinates identify reported event locations, not monitored EIA site exposure",
+  "feature_names": [
+    "rain_6h_mm",
+    "rain_24h_mm",
+    "temperature_last_c",
+    "temperature_mean_6h_c",
+    "humidity_mean_6h_pct",
+    "wind_mean_6h_m_s",
+    "gust_max_6h_m_s",
+    "rain_6h_change_mm",
+    "wind_6h_change_m_s"
+  ],
+  "weather_source_manifest": [
+    {
+      "event_id": "1001086",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.54790&longitude=-82.05110&start_date=2022-02-17&end_date=2022-02-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "08649fa6acb6bf642d079f26d3359e3344e8c17e15dfcf8e38eb32159f884b2f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1008193",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=47.53620&longitude=-116.42070&start_date=2022-03-01&end_date=2022-03-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a60edc155e56482612f33385dbf40619b7427cabf5ae285c7ace6e28fcfa5b66",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1010637",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=41.31050&longitude=-88.87950&start_date=2022-02-21&end_date=2022-02-23&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "416f2e59b3f99252d1333920f8c1b346125342026456c0453b3166bb149f62cf",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1012772",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=44.45210&longitude=-67.83040&start_date=2022-04-18&end_date=2022-04-20&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "2f0739b69ac3475668252d0ac4429f6a6ab3af2f6f5bab444b74d0aba314607d",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1014802",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=40.02120&longitude=-83.03010&start_date=2022-05-13&end_date=2022-05-15&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "d8662277788327a6d3a58472e04f5c17d5ac86264fd31f32652a3070506ddb76",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1026450",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.25110&longitude=-111.86590&start_date=2022-06-24&end_date=2022-06-26&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "76fd5ba718f4e06d627befff8f916c34cf45a902d45a3c1796a94826f1647291",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1032527",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.15370&longitude=-78.69400&start_date=2022-05-06&end_date=2022-05-08&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "817ef06feba32103c4bc96be5226ff85c97bda88592549e40122df5e568fd68c",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1033146",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.02880&longitude=-97.00020&start_date=2022-05-31&end_date=2022-06-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "245da55f793cb35c72fd37c4aff3c67638cd1f9e2c58443ce660e87c60b19425",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1034104",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.29260&longitude=-91.41920&start_date=2022-05-31&end_date=2022-06-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "0a9bb71bded3313c0273b5d4922e475f9957ac51c32f36a61ad16a85206564e9",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1035500",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.47000&longitude=-94.83550&start_date=2022-06-09&end_date=2022-06-11&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "291e52842f9594b03d76592aeb00681a996d1457659a0bd09793d5427c60a188",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1036256",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=44.20000&longitude=-102.37000&start_date=2022-06-12&end_date=2022-06-14&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a2774c3ae075eef9c2c8fc660aede0b8f82d34d657d97dbe29a29fcbb4ceff2b",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1038810",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.53000&longitude=-98.76000&start_date=2022-06-07&end_date=2022-06-09&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "9995db4419544dc04da30c3142d0dfb783abc3ce727bceca22461b1f7f1f5346",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1042400",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.54000&longitude=-116.27000&start_date=2022-08-09&end_date=2022-08-11&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "22bb2f227be6ff56aaaffab2a5f8951a5f656f6bb7fa88c33cd45a4ed22a66dd",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1044468",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.85170&longitude=-115.65720&start_date=2022-08-05&end_date=2022-08-07&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "caf1576901dc9a5a753563a5273405f8a1c47a7d9791c3483edfa31f81d71420",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1047460",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=34.97800&longitude=-101.92420&start_date=2022-07-12&end_date=2022-07-14&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "0ff503fdbc88e814d9daed9355223846dbf375de868999f75bbfe1f7679e90cc",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1053934",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=45.43170&longitude=-84.99340&start_date=2022-09-02&end_date=2022-09-04&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "b547bd2b74607565ced197d372d8f31a8c73183b592d2641630c273cbb54ac5b",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1056814",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=34.26970&longitude=-85.56750&start_date=2022-09-03&end_date=2022-09-05&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "b25d4ee51d4a35d28ea785d67ec32ec0389aece4f490519249606e16144d6e17",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1060559",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=61.08450&longitude=-146.26800&start_date=2022-09-08&end_date=2022-09-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "8b9a8bb43002b22007fa5dc202da4dedd36db7bb66b9460e141449be764da917",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1062207",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.58000&longitude=-93.83000&start_date=2022-12-09&end_date=2022-12-11&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "fbec6c96c95215ea4a049b435f9c18fbf99261874c62565ca0f72005e7d88610",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1075415",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=21.38390&longitude=-157.97280&start_date=2023-02-20&end_date=2023-02-22&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "63457f104adfacdf7dd0cbfe04d08ae5bb17b58a64d6820b5926b5c197590e4f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1079587",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.50090&longitude=-93.85090&start_date=2023-02-07&end_date=2023-02-09&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "e165e158bd7d9fd8b2439f3622ab412ea451c139cc185636bdc600d0c5cbeeba",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1084588",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.82780&longitude=-119.32440&start_date=2023-04-17&end_date=2023-04-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "2ef78701e66d0ba2d028f5032d3b09d21a40359065fae8e7d3c716bb08316877",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1084602",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.39900&longitude=-89.17000&start_date=2023-03-31&end_date=2023-04-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "75393934738d6d91807f6af8b89c8050202096fd422a8f9d379027e410cfc4ad",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1084845",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.03810&longitude=-72.56420&start_date=2023-04-14&end_date=2023-04-16&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "cecf9889054ce9a64452e76454e2ed2e3aea631aca907dce2af0c705f234223f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1086525",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.07000&longitude=-89.59000&start_date=2023-04-03&end_date=2023-04-05&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "ecd8dc3f699c86d65ad51ad22878c3ef047454a0134dbea6b8132ec5a2bdbae6",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1089406",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.56120&longitude=-107.27870&start_date=2023-05-20&end_date=2023-05-22&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "6b1d0a354b4d34d8ad27fa988ff9f2461dac9fb53330f06757e3297cafde15d3",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1092503",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.26880&longitude=-81.46070&start_date=2023-05-28&end_date=2023-05-30&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "f6b44e39ba8ecdefb33e5f2d172e13a76ace1592c0f31cd54605bd917f7e7823",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1097908",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=44.88810&longitude=-97.14000&start_date=2023-04-08&end_date=2023-04-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "38639e9e61ff1b90fb166e0b3f7705bb726020d9e0af9da662648efbba24febc",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1104127",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=65.17020&longitude=-152.07730&start_date=2023-05-16&end_date=2023-05-18&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "3999c036eca9fb6f8f0eaf3cb6deb808705cc6dc03000825e8eb59b591035f11",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1105246",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=41.17000&longitude=-105.59000&start_date=2023-07-31&end_date=2023-08-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "fed20a6d2809e2171550742fe2639327881d01bd2d0d059c2d239732aefdedf1",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1120484",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=70.08580&longitude=-148.55340&start_date=2023-06-06&end_date=2023-06-08&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "e32d1165bd7dcd256ccd2aef5f8e3137f691ebcaccef4abd265acad393ca6f4f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1129659",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=61.08690&longitude=-146.21320&start_date=2023-08-26&end_date=2023-08-28&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "3bedb95b62e3c145e73106f164556ffb027bc106fd53a09377043c111a700bbb",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1130784",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.41000&longitude=-105.33000&start_date=2023-07-31&end_date=2023-08-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "0495043963f1042446ac03276a08a2fcbf580c4403bfcdcd4a54f41df914c231",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1131274",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=44.23420&longitude=-70.60610&start_date=2023-08-12&end_date=2023-08-14&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "566c6618da58d08923fe224cf2492e8607b2a3d9e6a9afbef03e54e7caecc83e",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1132550",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.11780&longitude=-88.06700&start_date=2023-08-13&end_date=2023-08-15&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "b1d0b4b7f96f788a5841f8d571b2ca2d63b71323df712bc1336d4aeeb0a665e1",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1135304",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.73000&longitude=-93.14000&start_date=2023-08-13&end_date=2023-08-15&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "ccf61a8296d19b3435200b53523a9c33913a9e383b0e2b059be5a86c2faa9e99",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1145429",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.01320&longitude=-66.62350&start_date=2023-10-19&end_date=2023-10-21&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "5dce4a5bdd1215bedf3dee8f1a69ba53cd7f7f2348e8667c44422a15550992e7",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1151796",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.42350&longitude=-77.93640&start_date=2024-01-27&end_date=2024-01-29&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "71690337ed6ee656042de6590f19a73b65af74bd8c46e36df5abe6042f468df7",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1152417",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.23770&longitude=-81.82660&start_date=2023-12-25&end_date=2023-12-27&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "55f6c04f730a4c8c7fe0850562c1d284a5d75c956994bb92e6c182fdaa7eeec5",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1154384",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.65050&longitude=-88.25540&start_date=2024-02-29&end_date=2024-03-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "afa8aa29559d3036055805dc647a2aa5e02d3050c899c767e24a79608c2fbffa",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1156696",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.97000&longitude=-92.73000&start_date=2024-01-23&end_date=2024-01-25&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "81935168b5958fa0adc82746ab3cd7017866c06e1444cf56972c1ca986dbb3dd",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1160545",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=45.44180&longitude=-123.90770&start_date=2023-12-04&end_date=2023-12-06&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "561421dfa4a0569b1793a7b9c3e4c3b3543b30c23e9637dfa2bbd32c56b98659",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1163891",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.38000&longitude=-91.07000&start_date=2024-01-23&end_date=2024-01-25&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "4da0fadb88d1786f7ce91e96f712d6eca7f928b81e933e70e5adb0dbcdd4ec41",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1164476",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=30.63210&longitude=-95.61340&start_date=2024-02-10&end_date=2024-02-12&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "100a0c05dbc4bbe278d5f275c1aa8fc079aa70f704d09f59e71fda4e335f2f53",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1173873",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.13000&longitude=-97.45000&start_date=2024-04-08&end_date=2024-04-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "72c2d46244698f73664e49988aef5baae20afb9bc679f6bf0f188e98221ad47a",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1176008",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.58410&longitude=-111.97340&start_date=2024-03-31&end_date=2024-04-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "611fd95b9f0291dcd0a3be3a0747c37f9d25250a1ae34679e20f8fa081274174",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1181500",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.17000&longitude=-88.39000&start_date=2024-05-13&end_date=2024-05-15&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a9f2482ec09aa2cd30b335452ccf2139efe1a7058c4b626a42a8745fb1a3ab3f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1190928",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=33.16000&longitude=-91.96000&start_date=2024-04-09&end_date=2024-04-11&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "2682d094fb02314b2bef42ce932ba80ea6ba626f9d1d58e723605d3d044abe53",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1194958",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.87490&longitude=-98.21750&start_date=2024-06-19&end_date=2024-06-21&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "40037d17c842c5ba6dbc027cc7a5057bf5cdc3b5f23bf9426cb579655fc84d3a",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1196392",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.35000&longitude=-92.91850&start_date=2024-06-21&end_date=2024-06-23&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "5b03514bcf417988d3bde797fc2af888ae4191e62b2e4a47bbf9675d174d058d",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1199075",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.29100&longitude=-88.94810&start_date=2024-07-15&end_date=2024-07-17&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a2fa30e0f4d932b79f7d942e1814bb50a2acc76ce992b1322b08a8960af34224",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1201444",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.11290&longitude=-89.42870&start_date=2024-07-17&end_date=2024-07-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "cf80e3cd2bc52be67a7a09e53f60eb4eac164154d794ca787b61f1aa9d435aac",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1201840",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.94180&longitude=-97.14030&start_date=2024-07-20&end_date=2024-07-22&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "eb13beb4a3220b7ec0f22b76a633ea8a0a16a02c49f1f72c38cfe8049c34d02d",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1202975",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=40.47870&longitude=-88.37980&start_date=2024-08-15&end_date=2024-08-17&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "bc8bc73493c858f43fefc3394ca0beb86004b35eeb7992f35fe84c85e662aad4",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1204187",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.34770&longitude=-91.18970&start_date=2024-06-30&end_date=2024-07-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a5ecfca44cb11d2c75f16f6efe04bd7ed3c75c6d8bc9347178fed4e3e6cb6dcb",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1205147",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=40.79260&longitude=-91.09240&start_date=2024-07-01&end_date=2024-07-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "e721f09337f896106d33ca26334ee19d33479819fc6976ea14ac10e00e382f82",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1210551",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.26340&longitude=-97.44170&start_date=2024-08-10&end_date=2024-08-12&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "04bdb7696ed76ef4ab1e20c5c55d74f959e88e123030d5687c97324a633efc21",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1214426",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=40.51780&longitude=-111.42680&start_date=2024-08-11&end_date=2024-08-13&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "afad59cc7621404711ba40eb93c0210ea7d52590d4a4b3f8f56240d15806dab2",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1226177",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.99020&longitude=-119.71200&start_date=2025-02-05&end_date=2025-02-07&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "cc81b4307afd934c83edfad84666d1276102c3f75c324f3d952cb75af951cc02",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1226908",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.30110&longitude=-83.17150&start_date=2025-02-05&end_date=2025-02-07&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a87dfa65fb2a2cfebba5a6ceeebe70861c3ca321a2fe236b201fa5c5c4885ce5",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1228402",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.05920&longitude=-93.39600&start_date=2024-12-27&end_date=2024-12-29&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "4f1a52f7129b435833b56da75ff7a8a11b5896daf135256a8ce360602600159b",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1229873",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.86790&longitude=-87.72170&start_date=2025-01-29&end_date=2025-01-31&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "32b50cc408f7e925c28497493837567ad40d7919ceb859844f93d37685a1c04b",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1246632",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=34.68560&longitude=-91.31730&start_date=2024-12-31&end_date=2025-01-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "c2f9423c0f7d5c9294eaa63e94c1d735691ac2d468151b80599b2959f36d825b",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1247407",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=41.09600&longitude=-85.15110&start_date=2025-04-01&end_date=2025-04-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "4a4c56edf0f144551674e02264f1361816a9d0036a5dc95878b60ad013955ff7",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1252157",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.40000&longitude=-80.67000&start_date=2025-05-29&end_date=2025-05-31&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "781b268526b2f98df36e37ad597411dbc51ebd4aba2f5585b6570d1861eeab4c",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1259453",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.97510&longitude=-76.48740&start_date=2025-06-17&end_date=2025-06-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "ff8f9eb0f1d32011cb8077e1e5595c505ecb898540d376383240115535ead2a0",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1268157",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.21000&longitude=-71.75000&start_date=2025-05-30&end_date=2025-06-01&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "d1c420cf6164de6d7cecbfc7b0fd82b352d47765e5102fa6f042b9f129c2524d",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1268203",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.20000&longitude=-82.54000&start_date=2025-07-17&end_date=2025-07-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "cfdb41ea249cab0ce02a0e2e3030f37023d2787dd1375e191d0870412d96c2e0",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1269558",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.66670&longitude=-97.19820&start_date=2025-06-14&end_date=2025-06-16&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "53629fdb4990a23960d0aaa3049615b9a6320b12cc989edf602ead8cc6a2a563",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1270589",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.92800&longitude=-82.51660&start_date=2025-07-17&end_date=2025-07-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "16ac96148e7a75e50aafbff045afe08b48ab573ced4fff77a2320ff5fcabdaa2",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1277566",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.70620&longitude=-81.98760&start_date=2025-06-27&end_date=2025-06-29&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "df937fab47f7b27d4c4dad1a4d9ec48314f3fe6cd11b0a6ec3b9f20de850207e",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1277900",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.66800&longitude=-93.55580&start_date=2025-06-15&end_date=2025-06-17&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "d631554d3a3e308e272fdb3dbc91b3777df50b1a5136eadabb115497dd11a9e7",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1284114",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.74000&longitude=-123.75000&start_date=2025-03-15&end_date=2025-03-17&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "4ce66c4fc118ec1caace1c904256f530cc14a2e6a84e506a2a5f885f6e8edd59",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1284124",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.19000&longitude=-123.40000&start_date=2025-03-15&end_date=2025-03-17&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "4852ebecc13131e5b4f25b755c1c12f0cc1173bf94127a00dd64932dd117152d",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1288678",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=34.49000&longitude=-85.74000&start_date=2025-08-19&end_date=2025-08-21&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "62c3f0688f8cbd6b066f9a6039aec6e61362be3691c5f9380b5a017df8a9e744",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1290203",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=44.80000&longitude=-97.03000&start_date=2025-07-31&end_date=2025-08-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "57ac96562f8519bddf2030657e29934f14ea96bdb8adc130f81de524785c30aa",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1294112",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=32.72280&longitude=-113.75990&start_date=2025-09-18&end_date=2025-09-20&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "e11de2a4eb9df808382a23a590e41684e14e8a9ef51e5eb3dda061daa7f1eb00",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1298370",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=37.47030&longitude=-107.55580&start_date=2025-10-10&end_date=2025-10-12&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "dd4673c9a530c1bf3d6f4733b9d46ec57673bfa6aed7a01f2a10697b1c2adc96",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "1302082",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=35.10920&longitude=-118.49500&start_date=2025-11-14&end_date=2025-11-16&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "9a0c3995a5d66108daad54ed62e15368e1c7c3979ef8029f1d0714431494f312",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "932196",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.16000&longitude=-124.41000&start_date=2021-02-03&end_date=2021-02-05&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "8b402201c1e0cd44895dad3fc3c46a32b5df54a91d6b104f58ab1c73280538fe",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "936137",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.00020&longitude=-82.40600&start_date=2021-02-01&end_date=2021-02-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "c5a9888b79c025ab0f6941597eacbc8239c16e9f01894eacaebf4025aeed8792",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "941594",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.39110&longitude=-81.89520&start_date=2021-02-27&end_date=2021-03-01&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "86603cacbd2d9c178ca9984e7a3628093f3fcfd91227d0e700ebe43212da4ced",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "941844",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.20700&longitude=-82.72980&start_date=2021-02-27&end_date=2021-03-01&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "23c350fb662b1f04f572a62f08ff4d95a64f9e653e0ca6f53ac1971d53f684bd",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "946665",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.80970&longitude=-83.51580&start_date=2021-04-28&end_date=2021-04-30&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "6c0334d44cf2ec23cdb00722d1ffd453b90ba9ed6c73ef71e7ede94ac86b3f01",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "956007",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.47820&longitude=-66.82630&start_date=2021-04-06&end_date=2021-04-08&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "b9ae2261be302f006b13ff32c7b62d71649a29ca7fbb65b2f69eebcbae6fe565",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "956015",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.97000&longitude=-76.56000&start_date=2021-04-09&end_date=2021-04-11&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a6f332cbd9682ea8011ef72cab18440e2ff4d57cfd226f4a9f7c1921ee38664f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "968111",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.63480&longitude=-81.07760&start_date=2021-06-08&end_date=2021-06-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "1cf0faac0766ce7412554af39ab08a527bfec8e9c74db5f7e2c493f494f52c70",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "968173",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=44.09960&longitude=-121.30940&start_date=2021-06-23&end_date=2021-06-25&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "fefb1ffa98ad0211543a67789cecb89c90b489abf7632545c2c40db424fdb4a9",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "968856",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=18.30300&longitude=-66.06420&start_date=2021-06-24&end_date=2021-06-26&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "118216a983fff25b6d58991e7f903c7abff62e6333888d4fe3bd4ca1064458d3",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "968918",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=40.89050&longitude=-73.81100&start_date=2021-06-07&end_date=2021-06-09&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "03160376941d006819acb527f3a5a057b504b350d710fbc402c0c2711931f3f4",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "969533",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.29820&longitude=-71.40850&start_date=2021-07-08&end_date=2021-07-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "e9f078aa10089f1dc0c16e2cb080ed023a159bd53818cf08ccce6285b3a604b6",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "972724",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.64160&longitude=-76.55390&start_date=2021-07-25&end_date=2021-07-27&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "b9af51fdc309399479c8af421bbaeb5f44d2089ef63c72675c4577d087bce8f8",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "974881",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.22410&longitude=-79.95920&start_date=2021-08-31&end_date=2021-09-02&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "0e8b1d704dd3090515c0a42547fbb38276df29e811803b67a75d312da64f182b",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "981384",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=43.20950&longitude=-91.95700&start_date=2021-08-27&end_date=2021-08-29&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a234c8f1a7cddf76154dd160c40d7e2f557e3281772b12e64bde427cdb2c521c",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "985350",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.39000&longitude=-73.78000&start_date=2021-09-08&end_date=2021-09-10&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "e89fd99654b3f8596bf3fac9d7b4ddfe208cdc63f9e005db9998447ce81abda0",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "986715",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.34250&longitude=-111.03120&start_date=2021-09-01&end_date=2021-09-03&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "29779eb8f623c8cf15c9357854d7de954526b8b56e2b603109bbce3490be3007",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "988926",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=34.62400&longitude=-82.64200&start_date=2021-10-06&end_date=2021-10-08&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "fa3463c364116d2609b9508cb93333f2989e5896e1aac886b56ee5d8a4a1a7e3",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "996342",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=38.50900&longitude=-87.51910&start_date=2021-12-20&end_date=2021-12-22&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "a4b5e428fed74f32410610e750b219a5edf7b7f7801de8c7843573821fa105c9",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "996354",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=36.56020&longitude=-89.01730&start_date=2021-12-17&end_date=2021-12-19&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "1cefc71ddc0f5a34070836a56ce709cdd06d43e92074afb7efec4ecde7df345c",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    },
+    {
+      "event_id": "997274",
+      "source": "Open-Meteo Historical Weather API",
+      "data_state": "retrospective_reanalysis",
+      "spatial_match_quality": "reported_event_point_regional_proxy",
+      "as_of_interpretation": "retrospective_reanalysis",
+      "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=39.40120&longitude=-80.52210&start_date=2022-02-02&end_date=2022-02-04&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Cwind_speed_10m%2Cwind_gusts_10m&timezone=UTC&wind_speed_unit=ms",
+      "response_sha256": "080bb1ac16444c8440487deabea643ae0f23be85ff1fc9b4d9ae4e06eba08e4f",
+      "retrieved_at_utc": null,
+      "original_acquisition_time_known": false
+    }
+  ],
+  "source_row_counts": {
+    "rows_total": 349030,
+    "unsupported_type": 337459,
+    "malformed": 1249,
+    "duplicates": 0,
+    "complete_end": 10322,
+    "right_censored": 0
+  },
+  "sampling": {
+    "strategy": "deterministic SHA-256 episode sample, at most one reported event per episode per year",
+    "per_year_cap": 20,
+    "seed": 42,
+    "events_by_year": {
+      "2021": 20,
+      "2022": 20,
+      "2023": 20,
+      "2024": 20,
+      "2025": 20
+    },
+    "episodes_by_split": {
+      "train": 60,
+      "validation": 20,
+      "test": 20
+    },
+    "retrieval": {
+      "selected_event_count": 100,
+      "status_counts": {
+        "retrieved_or_cached": 100
+      },
+      "failures": []
+    },
+    "asof_snapshot_coverage": {
+      "train": {
+        "snapshots_with_weather_response": 97,
+        "snapshots_with_asof_observations": 97
+      },
+      "validation": {
+        "snapshots_with_weather_response": 34,
+        "snapshots_with_asof_observations": 34
+      },
+      "test": {
+        "snapshots_with_weather_response": 30,
+        "snapshots_with_asof_observations": 30
+      }
+    }
+  },
+  "models": {
+    "weather_model": {
+      "version": "noaa-flood-era5-retrospective-research-v2",
+      "training_snapshot_count": 97,
+      "training_episode_count": 60,
+      "training_risk_row_count": 3537,
+      "weather_feature_missing_fraction": {
+        "rain_6h_mm": 0.0,
+        "rain_24h_mm": 0.0,
+        "temperature_last_c": 0.0,
+        "temperature_mean_6h_c": 0.0,
+        "humidity_mean_6h_pct": 0.0,
+        "wind_mean_6h_m_s": 0.0,
+        "gust_max_6h_m_s": 0.0,
+        "rain_6h_change_mm": 0.0,
+        "wind_6h_change_m_s": 0.0
+      },
+      "imputation": "median fitted on sampled training risk rows only; missingness indicators retained"
+    },
+    "baseline_model_version": "noaa-flood-pooled-logistic-v2"
+  },
+  "validation_2024": {
+    "weather_model": {
+      "6h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.2284512998811099,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.07486493338109174,
+            "observed_frequency": 0.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.15728046360483883,
+            "observed_frequency": 0.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.2523457206310293,
+            "observed_frequency": 0.3333333333333333,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3490383354386002,
+            "observed_frequency": 0.5,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.43828970197972106,
+            "observed_frequency": 0.75,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.564085835356581,
+            "observed_frequency": 0.6,
+            "count": 5
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6186972287554191,
+            "observed_frequency": 1.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7325099861844229,
+            "observed_frequency": 0.5,
+            "count": 4
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.16459691546906785,
+          "upper_95": 0.2823268592365839
+        }
+      },
+      "12h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.2647253854502915,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.06324783427102433,
+            "observed_frequency": 0.25,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.1504688391493408,
+            "observed_frequency": 0.16666666666666666,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.25210149312838587,
+            "observed_frequency": 0.6666666666666666,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3491433921545141,
+            "observed_frequency": 1.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4423210490873224,
+            "observed_frequency": 0.3333333333333333,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5777060480594693,
+            "observed_frequency": 0.6666666666666666,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6178567359110478,
+            "observed_frequency": 0.0,
+            "count": 1
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.15675004634042122,
+          "upper_95": 0.3568119966580759
+        }
+      },
+      "24h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.2721630320775537,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.051316989713432834,
+            "observed_frequency": 0.1,
+            "count": 10
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.14802265664658631,
+            "observed_frequency": 0.7142857142857143,
+            "count": 7
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.2603447838939215,
+            "observed_frequency": 0.75,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.34718753384734286,
+            "observed_frequency": 0.0,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4412629525322351,
+            "observed_frequency": 0.3333333333333333,
+            "count": 3
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.13262333469962784,
+          "upper_95": 0.4117479811748117
+        }
+      },
+      "duration": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 66.12380952380953,
+        "median_prediction_count": 28,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 12.777333333333333,
+          "upper_95": 135.54038461538462
+        },
+        "p10_p90_interval_coverage": 0.6296296296296297,
+        "interval_prediction_count": 27,
+        "unidentifiable_interval_count": 1,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.43333333333333335,
+          "upper_95": 0.84
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "duration_on_common_finite_intervals": {
+        "snapshot_count": 20,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 48.0075,
+        "median_prediction_count": 20,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 8.874166666666666,
+          "upper_95": 101.42916666666666
+        },
+        "p10_p90_interval_coverage": 0.7,
+        "interval_prediction_count": 20,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.5,
+          "upper_95": 0.9
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "age_month_logistic": {
+      "6h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.24241543636422547,
+        "reliability": [
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3426513304162328,
+            "observed_frequency": 0.375,
+            "count": 8
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.45928553872770217,
+            "observed_frequency": 0.45454545454545453,
+            "count": 11
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5084941112567724,
+            "observed_frequency": 0.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6714933453647577,
+            "observed_frequency": 1.0,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7262355160047005,
+            "observed_frequency": 0.6,
+            "count": 5
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.20131934485509087,
+          "upper_95": 0.28632068497958435
+        }
+      },
+      "12h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.24077297837496212,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.24412388073154812,
+            "observed_frequency": 0.5454545454545454,
+            "count": 11
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.36606068727329855,
+            "observed_frequency": 0.0,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5395750598486061,
+            "observed_frequency": 1.0,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6175935847569336,
+            "observed_frequency": 0.0,
+            "count": 2
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.17198104200022313,
+          "upper_95": 0.2954074005653116
+        }
+      },
+      "24h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.24403579129094138,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.14906251895959177,
+            "observed_frequency": 0.5,
+            "count": 10
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.2581933485111018,
+            "observed_frequency": 0.0,
+            "count": 10
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.35305829524551785,
+            "observed_frequency": 1.0,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.43463620944979986,
+            "observed_frequency": 0.4,
+            "count": 5
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.14089580101340446,
+          "upper_95": 0.3455157910005123
+        }
+      },
+      "duration": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 66.02857142857142,
+        "median_prediction_count": 28,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 12.561904761904762,
+          "upper_95": 135.34166666666667
+        },
+        "p10_p90_interval_coverage": 0.6956521739130435,
+        "interval_prediction_count": 23,
+        "unidentifiable_interval_count": 5,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.48148148148148145,
+          "upper_95": 0.9047619047619048
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "duration_on_common_finite_intervals": {
+        "snapshot_count": 20,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 48.524166666666666,
+        "median_prediction_count": 20,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 9.735,
+          "upper_95": 101.8875
+        },
+        "p10_p90_interval_coverage": 0.75,
+        "interval_prediction_count": 20,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.55,
+          "upper_95": 0.9
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "conditional_km": {
+      "6h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.2309032466168572,
+        "reliability": [
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3833333333333332,
+            "observed_frequency": 0.4,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.608695652173913,
+            "observed_frequency": 0.75,
+            "count": 8
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.19484604074774203,
+          "upper_95": 0.2639338505566058
+        }
+      },
+      "12h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.22784379032016086,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.23333333333333323,
+            "observed_frequency": 0.3,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4782608695652174,
+            "observed_frequency": 0.75,
+            "count": 8
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.13544717496324302,
+          "upper_95": 0.30235718980154624
+        }
+      },
+      "24h": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "brier_score": 0.21440536201878357,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.18333333333333326,
+            "observed_frequency": 0.25,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.43478260869565216,
+            "observed_frequency": 0.625,
+            "count": 8
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.12029853063386389,
+          "upper_95": 0.31050097905698865
+        }
+      },
+      "duration": {
+        "snapshot_count": 28,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 65.52857142857142,
+        "median_prediction_count": 28,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 11.989880952380952,
+          "upper_95": 134.91858974358973
+        },
+        "p10_p90_interval_coverage": 0.8,
+        "interval_prediction_count": 20,
+        "unidentifiable_interval_count": 8,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.6,
+          "upper_95": 0.95
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "duration_on_common_finite_intervals": {
+        "snapshot_count": 20,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 48.19916666666667,
+        "median_prediction_count": 20,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 8.97,
+          "upper_95": 102.1225
+        },
+        "p10_p90_interval_coverage": 0.8,
+        "interval_prediction_count": 20,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.6,
+          "upper_95": 0.95
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    }
+  },
+  "validation_selection_mean_brier": {
+    "weather_model": 0.2551132391363184,
+    "age_month_logistic": 0.24240806867670964,
+    "conditional_km": 0.22438413298526724
+  },
+  "selected_for_research_test_comparison": "conditional_km",
+  "out_of_time_test_2025": {
+    "weather_model": {
+      "6h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.14375777897784994,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.06840549503585894,
+            "observed_frequency": 0.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.14558487211541474,
+            "observed_frequency": 0.0,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.26721820571636945,
+            "observed_frequency": 0.0,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3427339192441057,
+            "observed_frequency": 0.16666666666666666,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4419244939185368,
+            "observed_frequency": 0.6666666666666666,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.571798434475129,
+            "observed_frequency": 0.6666666666666666,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6191370602692093,
+            "observed_frequency": 0.5,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.751489392897636,
+            "observed_frequency": 1.0,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8160019224208361,
+            "observed_frequency": 1.0,
+            "count": 1
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.09362450391179185,
+          "upper_95": 0.19195278396571286
+        }
+      },
+      "12h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.12552782627751483,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.04935163677953458,
+            "observed_frequency": 0.0,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.16348379580047998,
+            "observed_frequency": 0.0,
+            "count": 7
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.24101079931113534,
+            "observed_frequency": 0.25,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.35604450339271687,
+            "observed_frequency": 0.25,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4536713860730694,
+            "observed_frequency": 0.5,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5486743266367993,
+            "observed_frequency": 1.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6623268072529322,
+            "observed_frequency": 1.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7067797901778643,
+            "observed_frequency": 0.0,
+            "count": 1
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.06256857496418544,
+          "upper_95": 0.19480309830447026
+        }
+      },
+      "24h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.14138579756923425,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.048871420734195634,
+            "observed_frequency": 0.0,
+            "count": 10
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.14173486795482582,
+            "observed_frequency": 0.16666666666666666,
+            "count": 6
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.22018018791551697,
+            "observed_frequency": 0.3333333333333333,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.33555932590261,
+            "observed_frequency": 0.5,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.40901078814024233,
+            "observed_frequency": 1.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5517237579303376,
+            "observed_frequency": 0.3333333333333333,
+            "count": 3
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.04274626520793441,
+          "upper_95": 0.25594592216168044
+        }
+      },
+      "duration": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 44.66858974358975,
+        "median_prediction_count": 26,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 4.205072463768116,
+          "upper_95": 104.63846153846154
+        },
+        "p10_p90_interval_coverage": 0.7619047619047619,
+        "interval_prediction_count": 21,
+        "unidentifiable_interval_count": 5,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 0.5454545454545454,
+          "upper_95": 0.95
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "duration_on_common_finite_intervals": {
+        "snapshot_count": 17,
+        "episode_count": 17,
+        "median_remaining_time_mae_hours": 10.037254901960784,
+        "median_prediction_count": 17,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 1.3254901960784313,
+          "upper_95": 23.52058823529412
+        },
+        "p10_p90_interval_coverage": 0.8235294117647058,
+        "interval_prediction_count": 17,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 0.6470588235294118,
+          "upper_95": 0.9411764705882353
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "age_month_logistic": {
+      "6h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.21185674177244002,
+        "reliability": [
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.33716921269051825,
+            "observed_frequency": 0.14285714285714285,
+            "count": 7
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4496222692795595,
+            "observed_frequency": 0.2727272727272727,
+            "count": 11
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5084941112567724,
+            "observed_frequency": 1.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6496832249075456,
+            "observed_frequency": 1.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7558412434168765,
+            "observed_frequency": 0.6,
+            "count": 5
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.159218288739901,
+          "upper_95": 0.26085944884988305
+        }
+      },
+      "12h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.1877886294443551,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.19840113613726815,
+            "observed_frequency": 0.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.24977345023730338,
+            "observed_frequency": 0.1,
+            "count": 10
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.36743489633953375,
+            "observed_frequency": 0.3333333333333333,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.48606950212576544,
+            "observed_frequency": 1.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5612865127081444,
+            "observed_frequency": 0.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6434506688393331,
+            "observed_frequency": 0.5,
+            "count": 4
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.11808968343549492,
+          "upper_95": 0.24689146085041522
+        }
+      },
+      "24h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.16295039475309486,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.15476715271450223,
+            "observed_frequency": 0.09090909090909091,
+            "count": 11
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.26589861542510074,
+            "observed_frequency": 0.2222222222222222,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3235756489876946,
+            "observed_frequency": 1.0,
+            "count": 1
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4384149083938992,
+            "observed_frequency": 0.5,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5130633558199276,
+            "observed_frequency": 0.3333333333333333,
+            "count": 3
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.07259240544427702,
+          "upper_95": 0.26293757920406713
+        }
+      },
+      "duration": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 44.93653846153846,
+        "median_prediction_count": 26,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 4.333333333333333,
+          "upper_95": 106.84345238095239
+        },
+        "p10_p90_interval_coverage": 0.7619047619047619,
+        "interval_prediction_count": 21,
+        "unidentifiable_interval_count": 5,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.5454545454545454,
+          "upper_95": 0.95
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "duration_on_common_finite_intervals": {
+        "snapshot_count": 17,
+        "episode_count": 17,
+        "median_remaining_time_mae_hours": 10.762745098039217,
+        "median_prediction_count": 17,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 1.9137254901960783,
+          "upper_95": 24.66470588235294
+        },
+        "p10_p90_interval_coverage": 0.8235294117647058,
+        "interval_prediction_count": 17,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 0.6470588235294118,
+          "upper_95": 0.9411764705882353
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "conditional_km": {
+      "6h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.21893792512885138,
+        "reliability": [
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3833333333333332,
+            "observed_frequency": 0.3,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.608695652173913,
+            "observed_frequency": 0.6666666666666666,
+            "count": 6
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.16871789730957967,
+          "upper_95": 0.25875576704401426
+        }
+      },
+      "12h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.18173299080671482,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.23333333333333323,
+            "observed_frequency": 0.2,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.47826086956521746,
+            "observed_frequency": 0.5,
+            "count": 6
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.09650760917301557,
+          "upper_95": 0.2646560777582224
+        }
+      },
+      "24h": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "brier_score": 0.15760546426898034,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.18333333333333326,
+            "observed_frequency": 0.15,
+            "count": 20
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.43478260869565216,
+            "observed_frequency": 0.5,
+            "count": 6
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.05951524539662534,
+          "upper_95": 0.26122561673814804
+        }
+      },
+      "duration": {
+        "snapshot_count": 26,
+        "episode_count": 20,
+        "median_remaining_time_mae_hours": 44.55833333333333,
+        "median_prediction_count": 26,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 3.139130434782609,
+          "upper_95": 108.25384615384615
+        },
+        "p10_p90_interval_coverage": 0.8,
+        "interval_prediction_count": 20,
+        "unidentifiable_interval_count": 6,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 20,
+          "replicates": 500,
+          "lower_95": 0.6,
+          "upper_95": 0.95
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      },
+      "duration_on_common_finite_intervals": {
+        "snapshot_count": 17,
+        "episode_count": 17,
+        "median_remaining_time_mae_hours": 10.507843137254902,
+        "median_prediction_count": 17,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 1.4607843137254901,
+          "upper_95": 24.412745098039213
+        },
+        "p10_p90_interval_coverage": 0.8235294117647058,
+        "interval_prediction_count": 17,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 17,
+          "replicates": 500,
+          "lower_95": 0.6470588235294118,
+          "upper_95": 0.9411764705882353
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    }
+  },
+  "limitations": [
+    "ERA5 reanalysis is retrospective context and is not an archived forecast issued at the prediction time.",
+    "Weather values are at NOAA reported event coordinates and do not verify site-level exposure.",
+    "Only sampled episodes with weather responses are scored; sample counts and episode counts are included for each horizon.",
+    "No downloaded weather feature is approved for production inference or a worker-facing API.",
+    "If weather features fail to beat both references on validation by the existing 2% margin, prefer the better simple reference."
+  ]
+}

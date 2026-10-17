@@ -1,0 +1,168 @@
+{
+  "status": "BOUNDED_WORKER_BENCHMARK_NOT_FULL_BACKTEST",
+  "machine": {
+    "logical_cpu_count": 24,
+    "process_cpu_count": 24,
+    "physical_cpu_count": 12,
+    "available_memory_mb_at_start": 7133.54296875
+  },
+  "active_full_backtest_processes_at_benchmark_start": [],
+  "benchmark_interference_note": "Bounded hardware observations, not full-backtest speedup. A short --fast backtest and clean-environment dependency installation ran concurrently; timings are not uncontended.",
+  "data": {
+    "archives": [
+      "StormEvents_details-ftp_v1.0_d2021_c20260323.csv.gz",
+      "StormEvents_details-ftp_v1.0_d2022_c20260625.csv.gz",
+      "StormEvents_details-ftp_v1.0_d2023_c20260323.csv.gz",
+      "StormEvents_details-ftp_v1.0_d2024_c20260728.csv.gz",
+      "StormEvents_details-ftp_v1.0_d2025_c20260819.csv.gz"
+    ],
+    "source_rows": 349030,
+    "sampled_events_by_year": {
+      "2021": 20,
+      "2022": 20,
+      "2023": 20,
+      "2024": 20,
+      "2025": 20
+    },
+    "episode_groups_by_split": {
+      "train": 60,
+      "validation": 20,
+      "test": 20
+    },
+    "snapshot_count": 161
+  },
+  "stage_timings_seconds": {
+    "noaa_parse_and_normalization": 3.055935700016562,
+    "grouping_and_snapshot_generation": 0.016947700001765043,
+    "artifact_load": 0.007150799996452406,
+    "survival_prediction_only": 0.022365199984051287,
+    "quantile_extraction_only": 0.0017936000076588243,
+    "smoke_model_fit_once": 0.004889900010311976,
+    "cached_weather_feature_attachment": {
+      "cached_events_processed": 100,
+      "nonmissing_weather_features_extracted": 900,
+      "elapsed_seconds": 0.04003739997278899,
+      "network_requests": 0
+    },
+    "monte_carlo_500_trials": 0.009120000002440065,
+    "full_historical_backtest": "NOT_RUN",
+    "external_weather_fetch": "NOT_RUN; cache-only feature timing",
+    "bootstrap": {
+      "replicates": 200,
+      "snapshot_count": 137,
+      "episode_count": 100,
+      "elapsed_seconds": 0.003216300014173612,
+      "interval": {
+        "episode_count": 100,
+        "replicates": 200,
+        "lower_95": 0.2132450824974405,
+        "upper_95": 0.26123032341832414
+      }
+    },
+    "benchmark_total_before_report_write": 35.50942459999351,
+    "serialization": 0.0004270999925211072
+  },
+  "monte_carlo_smoke_summary": {
+    "trials": 500,
+    "seed": 42,
+    "analytical_ongoing_probability": {
+      "6h": 0.40398031141021695,
+      "12h": 0.2859368670931512,
+      "24h": 0.18970982255419844
+    },
+    "simulated_ongoing_proportion": {
+      "6h": 0.404,
+      "12h": 0.288,
+      "24h": 0.212
+    },
+    "absolute_probability_error": {
+      "6h": 1.9688589783073418e-05,
+      "12h": 0.002063132906848786,
+      "24h": 0.022290177445801557
+    },
+    "remaining_duration_hours": {
+      "p10": 1.0,
+      "median": 4.0,
+      "p90": 49.0,
+      "unresolved_beyond_simulation_horizon_count": 22,
+      "unresolved_beyond_simulation_horizon_probability": 0.044
+    },
+    "raw_trajectories_included": false,
+    "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+    "model_version": "noaa-flood-pooled-logistic-v2",
+    "scope": "offline_internal_only"
+  },
+  "curve_reuse_comparison": {
+    "reference_revision": "9281c1f",
+    "snapshot_count": 24,
+    "repeats": 5,
+    "elapsed_seconds_by_repeat": {
+      "legacy": [
+        0.01725179998902604,
+        0.017212700011441484,
+        0.01747679998516105,
+        0.017493999999715015,
+        0.017439199989894405
+      ],
+      "reused_curve": [
+        0.005827400018461049,
+        0.00528929999563843,
+        0.005729800002882257,
+        0.005310599983204156,
+        0.0054502999992109835
+      ]
+    },
+    "legacy_median_seconds": 0.017439199989894405,
+    "reused_curve_median_seconds": 0.0054502999992109835,
+    "measured_prediction_speedup": 3.1996770806045545,
+    "predictions_match_tolerance_1e_12": true,
+    "full_backtest_speedup_measured": false
+  },
+  "worker_benchmarks": [
+    {
+      "workers": 1,
+      "elapsed_seconds": 0.16166530002374202,
+      "snapshots_per_second": 995.8847073327157,
+      "process_tree_peak_rss_mb": 137.60546875,
+      "speedup_vs_1_worker": 1.0,
+      "metrics_match_serial": true
+    },
+    {
+      "workers": 4,
+      "elapsed_seconds": 7.400548500008881,
+      "snapshots_per_second": 21.755144230161697,
+      "process_tree_peak_rss_mb": 623.015625,
+      "speedup_vs_1_worker": 0.0218450429753346,
+      "metrics_match_serial": true
+    },
+    {
+      "workers": 8,
+      "elapsed_seconds": 11.317781799996737,
+      "snapshots_per_second": 14.225402366393599,
+      "process_tree_peak_rss_mb": 987.6640625,
+      "speedup_vs_1_worker": 0.014284185972183049,
+      "metrics_match_serial": true
+    },
+    {
+      "workers": 12,
+      "elapsed_seconds": 13.16967289999593,
+      "snapshots_per_second": 12.22505685771814,
+      "process_tree_peak_rss_mb": 1108.6640625,
+      "speedup_vs_1_worker": 0.01227557443919446,
+      "metrics_match_serial": true
+    }
+  ],
+  "cprofile_top_calls": "         820848 function calls in 0.138 seconds\n\n   Ordered by: cumulative time\n   List reduced from 182 to 15 due to restriction <15>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n        1    0.000    0.000    0.143    0.143 backtest.py:106(score_snapshots)\n       10    0.014    0.001    0.124    0.012 evaluate.py:45(episode_bootstrap_mean)\n    93500    0.028    0.000    0.082    0.000 random.py:347(choice)\n        6    0.000    0.000    0.076    0.013 evaluate.py:112(binary_metrics)\n        6    0.000    0.000    0.075    0.013 evaluate.py:75(episode_bootstrap_brier)\n        2    0.000    0.000    0.049    0.024 evaluate.py:86(duration_metrics)\n    93500    0.028    0.000    0.045    0.000 random.py:245(_randbelow_with_getrandbits)\n    10261    0.017    0.000    0.027    0.000 {built-in method builtins.sum}\n        1    0.000    0.000    0.018    0.018 backtest.py:123(rows_serial)\n       24    0.000    0.000    0.018    0.001 backtest.py:45(_score_snapshot)\n       24    0.004    0.000    0.012    0.001 train.py:261(conditional_logistic_survival_curve)\n   160222    0.011    0.000    0.011    0.000 {method 'getrandbits' of '_random.Random' objects}\n   187675    0.010    0.000    0.010    0.000 {built-in method builtins.len}\n    93500    0.006    0.000    0.006    0.000 {method 'bit_length' of 'int' objects}\n    98500    0.005    0.000    0.005    0.000 evaluate.py:65(<genexpr>)\n\n\n",
+  "reproducibility": {
+    "seed": 42,
+    "episode_sampling_cap_per_year": 20
+  },
+  "production_eligibility": false,
+  "other_active_backtest_processes_at_benchmark_start": [
+    {
+      "pid": 20380,
+      "name": "python.exe",
+      "scope": "smoke"
+    }
+  ]
+}

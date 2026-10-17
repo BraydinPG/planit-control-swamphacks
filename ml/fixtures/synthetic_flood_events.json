@@ -1,0 +1,16 @@
+{
+  "fixture_status": "SYNTHETIC TEST DATA; NOT NOAADATA OR VALIDATION EVIDENCE",
+  "event_type": "Flood",
+  "events": [
+    {"event_id": "syn-01", "episode_id": "syn-ep-01", "start_utc": "2024-01-01T00:00:00Z", "duration_hours": 2},
+    {"event_id": "syn-02", "episode_id": "syn-ep-02", "start_utc": "2024-02-01T00:00:00Z", "duration_hours": 4},
+    {"event_id": "syn-03", "episode_id": "syn-ep-03", "start_utc": "2024-03-01T00:00:00Z", "duration_hours": 8},
+    {"event_id": "syn-04", "episode_id": "syn-ep-04", "start_utc": "2024-04-01T00:00:00Z", "duration_hours": 12},
+    {"event_id": "syn-05", "episode_id": "syn-ep-05", "start_utc": "2024-05-01T00:00:00Z", "duration_hours": 20},
+    {"event_id": "syn-06", "episode_id": "syn-ep-06", "start_utc": "2024-06-01T00:00:00Z", "duration_hours": 30},
+    {"event_id": "syn-07", "episode_id": "syn-ep-07", "start_utc": "2024-07-01T00:00:00Z", "duration_hours": 36},
+    {"event_id": "syn-08", "episode_id": "syn-ep-08", "start_utc": "2024-08-01T00:00:00Z", "duration_hours": 48},
+    {"event_id": "syn-09", "episode_id": "syn-ep-09", "start_utc": "2024-09-01T00:00:00Z", "duration_hours": 72},
+    {"event_id": "syn-10", "episode_id": "syn-ep-10", "start_utc": "2024-10-01T00:00:00Z", "duration_hours": 96}
+  ]
+}

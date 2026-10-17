@@ -1,0 +1,5 @@
+joblib>=1.4,<2
+numpy>=2.0,<3
+scikit-learn>=1.5,<2
+pytest>=8,<10
+psutil>=6.1,<8

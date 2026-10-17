@@ -99,10 +99,19 @@ export interface Observation {
 // ---- scores ----
 
 export interface ModelDataQuality {
-  completeness: number
+  completeness: number | null
   missing_features: string[]
   is_fallback: boolean
   notes: string[]
+  status: 'not_approved_for_score'
+  prediction_scope: 'conditional_on_confirmed_active_event'
+  event_type: string | null
+  event_status: string | null
+  as_of_utc: string | null
+  include_model_component_in_site_score: false
+  confidence_status: 'not_calibrated'
+  outlook_status: 'ok' | 'unavailable' | 'not_applicable_no_confirmed_event'
+  evidence_quality: string | null
 }
 
 export interface HazardScore {

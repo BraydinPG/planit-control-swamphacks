@@ -1,0 +1,34 @@
+{
+  "trials": 5000,
+  "seed": 42,
+  "analytical_ongoing_probability": {
+    "6h": 0.6199216839402608,
+    "12h": 0.44716834270464595,
+    "24h": 0.2811015423152757
+  },
+  "simulated_ongoing_proportion": {
+    "6h": 0.623,
+    "12h": 0.4512,
+    "24h": 0.282
+  },
+  "absolute_probability_error": {
+    "6h": 0.0030783160597391834,
+    "12h": 0.004031657295354041,
+    "24h": 0.0008984576847242964
+  },
+  "remaining_duration_hours": {
+    "p10": 2.0,
+    "median": 10.0,
+    "p90": 73.0,
+    "unresolved_beyond_simulation_horizon_count": 172,
+    "unresolved_beyond_simulation_horizon_probability": 0.0344
+  },
+  "raw_trajectories_included": false,
+  "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+  "model_version": "noaa-flood-pooled-logistic-v2",
+  "scope": "offline_internal_only",
+  "event_id": "fixture-flood-001",
+  "event_type": "Flood",
+  "as_of_utc": "2024-09-10T16:00:00Z",
+  "is_simulated": true
+}

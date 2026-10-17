@@ -1,0 +1,52 @@
+{
+  "source": "NOAA NCEI Storm Events CSV bulk archive",
+  "index_url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/",
+  "retrieval_manifest_created_at_utc": "2026-10-17T01:08:44.187955+00:00",
+  "archives": [
+    {
+      "year": 2021,
+      "file": "StormEvents_details-ftp_v1.0_d2021_c20260323.csv.gz",
+      "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/StormEvents_details-ftp_v1.0_d2021_c20260323.csv.gz",
+      "bytes": 10563953,
+      "sha256": "60c1daf96dbe8eafd48c80df5b70df51a0125ab95d467ee7009a646761d57715",
+      "retrieved_at_utc": "2026-10-17T01:08:25.746443+00:00",
+      "cached": false
+    },
+    {
+      "year": 2022,
+      "file": "StormEvents_details-ftp_v1.0_d2022_c20260625.csv.gz",
+      "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/StormEvents_details-ftp_v1.0_d2022_c20260625.csv.gz",
+      "bytes": 11817849,
+      "sha256": "7d6b79d0049a6edec96b061738289daddba90be26fc9afe7b0a6fd617f21452e",
+      "retrieved_at_utc": "2026-10-17T01:08:30.748832+00:00",
+      "cached": false
+    },
+    {
+      "year": 2023,
+      "file": "StormEvents_details-ftp_v1.0_d2023_c20260323.csv.gz",
+      "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/StormEvents_details-ftp_v1.0_d2023_c20260323.csv.gz",
+      "bytes": 12888092,
+      "sha256": "713784bed40d9e5a95b1d6240a654f865f3ef97703713105c7b35437270da134",
+      "retrieved_at_utc": "2026-10-17T01:08:34.667320+00:00",
+      "cached": false
+    },
+    {
+      "year": 2024,
+      "file": "StormEvents_details-ftp_v1.0_d2024_c20260728.csv.gz",
+      "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/StormEvents_details-ftp_v1.0_d2024_c20260728.csv.gz",
+      "bytes": 12693243,
+      "sha256": "2070b83eccab041b36360ab73645b9a249c3eefc5b92b5b3fc0cbba4d9fcc09c",
+      "retrieved_at_utc": "2026-10-17T01:08:39.553012+00:00",
+      "cached": false
+    },
+    {
+      "year": 2025,
+      "file": "StormEvents_details-ftp_v1.0_d2025_c20260819.csv.gz",
+      "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/StormEvents_details-ftp_v1.0_d2025_c20260819.csv.gz",
+      "bytes": 12585209,
+      "sha256": "d9b46b4c6aae554723cadbb9691f3d5258371c02e530ba815d6fe41e4550149f",
+      "retrieved_at_utc": "2026-10-17T01:08:44.187783+00:00",
+      "cached": false
+    }
+  ]
+}

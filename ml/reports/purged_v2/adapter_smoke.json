@@ -1,0 +1,128 @@
+{
+  "status": "SYNTHETIC_ADAPTER_SMOKE_NOT_LIVE_EVENT_OR_ROUTE",
+  "input": {
+    "fixture_status": "SYNTHETIC SHAPE-ONLY EXAMPLE; NOT A REAL EVENT OR SITE REPORT",
+    "site_id": "eia-example-site-01",
+    "event_id": "fixture-flood-001",
+    "event_type": "Flood",
+    "event_status": "historical_replay",
+    "event_start_utc": "2024-09-10T10:00:00Z",
+    "as_of_utc": "2024-09-10T16:00:00Z",
+    "location": {
+      "lat": 28.0,
+      "lon": -82.7,
+      "region": "example county",
+      "spatial_match_quality": "region_only"
+    },
+    "recent_observations": [
+      {
+        "type": "precipitation_6h",
+        "value": 18.0,
+        "unit": "mm",
+        "valid_time_utc": "2024-09-10T16:00:00Z",
+        "acquired_at_utc": "2024-09-10T16:00:00Z",
+        "source": "synthetic_fixture"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "fixture-active-confirmation",
+        "source": "synthetic_fixture_not_real_event_evidence",
+        "available_at_utc": "2024-09-10T16:00:00Z"
+      }
+    ],
+    "is_simulated": true
+  },
+  "output": {
+    "site_id": "eia-example-site-01",
+    "event_id": "fixture-flood-001",
+    "event_type": "Flood",
+    "as_of_utc": "2024-09-10T16:00:00Z",
+    "generated_at_utc": "2026-10-17T04:25:56.739299Z",
+    "is_simulated": true,
+    "production_eligibility": false,
+    "status": "ok",
+    "scope": "conditional_on_confirmed_active_event",
+    "outcomes": {
+      "recorded_event_ongoing_probability": {
+        "6h": 0.7093663911845713,
+        "12h": 0.6049586776859471,
+        "24h": 0.47300275482093423
+      },
+      "recorded_event_ended_probability": {
+        "6h": 0.29063360881542866,
+        "12h": 0.39504132231405287,
+        "24h": 0.5269972451790658
+      },
+      "remaining_duration_hours": {
+        "p10": 2.0,
+        "median": 22.0,
+        "p90": null,
+        "tail_horizon_hours": 168,
+        "max_remaining_hours": 162.0,
+        "tail_beyond_24h": true
+      },
+      "baseline_recorded_event_ongoing_probability": {
+        "6h": 0.7093663911845713,
+        "12h": 0.6049586776859471,
+        "24h": 0.47300275482093423
+      },
+      "trend": "unknown",
+      "trend_basis": "no_validated_time_varying_severity_labels"
+    },
+    "worker_context": {
+      "summary": "Historical NOAA flood intervals estimate recorded-event persistence only; local conditions remain unverified.",
+      "limitations": [
+        "NOAA event intervals describe regional recorded events, not verified site conditions.",
+        "Historical weather and live site measurements are not included in this trained model.",
+        "Recorded event resolution does not mean site conditions are safe or work may resume."
+      ],
+      "never_interpret_as_all_clear": true
+    },
+    "evidence_quality": {
+      "status": "limited_historical_regional_support",
+      "spatial_match_quality": "region_only",
+      "training_event_count": 8406,
+      "training_episode_count": 2370,
+      "support_at_current_event_age": 3630,
+      "stale_observation_count": 0,
+      "available_features": [
+        "event_type",
+        "elapsed_hours",
+        "start_month"
+      ],
+      "missing_features": [
+        "historical_weather",
+        "current_site_measurements",
+        "verified_site_hazard"
+      ],
+      "evidence_ids": [
+        "fixture-active-confirmation"
+      ],
+      "evidence_sources": [
+        "synthetic_fixture_not_real_event_evidence"
+      ],
+      "provenance_status": "supplied_not_independently_verified",
+      "observations_missing_acquisition_time": 0
+    },
+    "estimator": "kaplan_meier",
+    "selection_basis": "2024_validation_favors_km;_2025_already_inspected_not_used_to_select_default",
+    "artifact_version": "noaa-flood-pooled-logistic-v2",
+    "training_policy": "episode_grouped_with_boundary_outcomes_purged",
+    "model_version": "noaa-flood-conditional-km-v2",
+    "site_association": {
+      "site_id": "eia-example-site-01",
+      "lat": 28.0,
+      "lon": -82.7,
+      "interpretation": "representative_monitored_location;_event_exposure_not_established_by_coordinates"
+    }
+  },
+  "latency": {
+    "cold_artifact_load_ms": 6.876300001749769,
+    "warm_calls": 100,
+    "warm_median_ms": 0.09894999675452709,
+    "warm_p95_ms": 0.11209998046979308
+  },
+  "missing_artifact_status": "unavailable",
+  "inactive_status": "not_applicable_no_confirmed_event"
+}
