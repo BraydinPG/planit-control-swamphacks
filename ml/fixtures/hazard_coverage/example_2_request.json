@@ -1,0 +1,2984 @@
+{
+  "event_context": {
+    "event_id": "hypothetical-high-wind:eia860m-AZ-68414",
+    "event_type": "High Wind",
+    "event_status": "historical_replay",
+    "site_id": "eia860m-AZ-68414",
+    "event_start_utc": "2026-10-17T01:18:48.564672+00:00",
+    "as_of_utc": "2026-10-17T07:18:48.564672Z",
+    "event_definition": "noaa_positive_continuous_recorded_interval",
+    "is_simulated": true,
+    "location": {
+      "lat": 33.580629,
+      "lon": -112.6867,
+      "region": "hypothetical activation, not a verified incident",
+      "spatial_match_quality": "region_only"
+    },
+    "confirmation": {
+      "source": "explicit hypothetical activation fixture",
+      "record_id": "fixture-activation-v1",
+      "confirmed_at": "2026-10-17T02:18:48.564672+00:00",
+      "available_at": "2026-10-17T02:18:48.564672+00:00",
+      "is_fixture": true
+    }
+  },
+  "site_context": {
+    "lat": 33.580629,
+    "lon": -112.6867,
+    "id": "eia860m-AZ-68414",
+    "name": "Catclaw Solar",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026; backend selection export",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  "evidence": [
+    {
+      "evidence_id": "d5efc50adcaa341dfc105944",
+      "publisher": "USGS modern water API",
+      "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+      "source_record_id": "bb8bf6b1-ef0c-49b3-bd41-40786d8c81a8",
+      "original_type": "USGS_modern_continuous:USGS-02303000",
+      "hazard": "flood_context",
+      "method": "observed",
+      "variable": "gauge_height",
+      "value": 35.98,
+      "unit": "ft",
+      "observed_at": "2026-10-16T00:00:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:04:33.127661Z",
+      "valid_from": "2026-10-16T00:00:00Z",
+      "valid_to": "2026-10-16T00:00:00Z",
+      "ingested_at": "2026-10-17T07:04:33.127661Z",
+      "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 28.1502904378706,
+          "lon": -82.2317531842829
+        },
+        "rings": [],
+        "precision": "USGS gauge; basin relation unverified",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "USGS_provisional_or_qualified"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "98130149a249471dd9e34921",
+      "publisher": "USGS modern water API",
+      "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+      "source_record_id": "79cc43c3-df92-4050-9332-c4efef594b18",
+      "original_type": "USGS_modern_continuous:USGS-02303000",
+      "hazard": "flood_context",
+      "method": "observed",
+      "variable": "gauge_height",
+      "value": 35.97,
+      "unit": "ft",
+      "observed_at": "2026-10-16T00:15:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:04:33.127661Z",
+      "valid_from": "2026-10-16T00:15:00Z",
+      "valid_to": "2026-10-16T00:15:00Z",
+      "ingested_at": "2026-10-17T07:04:33.127661Z",
+      "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 28.1502904378706,
+          "lon": -82.2317531842829
+        },
+        "rings": [],
+        "precision": "USGS gauge; basin relation unverified",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "USGS_provisional_or_qualified"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "247ce1fe34c3b7309dc5269d",
+      "publisher": "USGS modern water API",
+      "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+      "source_record_id": "b6da1bba-cd39-431e-bef7-8bdaf976658f",
+      "original_type": "USGS_modern_continuous:USGS-02303000",
+      "hazard": "flood_context",
+      "method": "observed",
+      "variable": "gauge_height",
+      "value": 35.97,
+      "unit": "ft",
+      "observed_at": "2026-10-16T00:30:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:04:33.127661Z",
+      "valid_from": "2026-10-16T00:30:00Z",
+      "valid_to": "2026-10-16T00:30:00Z",
+      "ingested_at": "2026-10-17T07:04:33.127661Z",
+      "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 28.1502904378706,
+          "lon": -82.2317531842829
+        },
+        "rings": [],
+        "precision": "USGS gauge; basin relation unverified",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "USGS_provisional_or_qualified"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "f5600d24b79a5da18ffc06fa",
+      "publisher": "USGS modern water API",
+      "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+      "source_record_id": "f9447b7c-761c-423a-aead-c3235a3682c1",
+      "original_type": "USGS_modern_continuous:USGS-02303000",
+      "hazard": "flood_context",
+      "method": "observed",
+      "variable": "gauge_height",
+      "value": 35.96,
+      "unit": "ft",
+      "observed_at": "2026-10-16T00:45:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:04:33.127661Z",
+      "valid_from": "2026-10-16T00:45:00Z",
+      "valid_to": "2026-10-16T00:45:00Z",
+      "ingested_at": "2026-10-17T07:04:33.127661Z",
+      "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 28.1502904378706,
+          "lon": -82.2317531842829
+        },
+        "rings": [],
+        "precision": "USGS gauge; basin relation unverified",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "USGS_provisional_or_qualified"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "d8e90e643246fbb77abdffaa",
+      "publisher": "USGS modern water API",
+      "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+      "source_record_id": "0827888e-ee87-49bb-9446-46641262541d",
+      "original_type": "USGS_modern_continuous:USGS-02303000",
+      "hazard": "flood_context",
+      "method": "observed",
+      "variable": "gauge_height",
+      "value": 35.96,
+      "unit": "ft",
+      "observed_at": "2026-10-16T01:00:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:04:33.127661Z",
+      "valid_from": "2026-10-16T01:00:00Z",
+      "valid_to": "2026-10-16T01:00:00Z",
+      "ingested_at": "2026-10-17T07:04:33.127661Z",
+      "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 28.1502904378706,
+          "lon": -82.2317531842829
+        },
+        "rings": [],
+        "precision": "USGS gauge; basin relation unverified",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "USGS_provisional_or_qualified"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "411829ddb4a22e2330efeea7",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 74.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "275ebd1050fa2c02a9105f57",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 98.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "39b4a9d0d9fc407e5a55ae3a",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 8.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "f227c19e1fe7d250c86a2e0c",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 1.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "8addcca7486e7ca036e67056",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 1.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "5acb77aa5054f6eb729e4300",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 74.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "ba9ab946c2e8471b526afe57",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 100.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "a78f8cc014ee4795f2ac3c65",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 36.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "99e58fa8ba5de85550950a74",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 5.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "1e8c42513634ef8436473fb0",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 5.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "5baef07229242d4d135f253e",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 75.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "6b1e7eb677d13672fb1bea72",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 92.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "a5a7f3d9ca9dee6122d6d71f",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 18.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "beda42ca836753f4c6183978",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 13.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "cb9ca4be95b95630572ff99b",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 13.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "97735738f587588ffb8cb4dd",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 64.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "812a2185f006b183e3275df4",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 84.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "3e9aadcef0696ab49e04c69a",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 0.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "c90f2b8d1e834bb2c1a7d244",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 15.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "c5c830c80f021063ed6f4804",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 15.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:00Z",
+      "available_at": "2026-10-17T07:10:00.679995Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:00.679995Z",
+      "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -81.9948,
+              28.048
+            ],
+            [
+              -81.9923,
+              28.0707
+            ],
+            [
+              -82.0181,
+              28.0729
+            ],
+            [
+              -82.0206,
+              28.0502
+            ],
+            [
+              -81.9948,
+              28.048
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "ac1f4ab0379849e6ccb5d950",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KLAL/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KLAL/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "observed",
+      "variable": "temperature",
+      "value": 23.0,
+      "unit": "C",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:02.282098Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:02.282098Z",
+      "source_version": "61c5ef6000aafeac15d3a6bc688b95343bed7b41b505356a27e18cd89b9633a0",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 27.98,
+          "lon": -82.02
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "5d98c6624a87dfd82321ad37",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KLAL/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KLAL/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "wind_speed",
+      "hazard": "wind",
+      "method": "observed",
+      "variable": "wind_speed",
+      "value": 0.0,
+      "unit": "km/h",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:02.282098Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:02.282098Z",
+      "source_version": "61c5ef6000aafeac15d3a6bc688b95343bed7b41b505356a27e18cd89b9633a0",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 27.98,
+          "lon": -82.02
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "05c2e36e2f218884ed867f89",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KLAL/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KLAL/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "visibility",
+      "hazard": "visibility",
+      "method": "observed",
+      "variable": "visibility",
+      "value": 16090.0,
+      "unit": "m",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:02.282098Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:02.282098Z",
+      "source_version": "61c5ef6000aafeac15d3a6bc688b95343bed7b41b505356a27e18cd89b9633a0",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 27.98,
+          "lon": -82.02
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "NWS_QC:C"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "89675bff4bcf9d29488817ee",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 72.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "ce58f4e39eed0628ef1b9909",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 24.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "3035c6dead2639917b62417a",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 0.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "13a9a59282da6c1af6628d75",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 15.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "a82f1800e9a1b4426028eb16",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 15.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T07:00:00Z",
+      "valid_to": "2026-10-17T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "45991ef93053bfbbd243fbed",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 67.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "7539134e49f2796653718855",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 23.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "d84da55d93d60be1c6fed4bb",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 1.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "8ebb0cd45215577bb4d9ad64",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 25.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "7c1c0dae59266e6e4036fd9b",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 25.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T13:00:00Z",
+      "valid_to": "2026-10-17T14:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "01c1ddb0d92f2f20dfde8829",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 75.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "9f6fdcf3c8cdfa2e1a553459",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 17.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "72d5fdc4b0583d72b8b1ee41",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 2.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "7e8a1cb2da50e6135adda7fd",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 20.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "a5d5d749ab04a411077f3518",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 20.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-17T19:00:00Z",
+      "valid_to": "2026-10-17T20:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "c55caea132ba0e17b4e73a10",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "temperature",
+      "value": 69.0,
+      "unit": "F",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "b3862803726baab111731ff0",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "issued_forecast",
+      "variable": "relative_humidity",
+      "value": 39.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "589c2ade083e87aa03b0f899",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+      "original_type": "rain_probability",
+      "hazard": "rain",
+      "method": "issued_forecast",
+      "variable": "rain_probability",
+      "value": 22.0,
+      "unit": "%",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "49a112ae764b8e6178a43dac",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_min",
+      "value": 15.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "a0283b4daeb9ccecd446f9dc",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+      "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+      "original_type": "NWS_hourly_wind_range",
+      "hazard": "wind",
+      "method": "issued_forecast",
+      "variable": "wind_speed_max",
+      "value": 15.0,
+      "unit": "mph",
+      "observed_at": null,
+      "issued_at": "2026-10-17T07:10:04Z",
+      "available_at": "2026-10-17T07:10:04.682222Z",
+      "valid_from": "2026-10-18T07:00:00Z",
+      "valid_to": "2026-10-18T08:00:00Z",
+      "ingested_at": "2026-10-17T07:10:04.682222Z",
+      "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "polygon",
+        "point": null,
+        "rings": [
+          [
+            [
+              -112.6792,
+              33.5814
+            ],
+            [
+              -112.6828,
+              33.6038
+            ],
+            [
+              -112.7096,
+              33.6009
+            ],
+            [
+              -112.706,
+              33.5785
+            ],
+            [
+              -112.6792,
+              33.5814
+            ]
+          ]
+        ],
+        "precision": "NWS hourly forecast grid footprint",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "d97c0ffa808d5a3cd275144b",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "temperature",
+      "hazard": "heat",
+      "method": "observed",
+      "variable": "temperature",
+      "value": 24.0,
+      "unit": "C",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:06.233274Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:06.233274Z",
+      "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 33.4,
+          "lon": -112.69
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "205e32f41e4410490807e134",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "relative_humidity",
+      "hazard": "heat",
+      "method": "observed",
+      "variable": "relative_humidity",
+      "value": 20.514620586595,
+      "unit": "%",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:06.233274Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:06.233274Z",
+      "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 33.4,
+          "lon": -112.69
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "f7497e9995d61ba61e2f8882",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "heat_index",
+      "hazard": "heat",
+      "method": "observed",
+      "variable": "heat_index",
+      "value": 22.991215093094443,
+      "unit": "C",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:06.233274Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:06.233274Z",
+      "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 33.4,
+          "lon": -112.69
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "8c4f3487d818e7870fc0876b",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "wind_speed",
+      "hazard": "wind",
+      "method": "observed",
+      "variable": "wind_speed",
+      "value": 24.12,
+      "unit": "km/h",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:06.233274Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:06.233274Z",
+      "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 33.4,
+          "lon": -112.69
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    },
+    {
+      "evidence_id": "3edf715c3128ab5310213393",
+      "publisher": "NOAA NWS",
+      "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+      "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+      "original_type": "visibility",
+      "hazard": "visibility",
+      "method": "observed",
+      "variable": "visibility",
+      "value": 16090.0,
+      "unit": "m",
+      "observed_at": "2026-10-17T06:35:00Z",
+      "issued_at": null,
+      "available_at": "2026-10-17T07:10:06.233274Z",
+      "valid_from": "2026-10-17T06:35:00Z",
+      "valid_to": "2026-10-17T06:35:00Z",
+      "ingested_at": "2026-10-17T07:10:06.233274Z",
+      "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+      "availability_basis": "retrieved_by_pipeline",
+      "footprint": {
+        "kind": "point",
+        "point": {
+          "lat": 33.4,
+          "lon": -112.69
+        },
+        "rings": [],
+        "precision": "NWS weather station; not an on-site sensor",
+        "site_id": null,
+        "relation": "unspecified",
+        "relation_evidence_id": null
+      },
+      "data_state": "current",
+      "quality_flags": [
+        "NWS_QC:C"
+      ],
+      "is_fixture": false,
+      "datum": null,
+      "human_review_status": "not_applicable",
+      "value_basis": "source_value",
+      "derived_from_evidence_ids": [],
+      "computation_version": null
+    }
+  ],
+  "alerts": [],
+  "reports": [],
+  "context_signals": [],
+  "lightning_replay": [],
+  "source_states": [
+    {
+      "provider": "NOAA NWS point alerts",
+      "state": "current",
+      "attempted": true,
+      "last_success_at": "2026-10-17T07:18:00.523569Z",
+      "reason": "0 notices; 0 parse errors; no absence/safety inference"
+    }
+  ]
+}

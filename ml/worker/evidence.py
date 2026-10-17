@@ -135,6 +135,8 @@ def assess(
             reasons.append("stale_observation")
         if parse_utc(evidence.valid_from, "valid_from") > as_of:
             reasons.append("observation_valid_after_as_of")
+        if parse_utc(evidence.valid_to, "valid_to") > as_of:
+            reasons.append("observation_window_ends_after_as_of")
     if evidence.method in ("issued_forecast", "official_warning"):
         if parse_utc(evidence.valid_to, "valid_to") <= as_of:
             reasons.append("expired_issued_product")

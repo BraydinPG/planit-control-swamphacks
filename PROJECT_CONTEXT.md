@@ -1,18 +1,32 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 06:42:40; update with each relevant checkpoint.
-- Working branch: `feature/cache-combined-disaster-outlooks`.
-- Base: `origin/main` at `7950971`; teammate API/DB/EIA commits preserved by clean rebase.
-- Implementation: `01982f0`, source-catalog follow-up `35273ec`; verification commits may follow.
+- UTC verification: 2026-10-17 07:43:12; update with each relevant checkpoint.
+- Working branch: `feature/cache-hazard-coverage` (new comprehensive coverage push).
+- Current base includes `origin/main` at `cc67e58`; site routes and nullable-score schema preserved.
+- Published implementation checkpoint `84d3d2d`; synchronized main without force-pushing it.
 - GitHub PR #4: merged 2026-10-17, merge `cf9d3bb`; already an ancestor of main.
 - GitHub PR #6: merged 2026-10-17, merge `20af37d`; source head `28b89cf`.
 - Both merge states verified through GitHub API and local ancestry, not assumed.
 - Python: `ml/.venv/Scripts/python.exe`, 3.14.5; pinned ML dependencies exist.
-- Fresh isolated environment: 256 ML/backend tests passed, including 62 new worker checks.
+- Fresh isolated environment: 361 ML/backend tests passed, including 68 new hazard checks.
 - Backend lint/format, new Python lint/format, frontend lint/typecheck/build passed.
 - Existing nine duration artifacts/reference predictions verified without refitting.
-- PR #9 is open, ready for Rudra review: https://github.com/BraydinPG/planit-control-swamphacks/pull/9
+- PR #9 merged at `f4ee557` on 2026-10-17T06:49:58Z; API and ancestry reverified.
+- Current push starts from `origin/main` at `f4ee557`; PR #9 branch is preserved.
+- Initial checkpoint: 62 worker tests pass; no long ML jobs or uncommitted work recovered.
+- Main includes Rudra's NWS weather/flood ingestion; Cache additions stay in `ml/`.
+- Hazard checkpoint: 128 focused checks passed before final hardening; full suite now 361.
+- New opt-in 2.1.0 composer adds native notices, controlled report contracts and worksite unknowns.
+- 146 hazard entries crosswalk all 54 raw NOAA labels and 18 FEMA groups; no new models.
+- Offline rehearsal: 31 scenarios, 50 reconciled backend-selected EIA identities, no network.
+- New captures: 553 national NWS notices, all 50 point queries successful (11 notice records).
+- Actual replay coverage: two sites with local weather, ten with qualified official notices.
+- Gauge/site transfers, trusted live reports/assets and local US-site ShakeMap remain unavailable.
+- Code checkpoint `c61c9ab` pushed; full suite/builds and clean Git-export checks pass.
+- Clean export: 31 scenarios/50 sites pass without models and with verified artifact copies; no source caches/credentials.
+- PR #12 is open/ready against main: https://github.com/BraydinPG/planit-control-swamphacks/pull/12
+- Owner handoff posted: PR #12 comment 6231337589; full details in HAZARD_INTEGRATION.
 - Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
 
 ## Mission and boundaries
@@ -45,6 +59,7 @@
 - `backend/app/schemas/observations.py`: current reading/location/time shape.
 - `backend/app/schemas/sites.py`: SiteSummary and SiteDetail.
 - Existing backend Observation lacks the full issue/availability/vintage/coverage contract.
+- Main site routes are present; Auth0/assigned-site checks are pending, not verified by this library.
 - Main includes Tiger Data models/schema setup and Braydin's EIA importer; deployed DB state unverified here.
 - Do not invent those missing fields from a fetched timestamp.
 - `ml/predict.py`: `predict_active_event`, legacy `predict_site` adapter.
@@ -54,6 +69,12 @@
 - `ml/train.py`, `features.py`, `backtest.py`: shared duration core, grouped cutoffs.
 - `ml/monte_carlo.py`: offline sampling; production inference does not import it.
 - `ml/worker/schema.py`: WorkerOutlookRequest/WorkerOutlook, combined contract 2.0.0.
+- `ml/worker/comprehensive.py`: build_comprehensive_outlook; opt-in 2.1, 2.0 callable unchanged.
+- `ml/worker/comprehensive_schema.py`: ComprehensiveRequest/Outlook; explicit to_legacy adapter.
+- `ml/hazard_registry.json`, `ml/HAZARD_COVERAGE_AUDIT.md`: per-hazard maturity and sign-off.
+- `ml/hazard_rehearsal.py`: disconnected scenarios + 50-site acceptance, models provisioned separately.
+- `ml/HAZARD_INTEGRATION.md`: 2.1 migration and exact Rudra/Nick/Braydin handoffs.
+- Request has no trust-policy/principal field; caller-owned policy authenticates nobody.
 - `ml/worker/combined.py`: build_worker_outlook, build_for_backend_site, explanation_context.
 - `ml/worker/evidence.py`, `spatial.py`, `impacts.py`: as-of/unit/geometry gates and Layer B.
 - Site condition probabilities/confidence are null; no learned site target is validated.
@@ -78,6 +99,10 @@
 - Real NWS/CO-OPS/USGS/NDBC/SWPC captures; CO-OPS humidity unavailable.
 - `ml/fixtures/worker_outlook/`: normalized real exports, EIA locations, typed examples/schemas.
 - Real environment is paired with hypothetical event contexts; compound warning/quake are fixtures.
+- `ml/fixtures/hazard_coverage/`: backend-selector export, 64 receipts, schemas and three 2.1 examples.
+- `ml/reports/hazard_coverage/`: per-site source coverage, 31 scenario results and real performance.
+- New real ShakeMap is an automatic Pakistan model; zero US-site grid coverage, uncertainty absent.
+- Normalized fixture hashes use UTF-8/LF; original HTTP hashes retain exact source bytes.
 
 ## Current readiness
 | Family | Verified prior implementation | Limit |
@@ -109,6 +134,7 @@ python -m ml.provision_expansion --download
 python -m ml.smoke
 python -m ml.demo_worker_outlook --require-models
 python -m ml.worker_research
+python -m ml.hazard_rehearsal --require-models
 python -m pytest ml/tests backend/tests -q
 ```
 - Use the ML environment; install backend requirements for combined backend tests.
@@ -133,14 +159,18 @@ python -m pytest ml/tests backend/tests -q
 - Backend must authorize site access and supply confirmed event and source evidence.
 - Captured source products prove availability at capture, not earlier historical vintages.
 - Production ingestion/auth/routes/UI are not wired to this new library.
+- In 2.1, electrical/structural/chemical/wildlife/access dangers stay explicit unknowns without trusted review.
+- Default report trust is deny; fixture role/site checks are not production token validation.
 - Five offline scenarios pass; current warm composition is about 1–2ms, one worker.
 - Offline MC: 20,000 draws each for Flood/High Wind, plus 12 policy-sensitivity cases.
 - No new learned target, joint probability or historical ML backtest was introduced.
+- New cold/warm/batch/validation and traced-allocation measurements are in hazard acceptance.json.
 
 ## Next actions and handoff
 1. Rudra: review opt-in FastAPI wiring after assigned-site authorization; keep controls separate.
 2. Braydin: supply true event confirmation, source timestamps/versions, auth and basin evidence.
 3. Nick: display method/window/source, derived/demo badges and unknowns; no clearance countdown.
+- Prefer the opt-in 2.1 examples/schemas and HAZARD_INTEGRATION; 2.0 consumers use to_legacy explicitly.
 - Paste to a new agent: Read PROJECT_CONTEXT.md, then AGENTS.md and the relevant
   `ml/INTEGRATION.md`, `ml/MULTIDISASTER.md`, and contract code before editing.
   Preserve current contracts and safety limits. Use `ml/fixtures/worker_outlook/flood_outlook.json`
@@ -151,5 +181,6 @@ python -m pytest ml/tests backend/tests -q
 - 2026-10-17: preserve existing duration fits; prioritize evidence-only site conditions.
 - 2026-10-17: all-category census and two-layer research slice verified; site ML not forced.
 - 2026-10-17: 256 checks passed on base `7950971`; feature pushed and PR #9 opened for review.
+- 2026-10-17: PR #9 merged; new 2.1 hazard package passes 361 checks and clean-export fallback/provisioned replay; PR #12 open, not merged.
 - Update this file in the same commit as model/contract/source/handoff/test changes.
 - Reconcile teammate edits; keep deep details in ML docs, not a transcript here.

@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "hash_basis": "UTF-8 text with CRLF normalized to LF",
+  "files": {
+    "backend_sites.json": {
+      "sha256": "3d1bc007a4bde8f7d368423d6a96383c0433c1769d0fe1468151cf0b5ecd2aac",
+      "bytes": 155881
+    },
+    "comprehensive_outlook.schema.json": {
+      "sha256": "a24d7ff24c9dbfcc4fb3fedc9ca0c34c56e348cb8442e04366b7f4792a0956ba",
+      "bytes": 42820
+    },
+    "comprehensive_request.schema.json": {
+      "sha256": "4d4ee8103ed6fd0d955b28593dcae48141ba0e30aaaa6313c1e1674403f98a53",
+      "bytes": 26345
+    },
+    "example_1_request.json": {
+      "sha256": "1daa8bdf63851d558bec4141fc18bacf6f2bbd4f1cd0e9601824db8259e0ce3f",
+      "bytes": 91066
+    },
+    "example_1_response.json": {
+      "sha256": "fc0ad7a26b0519cb80c89c95e4c90379683f50be091ff069216070e7ebb6ae76",
+      "bytes": 185698
+    },
+    "example_2_request.json": {
+      "sha256": "decde75124e237aea0524ae8e97f1808e0fdfde192e98e5a8f6c68e8139994a7",
+      "bytes": 91076
+    },
+    "example_2_response.json": {
+      "sha256": "f89ba32ff96e8e15118fb0e2851fd038056520135eb84658e58654146ceb7803",
+      "bytes": 186907
+    },
+    "example_3_request.json": {
+      "sha256": "f1d60beacdf85ed4b7fa59bdb5279d5dee50f9da7900559fae695d79cda37f8f",
+      "bytes": 5661
+    },
+    "example_3_response.json": {
+      "sha256": "e1b186515d7e32d49348471baff8c533c7fe9d0a3f95ed7941f9f8d10ffbc668",
+      "bytes": 52514
+    },
+    "real_shakemap_probe.json": {
+      "sha256": "8f589a5e00e0ec27cab1721bac4458afd31efed7d5d65a4da1e73d94574578a6",
+      "bytes": 2127
+    },
+    "scenarios.json": {
+      "sha256": "141427b4eff213556fd6667c255003d20db629f6b229508291456b3ad4d29eeb",
+      "bytes": 18856
+    },
+    "source_snapshot.json": {
+      "sha256": "532b5834ad414e73a62a7ab4cbc9359cb9df03523dff26bc9fb0962f261b3e60",
+      "bytes": 968162
+    }
+  }
+}

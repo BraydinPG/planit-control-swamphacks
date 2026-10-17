@@ -1,0 +1,63 @@
+{
+  "status": "full suite, builds and clean-export verification passed",
+  "verified_code_commit": "c61c9ab",
+  "verified_at_utc": "2026-10-17T07:43:12Z",
+  "review_pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/12",
+  "handoff_comment": "https://github.com/BraydinPG/planit-control-swamphacks/pull/12#issuecomment-6231337589",
+  "base_main_commit": "cc67e58",
+  "published_checkpoint": "84d3d2d",
+  "environment": "Fresh Python 3.14.5 venv; pinned ML lock plus backend development requirements",
+  "tests_passed": 361,
+  "new_hazard_tests": 68,
+  "test_duration_seconds": 14.30,
+  "failures": 0,
+  "errors": 0,
+  "warnings": ["Existing Starlette/httpx TestClient deprecation"],
+  "backend_lint": "passed",
+  "backend_format": "passed: 50 files",
+  "changed_ml_lint": "passed: E4,E7,E9,F",
+  "changed_ml_format": "passed: line length 100",
+  "frontend_lint": "passed on synchronized main types",
+  "frontend_typecheck_build": "passed: Node 24.22.0, Vite 8.3.4",
+  "offline_acceptance": "31 scenarios including expected invalid-request rejection; 50 reconciled backend EIA sites; socket connections blocked",
+  "artifact_verification": "Flood plus eight expansion hashes verified; eligible reference outputs passed; disabled models remain disabled",
+  "artifacts_rebuilt": false,
+  "historical_backtests_rerun": false,
+  "large_archives_redownloaded": false,
+  "clean_git_export": {
+    "source": "git archive c61c9ab; LF source files; fresh isolated dependency environment",
+    "without_artifacts": "31 scenarios and 50 sites passed; typed unavailable Layer A",
+    "with_verified_artifact_copies": "31 scenarios and 50 sites passed with --require-models",
+    "raw_source_caches_or_credentials_copied": false,
+    "network_blocked": true,
+    "fixture_hashes_portable": "Verified UTF-8/LF manifest against clean Git-export line endings"
+  },
+  "offline_monte_carlo": "20,000 draws each for Flood/High Wind and 12 evidence-policy cases; arithmetic/sensitivity only, not predictive validation",
+  "site_probabilities_independently_validated": 0,
+  "operationally_validated": false,
+  "initial_issues_resolved": [
+    "Source-availability list shadowing found by focused tests; fixed and covered",
+    "Formatter/lint findings and a missing manifest import corrected before the full suite",
+    "Windows newline-dependent fixture hashes replaced with explicit UTF-8/LF normalization"
+  ],
+  "commands": [
+    "python -m pip install -r ml/requirements-lock.txt -r backend/requirements-dev.txt",
+    "python -m pytest ml/tests backend/tests -q --junitxml=ml/.venv/hazard_acceptance.xml",
+    "python -m ml.hazard_rehearsal --require-models --benchmark --export",
+    "python -m ml.provision --verify-only",
+    "python -m ml.provision_expansion",
+    "python -m ml.worker_research",
+    "python -m ruff check . (from backend/)",
+    "python -m ruff format --check . (from backend/)",
+    "python -m ruff check ml/hazard_registry.py ml/hazard_scenarios.py ml/hazard_rehearsal.py ml/hazard_inventory.py ml/collect_hazard_sources.py ml/sources/bounded.py ml/sources/hazard_feeds.py ml/worker/comprehensive.py ml/worker/comprehensive_schema.py ml/worker/geometry.py ml/worker/identity.py ml/tests/test_hazard_coverage.py ml/worker/evidence.py --select E4,E7,E9,F",
+    "python -m ruff format --check ml/hazard_registry.py ml/hazard_scenarios.py ml/hazard_rehearsal.py ml/hazard_inventory.py ml/collect_hazard_sources.py ml/sources/bounded.py ml/sources/hazard_feeds.py ml/worker/comprehensive.py ml/worker/comprehensive_schema.py ml/worker/geometry.py ml/worker/identity.py ml/tests/test_hazard_coverage.py ml/worker/evidence.py --line-length 100",
+    "npm run lint (from frontend/)",
+    "npm run build (from frontend/)",
+    "git diff --check"
+  ],
+  "not_verified": [
+    "Production Auth0/assigned-site access, actual deployed DB contents or new route/UI wiring",
+    "Live trusted crew/asset feeds, universal DOT/evacuation feeds and authenticated AirNow/FIRMS/AQS collection",
+    "Independent site probability/injury/damage outcomes, local US-site ShakeMap or gauge basin/datum transfer"
+  ]
+}

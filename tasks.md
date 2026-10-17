@@ -71,6 +71,12 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 
 Worker advisory continuation (Cache-owned, explicit user authorization; independent of production integration):
 
+Comprehensive hazard follow-up (new branch after PR #9 merged):
+- [x] **TML-H01 | Cache | Audit natural and cascading worksite hazards.** 146-entry typed registry, all 54 raw NOAA labels, FEMA 18-group crosswalk, official pointers and distinct maturity/sign-off states.
+- [x] **TML-H02 | Cache | Strengthen official evidence and unknown hazards.** 64 source receipts, 50 NWS point queries, strict native alerts, opt-in 2.1 schema/report contracts and explicit cascading unknowns; no production writes.
+- [x] **TML-H03 | Cache | Verify comprehensive offline rehearsal.** 31 adversarial scenarios, 50 reconciled backend EIA identities, coverage/missingness/performance; fresh-environment full suite 361 passed with frontend/backend checks.
+- [x] **TML-H04 | Cache | Publish tested owner handoffs.** Context, source/verification reports, three canonical 2.1 examples and copy-ready owner handoffs published in PR #12; review comment posted. PR remains open, with teammate features and all research/safety gates preserved.
+
 - [x] **TML-W01 | Cache | Verify merged ancestry and shared project memory.** PR #4/#6 merge ancestry verified, new branch from `20af37d`, `PROJECT_CONTEXT.md` created with the AGENTS read-first/update pointer.
 - [x] **TML-W02 | Cache | Census all NOAA types and stage official sources.** 349,030 rows / 54 verbatim types; versioned typed source catalog, per-family reporting groups and limitations, real EIA/NWS/CO-OPS/USGS/NDBC/SWPC snapshots, explicit not-retrieved sources.
 - [x] **TML-W03 | Cache | Build source/time/space gates and Layer B.** Typed provenance, availability/issue checks, geography, units/QC, conservative gauge/track handling, reviewed crew evidence, matched derived heat index, descriptive source forecasts; no learned local probability claim.

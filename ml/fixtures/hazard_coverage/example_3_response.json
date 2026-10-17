@@ -1,0 +1,1559 @@
+{
+  "contract_version": "2.1.0",
+  "site": {
+    "lat": 41.573415,
+    "lon": -93.55774,
+    "id": "eia860m-IA-50932",
+    "name": "Des Moines Wastewater Reclamation Fac",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026; backend selection export",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  "event_id": "hypothetical-winter-storm:eia860m-IA-50932",
+  "event_type": "Winter Storm",
+  "confirmation": {
+    "source": "explicit hypothetical activation fixture",
+    "record_id": "fixture-activation-v1",
+    "confirmed_at": "2026-10-17T02:18:48.564672Z",
+    "available_at": "2026-10-17T02:18:48.564672Z",
+    "is_fixture": true
+  },
+  "as_of_utc": "2026-10-17T07:18:48.564672Z",
+  "generated_at_utc": "2026-10-17T07:32:38.057749Z",
+  "status": "partial",
+  "research_only": true,
+  "operational_evaluation_eligible": false,
+  "production_eligibility": false,
+  "is_demo_or_simulated": true,
+  "event_outlook": {
+    "status": "supported_research",
+    "target": "NOAA regional positive-duration Winter Storm recorded-interval persistence; not intensity or site safety",
+    "model_version": "active-winter_storm-pooled-logistic-v1:kaplan_meier",
+    "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+    "estimator": "kaplan_meier",
+    "ongoing_probability": {
+      "6h": 0.8262391222096103,
+      "12h": 0.6106696935300784,
+      "24h": 0.27998486568293535
+    },
+    "remaining_duration_hours": {
+      "p10": 5.0,
+      "median": 16.0,
+      "p90": 39.0,
+      "tail_horizon_hours": 168.0,
+      "max_remaining_hours": 162.0,
+      "tail_beyond_24h": true
+    },
+    "trend": "unknown",
+    "fit_cutoff_utc": "2025-01-01T00:00:00Z",
+    "historical_feature_availability_verified": false,
+    "limitations": [
+      "Recorded/observed episode end is not worksite clearance.",
+      "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+      "Historical source revision/availability is not verified as of the past decision time.",
+      "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+      "NOAA regional recorded interval, not verified worksite exposure or safety.",
+      "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+    ]
+  },
+  "site_hazards": [
+    {
+      "kind": "wind",
+      "status": "unavailable",
+      "conditions": [],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [],
+      "unknowns": [
+        "no_eligible_site_evidence"
+      ],
+      "planning_context": "Wind values describe their stated station or forecast footprint; site gusts and unseen equipment damage remain unverified.",
+      "warning_evidence_ids": []
+    },
+    {
+      "kind": "winter",
+      "status": "unavailable",
+      "conditions": [],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [],
+      "unknowns": [
+        "no_eligible_site_evidence"
+      ],
+      "planning_context": "Only supplied authoritative evidence is represented; local consequences are not inferred.",
+      "warning_evidence_ids": []
+    }
+  ],
+  "evidence": [],
+  "unknowns": [
+    "no_eligible_site_evidence",
+    "worksite_inspection_and_control_authority_remain_upstream"
+  ],
+  "limitations": [
+    "Layer A regional persistence is not a local hazard probability.",
+    "Layer B describes supplied observations and issued products; no site-level probability model is validated.",
+    "No joint hazard probability, injury, access, damage, clearance, or unreported crew hazard is inferred."
+  ],
+  "not_work_clearance": true,
+  "safety_statement": "Advisory context only. No permission to access, work, or resume work; official warnings and deterministic controls remain authoritative.",
+  "registry_version": "1.0.0",
+  "worksite_hazards": [
+    {
+      "hazard_id": "arc_flash",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes arc-flash exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "asbestos",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes asbestos exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "backfeed",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes electrical backfeed at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "bites_stings",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes bites or stings at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "blocked_egress",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes debris-blocked egress at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "bridge_washout",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes washed-out bridge or unstable access at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "carbon_monoxide",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes generator carbon monoxide at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "chemical_release",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes chemical release at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "clearance_restrictions",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes electrical clearance restrictions at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "cold_exposure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes worker cold-exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "communications",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes communications degradation at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "confined_space",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes confined-space atmosphere at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "connectivity",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes connectivity loss at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "contaminated_water",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes contaminated water or sewage at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "debris",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes broken glass and debris at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "dehydration",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes dehydration context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "dispatch_emergency",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes dispatch or emergency access interruption at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "downed_lines",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes energized, downed or low-hanging lines at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "electrical_fire",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes transformer or electrical fire at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "energized_floodwater",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes potentially energized floodwater at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "equipment_damage",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes substation or equipment damage at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "ergonomic",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes environmental ergonomic exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "evacuation",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes official evacuation context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "excavation_collapse",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes unstable excavation or trench at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "extreme_cold",
+      "status": "evidence_available",
+      "evidence_status": "accepted",
+      "source_ids": [
+        "urn:oid:2.49.0.1.840.0.692330cf65e45ff4331b3b5379d1483d38d16efa.001.1"
+      ],
+      "observed_or_valid_windows": [
+        {
+          "from": "2026-10-17T02:37:00Z",
+          "to": "2026-10-17T12:45:00Z"
+        }
+      ],
+      "site_spatial_match": [
+        "provider_point_filter"
+      ],
+      "methods": [
+        "official_warning"
+      ],
+      "description": "What verified evidence describes extreme cold at this site and time?",
+      "unknowns": [],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fallen_trees",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fallen trees or limbs at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "falling_loads",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes falling loads at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fatigue",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fatigue and extended shifts at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "flooded_electrical_equipment",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes flooded electrical equipment at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "frost_freeze",
+      "status": "evidence_available",
+      "evidence_status": "accepted",
+      "source_ids": [
+        "urn:oid:2.49.0.1.840.0.692330cf65e45ff4331b3b5379d1483d38d16efa.001.1"
+      ],
+      "observed_or_valid_windows": [
+        {
+          "from": "2026-10-17T02:37:00Z",
+          "to": "2026-10-17T12:45:00Z"
+        }
+      ],
+      "site_spatial_match": [
+        "provider_point_filter"
+      ],
+      "methods": [
+        "official_warning"
+      ],
+      "description": "What verified evidence describes frost and freeze at this site and time?",
+      "unknowns": [],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fuel_gas_leak",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fuel or gas leak at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "gps_interference",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes gps interference at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "ground_fault",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes ground fault at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "hazardous_dust",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes hazardous dust at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "hazmat_incident",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes hazardous-material emergency at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "heat_illness",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes worker heat-exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "ice_storm",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes ice storm at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "induction",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes electrical induction at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "industrial_smoke",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes industrial smoke at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "infectious_exposure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes infectious or biological exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "lift_crane",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes aerial lift or crane exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "mold",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes mold exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "oxygen_deficiency",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes oxygen-deficient atmosphere at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "pole_tower_instability",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes unstable poles or towers at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "power_failure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes power failure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "radiological",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes radiological notice at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "restoration_driving",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes storm-restoration driving at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "road_closure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes road closure or inaccessible route at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "roof_instability",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes unstable roof at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "security",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes security or public safety notice at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "silica",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes silica exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "slips_trips_falls",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes slips, trips and falls at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "snow",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes snow and heavy snow at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "spills",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes spill at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "step_touch",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes step and touch potential at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "structural_collapse",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes structural collapse at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "traffic",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes traffic and moving vehicles at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "transport_incident",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes major transportation incident at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "utility_strike",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes underground utility strike at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "visibility_impairment",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes worker visibility impairment at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "wildlife",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes wildlife encounter at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "wind_chill",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes wind chill at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "wind_loaded_lines",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes wind-loaded lines at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "winter_storm",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes winter storm at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    }
+  ],
+  "official_notices": [
+    {
+      "alert": {
+        "id": "urn:oid:2.49.0.1.840.0.692330cf65e45ff4331b3b5379d1483d38d16efa.001.1",
+        "publisher": "NOAA NWS",
+        "event": "Freeze Warning",
+        "status": "Actual",
+        "message_type": "Update",
+        "sent": "2026-10-17T02:37:00Z",
+        "updated": "2026-10-17T02:37:00Z",
+        "effective": "2026-10-17T02:37:00Z",
+        "onset": "2026-10-17T06:00:00Z",
+        "expires": "2026-10-17T12:45:00Z",
+        "ends": "2026-10-17T14:00:00Z",
+        "available_at": "2026-10-17T07:18:13.524707Z",
+        "ingested_at": "2026-10-17T07:18:13.524707Z",
+        "source_version": "56f4b6dbeea8600bc6381559c9c98b302f792ce09f2a4fd515b69641fbe4bd8b",
+        "origin_url": "https://api.weather.gov/alerts",
+        "polygons": [],
+        "zone_ids": [
+          "https://api.weather.gov/zones/forecast/IAZ004",
+          "https://api.weather.gov/zones/forecast/IAZ005",
+          "https://api.weather.gov/zones/forecast/IAZ006",
+          "https://api.weather.gov/zones/forecast/IAZ007",
+          "https://api.weather.gov/zones/forecast/IAZ015",
+          "https://api.weather.gov/zones/forecast/IAZ016",
+          "https://api.weather.gov/zones/forecast/IAZ017",
+          "https://api.weather.gov/zones/forecast/IAZ023",
+          "https://api.weather.gov/zones/forecast/IAZ024",
+          "https://api.weather.gov/zones/forecast/IAZ025",
+          "https://api.weather.gov/zones/forecast/IAZ026",
+          "https://api.weather.gov/zones/forecast/IAZ027",
+          "https://api.weather.gov/zones/forecast/IAZ028",
+          "https://api.weather.gov/zones/forecast/IAZ033",
+          "https://api.weather.gov/zones/forecast/IAZ034",
+          "https://api.weather.gov/zones/forecast/IAZ035",
+          "https://api.weather.gov/zones/forecast/IAZ036",
+          "https://api.weather.gov/zones/forecast/IAZ037",
+          "https://api.weather.gov/zones/forecast/IAZ038",
+          "https://api.weather.gov/zones/forecast/IAZ039",
+          "https://api.weather.gov/zones/forecast/IAZ044",
+          "https://api.weather.gov/zones/forecast/IAZ045",
+          "https://api.weather.gov/zones/forecast/IAZ046",
+          "https://api.weather.gov/zones/forecast/IAZ047",
+          "https://api.weather.gov/zones/forecast/IAZ048",
+          "https://api.weather.gov/zones/forecast/IAZ049",
+          "https://api.weather.gov/zones/forecast/IAZ050",
+          "https://api.weather.gov/zones/forecast/IAZ057",
+          "https://api.weather.gov/zones/forecast/IAZ058",
+          "https://api.weather.gov/zones/forecast/IAZ059",
+          "https://api.weather.gov/zones/forecast/IAZ060",
+          "https://api.weather.gov/zones/forecast/IAZ061",
+          "https://api.weather.gov/zones/forecast/IAZ062",
+          "https://api.weather.gov/zones/forecast/IAZ070",
+          "https://api.weather.gov/zones/forecast/IAZ071",
+          "https://api.weather.gov/zones/forecast/IAZ072",
+          "https://api.weather.gov/zones/forecast/IAZ073",
+          "https://api.weather.gov/zones/forecast/IAZ074",
+          "https://api.weather.gov/zones/forecast/IAZ075",
+          "https://api.weather.gov/zones/forecast/IAZ081",
+          "https://api.weather.gov/zones/forecast/IAZ082",
+          "https://api.weather.gov/zones/forecast/IAZ083",
+          "https://api.weather.gov/zones/forecast/IAZ084",
+          "https://api.weather.gov/zones/forecast/IAZ085",
+          "https://api.weather.gov/zones/forecast/IAZ086",
+          "https://api.weather.gov/zones/forecast/IAZ092",
+          "https://api.weather.gov/zones/forecast/IAZ093",
+          "https://api.weather.gov/zones/forecast/IAZ094",
+          "https://api.weather.gov/zones/forecast/IAZ095",
+          "https://api.weather.gov/zones/forecast/IAZ096"
+        ],
+        "query_site_id": "eia860m-IA-50932",
+        "query_point": {
+          "lat": 41.5734,
+          "lon": -93.5577
+        },
+        "query_url": "https://api.weather.gov/alerts/active?point=41.5734,-93.5577&status=actual",
+        "references": [
+          "urn:oid:2.49.0.1.840.0.d92e566b954b78ba5596cbffad3ab589827da2ec.001.1"
+        ],
+        "severity": "Severe",
+        "certainty": "Likely",
+        "urgency": "Expected",
+        "is_fixture": false
+      },
+      "accepted": true,
+      "status": "issued_notice",
+      "reasons": [],
+      "site_spatial_match": "provider_point_filter"
+    }
+  ],
+  "reviewed_reports": [],
+  "context_evidence": [],
+  "lightning_replay_context": [],
+  "source_availability": [
+    {
+      "provider": "NOAA NWS point alerts",
+      "state": "current",
+      "attempted": true,
+      "last_success_at": "2026-10-17T07:18:13.524707Z",
+      "reason": "1 notices; 0 parse errors; no absence/safety inference"
+    }
+  ],
+  "trust_boundary": "Upstream authentication and verification required; schema validity is not source authenticity."
+}

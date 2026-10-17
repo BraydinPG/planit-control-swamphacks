@@ -1,0 +1,498 @@
+[
+  {
+    "name": "real_local_rain_and_gauge_without_basin_or_datum",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "6899d96758b92fed4e4b27ce01e09be8544139af7c7c0907ea2f6dcf7a7f24e4",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 1
+    }
+  },
+  {
+    "name": "real_wind_and_forecast_backend_identity",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "d8aed26d9421b57cace98e2d1429d70541158fd77db19f3c83838d28c0acb3ac",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 1
+    }
+  },
+  {
+    "name": "real_native_nws_notice_hypothetical_activation",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "69c02c64e4c2c4ba3aff77fe6f783be87707a89c9cfbf1310b54fb39a71ac525",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 1,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 1
+    }
+  },
+  {
+    "name": "fixture_verified_basin_and_datum_not_inundation",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "ecd8d4fc35cf099181ea5fa0e0c367766aed7ad17c878721a3021a7274866ad1",
+    "input_counts": {
+      "evidence": 1,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "flash_flood_polygon",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "e77cedf6663695ae213c095adb80bfe930bbb1608f678287708901f12ad13793",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 1,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "expired_flash_flood_notice",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "b3ca3f8b2d0a07f40f295a056d8b82202add248d33e589c7da4c60c494b3624d",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 1,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "flash_flood_polygon_hole_negative",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "db26ce3fd7aa1299222d72ba7fe4744371f5859e068f89d9e1d5f8711ad05ae6",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 1,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "wind_units_and_station_distance",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "60026e02b00d328feb5fb95c7e11441af3487cf6b0a973490d39eb8bcc8bdcc6",
+    "input_counts": {
+      "evidence": 3,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "heat_matched_inputs",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "db7b3c0da4acfaf7d0b648402a17c487cc42f3daaf18a9e13d179f26f0a20261",
+    "input_counts": {
+      "evidence": 2,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "heat_mismatched_inputs",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "534b8bd68080297fc8d360892952c8d923466a9f39edcb2a5e8d8956d55901e1",
+    "input_counts": {
+      "evidence": 2,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "heat_stale_inputs",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "441f1d9e39740e3bbc7430f27713b52af190f31cc33523f5e3166954e0f2b5c6",
+    "input_counts": {
+      "evidence": 2,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "tropical_wind_rain_coastal_unknown_intensity",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "8651930ffa63a6642c93c2a5b92812eca8e498c70d11c349a4c64488139fbd40",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 1,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "lightning_restrike_contract_no_timer",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "50a356a0142d81ea248cfff03d710fc6392606e460c106f216ed4358d470c536",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 2,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "winter_ice_and_reviewed_road_notice",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "64f468597d9c233937a686da0bf3dde87add8ffdbcaa9e52f407cf36aa0f020f",
+    "input_counts": {
+      "evidence": 1,
+      "alerts": 0,
+      "reports": 1,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "wildfire_hotspot_perimeter_smoke_fixtures",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "792ac24f2f803c1a4589446c6bae8649c2baaeda6c16456163bd5dd9d4021b32",
+    "input_counts": {
+      "evidence": 2,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 1,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "real_shakemap_hypothetical_non_US_location",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "098cc559b8709bf5f258ae53a7828e2d04701a733eed7d0070401f3a3788caf5",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 1,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "quake_us_site_no_local_shaking_and_tsunami_fixture",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "816bff0697e252791e830a577761578ab46758f6df3c826a4ba98f470bfa9b2c",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 1,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "coastal_datum_not_site_inundation",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "35461222a00eed28578851e09a9444a76e615a42384ff864b22617dfa4cf153e",
+    "input_counts": {
+      "evidence": 1,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "tornado_hail_thunderstorm_unknown_models",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "368fc79501ee8724330fdc45e068d141f0d55ba00e1b78f8d9bd11a11d595f57",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 2,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "dust_fog_visibility_context",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "8ac3a60d0f86afb3418bfd132c501b8c5661607bed24a5c848e822911481050d",
+    "input_counts": {
+      "evidence": 1,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "landslide_soft_ground_postfire_unknown",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "b9b087460b3b39afb65f5f1ae018b9c88b75be7e52ed3a38d3feb85d9e49cb18",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 1,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "drought_soil_fireweather_context",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "285d57086a5919a522200fb4cde036d3830ba545e13ed952e1f45675826bb1c8",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 1,
+      "reports": 0,
+      "context_signals": 1,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "real_swpc_context_no_outage_prediction",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "70803adcb3c7332d04a56a7682323f72b6e269aa4640213fdb47cafbb173b89a",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 46,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "electrical_dangers_unknown_despite_weather",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "d380227f98b5369ebe157756534a019bda7499fa1622a6bf296b1f0775d127b8",
+    "input_counts": {
+      "evidence": 53,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "reviewed_and_pending_utility_reports",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "1c61ab1decc156fbb50d4527ced34d9c8a1204fa3e79fa0c175cf10511edaa84",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 8,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "communications_and_access_only_reviewed_reports",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "0e00c38dfc81b93e3fbe320ac0ac3818a8b61778c0be16059a0e9ec6b4057799",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 2,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "compound_overlap_conflicts_disjoint_geography",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "24e6ef23e6ba879f2da0d213b93e48aeea8c9e6ebf4d68f55aad93b02891d331",
+    "input_counts": {
+      "evidence": 2,
+      "alerts": 3,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "future_reanalysis_not_operational_feature",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "c51a4c6da3b3c87cf013317a06a70dfafca49fe0ebc10988f7fa41c49d2df45f",
+    "input_counts": {
+      "evidence": 1,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "forged_future_activation_and_missing_evidence",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "643b9068459db33c7618832a325044bac8582c8ad2b9306544e302b0a6d0aa82",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "malformed_coordinate_maps_to_validation_error",
+    "is_actual_incident": false,
+    "expected_error": "invalid_request_422_upstream",
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "6d4f495ab6eb7913718f4f44d59b621f2016613a0cfac8a22de406790ebe11d5",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 0
+    }
+  },
+  {
+    "name": "missing_credentials_and_failed_source_explicit",
+    "is_actual_incident": false,
+    "expected_error": null,
+    "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
+    "request_factory": "ml.hazard_scenarios.scenarios()",
+    "canonical_request_sha256": "f260c68adaa74cee1e863fe9570f04269fa889bb904463bcaef5d223ab205c25",
+    "input_counts": {
+      "evidence": 0,
+      "alerts": 0,
+      "reports": 0,
+      "context_signals": 0,
+      "lightning_replay": 0,
+      "source_states": 3
+    }
+  }
+]
