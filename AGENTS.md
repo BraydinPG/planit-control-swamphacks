@@ -2,6 +2,13 @@
 
 This file assigns implementation ownership to the four coding agents. Read `spec.md` before making changes. Each agent works in its owned paths and integrates through the contracts below.
 
+## Task workflow
+
+Before coding, read `spec.md`, `AGENTS.md`, and `tasks.md`.
+Work on one task ID per run. Check its prerequisites first.
+Implement only that task, run its acceptance checks, and mark it complete only when they pass.
+Follow the file ownership rules in `AGENTS.md`. If a task conflicts with the spec or shared contract, stop and report the conflict.
+
 ## Project-wide rules
 
 1. Preserve the existing stack and repository conventions. If the repository is empty, use React + TypeScript, FastAPI, PostgreSQL, Auth0, Gemini API, and scikit-learn.

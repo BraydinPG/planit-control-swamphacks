@@ -1,4 +1,5 @@
 # PlanIT Control Project Specification
+For the step-by-step implementation backlog, see tasks.md
 
 ## 1. Project summary
 
