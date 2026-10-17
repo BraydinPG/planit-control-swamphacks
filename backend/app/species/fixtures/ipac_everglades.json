@@ -1,0 +1,1958 @@
+{
+ "resources": {
+  "allReferencedPopulationsBySid": {
+   "Population$Sid[4420]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Florida brickell-bush",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Brickellia mosieri",
+    "shortName": "Florida brickell-bush",
+    "sid": {
+     "id": 4420,
+     "val": "Population$Sid[4420]"
+    },
+    "speciesId": 956,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/956"
+   },
+   "Population$Sid[1221]": {
+    "groupCode": "B",
+    "groupName": "Birds",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Everglade snail kite",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Rostrhamus sociabilis plumbeus",
+    "shortName": "Everglade snail kite",
+    "sid": {
+     "id": 1221,
+     "val": "Population$Sid[1221]"
+    },
+    "speciesId": 7713,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/7713"
+   },
+   "Population$Sid[7]": {
+    "groupCode": "A",
+    "groupName": "Mammals",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "West Indian Manatee",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Trichechus manatus",
+    "shortName": "West Indian Manatee",
+    "sid": {
+     "id": 7,
+     "val": "Population$Sid[7]"
+    },
+    "speciesId": 4469,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4469"
+   },
+   "Population$Sid[8]": {
+    "groupCode": "A",
+    "groupName": "Mammals",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Florida panther",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Puma (=Felis) concolor coryi",
+    "shortName": "Florida panther",
+    "sid": {
+     "id": 8,
+     "val": "Population$Sid[8]"
+    },
+    "speciesId": 1763,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/1763"
+   },
+   "Population$Sid[8396]": {
+    "groupCode": "C",
+    "groupName": "Reptiles",
+    "listingStatusCode": "SAT",
+    "listingStatusName": "Similarity of Appearance (Threatened)",
+    "optionalCommonName": "American alligator",
+    "optionalListingStatusDescription": "A species that is threatened due to similarity of appearance with another listed species and is listed for its protection",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Alligator mississippiensis",
+    "shortName": "American alligator",
+    "sid": {
+     "id": 8396,
+     "val": "Population$Sid[8396]"
+    },
+    "speciesId": 776,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/776"
+   },
+   "Population$Sid[1229]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Deltoid spurge",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Chamaesyce deltoidea ssp. deltoidea",
+    "shortName": "Deltoid spurge",
+    "sid": {
+     "id": 1229,
+     "val": "Population$Sid[1229]"
+    },
+    "speciesId": 199,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/199"
+   },
+   "Population$Sid[8336]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Cape Sable Thoroughwort",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Chromolaena frustrata",
+    "shortName": "Cape Sable Thoroughwort",
+    "sid": {
+     "id": 8336,
+     "val": "Population$Sid[8336]"
+    },
+    "speciesId": 4733,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4733"
+   },
+   "Population$Sid[1043]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Crenulate lead-plant",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Amorpha crenulata",
+    "shortName": "Crenulate lead-plant",
+    "sid": {
+     "id": 1043,
+     "val": "Population$Sid[1043]"
+    },
+    "speciesId": 6470,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6470"
+   },
+   "Population$Sid[1044]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Small's milkpea",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Galactia smallii",
+    "shortName": "Small's milkpea",
+    "sid": {
+     "id": 1044,
+     "val": "Population$Sid[1044]"
+    },
+    "speciesId": 3360,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/3360"
+   },
+   "Population$Sid[10710]": {
+    "groupCode": "I",
+    "groupName": "Insects",
+    "listingStatusCode": "PT",
+    "listingStatusName": "Proposed Threatened",
+    "optionalCommonName": "Monarch butterfly",
+    "optionalListingStatusDescription": "Species proposed for official listing as threatened",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Danaus plexippus",
+    "shortName": "Monarch butterfly",
+    "sid": {
+     "id": 10710,
+     "val": "Population$Sid[10710]"
+    },
+    "speciesId": 9743,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/9743"
+   },
+   "Population$Sid[5273]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Florida prairie-clover",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Dalea carthagenensis floridana",
+    "shortName": "Florida prairie-clover",
+    "sid": {
+     "id": 5273,
+     "val": "Population$Sid[5273]"
+    },
+    "speciesId": 2300,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/2300"
+   },
+   "Population$Sid[4253]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "Pineland sandmat",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Chamaesyce deltoidea pinetorum",
+    "shortName": "Pineland sandmat",
+    "sid": {
+     "id": 4253,
+     "val": "Population$Sid[4253]"
+    },
+    "speciesId": 1914,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/1914"
+   },
+   "Population$Sid[989]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Tiny polygala",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Polygala smallii",
+    "shortName": "Tiny polygala",
+    "sid": {
+     "id": 989,
+     "val": "Population$Sid[989]"
+    },
+    "speciesId": 996,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/996"
+   },
+   "Population$Sid[11365]": {
+    "groupCode": "A",
+    "groupName": "Mammals",
+    "listingStatusCode": "PE",
+    "listingStatusName": "Proposed Endangered",
+    "optionalCommonName": "Tricolored bat",
+    "optionalListingStatusDescription": "Species proposed for official listing as endangered",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Perimyotis subflavus",
+    "shortName": "Tricolored bat",
+    "sid": {
+     "id": 11365,
+     "val": "Population$Sid[11365]"
+    },
+    "speciesId": 10515,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/10515"
+   },
+   "Population$Sid[7206]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Carter's small-flowered flax",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Linum carteri carteri",
+    "shortName": "Carter's small-flowered flax",
+    "sid": {
+     "id": 7206,
+     "val": "Population$Sid[7206]"
+    },
+    "speciesId": 7208,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/7208"
+   },
+   "Population$Sid[4712]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "Florida pineland crabgrass",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Digitaria pauciflora",
+    "shortName": "Florida pineland crabgrass",
+    "sid": {
+     "id": 4712,
+     "val": "Population$Sid[4712]"
+    },
+    "speciesId": 3728,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/3728"
+   },
+   "Population$Sid[4395]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "Everglades bully",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Sideroxylon reclinatum ssp. austrofloridense",
+    "shortName": "Everglades bully",
+    "sid": {
+     "id": 4395,
+     "val": "Population$Sid[4395]"
+    },
+    "speciesId": 4735,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4735"
+   },
+   "Population$Sid[173]": {
+    "groupCode": "C",
+    "groupName": "Reptiles",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "Eastern indigo snake",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Drymarchon couperi",
+    "shortName": "Eastern indigo snake",
+    "sid": {
+     "id": 173,
+     "val": "Population$Sid[173]"
+    },
+    "speciesId": 646,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/646"
+   },
+   "Population$Sid[176]": {
+    "groupCode": "C",
+    "groupName": "Reptiles",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "American crocodile",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "U.S.A. (FL)",
+    "optionalScientificName": "Crocodylus acutus",
+    "shortName": "American crocodile",
+    "sid": {
+     "id": 176,
+     "val": "Population$Sid[176]"
+    },
+    "speciesId": 6604,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6604"
+   },
+   "Population$Sid[5233]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "Blodgett's silverbush",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Argythamnia blodgettii",
+    "shortName": "Blodgett's silverbush",
+    "sid": {
+     "id": 5233,
+     "val": "Population$Sid[5233]"
+    },
+    "speciesId": 6823,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6823"
+   },
+   "Population$Sid[1525]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Florida semaphore Cactus",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Consolea corallicola",
+    "shortName": "Florida semaphore Cactus",
+    "sid": {
+     "id": 1525,
+     "val": "Population$Sid[1525]"
+    },
+    "speciesId": 4356,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4356"
+   },
+   "Population$Sid[11319]": {
+    "groupCode": "B",
+    "groupName": "Birds",
+    "listingStatusCode": "T",
+    "listingStatusName": "Threatened",
+    "optionalCommonName": "Eastern Black rail",
+    "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Laterallus jamaicensis jamaicensis",
+    "shortName": "Eastern Black rail",
+    "sid": {
+     "id": 11319,
+     "val": "Population$Sid[11319]"
+    },
+    "speciesId": 10477,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/10477"
+   },
+   "Population$Sid[1015]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Carter's mustard",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Warea carteri",
+    "shortName": "Carter's mustard",
+    "sid": {
+     "id": 1015,
+     "val": "Population$Sid[1015]"
+    },
+    "speciesId": 5583,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/5583"
+   },
+   "Population$Sid[953]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Beach jacquemontia",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Jacquemontia reclinata",
+    "shortName": "Beach jacquemontia",
+    "sid": {
+     "id": 953,
+     "val": "Population$Sid[953]"
+    },
+    "speciesId": 1277,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/1277"
+   },
+   "Population$Sid[9725]": {
+    "groupCode": "A",
+    "groupName": "Mammals",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Florida bonneted bat",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "Wherever found",
+    "optionalScientificName": "Eumops floridanus",
+    "shortName": "Florida bonneted bat",
+    "sid": {
+     "id": 9725,
+     "val": "Population$Sid[9725]"
+    },
+    "speciesId": 8630,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/8630"
+   },
+   "Population$Sid[8061]": {
+    "groupCode": "A",
+    "groupName": "Mammals",
+    "listingStatusCode": "SAT",
+    "listingStatusName": "Similarity of Appearance (Threatened)",
+    "optionalCommonName": "Puma (=mountain lion)",
+    "optionalListingStatusDescription": "A species that is threatened due to similarity of appearance with another listed species and is listed for its protection",
+    "optionalPopulationDescription": "U.S.A. (FL)",
+    "optionalScientificName": "Puma (=Felis) concolor (all subsp. except coryi)",
+    "shortName": "Puma (=mountain lion)",
+    "sid": {
+     "id": 8061,
+     "val": "Population$Sid[8061]"
+    },
+    "speciesId": 6049,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6049"
+   },
+   "Population$Sid[1535]": {
+    "groupCode": "Q",
+    "groupName": "Flowering Plants",
+    "listingStatusCode": "E",
+    "listingStatusName": "Endangered",
+    "optionalCommonName": "Sand flax",
+    "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+    "optionalPopulationDescription": "",
+    "optionalScientificName": "Linum arenicola",
+    "shortName": "Sand flax",
+    "sid": {
+     "id": 1535,
+     "val": "Population$Sid[1535]"
+    },
+    "speciesId": 4313,
+    "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4313"
+   }
+  },
+  "apiVersion": "1.2.0",
+  "coastalBarriers": null,
+  "coastalBarriersQueried": false,
+  "crithabs": [
+   {
+    "hasGeometry": false,
+    "optionalGeometry": null,
+    "populationSid": {
+     "id": 7,
+     "val": "Population$Sid[7]"
+    },
+    "speciesInFootprint": true,
+    "type": "Final"
+   }
+  ],
+  "facilitiesQueried": false,
+  "fieldOffices": [
+   {
+    "officeName": "Florida Ecological Services Field Office",
+    "formattedMailAddress1": "777 37th St",
+    "mailAndPhysicalAddressTheSame": true,
+    "formattedMailAddress2": "Suite D-101",
+    "formattedPhysicalAddress2": "Suite D-101",
+    "formattedPhone": "(352) 448-9151",
+    "formattedPhysicalAddress1": "777 37th St",
+    "formattedPhysicalZip": "32960-3559",
+    "sid": {
+     "id": 41411,
+     "val": "FwsOffice$Sid[41411]"
+    },
+    "formattedMailZip": "32960-3559",
+    "formattedPhysicalState": "FL",
+    "formattedPhysicalCity": "Vero Beach",
+    "formattedFax": "(772) 562-4288",
+    "formattedMailState": "FL",
+    "formattedMailCity": "Vero Beach"
+   }
+  ],
+  "fishHatcheries": null,
+  "location": {
+   "footprint": {
+    "coordinates": [
+     [
+      [
+       [
+        -80.495,
+        25.755
+       ],
+       [
+        -80.485,
+        25.755
+       ],
+       [
+        -80.485,
+        25.765
+       ],
+       [
+        -80.495,
+        25.765
+       ],
+       [
+        -80.495,
+        25.755
+       ]
+      ]
+     ]
+    ],
+    "type": "MultiPolygon"
+   },
+   "optionalOriginalGeometry": {
+    "coordinates": [
+     [
+      [
+       [
+        -80.495,
+        25.755
+       ],
+       [
+        -80.485,
+        25.755
+       ],
+       [
+        -80.485,
+        25.765
+       ],
+       [
+        -80.495,
+        25.765
+       ],
+       [
+        -80.495,
+        25.755
+       ]
+      ]
+     ]
+    ],
+    "type": "MultiPolygon"
+   },
+   "optionalSelectedFips": null,
+   "description": "Miami-Dade  County, Florida",
+   "optionalBufferDistance": null,
+   "selectionMode": "wkt/unknown"
+  },
+  "marineMammals": [
+   {
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "populationSid": {
+     "id": 7,
+     "val": "Population$Sid[7]"
+    }
+   }
+  ],
+  "migbirds": null,
+  "migbirdsQueried": false,
+  "numFacilities": 0,
+  "populationsBySid": {
+   "Population$Sid[8396]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "C",
+     "groupName": "Reptiles",
+     "listingStatusCode": "SAT",
+     "listingStatusName": "Similarity of Appearance (Threatened)",
+     "optionalCommonName": "American alligator",
+     "optionalListingStatusDescription": "A species that is threatened due to similarity of appearance with another listed species and is listed for its protection",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Alligator mississippiensis",
+     "shortName": "American alligator",
+     "sid": {
+      "id": 8396,
+      "val": "Population$Sid[8396]"
+     },
+     "speciesId": 776,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/776"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[176]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "1977-09-22T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/42/47840?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 176,
+      "val": "Population$Sid[176]"
+     }
+    },
+    "population": {
+     "groupCode": "C",
+     "groupName": "Reptiles",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "American crocodile",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "U.S.A. (FL)",
+     "optionalScientificName": "Crocodylus acutus",
+     "shortName": "American crocodile",
+     "sid": {
+      "id": 176,
+      "val": "Population$Sid[176]"
+     },
+     "speciesId": 6604,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6604"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[953]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Beach jacquemontia",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Jacquemontia reclinata",
+     "shortName": "Beach jacquemontia",
+     "sid": {
+      "id": 953,
+      "val": "Population$Sid[953]"
+     },
+     "speciesId": 1277,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/1277"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[5233]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2022-10-14T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/87/62502",
+     "isFileLocal": false,
+     "sid": {
+      "id": 5233,
+      "val": "Population$Sid[5233]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "Blodgett's silverbush",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Argythamnia blodgettii",
+     "shortName": "Blodgett's silverbush",
+     "sid": {
+      "id": 5233,
+      "val": "Population$Sid[5233]"
+     },
+     "speciesId": 6823,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6823"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[8336]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2014-01-08T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/79/1552?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 8336,
+      "val": "Population$Sid[8336]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Cape Sable Thoroughwort",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Chromolaena frustrata",
+     "shortName": "Cape Sable Thoroughwort",
+     "sid": {
+      "id": 8336,
+      "val": "Population$Sid[8336]"
+     },
+     "speciesId": 4733,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4733"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[1015]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Carter's mustard",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Warea carteri",
+     "shortName": "Carter's mustard",
+     "sid": {
+      "id": 1015,
+      "val": "Population$Sid[1015]"
+     },
+     "speciesId": 5583,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/5583"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[7206]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2015-08-17T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/80/49846?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 7206,
+      "val": "Population$Sid[7206]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Carter's small-flowered flax",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Linum carteri carteri",
+     "shortName": "Carter's small-flowered flax",
+     "sid": {
+      "id": 7206,
+      "val": "Population$Sid[7206]"
+     },
+     "speciesId": 7208,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/7208"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[1043]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Crenulate lead-plant",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Amorpha crenulata",
+     "shortName": "Crenulate lead-plant",
+     "sid": {
+      "id": 1043,
+      "val": "Population$Sid[1043]"
+     },
+     "speciesId": 6470,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6470"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[1229]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Deltoid spurge",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Chamaesyce deltoidea ssp. deltoidea",
+     "shortName": "Deltoid spurge",
+     "sid": {
+      "id": 1229,
+      "val": "Population$Sid[1229]"
+     },
+     "speciesId": 199,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/199"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[11319]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "B",
+     "groupName": "Birds",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "Eastern Black rail",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Laterallus jamaicensis jamaicensis",
+     "shortName": "Eastern Black rail",
+     "sid": {
+      "id": 11319,
+      "val": "Population$Sid[11319]"
+     },
+     "speciesId": 10477,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/10477"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[173]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "C",
+     "groupName": "Reptiles",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "Eastern indigo snake",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Drymarchon couperi",
+     "shortName": "Eastern indigo snake",
+     "sid": {
+      "id": 173,
+      "val": "Population$Sid[173]"
+     },
+     "speciesId": 646,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/646"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": null,
+      "docTitle": "2024 Eastern Indigo Snake BMPs for Construction Projects",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc7298.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[1221]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "1977-09-22T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/42/47840?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 1221,
+      "val": "Population$Sid[1221]"
+     }
+    },
+    "population": {
+     "groupCode": "B",
+     "groupName": "Birds",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Everglade snail kite",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Rostrhamus sociabilis plumbeus",
+     "shortName": "Everglade snail kite",
+     "sid": {
+      "id": 1221,
+      "val": "Population$Sid[1221]"
+     },
+     "speciesId": 7713,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/7713"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": null,
+      "docTitle": "Snail Kite Survey Guidelines",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6976.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[4395]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2022-10-14T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/87/62564",
+     "isFileLocal": false,
+     "sid": {
+      "id": 4395,
+      "val": "Population$Sid[4395]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "Everglades bully",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Sideroxylon reclinatum ssp. austrofloridense",
+     "shortName": "Everglades bully",
+     "sid": {
+      "id": 4395,
+      "val": "Population$Sid[4395]"
+     },
+     "speciesId": 4735,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4735"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[9725]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2024-03-07T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/89/16624",
+     "isFileLocal": false,
+     "sid": {
+      "id": 9725,
+      "val": "Population$Sid[9725]"
+     }
+    },
+    "population": {
+     "groupCode": "A",
+     "groupName": "Mammals",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Florida bonneted bat",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Eumops floridanus",
+     "shortName": "Florida bonneted bat",
+     "sid": {
+      "id": 9725,
+      "val": "Population$Sid[9725]"
+     },
+     "speciesId": 8630,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/8630"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "A checklist of the minimum requirements for submitted Florida bonneted bat surveys",
+      "docDate": "2016-07-30T00:00Z",
+      "docTitle": "Florida Bonneted Bat Survey Checklist",
+      "docType": "Habitat Assessment Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/habitat_assessment_guidelines/doc13755.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     },
+     {
+      "description": "These Guidelines are a revision of the 2019 Guidelines. The Consultation Area, Consultation Key, Survey Methods, and Best Management Practices (BMPs) were revised based upon the best available scientific information. These Guidelines also include a Key for the Critical Habitat for the Florida bonneted bat.",
+      "docDate": "2024-06-01T00:00Z",
+      "docTitle": "Florida Bonneted Bat Consultation Guidelines",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc7285.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     },
+     {
+      "description": "Updated Avoidance and Minimization Measures (AMMs) for the Florida Bonneted Bat ",
+      "docDate": "2026-08-14T00:00Z",
+      "docTitle": "Florida Bonneted Bat Avoidance and Minimization Measures",
+      "docType": "IPaC Project Design Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/ipac_project_design_guidelines/doc13356.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[4420]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2015-08-17T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/80/49846?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 4420,
+      "val": "Population$Sid[4420]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Florida brickell-bush",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Brickellia mosieri",
+     "shortName": "Florida brickell-bush",
+     "sid": {
+      "id": 4420,
+      "val": "Population$Sid[4420]"
+     },
+     "speciesId": 956,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/956"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[8]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "A",
+     "groupName": "Mammals",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Florida panther",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Puma (=Felis) concolor coryi",
+     "shortName": "Florida panther",
+     "sid": {
+      "id": 8,
+      "val": "Population$Sid[8]"
+     },
+     "speciesId": 1763,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/1763"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "The Service developed the panther habitat assessment methodology in 2006 and updated the methodology in 2009. To evaluate project effects to the Florida panther, the Service considers the contributions the project lands provide to the Florida panther, recognizing not all habitats\r\nprovide the same functional value. Kautz et al. (2006) also recognized not all habitats provide the same habitat value to the Florida panther and developed cost surface values for various habitat types, based on use by and presence in home ranges of panthers.",
+      "docDate": "2012-09-24T00:00Z",
+      "docTitle": "Panther Habitat Assessment Methodology",
+      "docType": "Habitat Assessment Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/habitat_assessment_guidelines/doc7121.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     },
+     {
+      "description": "The revised Panther Key will assist the Corps and other agencies in their effect determinations regarding the Florida Panther.",
+      "docDate": "2007-02-19T00:00Z",
+      "docTitle": "Florida Panther Effect Determination Key",
+      "docType": "IPaC Project Design Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/ipac_project_design_guidelines/doc7123.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[4712]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2022-10-14T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/87/62564",
+     "isFileLocal": false,
+     "sid": {
+      "id": 4712,
+      "val": "Population$Sid[4712]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "Florida pineland crabgrass",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Digitaria pauciflora",
+     "shortName": "Florida pineland crabgrass",
+     "sid": {
+      "id": 4712,
+      "val": "Population$Sid[4712]"
+     },
+     "speciesId": 3728,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/3728"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[5273]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2022-10-14T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/87/62564",
+     "isFileLocal": false,
+     "sid": {
+      "id": 5273,
+      "val": "Population$Sid[5273]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Florida prairie-clover",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Dalea carthagenensis floridana",
+     "shortName": "Florida prairie-clover",
+     "sid": {
+      "id": 5273,
+      "val": "Population$Sid[5273]"
+     },
+     "speciesId": 2300,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/2300"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[1525]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2016-01-22T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/81/3866?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 1525,
+      "val": "Population$Sid[1525]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Florida semaphore Cactus",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Consolea corallicola",
+     "shortName": "Florida semaphore Cactus",
+     "sid": {
+      "id": 1525,
+      "val": "Population$Sid[1525]"
+     },
+     "speciesId": 4356,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4356"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[10710]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2024-12-12T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/89/100662",
+     "isFileLocal": false,
+     "sid": {
+      "id": 10710,
+      "val": "Population$Sid[10710]"
+     }
+    },
+    "population": {
+     "groupCode": "I",
+     "groupName": "Insects",
+     "listingStatusCode": "PT",
+     "listingStatusName": "Proposed Threatened",
+     "optionalCommonName": "Monarch butterfly",
+     "optionalListingStatusDescription": "Species proposed for official listing as threatened",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Danaus plexippus",
+     "shortName": "Monarch butterfly",
+     "sid": {
+      "id": 10710,
+      "val": "Population$Sid[10710]"
+     },
+     "speciesId": 9743,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/9743"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[4253]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2022-10-14T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/87/62564",
+     "isFileLocal": false,
+     "sid": {
+      "id": 4253,
+      "val": "Population$Sid[4253]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "Pineland sandmat",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Chamaesyce deltoidea pinetorum",
+     "shortName": "Pineland sandmat",
+     "sid": {
+      "id": 4253,
+      "val": "Population$Sid[4253]"
+     },
+     "speciesId": 1914,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/1914"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[8061]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "A",
+     "groupName": "Mammals",
+     "listingStatusCode": "SAT",
+     "listingStatusName": "Similarity of Appearance (Threatened)",
+     "optionalCommonName": "Puma (=mountain lion)",
+     "optionalListingStatusDescription": "A species that is threatened due to similarity of appearance with another listed species and is listed for its protection",
+     "optionalPopulationDescription": "U.S.A. (FL)",
+     "optionalScientificName": "Puma (=Felis) concolor (all subsp. except coryi)",
+     "shortName": "Puma (=mountain lion)",
+     "sid": {
+      "id": 8061,
+      "val": "Population$Sid[8061]"
+     },
+     "speciesId": 6049,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/6049"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[1535]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "2022-10-14T00:00Z",
+     "displayType": "Proposed",
+     "type": "Proposed",
+     "url": "https://www.govinfo.gov/link/fr/87/62502",
+     "isFileLocal": false,
+     "sid": {
+      "id": 1535,
+      "val": "Population$Sid[1535]"
+     }
+    },
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Sand flax",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Linum arenicola",
+     "shortName": "Sand flax",
+     "sid": {
+      "id": 1535,
+      "val": "Population$Sid[1535]"
+     },
+     "speciesId": 4313,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4313"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[1044]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Small's milkpea",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Galactia smallii",
+     "shortName": "Small's milkpea",
+     "sid": {
+      "id": 1044,
+      "val": "Population$Sid[1044]"
+     },
+     "speciesId": 3360,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/3360"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[989]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "Q",
+     "groupName": "Flowering Plants",
+     "listingStatusCode": "E",
+     "listingStatusName": "Endangered",
+     "optionalCommonName": "Tiny polygala",
+     "optionalListingStatusDescription": "A species in danger of extinction throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "",
+     "optionalScientificName": "Polygala smallii",
+     "shortName": "Tiny polygala",
+     "sid": {
+      "id": 989,
+      "val": "Population$Sid[989]"
+     },
+     "speciesId": 996,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/996"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2022-05-16T00:00Z",
+      "docTitle": "Survey Calendar for Listed Plant Species",
+      "docType": "Species Survey Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/species_survey_guidelines/doc6979.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   },
+   "Population$Sid[11365]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": false,
+    "optionalFederalRegisterCrithabStatus": null,
+    "population": {
+     "groupCode": "A",
+     "groupName": "Mammals",
+     "listingStatusCode": "PE",
+     "listingStatusName": "Proposed Endangered",
+     "optionalCommonName": "Tricolored bat",
+     "optionalListingStatusDescription": "Species proposed for official listing as endangered",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Perimyotis subflavus",
+     "shortName": "Tricolored bat",
+     "sid": {
+      "id": 11365,
+      "val": "Population$Sid[11365]"
+     },
+     "speciesId": 10515,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/10515"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": []
+   },
+   "Population$Sid[7]": {
+    "conditional": false,
+    "conditions": [],
+    "crithabInFootprint": true,
+    "optionalFederalRegisterCrithabStatus": {
+     "date": "1977-09-22T00:00Z",
+     "displayType": "Final",
+     "type": "Final",
+     "url": "https://www.govinfo.gov/link/fr/42/47840?link-type=pdf",
+     "isFileLocal": false,
+     "sid": {
+      "id": 7,
+      "val": "Population$Sid[7]"
+     }
+    },
+    "population": {
+     "groupCode": "A",
+     "groupName": "Mammals",
+     "listingStatusCode": "T",
+     "listingStatusName": "Threatened",
+     "optionalCommonName": "West Indian Manatee",
+     "optionalListingStatusDescription": "A species likely to become endangered within the foreseeable future throughout all or a significant portion of its range",
+     "optionalPopulationDescription": "Wherever found",
+     "optionalScientificName": "Trichechus manatus",
+     "shortName": "West Indian Manatee",
+     "sid": {
+      "id": 7,
+      "val": "Population$Sid[7]"
+     },
+     "speciesId": 4469,
+     "speciesProfileUrl": "https://ecos.fws.gov/ecp/species/4469"
+    },
+    "ranges": [
+     {
+      "conditional": false,
+      "fieldOfficeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      },
+      "optionalCondition": null,
+      "seasons": []
+     }
+    ],
+    "tessDocuments": [
+     {
+      "description": "",
+      "docDate": "2024-01-16T00:00Z",
+      "docTitle": "January 01, 2024, Manatee Key Addendum",
+      "docType": "IPaC Project Design Guidelines",
+      "docUrl": "https://ecos.fws.gov/docs/tess/ipac_project_design_guidelines/doc7281.pdf",
+      "officeSid": {
+       "id": 41411,
+       "val": "FwsOffice$Sid[41411]"
+      }
+     }
+    ]
+   }
+  },
+  "refuges": null,
+  "wetlands": null,
+  "wetlandsQueried": false
+ },
+ "warning": "This API will soon require you to identify yourself in the request headers. Please include a From header with your contact information (Email Address) and a value for at least one of the following Custom Headers: X-Organization, X-Project to identify your Organization and/or Project. Requests that do not include this information will be rejected in the future. This message will no longer appear once you include these headers.",
+ "_recorded": {
+  "source": "https://ipac.ecosphere.fws.gov/location/api/resources",
+  "retrieved_at": "2026-10-17T21:14:00Z",
+  "footprint": "1 km square centered on 25.76,-80.49 (fixture demo site)",
+  "edits": "species descriptions and image links removed; otherwise verbatim"
+ }
+}

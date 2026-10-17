@@ -161,6 +161,7 @@ Adapter rules:
 - `GET /api/sites/{id}/briefing`
 - `GET /api/briefings`
 - `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}` (team onboarding and management)
+- `GET /api/sites/{id}/species` (read-only species context for team sites; see `docs/SPECIES_CONTEXT.md`)
 
 These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Rudra consumes these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
 

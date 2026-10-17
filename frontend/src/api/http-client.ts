@@ -12,6 +12,7 @@ import {
   validateNotice,
   validateConfirmation,
   validateTeamRoster,
+  validateSpeciesContext,
   validateTeams,
 } from './validate'
 import type {
@@ -282,6 +283,26 @@ export class HttpClient implements Client {
     if (!Array.isArray(rows))
       throw new ApiError(502, 'Invalid organization briefing response')
     return rows.map((row) => validateBriefing(row))
+  }
+  async species(id: string) {
+    try {
+      return validateSpeciesContext(
+        await this.request<unknown>(
+          `/api/sites/${encodeURIComponent(id)}/species`,
+        ),
+        id,
+      )
+    } catch (error) {
+      // Only "no assigned team" is an empty state. Any other failure is shown as one,
+      // never as "no species".
+      if (
+        error instanceof ApiError &&
+        error.status === 404 &&
+        error.reason === 'no_team'
+      )
+        return null
+      throw error
+    }
   }
   me() {
     return this.request<unknown>('/api/me').then(validateAccount)

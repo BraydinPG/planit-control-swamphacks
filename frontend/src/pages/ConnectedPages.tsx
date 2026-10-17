@@ -20,6 +20,7 @@ import {
 import { useReportLocation } from '../application/useReportLocation'
 import type { LocationReason } from '../application/report-location'
 import { StoredBriefings } from '../components/data/StoredBriefings'
+import { SpeciesSection } from '../components/data/SpeciesPanel'
 import { sortSites } from '../api/contracts'
 import {
   Action,
@@ -287,6 +288,8 @@ function SitePage({
         </div>
       </div>
       {!compact && <EventOutlooks cards={site.event_outlooks ?? []} />}
+      {/* Read-only regional context for team sites; never feeds score or alerts. */}
+      {site.assigned_team && <SpeciesSection site={site} />}
       <Suspense
         fallback={
           <p role="status" className="kicker">

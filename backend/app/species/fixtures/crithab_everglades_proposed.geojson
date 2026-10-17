@@ -1,0 +1,110 @@
+{
+ "type": "FeatureCollection",
+ "_recorded": {
+  "source": "USFWS_Critical_Habitat/FeatureServer/2/query",
+  "retrieved_at": "2026-10-17T21:14:00Z",
+  "window": "6 km square centered on 25.76,-80.49",
+  "edits": "geometry pre-clipped to the window; attributes verbatim"
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "id": 72,
+   "geometry": {
+    "type": "MultiPolygon",
+    "coordinates": [
+     [
+      [
+       [
+        -80.46008,
+        25.73305
+       ],
+       [
+        -80.46008,
+        25.76134
+       ],
+       [
+        -80.4979,
+        25.76115
+       ],
+       [
+        -80.49696,
+        25.73305
+       ],
+       [
+        -80.49707,
+        25.73305
+       ],
+       [
+        -80.4982,
+        25.76123
+       ],
+       [
+        -80.5024,
+        25.7613
+       ],
+       [
+        -80.4982,
+        25.76151
+       ],
+       [
+        -80.48331,
+        25.77516
+       ],
+       [
+        -80.48253,
+        25.7829
+       ],
+       [
+        -80.48288,
+        25.78695
+       ],
+       [
+        -80.48256,
+        25.78695
+       ],
+       [
+        -80.48213,
+        25.78335
+       ],
+       [
+        -80.48296,
+        25.77508
+       ],
+       [
+        -80.49774,
+        25.7622
+       ],
+       [
+        -80.49774,
+        25.7613
+       ],
+       [
+        -80.49644,
+        25.76128
+       ],
+       [
+        -80.46008,
+        25.76129
+       ],
+       [
+        -80.46008,
+        25.73305
+       ]
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "OBJECTID": 72,
+    "comname": "West Indian Manatee",
+    "sciname": "Trichechus manatus",
+    "entity_id": 7,
+    "status": "Proposed",
+    "listing_status": "Threatened",
+    "fedreg": "89FR78134 78198",
+    "pubdate": "20240924"
+   }
+  }
+ ]
+}
