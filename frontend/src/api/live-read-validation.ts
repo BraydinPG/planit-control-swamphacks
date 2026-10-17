@@ -217,6 +217,23 @@ export function validateSiteDetail(v: unknown, id: string): SiteDetail {
   for (const report of v.reports)
     if (validateReport(report).site_id !== id)
       throw new ApiError(502, 'Report belongs to a different site')
+  // A detail response contains two views of the same persisted score. Accepting
+  // different versions would show one headline and another factor breakdown.
+  // Compare the server's values; never recalculate the hazard index here.
+  if (
+    v.score !== null &&
+    (v.risk_score !== v.score.risk_score ||
+      v.risk_level !== v.score.risk_level ||
+      v.model_version !== v.score.model_version ||
+      v.data_completeness !== v.score.data_completeness ||
+      Date.parse(String(v.updated_at)) !== Date.parse(String(v.score.created_at)))
+  )
+    throw new ApiError(
+      502,
+      'Inconsistent stored score response. Refresh before using this site detail.',
+    )
+  if (v.score === null && (v.risk_score !== null || v.risk_level !== null))
+    throw new ApiError(502, 'Site detail is missing its stored score breakdown.')
   v.notices.forEach((notice) => validateNotice(notice)) // Radius/receipt scope is enforced by FastAPI.
   return v as unknown as SiteDetail
 }

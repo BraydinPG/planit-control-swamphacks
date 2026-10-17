@@ -10,6 +10,7 @@ import {
   origin,
   routeInventory,
   runAcceptance,
+  hasIncompleteEvidenceWarning,
 } from './integration/acceptance.mjs'
 
 const frontend = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -283,7 +284,7 @@ async function main() {
     server: { middlewareMode: true, hmr: false },
     appType: 'custom',
   })
-  let result, canonical, rendering
+  let result, canonical, rendering, scoringDisplay
   try {
     const { HttpClient } = await server.ssrLoadModule('/src/api/http-client.ts')
     const { ScorePanel, Factors, Observations } = await server.ssrLoadModule(
@@ -332,7 +333,9 @@ async function main() {
             React.Fragment,
             null,
             React.createElement(ScorePanel, { site, demo }),
-            React.createElement(Factors, { factors: site.top_factors }),
+            React.createElement(Factors, {
+              factors: site.score?.factor_contributions ?? site.top_factors,
+            }),
             React.createElement(Observations, { rows: site.observations }),
           ),
         )
@@ -346,10 +349,45 @@ async function main() {
         full_browser:
           'not_run; real Auth0 browser-role/reload acceptance remains required',
       }
+      // Existing fixed-time T051A output is controlled evidence, never a live site.
+      // Render the actual component without altering its props/API or substituting
+      // unknown data in the app. Rendering without throwing alone is not acceptance.
+      const evaluation = JSON.parse(
+        await readFile(
+          resolve(frontend, '../docs/site-risk-scoring-evaluation.json'),
+          'utf8',
+        ),
+      )
+      const missing = evaluation.canonical_examples.no_evidence
+      const noEvidenceSite = {
+        ...fixtureDetail,
+        risk_score: missing.risk_score,
+        risk_level: missing.risk_level,
+        data_completeness: missing.data_completeness,
+        model_version: missing.model_version,
+        updated_at: missing.created_at,
+        top_factors: missing.factor_contributions,
+      }
+      const markup = renderToStaticMarkup(
+        React.createElement(ScorePanel, { site: noEvidenceSite, demo: false }),
+      )
+      const warned = hasIncompleteEvidenceWarning(markup)
+      scoringDisplay = {
+        status: warned ? 'passed' : 'failed',
+        evidence_type: 'controlled_T051A_no_evidence_render',
+        detail: warned
+          ? 'Explicit unknown-evidence warning found; visual prominence and real browser roles still require review'
+          : 'ScorePanel renders numeric 0/low with zero completeness and no explicit unknown-evidence warning; Claude presentation handoff required',
+        live_acceptance_complete: false,
+      }
     } catch {
       rendering = {
         status: 'failed',
         reason: 'Canonical view rendering failed; private payload omitted',
+      }
+      scoringDisplay = {
+        status: 'blocked',
+        reason: 'Controlled score rendering unavailable',
       }
     }
   } finally {
@@ -370,6 +408,7 @@ async function main() {
     result.report.status === 'failed' ||
     canonical.status === 'failed' ||
     rendering.status === 'failed' ||
+    scoringDisplay.status === 'failed' ||
     network.health.status !== 200 ||
     network.vite_proxy_unauthenticated.status !== 401
   const report = {
@@ -388,6 +427,7 @@ async function main() {
     acceptance: result.report,
     canonical_responses: canonical,
     shared_rendering: rendering,
+    incomplete_score_display: scoringDisplay,
     privacy:
       'No tokens, user IDs, credentials, response bodies or private site names retained',
     task_checkboxes_changed: [],

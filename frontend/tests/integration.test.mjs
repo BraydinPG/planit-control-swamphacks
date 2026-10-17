@@ -8,6 +8,7 @@ import {
   routeInventory,
   tokenIdentity,
   runAcceptance,
+  hasIncompleteEvidenceWarning,
 } from '../scripts/integration/acceptance.mjs'
 
 const server = await createServer({
@@ -142,6 +143,24 @@ function harness(overrides = {}, sourceAlerts = initialAlerts) {
   }
 }
 const byId = (result, id) => result.report.checks.find((c) => c.id === id)
+
+test('incomplete-score display gate requires explicit unknown evidence wording, not a low band and percentage alone', () => {
+  assert.equal(
+    hasIncompleteEvidenceWarning('<p>0.0 / 10 · low</p><p>Completeness: 0%</p>'),
+    false,
+  )
+  assert.equal(
+    hasIncompleteEvidenceWarning('<p>Server-provided score; never calculated locally.</p>'),
+    false,
+  )
+  for (const warning of [
+    'Evidence incomplete',
+    'Conditions unknown',
+    'No current evidence',
+    'Score withheld',
+  ])
+    assert.equal(hasIncompleteEvidenceWarning(`<p>${warning}</p>`), true)
+})
 
 test('published T053 report reads use existing client and remain distinct from absent review and live creation acceptance', async () => {
   const h = harness({

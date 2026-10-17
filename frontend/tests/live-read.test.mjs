@@ -103,6 +103,37 @@ test('invalid alert states, timestamps, flags, acknowledgement identities and du
     (e) => e.status === 502,
   )
 })
+test('one site payload cannot mix headline and nested stored-score versions', async () => {
+  for (const override of [
+    { risk_score: detail.risk_score - 1 },
+    { risk_level: 'critical' },
+    { model_version: 'different-server-version' },
+    { data_completeness: 0 },
+    { updated_at: '2026-10-17T18:00:00Z' },
+    { score: null },
+  ])
+    await assert.rejects(
+      () => client({ ...detail, ...override }).site(detail.id),
+      (e) => e.status === 502,
+    )
+  // A genuine unscored response remains null; equivalent timezone notation is valid.
+  const unscored = {
+    ...detail,
+    risk_score: null,
+    risk_level: null,
+    updated_at: null,
+    score: null,
+    model_version: 'unscored',
+    data_completeness: 0,
+    top_factors: [],
+  }
+  assert.deepEqual(await client(unscored).site(detail.id), unscored)
+  const equivalent = {
+    ...detail,
+    updated_at: new Date(detail.updated_at).toISOString(),
+  }
+  assert.deepEqual(await client(equivalent).site(detail.id), equivalent)
+})
 test('acknowledgement must return the matching complete canonical alert and a server acknowledgement', async () => {
   for (const value of [
     { id: alerts[0].id },

@@ -1,5 +1,17 @@
 # Frontend integration status
 
+## Site-scoring verification — 2026-10-17 11:34 UTC
+
+T051A/PR #31 merged `07a459d`. Separate `feature/cache-scoring-integration` worktree branch, no unmerged parent; Claude's primary/`feature/rudra-ui` visual changes preserved. See [SITE_SCORING_INTEGRATION.md](SITE_SCORING_INTEGRATION.md) and [redacted evidence](site-scoring-integration-verification.json) for the current pipeline results, precise owner actions and reproducible acceptance commands.
+
+Controlled complete backend path passes: canned NWS JSON -> actual adapters/cache/refresh -> stored rules-0.2 score -> crew/supervisor API -> human confirmation -> updated score. Indices 2.1 ->3 ->4 ->7; failed feed holds active alert/7 while completeness becomes0. Existing in-memory test DB and fake JWT/JWKS identities only. Actual test responses render unchanged through production HttpClient/browser (16 comparisons at two widths); two additional no-evidence warning cases fail. Client now rejects internally contradictory score metadata; no algorithm, route, canonical contract or presentation edit.
+
+Actual local readiness remains blocked: Auth0 SPA/backend and DATABASE_URL missing, DB membership/contents unknown, refresh off/NWS user-agent missing, T069 source seed still empty. Health/OpenAPI200, all11 operations, ten anonymous/dev-header401 denials and proxy401 verified; invalid bearer503 is not real signature-validation proof. No real login, source collection, DB connection or authenticated mutation performed. Current runner exits1 for its newly detected **incomplete-score display failure**, in addition to configuration blockers: ScorePanel shows0/low at0% without an explicit warning next to it. Claude/Rudra handoffs are actionable; no UI/contract changes forced.
+
+Checks: **648 Python (638+10)**, **70 Node**, Ruff, lint/TS, fixture and API builds pass; API chunk553.81kB warning retained after incorporating maintainer-merged PR #32/main176cf36 as feature merge3b8dfe2; repeated frontend/browser checks pass and visual paths exactly equal main. Existing Edge demo/mock checks pass1440/390/320, no exceptions. T063–T068 stay unchecked; tasks.md unchanged. This improves independent verification, not live integration completion.
+
+## Previous functional checkpoint (historical)
+
 Verified 2026-10-17. PR #29 is merged as `ebd6d92`; Codex functional changes now use separate worktree `C:/Users/cache/planit-control-functional`, branch `feature/cache-functional-acceptance`. Claude actively owns presentation in the primary checkout. No unmerged prerequisite PR at startup; no visual files touched. Current path/interface handoff: FUNCTIONAL_INTEGRATION_HANDOFF.md.
 
 Cache clarified that existing Auth0 crew/supervisor test aliases are intended for the demo. No employee/real-user records, profiles, accounts or database rows were created by Codex. Actual Auth0-backed demo behavior can satisfy integration; isolated mocked authentication cannot prove it. Local approved environment settings/sessions are still missing in both checked roots. Tenant/account existence is not inferred from missing local files; demo membership linkage remains owner setup.
@@ -8,7 +20,7 @@ Current functional changes: canonical site/alert/nested evidence validation, typ
 
 Current checks: **68 Node**, **521 backend/probe** (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and existing browser demo/mock workflows at 1440/390/320 pass. Actual ten anonymous/development-header denials return401; invalid token503 remains unverified; all11 source/running routes match, no drift. No authenticated demo mutation performed; readiness exits2. API-mode build has a chunk-size warning (531kB); no visual/composition refactor attempted. Exact evidence: functional-integration-verification.json. Historical T065 evidence remains in t065-verification.json.
 
-T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and Claude's integrated redesign. No task checkbox changed in this run.
+T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and live accessibility on the now-integrated redesign. No task checkbox changed in this run.
 
 Review: [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), source checkpoints `b7c8dc4` / `11806fa`, open against main at publication.
 
