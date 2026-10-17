@@ -9,6 +9,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Clarification from Cache: use existing Auth0 crew/supervisor test accounts for the demo, not employee/real-user records. No identities, profiles or database rows created. Local approved environment settings/sessions still absent; roles/test-account existence is separate from local readiness.
 - 68 frontend checks, 521 backend/probe (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and desktop/phone browser regression pass. Actual ten anonymous/dev-header denials return401; invalid bearer503 remains blocked; 11 routes match. Evidence: `docs/functional-integration-verification.json`.
 - Functional dev instance: http://localhost:5176/ (same app, explicit fixture mode); primary5173 left alone. No Auth0 callback change. `--configuration-root` lets diagnostics read an approved checkout's existing settings without copying them; no infrastructure change.
+- Review [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), open against main at publication; API `b7c8dc4`, diagnostics `11806fa`. No main merge by Codex.
 - No T063-T068 checkbox changed. Actual Auth0 demo-role/Tiger Data lifecycle proof and redesigned-UI T068 remain pending; enrichment has no published endpoint to connect. Use LIVE_INTEGRATION and the short handoff before integration.
 
 ## Previous T067A / T065 checkpoint (historical)

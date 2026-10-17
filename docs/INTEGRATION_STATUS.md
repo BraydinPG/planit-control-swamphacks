@@ -6,9 +6,11 @@ Cache clarified that existing Auth0 crew/supervisor test aliases are intended fo
 
 Current functional changes: canonical site/alert/nested evidence validation, typed acknowledgement response, all-published-route anonymous gate before account tokens, case-insensitive role metadata matching existing auth exports, crew notice denial checks, stored site/org briefing reads, full acknowledgement identity/time read-back, and read-only cross-worktree configuration selection. Source/imports stay in this worktree; private settings are never copied. No API/auth/backend/schema/fixture/dependency changes.
 
-Current checks: **68 Node**, **521 backend/probe** (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and existing browser demo/mock workflows at 1440/390/320 pass. Actual ten anonymous/development-header denials return401; invalid token503 remains unverified; all11 source/running routes match, no drift. No authenticated demo mutation performed; readiness exits2. API-mode build has an existing-style chunk-size warning (531kB); no visual/composition refactor attempted. Exact evidence: functional-integration-verification.json. Historical T065 evidence remains in t065-verification.json.
+Current checks: **68 Node**, **521 backend/probe** (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and existing browser demo/mock workflows at 1440/390/320 pass. Actual ten anonymous/development-header denials return401; invalid token503 remains unverified; all11 source/running routes match, no drift. No authenticated demo mutation performed; readiness exits2. API-mode build has a chunk-size warning (531kB); no visual/composition refactor attempted. Exact evidence: functional-integration-verification.json. Historical T065 evidence remains in t065-verification.json.
 
 T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and Claude's integrated redesign. No task checkbox changed in this run.
+
+Review: [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), source checkpoints `b7c8dc4` / `11806fa`, open against main at publication.
 
 ## Authorized sequence and task evidence
 

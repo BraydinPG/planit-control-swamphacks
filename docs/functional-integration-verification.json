@@ -429,5 +429,13 @@
     "frontend/tests/integration.test.mjs",
     "frontend/tests/live-read.test.mjs",
     "frontend/tests/test_integration_probe.py"
-  ]
+  ],
+  "diagnostic_checkpoint": "11806fa87fb65c7a34b41e5d33d2cb05c50bc3d4",
+  "publication": {
+    "number": 30,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/30",
+    "state_at_publication": "open",
+    "base": "main",
+    "merged_by_codex": false
+  }
 }

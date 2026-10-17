@@ -3,6 +3,7 @@
 Verified 2026-10-17 against main `ebd6d92` (PR #29 merged). Functional branch:
 `feature/cache-functional-acceptance`, separate worktree `C:/Users/cache/planit-control-functional`.
 Claude's primary checkout and running frontend were left untouched. No unmerged parent dependency.
+Review: [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), open against main at publication; API commit `b7c8dc4`, diagnostics/handoff `11806fa`.
 
 | Owner | Paths / coordination |
 | --- | --- |

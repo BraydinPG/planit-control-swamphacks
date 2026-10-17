@@ -1,5 +1,7 @@
 ## Functional diagnostics / Claude coordination - 2026-10-17
 
+Published [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30) against main; source checkpoints `b7c8dc4` and `11806fa`. Open at publication, no Codex merge. This follow-up records exact refs; no implementation/task state changes.
+
 User authorization: Codex handles API/state/Auth0 consumption/diagnostics/tests; Claude actively owns visual files. User clarified existing Auth0 crew/supervisor test aliases are the demo accounts; do not create real-user/employee records. No identities, profiles or DB rows were created. Auth0-backed demo acceptance remains separate from isolated mocks.
 
 Separate branch/worktree `feature/cache-functional-acceptance` / `C:/Users/cache/planit-control-functional`, from merged PR #29 main `ebd6d92`. API checkpoint `b7c8dc4` is preserved below. No unmerged parent dependency; primary checkout/server and teammate jobs/configuration are untouched. Full path ownership and stable component interfaces: FUNCTIONAL_INTEGRATION_HANDOFF.md.
