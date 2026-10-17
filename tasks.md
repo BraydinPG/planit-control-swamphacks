@@ -121,13 +121,13 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 - [x] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Style it with Tailwind utility classes. Needs T003 and T007. Done when app renders on phone and desktop sizes.
 - [x] **T031 | Cache | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
-- [ ] **T032 | Cache | Build crew home screen.** Show site, status, alert, immediate action, update time, and a “potential {hazard}” notice with no instructions. After a supervisor sends an instruction, show that text. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
-- [ ] **T033 | Cache | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.
-- [ ] **T034 | Cache | Build hazard report form.** Add photo, category (including broken electrical pole or downed line, on-site fire, wildlife, flooding, and other), coordinates, a required present-or-absent choice, optional note, and confirmation. Needs T030. Done when submission does not require typed text.
-- [ ] **T035 | Cache | Build supervisor location list.** Show the full map and every location with its assigned team, alerts, scores, and top factors. Place locations that have a team above locations that do not. Needs T030 and T031. Done when an occupied location appears above an empty one and the team name is visible.
-- [ ] **T036 | Cache | Build site detail and report review.** Show observations, timestamps, source, reports, and review status. Needs T031 and T035. Done when a supervisor can review a fixture report.
-- [ ] **T037 | Cache | Build briefing and explanation panels.** Show recommendations, evidence, unknowns, and fallback state. Needs T007 and T031. Done when generated and fallback text look distinct.
-- [ ] **T038 | Cache | Check accessibility and responsive behavior.** Test touch targets, keyboard flow, focus, labels, and risk information without color. Needs T032–T037. Done when checklist passes or remaining issues become separate tasks.
+- [x] **T032 | Cache | Build crew home screen.** Show site, status, alert, immediate action, update time, and a “potential {hazard}” notice with no instructions. After a supervisor sends an instruction, show that text. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
+- [x] **T033 | Cache | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.
+- [x] **T034 | Cache | Build hazard report form.** Add photo, category (including broken electrical pole or downed line, on-site fire, wildlife, flooding, and other), coordinates, a required present-or-absent choice, optional note, and confirmation. Needs T030. Done when submission does not require typed text.
+- [x] **T035 | Cache | Build supervisor location list.** Show the full map and every location with its assigned team, alerts, scores, and top factors. Place locations that have a team above locations that do not. Needs T030 and T031. Done when an occupied location appears above an empty one and the team name is visible.
+- [x] **T036 | Cache | Build site detail and report review.** Show observations, timestamps, source, reports, and review status. Needs T031 and T035. Done when a supervisor can review a fixture report.
+- [x] **T037 | Cache | Build briefing and explanation panels.** Show recommendations, evidence, unknowns, and fallback state. Needs T007 and T031. Done when generated and fallback text look distinct.
+- [x] **T038 | Cache | Check accessibility and responsive behavior.** Test touch targets, keyboard flow, focus, labels, and risk information without color. Needs T032–T037. Done when checklist passes or remaining issues become separate tasks.
 
 ## Phase 2: Real sites, data, scores, and alerts
 

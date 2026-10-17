@@ -1,0 +1,296 @@
+import { after, test } from 'node:test'
+import assert from 'node:assert/strict'
+import { createServer } from 'vite'
+import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+const server = await createServer({
+  server: { middlewareMode: true, hmr: false },
+  appType: 'custom',
+})
+after(() => server.close())
+const { DemoClient, DEMO_KEY } = await server.ssrLoadModule(
+  '/src/demo/client.ts',
+)
+const { HttpClient } = await server.ssrLoadModule('/src/api/http-client.ts')
+const { countdown, sortSites } = await server.ssrLoadModule(
+  '/src/api/contracts.ts',
+)
+const { Advisory } = await server.ssrLoadModule(
+  '/src/components/data/Advisory.tsx',
+)
+const storage = () => {
+  const map = new Map()
+  return {
+    getItem: (k) => map.get(k) ?? null,
+    setItem: (k, v) => map.set(k, v),
+    removeItem: (k) => map.delete(k),
+  }
+}
+const assigned = 'site-demo-everglades'
+
+test('unapproved fixture model scores cannot determine demonstration ranking', async () => {
+  const client = new DemoClient(() => 'supervisor', storage())
+  const rows = await client.sites()
+  const legacy = rows.find((s) =>
+    s.top_factors.some((f) => f.factor === 'model'),
+  )
+  const eligible = {
+    ...legacy,
+    id: 'eligible',
+    name: 'Eligible',
+    risk_score: 0.1,
+    top_factors: [],
+  }
+  assert.equal(sortSites([legacy, eligible], true)[0].id, 'eligible')
+  assert.notEqual(legacy.risk_score, null)
+})
+
+test('unavailable demo storage reports memory-only changes without claiming persistence', async () => {
+  const client = new DemoClient(() => 'crew', null)
+  await assert.rejects(
+    () => client.acknowledge('alert-ltg-demo'),
+    /memory only.*will not survive reload/,
+  )
+  assert(
+    (await client.alerts())[0].acknowledgements.some(
+      (a) => a.user_id === 'demo-crew',
+    ),
+  )
+})
+test('55 typed demo locations, 50 exact reference IDs, assigned first', async () => {
+  const client = new DemoClient(() => 'supervisor', storage()),
+    rows = await client.sites()
+  assert.equal(rows.length, 55)
+  assert.equal(rows.filter((s) => s.id.startsWith('eia860m-')).length, 50)
+  assert(rows[0].assigned_team)
+  assert(rows.slice(4).every((s) => !s.assigned_team))
+  assert(
+    rows
+      .filter((s) => s.id.startsWith('eia860m-'))
+      .every((s) => s.risk_score === null && s.updated_at === null),
+  )
+})
+test('crew receives assigned site and cannot access another site or confirm notices', async () => {
+  const client = new DemoClient(() => 'crew', storage())
+  assert.equal((await client.sites()).length, 1)
+  await assert.rejects(() => client.site('site-fixture-b'), /not assigned/)
+  await assert.rejects(() => client.confirm('notice-pole-1'), /Supervisor/)
+})
+test('report -> review -> confirm -> instruction persists; scores and alerts unchanged', async () => {
+  let role = 'crew'
+  const store = storage(),
+    client = new DemoClient(() => role, store)
+  const before = await client.site(assigned)
+  const report = await client.submit(
+    {
+      site_id: assigned,
+      category: 'broken_pole_downed_line',
+      hazard_present: true,
+      lat: 25.76,
+      lon: -80.49,
+    },
+    new File(['demo'], 'test.png', { type: 'image/png' }),
+  )
+  assert.equal(report.review_status, 'pending')
+  assert.equal(report.note, null)
+  assert(client.photo(report.id)?.startsWith('blob:'))
+  let notice = (await client.site(assigned)).notices.find(
+    (n) => n.id === report.notice_id,
+  )
+  assert.equal(notice.status, 'potential')
+  assert.equal(notice.instruction, null)
+  assert.equal(notice.suggested_instruction, null)
+  role = 'supervisor'
+  await assert.rejects(
+    () => client.instruct(notice.id, 'inspect'),
+    /confirming supervisor/,
+  )
+  await client.review(report.id, { decision: 'confirmed' })
+  await client.confirm(notice.id)
+  await client.instruct(notice.id, 'Demo supervisor instruction for review.')
+  const reloaded = new DemoClient(() => role, store),
+    detail = await reloaded.site(assigned)
+  notice = detail.notices.find((n) => n.id === report.notice_id)
+  assert.equal(notice.instruction, 'Demo supervisor instruction for review.')
+  assert(notice.instruction_sent_at)
+  assert.equal(
+    detail.reports.find((r) => r.id === report.id).review_status,
+    'confirmed',
+  )
+  assert.deepEqual(detail.alerts, before.alerts)
+  assert.equal(detail.risk_score, before.risk_score)
+  assert.deepEqual(detail.top_factors, before.top_factors)
+  assert.equal(reloaded.photo(report.id), null)
+})
+test('absent/rejected reports do not produce notices, scores or approval', async () => {
+  const client = new DemoClient(() => 'supervisor', storage()),
+    before = await client.site(assigned)
+  const r = await client.submit(
+    {
+      site_id: assigned,
+      category: 'wildlife',
+      hazard_present: false,
+      lat: 25.76,
+      lon: -80.49,
+    },
+    null,
+  )
+  assert.equal(r.notice_id, null)
+  await client.review(r.id, { decision: 'rejected' })
+  const after = await client.site(assigned)
+  assert.equal(after.notices.length, before.notices.length)
+  assert.equal(after.risk_score, before.risk_score)
+})
+test('acknowledgement, strike reset and explicit cleared server payload survive reload', async () => {
+  const store = storage(),
+    client = new DemoClient(() => 'crew', store)
+  await client.acknowledge('alert-ltg-demo')
+  const before = (await client.alerts())[0]
+  client.replay('strike')
+  const reloaded = new DemoClient(() => 'crew', store),
+    updated = (await reloaded.alerts())[0]
+  assert(updated.clear_after > before.clear_after)
+  assert(updated.acknowledgements.some((a) => a.user_id === 'demo-crew'))
+  assert.match(
+    countdown(updated, Date.parse(updated.clear_after) + 1000),
+    /Alert remains active/,
+  )
+  client.replay('cleared')
+  assert.match(
+    countdown((await client.alerts())[0], Date.now()),
+    /Server reports cleared/,
+  )
+})
+test('invalid coordinates, category, photo and note fail before persistence', async () => {
+  const client = new DemoClient(() => 'crew', storage()),
+    input = {
+      site_id: assigned,
+      category: 'other',
+      hazard_present: true,
+      lat: 999,
+      lon: 0,
+    }
+  await assert.rejects(() => client.submit(input, null), /fields/)
+  input.lat = 25.76
+  await assert.rejects(
+    () =>
+      client.submit(
+        input,
+        new File(['bad'], 'a.svg', { type: 'image/svg+xml' }),
+      ),
+    /Photo/,
+  )
+  await assert.rejects(
+    () => client.submit({ ...input, note: 'x'.repeat(1001) }, null),
+    /fields/,
+  )
+})
+test('corrupt local demo storage safely resets and unrelated keys survive', async () => {
+  const store = storage()
+  store.setItem(DEMO_KEY, 'bad JSON')
+  store.setItem('unrelated', 'keep')
+  const client = new DemoClient(() => 'crew', store)
+  assert.equal((await client.sites()).length, 1)
+  client.reset()
+  assert.equal(store.getItem('unrelated'), 'keep')
+})
+test('2.1 replay matches exact site only; wrong site cannot borrow probabilities', async () => {
+  const client = new DemoClient(() => 'supervisor', storage())
+  const render = (site) =>
+    renderToStaticMarkup(React.createElement(Advisory, { site, demo: true }))
+  assert.match(
+    render(await client.site('eia860m-FL-59611')),
+    /Developer\/demo advisory/,
+  )
+  assert.match(
+    render(await client.site(assigned)),
+    /No supported event outlook/,
+  )
+})
+test('HTTP adapter passes Auth0 token and multipart photo, never a fake dev-role header', async () => {
+  const calls = [],
+    api = new HttpClient(
+      'http://localhost:8000',
+      async () => ({ Authorization: 'Bearer test-token' }),
+      async (url, options) => {
+        calls.push({ url: String(url), options })
+        return Response.json({ id: 'demo' })
+      },
+    )
+  await api.submit(
+    {
+      site_id: assigned,
+      category: 'other',
+      hazard_present: false,
+      lat: 25.76,
+      lon: -80.49,
+    },
+    new File(['test'], 'demo.png', { type: 'image/png' }),
+  )
+  assert.equal(calls[0].options.headers.Authorization, 'Bearer test-token')
+  assert(!('Content-Type' in calls[0].options.headers))
+  assert(calls[0].options.body instanceof FormData)
+  assert.equal(calls[0].options.body.get('hazard_present'), 'false')
+  assert.equal(calls[0].options.body.get('photo').name, 'demo.png')
+})
+for (const status of [401, 403, 404, 422, 503])
+  test(`HTTP ${status} stays an explicit failure without fixtures`, async () => {
+    const api = new HttpClient(
+      'http://localhost:8000',
+      async () => ({ Authorization: 'Bearer test-token' }),
+      async () => new Response('', { status }),
+    )
+    await assert.rejects(
+      () => api.sites(),
+      (e) => e.status === status,
+    )
+  })
+test('missing token sends no request; token acquisition and network timeouts reject', async () => {
+  let calls = 0
+  const missing = new HttpClient(
+    'http://localhost:8000',
+    async () => ({}),
+    async () => {
+      calls++
+      return Response.json([])
+    },
+  )
+  await assert.rejects(
+    () => missing.sites(),
+    (e) => e.status === 401,
+  )
+  assert.equal(calls, 0)
+  const hung = new HttpClient(
+    'http://localhost:8000',
+    () => new Promise(() => {}),
+    fetch,
+    5,
+  )
+  await assert.rejects(() => hung.sites(), /timed out/)
+  const timeout = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer test' }),
+    (_url, { signal }) =>
+      new Promise((_, reject) =>
+        signal.addEventListener('abort', () => reject(new Error('abort'))),
+      ),
+    5,
+  )
+  await assert.rejects(() => timeout.sites(), /timed out/)
+})
+test('malformed/invalid API replies and unsafe destinations reject', async () => {
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer test' }),
+    async () => Response.json({ not: 'sites' }),
+  )
+  await assert.rejects(() => api.sites(), /Invalid site-list/)
+  assert.throws(
+    () => new HttpClient('http://remote.example', async () => ({})),
+    /HTTPS/,
+  )
+  assert.throws(
+    () => new HttpClient('https://user:password@example.com', async () => ({})),
+    /destination/,
+  )
+})

@@ -43,6 +43,7 @@ const results = []
 const errors = []
 const network = []
 let id = 0
+let documentGeneration = 0
 const pending = new Map()
 
 async function until(getValue, label) {
@@ -81,13 +82,22 @@ async function loaded(text) {
   await until(
     () =>
       evaluate(
-      `document.readyState === 'complete' && document.body.innerText.toLowerCase().includes(${JSON.stringify(text.toLowerCase())})`,
+        `document.readyState === 'complete' && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
       ),
     text,
   )
 }
 async function navigate(url, text) {
-  await send('Page.navigate', { url })
+  const before = documentGeneration
+  const result = await send('Page.navigate', { url })
+  if (result.loaderId)
+    await until(() => documentGeneration > before, 'new document context')
+  await loaded(text)
+}
+async function reload(text) {
+  const before = documentGeneration
+  await send('Page.reload')
+  await until(() => documentGeneration > before, 'reloaded context')
   await loaded(text)
 }
 async function screenshot(name) {
@@ -115,7 +125,14 @@ async function offModeServer(setting) {
     ],
     {
       cwd: root,
-      env: { ...process.env, VITE_USE_FIXTURES: setting },
+      env: {
+        ...process.env,
+        VITE_USE_FIXTURES: setting,
+        VITE_AUTH0_DOMAIN: '',
+        VITE_AUTH0_CLIENT_ID: '',
+        VITE_AUTH0_AUDIENCE: '',
+        VITE_DEV_AUTH_ROLE: '',
+      },
       stdio: 'ignore',
       windowsHide: true,
     },
@@ -152,7 +169,9 @@ try {
       if (message.error)
         request.reject(new Error(JSON.stringify(message.error)))
       else request.resolveCall(message.result)
-    } else if (message.method === 'Runtime.exceptionThrown')
+    } else if (message.method === 'Runtime.executionContextsCleared')
+      documentGeneration++
+    else if (message.method === 'Runtime.exceptionThrown')
       errors.push(message.params.exceptionDetails.text)
     else if (message.method === 'Network.requestWillBeSent')
       network.push(message.params.request.url)
@@ -161,6 +180,27 @@ try {
   await send('Runtime.enable')
   await send('Network.enable')
   await send('Network.setCacheDisabled', { cacheDisabled: true })
+  async function click(text) {
+    await until(
+      () =>
+        evaluate(
+          `Array.from(document.querySelectorAll('button,a')).some(e=>e.getClientRects().length && e.textContent.trim()===${JSON.stringify(text)})`,
+        ),
+      'click target ' + text,
+    )
+    await evaluate(
+      `Array.from(document.querySelectorAll('button,a')).find(e=>e.getClientRects().length && e.textContent.trim()===${JSON.stringify(text)})?.click()`,
+    )
+  }
+  async function hash(value, text) {
+    await evaluate(`location.hash=${JSON.stringify(value)}`)
+    await loaded(text)
+  }
+  async function set(selector, value) {
+    await evaluate(
+      `(()=>{const e=document.querySelector(${JSON.stringify(selector)});const prototype=e.tagName==='SELECT'?HTMLSelectElement.prototype:e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(e,${JSON.stringify(value)});e.dispatchEvent(new Event(e.tagName==='SELECT'?'change':'input',{bubbles:true}))})()`,
+    )
+  }
   for (const [width, height, name] of [
     [1440, 1000, 'desktop'],
     [390, 844, 'phone'],
@@ -174,69 +214,194 @@ try {
     })
     await navigate(
       new URL('#/crew/overview', base).href,
-      'Fixed fixture timestamp',
+      'Stop-work alert active',
     )
     await screenshot(name)
-    for (const workspace of ['crew', 'supervisor']) {
+    assert(
+      await evaluate('document.documentElement.scrollWidth <= innerWidth'),
+      `Overflow at ${width}`,
+    )
+    const bounds = await evaluate(
+      "(()=>{const a=Array.from(document.querySelectorAll('a')).find(e=>e.textContent.includes('Inspect alert and acknowledge'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
+    )
+    assert(
+      bounds.top >= 0 && bounds.bottom <= height - 64,
+      `Crew primary action below viewport at ${width}: ${JSON.stringify(bounds)}`,
+    )
+    assert(
       await evaluate(
-        `document.querySelector('button[aria-pressed]${workspace === 'crew' ? '' : ':last-child'}').click()`,
-      )
-      await loaded(
-        workspace === 'crew' ? 'Crew workspace' : 'Supervisor workspace',
-      )
-      for (const [page, title] of [
-        ['sites', 'Worksite context'],
-        ['alerts', 'Crew alerts'],
-        ['reports', 'Hazard reports'],
-        ['briefings', 'Shift briefings'],
-        ['overview', 'Field overview'],
-      ]) {
-        await evaluate(
-          `Array.from(document.querySelectorAll('nav a')).find(a => a.getClientRects().length && a.hash === '#/${workspace}/${page}').click()`,
-        )
-        await until(
-          () =>
-            evaluate(
-              `document.querySelector('h1')?.innerText === ${JSON.stringify(title)}`,
-            ),
-          title,
-        )
-        assert(
-          await evaluate('document.documentElement.scrollWidth <= innerWidth'),
-          `Horizontal overflow at ${width}/${workspace}/${page}`,
-        )
-        assert(
-          await evaluate(
-            "Array.from(document.querySelectorAll('nav a')).filter(a => a.getClientRects().length).every(a => {const r=a.getBoundingClientRect(); return r.width >= 44 && r.height >= 44})",
-          ),
-          'Navigation targets below 44px',
-        )
-        assert(
-          await evaluate(
-            "document.querySelector('nav a[aria-current=page]') !== null",
-          ),
-        )
-        assert(
-          await evaluate(
-            "document.body.innerText.includes('Sign-in is not connected')",
-          ),
-        )
-      }
-    }
+        "Array.from(document.querySelectorAll('nav a')).filter(a=>a.getClientRects().length).every(a=>{const r=a.getBoundingClientRect();return r.width>=44&&r.height>=44})",
+      ),
+    )
     results.push({
       viewport: `${width}x${height}`,
-      navigation: '10 workspace destinations passed',
+      primary_action_visible: true,
       overflow: false,
-      navigation_targets: '>=44px',
+      nav_targets: '>=44px',
     })
   }
-  await navigate(new URL('#/supervisor/reports', base).href, 'Hazard reports')
-  await send('Page.reload')
-  await loaded('Hazard reports')
+  await click('Inspect alert and acknowledge')
+  await loaded('acknowledgement(s)')
+  await click('Record simulated acknowledgement')
+  await loaded('Action recorded.')
+  await reload('acknowledgement(s)')
   assert(
-    await evaluate("location.hash === '#/supervisor/reports'"),
-    'Deep link lost on reload',
+    await evaluate(
+      "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).alerts[0].acknowledgements.some(a=>a.user_id==='demo-crew')",
+    ),
   )
+  const oldWindow = await evaluate(
+    "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).alerts[0].clear_after",
+  )
+  await click('Replay additional qualifying strike')
+  assert(
+    await evaluate(
+      `JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).alerts[0].clear_after > ${JSON.stringify(oldWindow)}`,
+    ),
+  )
+  await click('Replay server-cleared payload')
+  await loaded('Server reports cleared')
+  await click('Replay additional qualifying strike')
+  await loaded('Stop-work alert active')
+  await hash('/crew/reports', 'Report a hazard')
+  await set('form select[required]', 'present')
+  await writeFile(
+    join(output, 'demo-photo.png'),
+    Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a3ioAAAAASUVORK5CYII=',
+      'base64',
+    ),
+  )
+  const { root: documentNode } = await send('DOM.getDocument')
+  const { nodeId } = await send('DOM.querySelector', {
+    nodeId: documentNode.nodeId,
+    selector: 'input[type=file]',
+  })
+  await send('DOM.setFileInputFiles', {
+    nodeId,
+    files: [join(output, 'demo-photo.png')],
+  })
+  await click('Submit simulated report')
+  await loaded('Simulated report stored')
+  const reportId = await evaluate(
+    "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].id",
+  )
+  const noticeId = await evaluate(
+    "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
+  )
+  assert(
+    await evaluate(
+      "!document.body.innerText.includes('Confirm report classification')",
+    ),
+  )
+  await reload(reportId)
+  await click('Supervisor')
+  await loaded('55 sample/reference')
+  await until(
+    () =>
+      evaluate(
+        "document.querySelectorAll('.leaflet-overlay-pane path.leaflet-interactive').length===55",
+      ),
+    '55 map markers',
+  )
+  const firstSite = await evaluate(
+    'document.querySelector(\'ol[aria-label="Ranked locations"] li\').innerText',
+  )
+  assert(
+    !firstSite.includes('No team assigned') && /crew/i.test(firstSite),
+    'Assigned sites not first',
+  )
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 1440,
+    height: 1000,
+    deviceScaleFactor: 1,
+    mobile: false,
+  })
+  await screenshot('supervisor-desktop')
+  await evaluate(
+    "document.querySelector('.leaflet-overlay-pane path.leaflet-interactive').dispatchEvent(new MouseEvent('click',{bubbles:true}))",
+  )
+  await until(
+    () =>
+      evaluate(
+        "document.querySelector('.leaflet-popup-content button') !== null",
+      ),
+    'map point popup',
+  )
+  assert(
+    await evaluate(
+      "document.querySelector('.leaflet-popup-content button').textContent.length>0",
+    ),
+  )
+  await evaluate(
+    "document.querySelector('.leaflet-popup-content button').click()",
+  )
+  await loaded('Potential notices and approved instructions')
+  await hash('/supervisor/overview', '55 sample/reference')
+  await until(
+    () =>
+      evaluate(
+        "document.querySelectorAll('.leaflet-overlay-pane path.leaflet-interactive').length===55",
+      ),
+    'restored map',
+  )
+  results.push({
+    map: '55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional',
+  })
+  await click('Flood advisory replay')
+  await loaded('Developer/demo advisory')
+  assert(
+    await evaluate(
+      "document.body.innerText.includes('eia860m-FL-59611') && document.body.innerText.includes('Recorded event end is not worksite clearance')",
+    ),
+  )
+  await hash(
+    '/supervisor/sites/site-demo-everglades',
+    'Potential notices and approved instructions',
+  )
+  await evaluate(
+    `document.querySelector('[data-report-id="${reportId}"] button').click()`,
+  )
+  await until(
+    () =>
+      evaluate(
+        `document.querySelector('[data-report-id="${reportId}"] h3').innerText.includes('confirmed')`,
+      ),
+    'report confirmed',
+  )
+  assert(
+    await evaluate(
+      `document.querySelector('[data-notice-id="${noticeId}"]').innerText.includes('No instruction: supervisor confirmation is pending')`,
+    ),
+  )
+  await evaluate(
+    `document.querySelector('[data-notice-id="${noticeId}"] button').click()`,
+  )
+  await loaded(
+    'No suggestion available; the confirming supervisor writes the instruction',
+  )
+  await set(
+    `[data-notice-id="${noticeId}"] textarea`,
+    'Demo reviewed instruction: await qualified field inspection.',
+  )
+  await evaluate(
+    `document.querySelector('[data-notice-id="${noticeId}"] button').click()`,
+  )
+  await loaded('Demo reviewed instruction: await qualified field inspection.')
+  await hash('/supervisor/briefings', 'Request next-day briefing')
+  await set('main select', 'site-demo-everglades')
+  await click('Request next-day briefing')
+  await loaded('Gemini output')
+  await click('Crew')
+  await loaded('Demo reviewed instruction: await qualified field inspection.')
+  await hash('/crew/briefings', 'Request next-day briefing')
+  await click('Request next-day briefing')
+  await loaded('Gemini output')
+  await evaluate("document.querySelector('main input[type=checkbox]').click()")
+  await click('Request next-day briefing')
+  await loaded('Next-day briefing ? Deterministic fallback')
+  await click('Request score explanation')
+  await loaded('Score explanation ? fallback')
   await evaluate('document.querySelector(\'a[href="#main-content"]\').focus()')
   await send('Input.dispatchKeyEvent', {
     type: 'keyDown',
@@ -252,53 +417,163 @@ try {
   })
   assert(
     await evaluate(
-      "document.activeElement.id === 'main-content' && location.hash === '#/supervisor/reports'",
+      "document.activeElement.id==='main-content' && location.hash==='#/crew/briefings'",
     ),
-    'Skip link lost focus or route',
   )
-  await evaluate("location.hash = '/supervisor/overview'")
-  await loaded('Fixed fixture timestamp')
-  await evaluate('history.back()')
+  await send('Input.dispatchKeyEvent', {
+    type: 'keyDown',
+    key: 'Tab',
+    code: 'Tab',
+    windowsVirtualKeyCode: 9,
+  })
+  await send('Input.dispatchKeyEvent', {
+    type: 'keyUp',
+    key: 'Tab',
+    code: 'Tab',
+    windowsVirtualKeyCode: 9,
+  })
+  assert(
+    await evaluate(
+      "(()=>{const e=document.activeElement;return ['INPUT','SELECT','BUTTON','TEXTAREA','A'].includes(e.tagName)&&e.matches(':focus-visible')&&parseFloat(getComputedStyle(e).outlineWidth)>0})()",
+    ),
+    'Keyboard focus must visibly reach an interactive control',
+  )
+  results.push({
+    crew: 'assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction',
+    supervisor:
+      '55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction',
+    ai: 'prerecorded Gemini and deterministic fallback with citations',
+    persistence: 'local demo namespace only; no server writes',
+    keyboard: 'skip navigation and Tab to visible focused control passed',
+  })
+  for (const [width, height] of [
+    [1440, 1000],
+    [390, 844],
+    [320, 740],
+  ]) {
+    await send('Emulation.setDeviceMetricsOverride', {
+      width,
+      height,
+      deviceScaleFactor: 1,
+      mobile: width < 600,
+    })
+    for (const persona of ['crew', 'supervisor'])
+      for (const page of [
+        'overview',
+        'sites',
+        'alerts',
+        'reports',
+        'briefings',
+      ]) {
+        await hash(
+          `/${persona}/${page}`,
+          page === 'briefings'
+            ? 'Request next-day briefing'
+            : page === 'reports'
+              ? 'Hazard present or absent'
+              : page === 'alerts'
+                ? 'acknowledgement(s)'
+                : persona === 'supervisor'
+                  ? '55 sample/reference'
+                  : page === 'sites'
+                    ? 'Score factors and source evidence'
+                    : 'Inspect alert and acknowledge',
+        )
+        if (persona === 'supervisor' && ['overview', 'sites'].includes(page))
+          await until(
+            () =>
+              evaluate(
+                "document.querySelectorAll('.leaflet-overlay-pane path.leaflet-interactive').length===55",
+              ),
+            'geographic markers',
+          )
+        assert(
+          await evaluate('document.documentElement.scrollWidth <= innerWidth'),
+          `Page overflow: ${width}/${persona}/${page}`,
+        )
+        assert(
+          await evaluate(
+            "Array.from(document.querySelectorAll('input,select,textarea')).every(e=>e.closest('label')||e.getAttribute('aria-label')||(e.id&&document.querySelector('label[for=\"'+e.id+'\"]')))",
+          ),
+          `Unlabelled control: ${page}`,
+        )
+        assert(
+          await evaluate(
+            "Array.from(document.querySelectorAll('button')).every(e=>e.textContent.trim()||e.getAttribute('aria-label'))",
+          ),
+          `Unnamed button: ${page}`,
+        )
+        assert(
+          await evaluate(
+            "Array.from(document.querySelectorAll('main button,main select,main textarea,main summary,main input:not([type=checkbox]),.leaflet-control-zoom a')).filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.width>=44&&r.height>=44})",
+          ),
+          `Small primary control: ${width}/${persona}/${page}`,
+        )
+      }
+  }
+  results.push({
+    accessibility:
+      'all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
+  })
+  await navigate(new URL('/tests/browser.html', base).href, 'Sign in required')
+  await evaluate("window.harness.mount('loading')")
+  await loaded('Checking sign-in')
+  await evaluate("window.harness.mount('no-role')")
+  await loaded('No role assigned')
+  await evaluate("window.harness.mount('dev')")
+  await loaded('Development bypass roles are not accepted')
+  await evaluate("window.harness.mount('crew')")
+  await loaded('Stop-work alert active')
+  await hash(
+    '/supervisor/sites/site-fixture-b',
+    'outside the sites returned for your session',
+  )
+  assert(
+    await evaluate("!document.body.innerText.includes('Preview workspace')"),
+    'Live role selector leaked',
+  )
+  await hash('/crew/overview', 'Stop-work alert active')
+  await evaluate("window.harness.mount('supervisor')")
+  await loaded('5 backend-authorized locations')
   await until(
     () =>
-      evaluate("document.querySelector('h1')?.innerText === 'Hazard reports'"),
-    'browser back',
+      evaluate(
+        "document.querySelectorAll('.leaflet-overlay-pane path.leaflet-interactive').length===5",
+      ),
+    'mock live map',
   )
-  await navigate(
-    new URL('#/crew/overview', base).href,
-    'Fixed fixture timestamp',
-  )
-  await evaluate(
-    "(async () => { const { shellContext } = await import('/src/api/shell-fixtures.ts'); shellContext('fixture').site.risk_score = null; location.hash = '/crew/reports' })()",
-  )
-  await loaded('Hazard reports')
-  await evaluate("location.hash = '/crew/overview'")
-  await loaded('Not scored yet')
+  for (const [status, text] of [
+    [401, 'Session expired'],
+    [403, 'Permission denied'],
+    [503, 'service or database is unavailable'],
+  ]) {
+    await evaluate(`window.harness.mount('crew',${status})`)
+    await loaded(text)
+    assert(
+      await evaluate("!document.body.innerText.includes('Line Crew A')"),
+      'Error substituted fixture data',
+    )
+  }
+  await evaluate("window.harness.mount('logged-out')")
+  await loaded('Sign in required')
   results.push({
-    null_score: 'Not scored yet; never zero or low risk',
-    fixture_mutation: 'browser memory only; no fixture file changed',
-    deep_links_reload_back_skip_link: 'passed',
+    auth: 'mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions',
+    api: 'mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation',
+    real_auth: 'not verified; tenant credentials unavailable',
   })
   for (const setting of ['false', 'typo']) {
     const url = await offModeServer(setting)
     await navigate(
       url,
       setting === 'false'
-        ? 'Live connection unavailable.'
+        ? 'Sign-in is not configured.'
         : 'Fixture configuration is invalid.',
     )
-    assert(
-      await evaluate(
-        "!document.body.innerText.includes('Line Crew A') && document.body.innerText.includes('No site data loaded')",
-      ),
-      'Samples leaked into disabled/invalid mode',
-    )
-    assert(await evaluate('document.documentElement.scrollWidth <= innerWidth'))
+    assert(await evaluate("!document.body.innerText.includes('Line Crew A')"))
     results.push({
       fixture_setting: setting,
-      status: 'explicit unavailable; no silent fixture fallback',
+      status: 'explicit configuration/auth state; no silent samples',
     })
-    await screenshot(`mode-${setting}`)
   }
   assert.equal(errors.length, 0, `Browser exceptions: ${errors.join(', ')}`)
   assert(
@@ -306,7 +581,7 @@ try {
     'Unexpected backend API call',
   )
   const report = {
-    task: 'T030',
+    task: 'T032-T038 demo acceptance and mocked live integration (not real login/persistence)',
     checked_at: new Date().toISOString(),
     url: base.href,
     browser: 'Installed headless Edge/Chrome via CDP',
@@ -320,6 +595,19 @@ try {
     JSON.stringify(report, null, 2) + '\n',
   )
   console.log(JSON.stringify(report, null, 2))
+} catch (error) {
+  if (ws?.readyState === WebSocket.OPEN) {
+    const diagnostic = await evaluate(
+      "({text:document.body.innerText.slice(0,5000),map:document.querySelectorAll('.leaflet-interactive').length,hash:location.hash})",
+    ).catch(() => null)
+    await writeFile(
+      join(output, 'failure.json'),
+      JSON.stringify({ error: String(error), errors, diagnostic }, null, 2),
+    )
+    await screenshot('failure').catch(() => {})
+    console.error(JSON.stringify({ errors, diagnostic }))
+  }
+  throw error
 } finally {
   for (const child of extraServers) child.kill()
   if (ws?.readyState === WebSocket.OPEN) {

@@ -1,0 +1,118 @@
+{
+  "verified_at": "2026-10-17T09:20:03.733Z",
+  "implementation_base": "140d118",
+  "browser": {
+    "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
+    "checked_at": "2026-10-17T09:20:03.733Z",
+    "url": "http://localhost:5173/",
+    "browser": "Installed headless Edge/Chrome via CDP",
+    "results": [
+      {
+        "viewport": "1440x1000",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "390x844",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "320x740",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+      },
+      {
+        "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+        "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+        "ai": "prerecorded Gemini and deterministic fallback with citations",
+        "persistence": "local demo namespace only; no server writes",
+        "keyboard": "skip navigation and Tab to visible focused control passed"
+      },
+      {
+        "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+      },
+      {
+        "auth": "mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions",
+        "api": "mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation",
+        "real_auth": "not verified; tenant credentials unavailable"
+      },
+      {
+        "fixture_setting": "false",
+        "status": "explicit configuration/auth state; no silent samples"
+      },
+      {
+        "fixture_setting": "typo",
+        "status": "explicit configuration/auth state; no silent samples"
+      }
+    ],
+    "browser_exceptions": [],
+    "backend_api_requests": 0,
+    "screenshots": ".shell-check/*.png (ignored)"
+  },
+  "commands": [
+    {
+      "command": "npm run lint",
+      "result": "passed"
+    },
+    {
+      "command": "npm run build",
+      "result": "passed; includes TypeScript"
+    },
+    {
+      "command": "node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs",
+      "passed": 21,
+      "failed": 0
+    },
+    {
+      "command": "python -m pytest backend/tests -q",
+      "source": "current branch based on 140d118",
+      "passed": 266,
+      "warnings": 1
+    },
+    {
+      "command": "python -m pytest backend/tests -q",
+      "source": "isolated main export at 2e79cb6",
+      "passed": 282,
+      "warnings": 1
+    },
+    {
+      "command": "python frontend/scripts/export-demo-sources.py",
+      "result": "50 exact reference IDs and 2 validated comprehensive 2.1 replay responses; no downloads/refit"
+    }
+  ],
+  "live_checks": [
+    {
+      "url": "http://localhost:5173/",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8000/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8000/api/sites",
+      "status": 401
+    },
+    {
+      "url": "http://localhost:5173/api/sites",
+      "status": 401
+    }
+  ],
+  "not_verified": [
+    "real Auth0 tenant login and roles",
+    "authenticated real site data",
+    "real report/photo/instruction/Gemini persistence",
+    "deployed permissions or worker safety"
+  ],
+  "export_sha256": {
+    "frontend/src/demo/generated/references.json": "db4b08ce88889475c12b652b4b147047fa905822baec8177c2200fa650b43e9d",
+    "frontend/src/demo/generated/advisories.json": "76df2458ebffde11a1141d8685a744cf32e0263cb33b6fc0e03df6b5fdca112f"
+  }
+}
