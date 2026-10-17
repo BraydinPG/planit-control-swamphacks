@@ -13,19 +13,21 @@ For each task:
 5. Check each box only after its done check passes.
 6. Report changed files, checks run, and blockers. Leave blocked tasks unchecked.
 
-Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the default path ownership in `AGENTS.md`; explicit project-level authorization may permit focused cross-owner changes. Preserve unrelated work. Rudra coordinates shared schemas, manifests, alert rules, and scoring. Braydin owns Tiger Data migrations, Gemini endpoints, and Vultr deployment.
+Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the default path ownership in `AGENTS.md`; explicit project-level authorization may permit focused cross-owner changes. Preserve unrelated work. Rudra coordinates shared schemas, manifests, frontend integration, backend routes, alert rules, and score persistence. Cache owns the deterministic scoring algorithm. Braydin owns Auth0, Tiger Data/database verification, external services, and deployment.
 
 ## Owners
 
-- Rudra: backend routes except Gemini, API contracts, NWS feeds and the shared feed cache in `backend/app/ingestion/`, photo storage in `backend/app/storage/`, alert rules, storing and serving scores (the risk algorithm itself is Cache's, T051A), report and notice persistence, README.
-- Cache: `ml/`, model training, features, prediction, evaluation, and the 0–10 site risk algorithm (`backend/app/rules/score.py` and the score weights in `backend/app/rules/settings.py`, T051A).
-- Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**` except Rudra's NWS and cache files, `backend/app/gemini/**`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, `auth/SETUP.md`.
-- Cache (formerly Nick): remaining frontend implementation/integration in `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick retains attribution for prior contributions; separate future Claude redesign requires authorization. Auth0 internals remain Braydin-owned.
-- Nick: T054, T054A, and T055 (hazard confirmation, supervisor instructions, confirmed reports in the score). This backend work lives in Rudra's report, notice, and scoring files under `backend/app/`; Rudra reviews it and owns the API contract. Braydin deploys the frontend with the rest of the Vultr deployment (T082, reassigned 2026-10-17).
+Current ownership (2026-10-17, explicit user authorization) applies to remaining work and maintenance. Completed task owners and historical attribution below are unchanged; shared tasks stay assigned to All.
+
+- Cache: `ml/`, model training, features, simulations, evaluation, multi-disaster predictions, and the deterministic 0–10 site risk algorithm (`backend/app/rules/score.py` and the score weights in `backend/app/rules/settings.py`, T051A).
+- Rudra: all remaining frontend/UI development in `frontend/**` except Auth0 internals, including React components, application state, API integration, visual design, responsiveness, accessibility and frontend role behavior; all backend routes (including Gemini routes), canonical API contracts, photo storage, alert rules, score persistence, reports/notices, and README. The scoring algorithm remains Cache-owned.
+- Braydin: Auth0 and `frontend/src/auth/`, `backend/app/security/**`, Tiger Data and `backend/app/db/**`, database/migrations, live authentication and database verification using his working configuration, all external-service/feed adapters and the shared feed cache in `backend/app/ingestion/**`, Gemini service modules (routes are Rudra-owned), service configuration, deployment and `auth/SETUP.md`.
+- T066 is shared by Braydin + Rudra: Braydin verifies live authentication/database behavior; Rudra owns the UI and frontend role behavior. Backend permission enforcement remains authoritative.
+- Historical attribution: Nick retains his completed frontend and T054/T054A/T055 backend credits; Cache retains completed frontend and ML/scoring credits, including work completed by Braydin for Cache. Prior ownership transfers and PR attribution are preserved. Rudra now maintains the frontend and routes; Braydin continues deployment (including T082).
 
 ## Shared contracts
 
-Rudra publishes schemas before parallel work begins. Nick uses fixtures until APIs are ready.
+Rudra publishes schemas and uses fixtures for frontend work until APIs are ready.
 
 Cache implements `predict_site(features)` returning hazard probabilities, model score component, factor contributions, confidence, model version, and data quality. Rudra combines this result with current hazard factors and confirmed crew reports to calculate the final score.
 
@@ -55,7 +57,7 @@ Routes:
 
 ## Phase 1: Parallel foundation work
 
-Rudra's API-dependent lanes start after T006 and T007. Cache may start the independent ML lane using ML-owned fixtures and schema; backend integration waits for the approved contract. Nick may use fixture data until API routes are ready.
+Rudra's API-dependent lanes start after T006 and T007. Cache may start the independent ML lane using ML-owned fixtures and schema; backend integration waits for the approved contract. Rudra may use fixture data for frontend work until API routes are ready.
 
 ### Rudra: backend foundation
 
@@ -118,7 +120,7 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 - [x] **T028 | Braydin | Add permission helpers.** Support crew and supervisor actions in `AGENTS.md`. Needs T027. Done when tests reject crew access to supervisor-only actions.
 - [x] **T029 | Braydin | Document demo account setup.** Explain how to test both roles without committing credentials. Needs T024 and T025. Done when setup steps are clear.
 
-### Cache: frontend and UI/UX (ownership transferred from Nick)
+### Completed frontend foundation (original task owners retained; ongoing work belongs to Rudra)
 
 - [x] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Style it with Tailwind utility classes. Needs T003 and T007. Done when app renders on phone and desktop sizes.
 - [x] **T031 | Cache | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
@@ -179,13 +181,13 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 ## Phase 4: Frontend integration
 
-- [ ] **T063 | Cache | Connect site list and detail APIs.** Keep fixture mode. Needs T041 and T042. Also (added 2026-10-17 by Braydin, from the open issue in `docs/SITE_SCORING_INTEGRATION.md`): the score panel shows "0 / low" at 0% data completeness with no warning. When completeness is 0, or no factor has current evidence, put a plain warning next to the number, such as "Not enough current data to score this site", so it never reads as verified low risk; a null score still reads "Not scored yet". Done when live API and fixtures render the same views and the zero-evidence display cases in the scoring integration diagnostic pass. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
-- [ ] **T064 | Cache | Connect alert state and acknowledgement.** Preserve countdown across reloads. Needs T048. Done when acknowledgement updates shared state. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
-- [ ] **T065 | Cache | Connect report creation and review.** Upload the photo, record whether the hazard is present, show the potential notice without instructions, let a notified supervisor edit the suggested instruction, and show the sent instruction to teams inside the radius. Needs T053, T054, and T054A. Done when the full report lifecycle works in the UI. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
-- [ ] **T066 | Cache | Connect Auth0 exports.** Import Braydin’s provider and role guard. Do not edit auth files. Needs T025 and T026. Done when both roles see the correct screens. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
-- [ ] **T067 | Cache | Connect Gemini features.** Call briefing and enrichment endpoints. Show loading, fallback, evidence, and review states. Needs T057–T060. Done when success and failure states work. Status (2026-10-17): the stored briefing view is done (T067A), and the photo-analysis display is now T036A. Remaining: show enrichment once T060 lands.
+- [ ] **T063 | Rudra | Connect site list and detail APIs.** Keep fixture mode. Needs T041 and T042. Also (added 2026-10-17 by Braydin, from the open issue in `docs/SITE_SCORING_INTEGRATION.md`): the score panel shows "0 / low" at 0% data completeness with no warning. When completeness is 0, or no factor has current evidence, put a plain warning next to the number, such as "Not enough current data to score this site", so it never reads as verified low risk; a null score still reads "Not scored yet". Done when live API and fixtures render the same views and the zero-evidence display cases in the scoring integration diagnostic pass. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
+- [ ] **T064 | Rudra | Connect alert state and acknowledgement.** Preserve countdown across reloads. Needs T048. Done when acknowledgement updates shared state. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
+- [ ] **T065 | Rudra | Connect report creation and review.** Upload the photo, record whether the hazard is present, show the potential notice without instructions, let a notified supervisor edit the suggested instruction, and show the sent instruction to teams inside the radius. Needs T053, T054, and T054A. Done when the full report lifecycle works in the UI. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
+- [ ] **T066 | Braydin + Rudra | Connect Auth0 exports.** Rudra imports Braydin’s provider and role guard; Auth0 internals remain Braydin-owned. Braydin owns live authentication and Tiger Data/database verification using his working configuration; Rudra owns the UI and frontend role behavior. Needs T025 and T026. Done when both roles see the correct screens. Status (2026-10-17): wired in the frontend; real Auth0/Tiger acceptance waits on T069 memberships.
+- [ ] **T067 | Rudra | Connect Gemini features.** Call briefing and enrichment endpoints. Show loading, fallback, evidence, and review states. Needs T057–T060. Done when success and failure states work. Status (2026-10-17): the stored briefing view is done (T067A), and the photo-analysis display is now T036A. Remaining: show enrichment once T060 lands.
 - [x] **T067A | Cache | Remove score explanations and manual briefing requests from the frontend.** Added 2026-10-17 by Braydin after two scope decisions: Gemini no longer explains the hazard score (the weighted factor breakdown is the explanation), and briefings are generated automatically at 6 PM site-local time, never on request. Remove the "Request score explanation" button and panel, `explanation()` from `api/contracts.ts`, `api/http-client.ts`, and `demo/client.ts`, and the matching `scripts/check-shell.mjs` steps. Replace "Request next-day briefing" with a read-only view of the latest stored briefing: `GET /api/sites/{id}/briefing` (team sites in the caller's organization) and, for crew and supervisors with `read:org_briefings`, `GET /api/briefings`. On 404, show "No briefing yet. Briefings are generated at 6 PM site-local time." Show `generated_by` (Gemini or template) and the forecast window. Keep fixture mode on `briefings.json`. Then delete the leftover `Explanation` and `BriefingRequest` interfaces from `frontend/src/types/api.ts` (marked for removal) and `frontend/src/fixtures/explanations.json`, and update `frontend/INTEGRATION.md` and `docs/INTEGRATION_STATUS.md`. Needs T058A. Done when TypeScript, lint, build, the frontend tests, and the shell check pass, and no frontend code references explanations or a briefing POST.
-- [ ] **T068 | Cache | Recheck mobile and accessibility.** Test real API states, phone width, and keyboard flow. Needs T063–T067. Done when no P0 usability issue remains.
+- [ ] **T068 | Rudra | Recheck mobile and accessibility.** Test real API states, phone width, and keyboard flow. Needs T063–T067. Done when no P0 usability issue remains.
 
 ## Phase 5: Validate and rehearse
 
@@ -217,6 +219,8 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 - [ ] **T086 | All | Prepare a demo fallback.** Record the full demo or create a stable local replay. Label simulated data. Needs T075. Done when backup demo is ready.
 
 ## Dependency order
+
+Completed lane attribution below is historical, not a reassignment of completed tasks. Current maintenance ownership is defined above and in `AGENTS.md`; dependencies and done checks are unchanged. T063–T065 and T067–T068 belong to Rudra; T066 belongs to Braydin + Rudra.
 
 ```text
 T001–T008: kickoff, repo, contracts
