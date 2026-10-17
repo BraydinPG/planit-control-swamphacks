@@ -112,6 +112,8 @@ def h(tmp_path) -> Iterator[Harness]:
     app.dependency_overrides[get_db] = harness.override_db
     app.dependency_overrides[get_now] = lambda: NOW
     app.dependency_overrides[get_photo_store] = lambda: harness.photos
+    # All report/confirmation tests are offline, even with local Gemini configuration.
+    app.dependency_overrides[gemini.get_gemini_client] = lambda: gemini.GeminiClient(None, None, 1)
     auth_fakes.install(app)
     try:
         yield harness

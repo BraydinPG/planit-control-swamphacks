@@ -10,7 +10,6 @@ from app.schemas import (
     Briefing,
     CrewReport,
     DataState,
-    Explanation,
     HazardNotice,
     SiteDetail,
     SiteSummary,
@@ -24,7 +23,6 @@ MODELS: dict[str, type] = {
     "reports.json": list[CrewReport],
     "hazard-notices.json": list[HazardNotice],
     "briefings.json": list[Briefing],
-    "explanations.json": list[Explanation],
 }
 
 
@@ -67,8 +65,7 @@ def test_briefing_claims_cite_supplied_evidence() -> None:
 
 
 def test_fallback_and_gemini_variants_present() -> None:
-    for name in ("briefings.json", "explanations.json"):
-        assert {item["generated_by"] for item in load(name)} == {"gemini", "fallback"}
+    assert {item["generated_by"] for item in load("briefings.json")} == {"gemini", "fallback"}
 
 
 def test_lightning_alert_shows_reset_state() -> None:

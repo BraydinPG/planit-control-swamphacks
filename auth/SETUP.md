@@ -13,6 +13,19 @@ Never commit Auth0 secrets, demo passwords, or `.env` files. The frontend values
 
 Organization and team scope ("own organization only", "assigned site only") comes from the `memberships` table, keyed by the Auth0 user id. See [Demo accounts](#7-demo-accounts).
 
+## Team tenant (already set up)
+
+Steps 1–6 below were done for the team's tenant with the Auth0 MCP server (`auth0_onboarding`, then the API, app, and Action tools). These values are public: they appear in the browser bundle.
+
+| Setting | Value |
+|---|---|
+| Tenant domain (`AUTH0_DOMAIN`, `VITE_AUTH0_DOMAIN`) | `dev-qwsm71sgsbiajl7x.us.auth0.com` |
+| SPA client ID (`VITE_AUTH0_CLIENT_ID`) | `jGG6b8gfjLqdNFD7ZVuELdNGPMxV9qnD` (app "PlanIT Control Web") |
+| API audience (`AUTH0_AUDIENCE`, `VITE_AUTH0_AUDIENCE`) | `https://api.planit-control` (API "PlanIT Control API") |
+| Post-login Action | `Add PlanIT roles` (deployed) |
+
+To work on this tenant, put these values in your own `backend/.env` and `frontend/.env.local` (step 6). The roles, the Action's place in the login flow, and the demo users are set in the dashboard (steps 3, 5, and 7), because the MCP server has no tools for them. Run the frontend on port 5173: `vite.config.ts` pins it, because Auth0 only accepts the registered callback URLs.
+
 ## 1. Create the tenant
 
 1. Sign in at https://manage.auth0.com and create a tenant, for example `planit-control`. Pick the region nearest the team (US).
@@ -40,12 +53,11 @@ Then, on the API:
 | `read:assigned_sites` | Read assigned sites and alerts | ✓ | ✓ |
 | `acknowledge:alerts` | Acknowledge alerts | ✓ | ✓ |
 | `submit:reports` | Submit hazard reports | ✓ | ✓ |
-| `request:explanations` | Request score explanations (crew: assigned site only) | ✓ | ✓ |
 | `read:all_sites` | Read all sites, assigned teams, and the full map | | ✓ |
 | `review:reports` | Review reports that no hazard is present (own organization) | | ✓ |
 | `confirm:hazards` | Confirm a potential hazard from a received notice | | ✓ |
 | `send:instructions` | Edit and send the instruction for a confirmed hazard | | ✓ |
-| `generate:briefings` | Generate organization-wide briefings (own organization) | | ✓ |
+| `read:org_briefings` | Read the latest briefings for every team site (own organization) | ✓ | ✓ |
 
 These match `backend/app/security/roles.py` and the role policy in `spec.md` section 8. If you change one, change both.
 
@@ -54,9 +66,9 @@ These match `backend/app/security/roles.py` and the role policy in `spec.md` sec
 **User Management → Roles → Create Role**, twice:
 
 - `crew`: description "Field crew". Under **Permissions → Add Permissions**, choose PlanIT Control API and add the four crew permissions.
-- `supervisor`: description "Supervisor". Add all nine permissions.
+- `supervisor`: description "Supervisor". Add all eight permissions.
 
-Role names must be exactly `crew` and `supervisor`.
+Name the roles `crew` and `supervisor`. Capitalization does not matter (`Supervisor` works); the spelling does.
 
 ## 4. Create the single-page application
 
@@ -141,7 +153,7 @@ The demo needs one account per role (`spec.md` section 8). Create them in the da
 1. `cd frontend && npm run dev`, then open http://localhost:5173/auth-check.html.
 2. Click **Sign in** and use the crew account. The page should show **Role: Crew**. The crew guard shows its content, and the supervisor guard shows "Not available for your role".
 3. Click **Get access token**. It should report an access token with 4 permissions.
-4. Sign out, sign in as the supervisor, and confirm **Role: Supervisor** and 9 permissions.
+4. Sign out, sign in as the supervisor, and confirm **Role: Supervisor** and 8 permissions.
 
 The backend tests (`backend/tests/test_security.py`) cover missing, invalid, expired, and valid tokens, and crew being refused supervisor actions, without a tenant.
 

@@ -102,6 +102,13 @@ def test_permissions_fall_back_to_the_role_when_the_claim_is_absent(client: Test
     assert set(response.json()["permissions"]) == roles.ROLE_PERMISSIONS["supervisor"]
 
 
+@pytest.mark.parametrize(("names", "role"), [(["Supervisor"], "supervisor"), ([" CREW "], "crew")])
+def test_role_names_match_regardless_of_case(client: TestClient, names, role) -> None:
+    response = client.get("/me", headers=bearer(token(names)))
+    assert response.status_code == 200
+    assert response.json()["role"] == role
+
+
 def test_token_without_a_planit_role_is_403(client: TestClient) -> None:
     response = client.get("/me", headers=bearer(token(["admin"])))
     assert response.status_code == 403
@@ -132,7 +139,6 @@ def test_role_policy_matches_the_spec() -> None:
         roles.REVIEW_REPORTS,
         roles.CONFIRM_HAZARDS,
         roles.SEND_INSTRUCTIONS,
-        roles.GENERATE_BRIEFINGS,
     }
     assert crew.isdisjoint(supervisor_only)
     assert crew < supervisor

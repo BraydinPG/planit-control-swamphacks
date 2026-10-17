@@ -47,6 +47,9 @@ class Site(Base):
     location_type: Mapped[str] = mapped_column(String, nullable=False)
     source: Mapped[str] = mapped_column(String, nullable=False)
     region: Mapped[str | None] = mapped_column(String, nullable=True)
+    # IANA time zone, e.g. America/New_York. Filled from the NWS point lookup; drives the
+    # 6 PM site-local briefing schedule.
+    timezone: Mapped[str | None] = mapped_column(String, nullable=True)
 
     assigned_team: Mapped["Team | None"] = relationship(back_populates="site", uselist=False)
 

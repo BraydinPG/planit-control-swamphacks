@@ -105,9 +105,13 @@ AuthenticatedUser = Annotated[CurrentUser, Depends(get_current_user)]
 
 
 def user_from_claims(claims: dict[str, Any], roles_claim: str) -> CurrentUser:
-    """Map verified claims to a user. A token without a PlanIT role is refused (403)."""
+    """Map verified claims to a user. A token without a PlanIT role is refused (403).
+
+    Role names match regardless of case or surrounding spaces ("Supervisor" counts).
+    """
     assigned = claims.get(roles_claim)
-    names = set(assigned) if isinstance(assigned, list) else set()
+    items = assigned if isinstance(assigned, list) else []
+    names = {name.strip().lower() for name in items if isinstance(name, str)}
     if "supervisor" in names:
         role: Role = "supervisor"
     elif "crew" in names:

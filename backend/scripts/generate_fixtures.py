@@ -22,7 +22,6 @@ from app.schemas import (
     CrewReport,
     EventOutlook,
     Evidence,
-    Explanation,
     FactorContribution,
     HazardNotice,
     HazardScore,
@@ -534,7 +533,7 @@ SITE_DETAIL = SiteDetail(
     event_outlook=EVENT_OUTLOOK,
 )
 
-# ---- briefings and explanations: one Gemini-generated, one deterministic fallback ----
+# ---- briefings: one Gemini-generated, one deterministic fallback ----
 
 BRIEF_EVIDENCE = [
     Evidence(id="obs-fc-1", kind="observation", label="Forecast heat index 108 °F"),
@@ -608,39 +607,6 @@ BRIEFINGS = [
     ),
 ]
 
-EXPLANATIONS = [
-    Explanation(
-        site_id=DEMO_SITE,
-        score_created_at=ago(3),
-        explanation=(
-            "The score rose from 5.9 to 7.6, mainly because the simulated lightning replay "
-            "triggered a stop-work alert 4.2 miles away. Forecast heat and the Flood Watch "
-            "add smaller amounts."
-        ),
-        top_factors=DEMO_FACTORS[:3],
-        change_since_previous="+1.7 since the previous score",
-        evidence=[
-            Evidence(id="obs-ltg-2", kind="observation", label="Strike 4.2 mi W (replay)"),
-            Evidence(id="model-1", kind="model_output", label="Model component 1.6"),
-            Evidence(id="obs-fc-1", kind="observation", label="Forecast heat index 108 °F"),
-        ],
-        unknowns=["Hurricane feed unavailable; its contribution is unknown."],
-        generated_by="gemini",
-        created_at=NOW,
-    ),
-    Explanation(
-        site_id=DEMO_SITE,
-        score_created_at=ago(3),
-        explanation=None,
-        top_factors=DEMO_FACTORS[:3],
-        change_since_previous=None,
-        evidence=[],
-        unknowns=["Gemini unavailable; showing the factor breakdown only."],
-        generated_by="fallback",
-        created_at=NOW,
-    ),
-]
-
 FIXTURES: dict[str, BaseModel | list[BaseModel]] = {
     "sites.json": SITES,
     "site-detail.json": SITE_DETAIL,
@@ -648,7 +614,6 @@ FIXTURES: dict[str, BaseModel | list[BaseModel]] = {
     "reports.json": REPORTS,
     "hazard-notices.json": NOTICES,
     "briefings.json": BRIEFINGS,
-    "explanations.json": EXPLANATIONS,
 }
 
 

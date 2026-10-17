@@ -7,8 +7,6 @@ from app.schemas.alerts import Acknowledgement, Alert, AlertRule, AlertState
 from app.schemas.briefings import (
     Briefing,
     BriefingHazard,
-    BriefingRequest,
-    Explanation,
     RecommendedAction,
 )
 from app.schemas.common import (
@@ -51,13 +49,11 @@ __all__ = [
     "AlertState",
     "Briefing",
     "BriefingHazard",
-    "BriefingRequest",
     "CrewReport",
     "DataState",
     "EventOutlook",
     "Evidence",
     "EvidenceKind",
-    "Explanation",
     "FactorContribution",
     "GeneratedBy",
     "HazardConfirmResponse",
