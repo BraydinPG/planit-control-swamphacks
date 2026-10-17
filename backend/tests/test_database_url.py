@@ -2,9 +2,15 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.db import DatabaseSettingsError, get_database_url, validate_database_url
+from app.db.connection import to_driver_url
 from app.main import app
 
 DOCUMENTED_URL = "postgresql://USER:PASSWORD@HOST:5432/tsdb?sslmode=require"
+
+
+def test_postgres_url_uses_psycopg_driver() -> None:
+    url = "postgres://USER:PASSWORD@HOST:5432/tsdb?sslmode=require"
+    assert to_driver_url(url) == "postgresql+psycopg://USER:PASSWORD@HOST:5432/tsdb?sslmode=require"
 
 
 def test_documented_tiger_cloud_url_is_accepted(monkeypatch: pytest.MonkeyPatch) -> None:

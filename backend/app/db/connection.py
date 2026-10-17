@@ -46,3 +46,14 @@ def _validate(url: str) -> str:
             "verify-ca and verify-full are also accepted."
         )
     return url
+
+
+def to_driver_url(url: str) -> str:
+    """Use the psycopg driver without changing the URL stored in the environment."""
+    if url.startswith("postgresql+psycopg://"):
+        return url
+    if url.startswith("postgres://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgres://")
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql://")
+    return url
