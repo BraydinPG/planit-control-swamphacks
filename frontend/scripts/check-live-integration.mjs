@@ -21,6 +21,7 @@ const flags = new Set([
   '--api-origin',
   '--frontend-origin',
   '--mode',
+  '--configuration-root',
   '--check-database',
   '--tokens-stdin',
   '--acknowledge',
@@ -90,7 +91,13 @@ async function privateInput() {
 async function backendProbe(python, input, flags = []) {
   const child = execFile(
     python,
-    [resolve(frontend, 'scripts/probe-integration.py'), ...flags],
+    [
+      resolve(frontend, 'scripts/probe-integration.py'),
+      ...flags,
+      ...(args.includes('--configuration-root')
+        ? ['--configuration-root', resolve(value('--configuration-root'))]
+        : []),
+    ],
     {
       cwd: resolve(frontend, '../backend'),
       timeout: 25000,
@@ -140,7 +147,10 @@ async function main() {
   const mode = value('--mode', 'development')
   if (!['development', 'production'].includes(mode))
     throw new Error('Mode must be development or production')
-  const env = loadEnv(mode, frontend, 'VITE_')
+  const configurationRoot = resolve(
+    value('--configuration-root', resolve(frontend, '..')),
+  )
+  const env = loadEnv(mode, resolve(configurationRoot, 'frontend'), 'VITE_')
   // Public SPA values stay in memory; summaries record state/matches only.
   const keys = [
     'VITE_AUTH0_DOMAIN',
@@ -175,6 +185,9 @@ async function main() {
     args.includes('--check-database') ? ['--check-database'] : [],
   )
   const frontendStatus = {
+    configuration_source: args.includes('--configuration-root')
+      ? 'explicit_project_root_read_only'
+      : 'this_checkout',
     mode: fixture,
     configuration: configState,
     unsafe_public_credential_keys: Object.keys(env).filter((k) =>

@@ -311,6 +311,10 @@ export class DemoClient implements Client {
     const r = this.state.reports.find((r) => r.id === id)
     if (!r || r.organization_id !== org)
       throw new ApiError(403, 'Report is outside the simulated organization')
+    if (r.hazard_present)
+      throw new ApiError(409, 'Confirm present hazards through their notice')
+    if (r.review_status !== 'pending')
+      throw new ApiError(409, 'This report has already been reviewed')
     r.review_status = input.decision
     r.reviewed_by = 'demo-supervisor'
     r.reviewed_at = this.time()
@@ -337,8 +341,22 @@ export class DemoClient implements Client {
   async confirm(id: string) {
     this.supervisor()
     const n = this.relevantNotice(id)
-    if (n.confirmed_by && n.confirmed_by !== 'demo-supervisor')
-      throw new ApiError(403, 'Another supervisor owns this instruction')
+    if (n.status !== 'potential')
+      throw new ApiError(409, 'This hazard has already been confirmed')
+    if (n.source === 'crew_report') {
+      const report = this.state.reports.find((r) => r.id === n.source_ref)
+      if (
+        !report ||
+        !report.hazard_present ||
+        report.notice_id !== n.id ||
+        report.review_status !== 'pending'
+      )
+        throw new ApiError(409, 'The notice has no pending present report')
+      report.review_status = 'confirmed'
+      report.reviewed_by = 'demo-supervisor'
+      report.reviewed_at = this.time()
+      report.confirmed_category = report.category
+    }
     n.status = 'confirmed'
     n.confirmed_by = 'demo-supervisor'
     n.confirmed_at = this.time()
@@ -354,7 +372,9 @@ export class DemoClient implements Client {
         403,
         'Only the confirming supervisor may send instructions',
       )
-    if (!instruction.trim() || instruction.length > 1000)
+    if (n.instruction_sent_at)
+      throw new ApiError(409, 'An instruction has already been sent')
+    if (!instruction.trim() || instruction.trim().length > 500)
       throw new ApiError(422, 'Enter an instruction of 1–1000 characters')
     n.instruction = instruction.trim()
     n.instruction_sent_at = this.time()

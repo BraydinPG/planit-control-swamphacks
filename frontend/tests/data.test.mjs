@@ -79,7 +79,7 @@ test('crew receives assigned site and cannot access another site or confirm noti
   await assert.rejects(() => client.site('site-fixture-b'), /not assigned/)
   await assert.rejects(() => client.confirm('notice-pole-1'), /Supervisor/)
 })
-test('report -> review -> confirm -> instruction persists; scores and alerts unchanged', async () => {
+test('present report -> notice confirmation -> instruction persists; demo scores and alerts unchanged', async () => {
   let role = 'crew'
   const store = storage(),
     client = new DemoClient(() => role, store)
@@ -108,7 +108,10 @@ test('report -> review -> confirm -> instruction persists; scores and alerts unc
     () => client.instruct(notice.id, 'inspect'),
     /confirming supervisor/,
   )
-  await client.review(report.id, { decision: 'confirmed' })
+  await assert.rejects(
+    () => client.review(report.id, { decision: 'confirmed' }),
+    /through their notice/,
+  )
   await client.confirm(notice.id)
   await client.instruct(notice.id, 'Demo supervisor instruction for review.')
   const reloaded = new DemoClient(() => role, store),
@@ -228,7 +231,14 @@ test('HTTP adapter passes Auth0 token and multipart photo, never a fake dev-role
       async () => ({ Authorization: 'Bearer test-token' }),
       async (url, options) => {
         calls.push({ url: String(url), options })
-        return Response.json({ id: 'demo' })
+        return Response.json({
+          ...(await new DemoClient(() => 'crew', storage()).reports())[0],
+          id: 'demo',
+          site_id: assigned,
+          category: 'other',
+          hazard_present: false,
+          review_status: 'pending',
+        })
       },
     )
   await api.submit(
@@ -286,8 +296,8 @@ test('published T048 client requests all states, sends authenticated acknowledge
   assert(api.capabilities.acknowledge)
   assert(
     api.capabilities.reports &&
-      !api.capabilities.reviewReports &&
-      !api.capabilities.hazards &&
+      api.capabilities.reviewReports &&
+      api.capabilities.hazards &&
       api.capabilities.briefings,
   )
   await api.alerts()

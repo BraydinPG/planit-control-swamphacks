@@ -3,20 +3,21 @@ import {
   Suspense,
   useCallback,
   useMemo,
+  useRef,
   useState,
   type FormEvent,
   type ReactNode,
-} from 'react'
-import type { CrewReport, ReportCategory, SiteSummary } from '../types/api'
+} from "react";
+import type { CrewReport, ReportCategory, SiteSummary } from "../types/api";
 import {
   useApplication,
   useResource,
   useRoute,
   demoClient,
   useClock,
-} from '../application/context'
-import { StoredBriefings } from '../components/data/StoredBriefings'
-import { sortSites } from '../api/contracts'
+} from "../application/context";
+import { StoredBriefings } from "../components/data/StoredBriefings";
+import { sortSites } from "../api/contracts";
 import {
   Action,
   big,
@@ -26,32 +27,32 @@ import {
   labelText,
   primary,
   LoadState,
-} from '../components/data/Interaction'
-import { AlertCard } from '../components/data/AlertCard'
-import { NoticeCard } from '../components/data/NoticeCard'
+} from "../components/data/Interaction";
+import { AlertCard } from "../components/data/AlertCard";
+import { NoticeCard } from "../components/data/NoticeCard";
 import {
   ScorePanel,
   Factors,
   Observations,
   Timestamp,
-} from '../components/data/Status'
-import { RiskBadge, RiskShape } from '../components/data/Risk'
-import { Icon, type IconName } from '../components/shell/Icon'
+} from "../components/data/Status";
+import { RiskBadge, RiskShape } from "../components/data/Risk";
+import { Icon, type IconName } from "../components/shell/Icon";
 const Advisory = lazy(() =>
-  import('../components/data/Advisory').then((m) => ({ default: m.Advisory })),
-)
+  import("../components/data/Advisory").then((m) => ({ default: m.Advisory })),
+);
 const SiteMap = lazy(() =>
-  import('../components/data/SiteMap').then((m) => ({ default: m.SiteMap })),
-)
+  import("../components/data/SiteMap").then((m) => ({ default: m.SiteMap })),
+);
 
 function SectionHead({
   title,
   kicker,
   children,
 }: {
-  title: string
-  kicker?: string
-  children?: ReactNode
+  title: string;
+  kicker?: string;
+  children?: ReactNode;
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-2">
@@ -61,7 +62,7 @@ function SectionHead({
       </div>
       {children}
     </div>
-  )
+  );
 }
 function Empty({ children }: { children: ReactNode }) {
   return (
@@ -69,30 +70,30 @@ function Empty({ children }: { children: ReactNode }) {
       <RiskShape kind="nodata" className="mt-0.5 size-4" />
       <span>{children}</span>
     </p>
-  )
+  );
 }
 
 export function ConnectedPages() {
   const { client, persona } = useApplication(),
-    [, page = 'overview', encodedId] = useRoute()
+    [, page = "overview", encodedId] = useRoute();
   const sites = useResource(
-    'sites',
+    "sites",
     useCallback(() => client.sites(), [client]),
-  )
-  if (!sites.data) return <LoadState error={sites.error} />
+  );
+  if (!sites.data) return <LoadState error={sites.error} />;
   if (!sites.data.length)
     return (
       <p role="status" className={`${card} p-5 text-ink-2`}>
         No authorized sites returned. Ask your administrator to verify your team
         assignment.
       </p>
-    )
-  const selected = encodedId ? decodeId(encodedId) : sites.data[0].id
-  if (page === 'reports') return <ReportsPage sites={sites.data} />
-  if (page === 'alerts') return <AlertsPage id={encodedId ? selected : null} />
-  if (page === 'briefings') return <BriefingsPage sites={sites.data} />
-  if (page === 'sites' && persona === 'supervisor' && !encodedId)
-    return <SitesPage sites={sites.data} />
+    );
+  const selected = encodedId ? decodeId(encodedId) : sites.data[0].id;
+  if (page === "reports") return <ReportsPage sites={sites.data} />;
+  if (page === "alerts") return <AlertsPage id={encodedId ? selected : null} />;
+  if (page === "briefings") return <BriefingsPage sites={sites.data} />;
+  if (page === "sites" && persona === "supervisor" && !encodedId)
+    return <SitesPage sites={sites.data} />;
   if (!sites.data.some((s) => s.id === selected))
     return (
       <p
@@ -101,21 +102,21 @@ export function ConnectedPages() {
       >
         This site is outside the sites returned for your session.
       </p>
-    )
+    );
   return (
     <SitePage
       id={selected}
-      compact={page === 'overview' && persona === 'crew'}
-      dashboard={page === 'overview' && persona === 'supervisor'}
+      compact={page === "overview" && persona === "crew"}
+      dashboard={page === "overview" && persona === "supervisor"}
       sites={sites.data}
     />
-  )
+  );
 }
 function decodeId(value: string) {
   try {
-    return decodeURIComponent(value)
+    return decodeURIComponent(value);
   } catch {
-    return 'invalid-id'
+    return "invalid-id";
   }
 }
 function SitePage({
@@ -124,20 +125,20 @@ function SitePage({
   dashboard,
   sites,
 }: {
-  id: string
-  compact: boolean
-  dashboard: boolean
-  sites: SiteSummary[]
+  id: string;
+  compact: boolean;
+  dashboard: boolean;
+  sites: SiteSummary[];
 }) {
-  const { client, persona } = useApplication()
+  const { client, persona, refresh } = useApplication();
   const result = useResource(
     `site:${id}`,
     useCallback(() => client.site(id), [client, id]),
-  )
-  if (dashboard) return <SitesPage sites={sites} />
-  if (!result.data) return <LoadState error={result.error} />
+  );
+  if (dashboard) return <SitesPage sites={sites} />;
+  if (!result.data) return <LoadState error={result.error} />;
   const site = result.data,
-    active = site.alerts.filter((a) => a.state === 'active')
+    active = site.alerts.filter((a) => a.state === "active");
   return (
     <div className="space-y-5">
       {compact && (
@@ -146,7 +147,7 @@ function SitePage({
             {site.name}
           </h2>
           <p className="text-sm text-muted">
-            {site.assigned_team?.name ?? 'No team assigned'}
+            {site.assigned_team?.name ?? "No team assigned"}
           </p>
         </div>
       )}
@@ -161,12 +162,12 @@ function SitePage({
         <div className="space-y-5 lg:col-span-7">
           <section className={`${card} p-5`}>
             <p className="kicker mb-1.5">
-              {site.location_type?.replaceAll('_', ' ') || 'Location'}
+              {site.location_type?.replaceAll("_", " ") || "Location"}
             </p>
             <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
             <p className="mt-1 text-ink-2">
-              {site.assigned_team?.name ?? 'No team assigned'} ·{' '}
-              {site.region ?? 'Region not supplied'}
+              {site.assigned_team?.name ?? "No team assigned"} ·{" "}
+              {site.region ?? "Region not supplied"}
             </p>
             <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 break-words font-mono text-xs text-muted">
               <span className="inline-flex items-center gap-1">
@@ -177,22 +178,27 @@ function SitePage({
             </p>
           </section>
           <div className="grid gap-3 sm:grid-cols-2">
-            <a
-              className={primary + big}
-              href={`#/${persona}/reports`}
-            >
+            <a className={primary + big} href={`#/${persona}/reports`}>
               <Icon name="camera" className="size-6" />
               Report a hazard
             </a>
             <a
-              className={control + ' min-h-[72px] rounded-2xl text-lg'}
+              className={control + " min-h-[72px] rounded-2xl text-lg"}
               href={`#/${persona}/briefings`}
             >
               <Icon name="briefings" className="size-6" />
               View briefing
             </a>
           </div>
-          <ScorePanel site={site} demo={client.mode === 'demo'} />
+          <button
+            type="button"
+            className={control + " w-full sm:w-auto"}
+            onClick={refresh}
+          >
+            <Icon name="clock" className="size-4" />
+            Refresh server state
+          </button>
+          <ScorePanel site={site} demo={client.mode === "demo"} />
           <section className="space-y-3">
             <SectionHead
               kicker="Conditions"
@@ -218,7 +224,9 @@ function SitePage({
             <section className="space-y-3">
               <SectionHead kicker="Deterministic rules" title="Alert details" />
               {site.alerts.length ? (
-                site.alerts.map((a) => <AlertCard key={a.id} alert={a} detail />)
+                site.alerts.map((a) => (
+                  <AlertCard key={a.id} alert={a} detail />
+                ))
               ) : (
                 <Empty>No alert record supplied for this site.</Empty>
               )}
@@ -230,12 +238,7 @@ function SitePage({
               title="Potential notices and approved instructions"
             />
             {site.notices.length ? (
-              site.notices.map((n) => (
-                <NoticeCard
-                  key={`${n.id}:${n.confirmed_at ?? n.status}`}
-                  notice={n}
-                />
-              ))
+              site.notices.map((n) => <NoticeCard key={n.id} notice={n} />)
             ) : (
               <Empty>
                 No notices supplied. Local electrical, structural and access
@@ -260,10 +263,10 @@ function SitePage({
           </p>
         }
       >
-        <Advisory site={site} demo={client.mode === 'demo'} />
+        <Advisory site={site} demo={client.mode === "demo"} />
       </Suspense>
     </div>
-  )
+  );
 }
 
 function Stat({
@@ -271,9 +274,9 @@ function Stat({
   label,
   shape,
 }: {
-  value: number
-  label: string
-  shape: Parameters<typeof RiskShape>[0]['kind']
+  value: number;
+  label: string;
+  shape: Parameters<typeof RiskShape>[0]["kind"];
 }) {
   return (
     <div className={`${card} flex items-start gap-3 p-4`}>
@@ -285,45 +288,45 @@ function Stat({
         <span className="text-sm text-ink-2">{label}</span>
       </p>
     </div>
-  )
+  );
 }
 
 function SitesPage({ sites }: { sites: SiteSummary[] }) {
-  const { persona, client } = useApplication()
-  const [search, setSearch] = useState(''),
-    [assignment, setAssignment] = useState('all'),
-    [hazard, setHazard] = useState('all'),
-    [region, setRegion] = useState('all'),
-    [alerts, setAlerts] = useState(false)
+  const { persona, client } = useApplication();
+  const [search, setSearch] = useState(""),
+    [assignment, setAssignment] = useState("all"),
+    [hazard, setHazard] = useState("all"),
+    [region, setRegion] = useState("all"),
+    [alerts, setAlerts] = useState(false);
   const state = (s: SiteSummary) =>
-    s.id.match(/^eia860m-([A-Z]{2})-/)?.[1] ?? 'Not supplied'
+    s.id.match(/^eia860m-([A-Z]{2})-/)?.[1] ?? "Not supplied";
   const shown = useMemo(
     () =>
       sortSites(
         sites.filter(
           (s) =>
-            (s.name + ' ' + s.id + ' ' + (s.assigned_team?.name ?? ''))
+            (s.name + " " + s.id + " " + (s.assigned_team?.name ?? ""))
               .toLowerCase()
               .includes(search.toLowerCase()) &&
-            (assignment === 'all' ||
-              Boolean(s.assigned_team) === (assignment === 'assigned')) &&
-            (hazard === 'all' ||
+            (assignment === "all" ||
+              Boolean(s.assigned_team) === (assignment === "assigned")) &&
+            (hazard === "all" ||
               s.top_factors.some((f) => f.factor === hazard)) &&
-            (region === 'all' || state(s) === region) &&
+            (region === "all" || state(s) === region) &&
             (!alerts || s.active_alerts > 0),
         ),
-        client.mode === 'demo',
+        client.mode === "demo",
       ),
     [sites, search, assignment, hazard, region, alerts, client.mode],
-  )
+  );
   const select = useCallback(
     (id: string) => {
-      location.hash = `/${persona}/sites/${encodeURIComponent(id)}`
+      location.hash = `/${persona}/sites/${encodeURIComponent(id)}`;
     },
     [persona],
-  )
+  );
   const legacy = (s: SiteSummary) =>
-    client.mode === 'demo' && s.top_factors.some((f) => f.factor === 'model')
+    client.mode === "demo" && s.top_factors.some((f) => f.factor === "model");
   const counts = {
     high: sites.filter(
       (s) => !legacy(s) && s.risk_score !== null && s.risk_score >= 7,
@@ -331,19 +334,19 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
     alerting: sites.filter((s) => s.active_alerts > 0).length,
     unscored: sites.filter((s) => s.risk_score === null || legacy(s)).length,
     teams: sites.filter((s) => s.assigned_team).length,
-  }
+  };
   const columns =
-    'md:grid md:grid-cols-[2.5rem_minmax(0,1.5fr)_10rem_minmax(0,1.6fr)_minmax(0,1fr)] md:items-start md:gap-4'
+    "md:grid md:grid-cols-[2.5rem_minmax(0,1.5fr)_10rem_minmax(0,1.6fr)_minmax(0,1fr)] md:items-start md:gap-4";
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <p className="text-base font-semibold">
-          {sites.length}{' '}
-          {client.mode === 'demo' ? 'sample/reference' : 'backend-authorized'}{' '}
+          {sites.length}{" "}
+          {client.mode === "demo" ? "sample/reference" : "backend-authorized"}{" "}
           locations. Assigned teams first, then eligible supplied score. Unknown
           is never low risk.
         </p>
-        {client.mode === 'demo' && (
+        {client.mode === "demo" && (
           <p className="max-w-3xl text-sm text-muted">
             Includes 50 reconciled EIA reference plants, not verified active
             jobs, plus five canonical simulated sites. Reference plants have no
@@ -454,7 +457,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
           No locations match these filters.
         </p>
       )}
-      {client.mode === 'demo' && (
+      {client.mode === "demo" && (
         <div
           className="flex flex-wrap items-center gap-2"
           aria-label="Demo replays"
@@ -486,7 +489,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
             {shown.map((s, i) => (
               <li
                 key={s.id}
-                className={`grid gap-2 px-4 py-3 ${columns} ${s.active_alerts > 0 ? 'shadow-[inset_4px_0_0_var(--pc-stop)]' : ''}`}
+                className={`grid gap-2 px-4 py-3 ${columns} ${s.active_alerts > 0 ? "shadow-[inset_4px_0_0_var(--pc-stop)]" : ""}`}
               >
                 <span className="hidden pt-2.5 text-sm tabular-nums text-muted md:block">
                   {i + 1}
@@ -499,16 +502,16 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                     {s.name}
                   </a>
                   <p className="text-sm text-muted">
-                    {s.assigned_team?.name ?? 'No team assigned'} · {s.id}
+                    {s.assigned_team?.name ?? "No team assigned"} · {s.id}
                   </p>
                 </div>
                 <div className="space-y-1 md:pt-2">
                   <p className="text-base font-bold tabular-nums">
                     {s.risk_score === null
-                      ? 'Not scored yet'
+                      ? "Not scored yet"
                       : legacy(s)
-                        ? 'Legacy fixture score withheld'
-                        : `${s.risk_score} / 10 · ${s.risk_level ?? 'level unavailable'}`}
+                        ? "Legacy fixture score withheld"
+                        : `${s.risk_score} / 10 · ${s.risk_level ?? "level unavailable"}`}
                   </p>
                   <RiskBadge
                     level={s.risk_score === null ? null : s.risk_level}
@@ -520,23 +523,22 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                   {s.top_factors.length
                     ? s.top_factors
                         .map((factor) =>
-                          factor.factor === 'model'
-                            ? 'unapproved legacy ML factor withheld'
+                          factor.factor === "model"
+                            ? "unapproved legacy ML factor withheld"
                             : `${factor.label} (${factor.data_state})`,
                         )
-                        .join('; ')
-                    : 'not supplied'}
+                        .join("; ")
+                    : "not supplied"}
                 </p>
                 <p className="text-sm text-ink-2 md:pt-2">
                   <span
                     className={
-                      s.active_alerts > 0 ? 'font-bold text-stop-text' : ''
+                      s.active_alerts > 0 ? "font-bold text-stop-text" : ""
                     }
                   >
-                    {s.active_alerts}{' '}
-                    {client.mode === 'demo' ? 'demo' : 'supplied'} active
-                    alerts
-                  </span>{' '}
+                    {s.active_alerts}{" "}
+                    {client.mode === "demo" ? "demo" : "supplied"} active alerts
+                  </span>{" "}
                   · Completeness {Math.round(s.data_completeness * 100)}% ·
                   Updated <Timestamp value={s.updated_at} />
                 </p>
@@ -550,21 +552,24 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
         </p>
       </section>
     </div>
-  )
+  );
 }
 function AlertsPage({ id }: { id: string | null }) {
-  const { client, refresh } = useApplication()
+  const { client, refresh } = useApplication();
   const alerts = useResource(
-    'alerts',
+    "alerts",
     useCallback(() => client.alerts(), [client]),
-  )
-  const demo = demoClient(client)
-  if (!alerts.data) return <LoadState error={alerts.error} />
-  const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
+  );
+  const demo = demoClient(client);
+  if (!alerts.data) return <LoadState error={alerts.error} />;
+  const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data;
   return (
     <div className="space-y-5">
       {id && (
-        <a href={`#${location.hash.split('/').slice(0, 3).join('/').slice(1)}`} className={control}>
+        <a
+          href={`#${location.hash.split("/").slice(0, 3).join("/").slice(1)}`}
+          className={control}
+        >
           <Icon name="back" className="size-4" />
           All alerts
         </a>
@@ -590,8 +595,8 @@ function AlertsPage({ id }: { id: string | null }) {
             <button
               className={control}
               onClick={() => {
-                demo.replay('strike')
-                refresh()
+                demo.replay("strike");
+                refresh();
               }}
             >
               Replay additional qualifying strike
@@ -599,8 +604,8 @@ function AlertsPage({ id }: { id: string | null }) {
             <button
               className={control}
               onClick={() => {
-                demo.replay('cleared')
-                refresh()
+                demo.replay("cleared");
+                refresh();
               }}
             >
               Replay server-cleared payload
@@ -609,64 +614,67 @@ function AlertsPage({ id }: { id: string | null }) {
         </section>
       )}
     </div>
-  )
+  );
 }
 const categories: Record<ReportCategory, string> = {
-  broken_pole_downed_line: 'Broken pole / downed line',
-  on_site_fire: 'On-site fire',
-  wildlife: 'Wildlife',
-  flooding: 'Flooding',
-  other: 'Other',
-}
+  broken_pole_downed_line: "Broken pole / downed line",
+  on_site_fire: "On-site fire",
+  wildlife: "Wildlife",
+  flooding: "Flooding",
+  other: "Other",
+};
 const categoryIcon: Record<ReportCategory, IconName> = {
-  broken_pole_downed_line: 'bolt',
-  on_site_fire: 'spark',
-  wildlife: 'pin',
-  flooding: 'layers',
-  other: 'doc',
-}
+  broken_pole_downed_line: "bolt",
+  on_site_fire: "spark",
+  wildlife: "pin",
+  flooding: "layers",
+  other: "doc",
+};
 function ReportForm({ site }: { site: SiteSummary }) {
-  const { client, refresh } = useApplication()
+  const { client, refresh } = useApplication();
   const [category, setCategory] = useState<ReportCategory>(
-      'broken_pole_downed_line',
+      "broken_pole_downed_line",
     ),
-    [presence, setPresence] = useState(''),
+    [presence, setPresence] = useState(""),
     [lat, setLat] = useState(String(site.lat)),
     [lon, setLon] = useState(String(site.lon)),
-    [note, setNote] = useState(''),
+    [note, setNote] = useState(""),
     [photo, setPhoto] = useState<File | null>(null),
     [busy, setBusy] = useState(false),
-    [message, setMessage] = useState('')
+    [message, setMessage] = useState("");
+  const inFlight = useRef(false);
   async function submit(event: FormEvent) {
-    event.preventDefault()
-    if (!presence) return
-    setBusy(true)
-    setMessage('')
+    event.preventDefault();
+    if (!presence || inFlight.current) return;
+    inFlight.current = true;
+    setBusy(true);
+    setMessage("");
     try {
       await client.submit(
         {
           site_id: site.id,
           category,
-          hazard_present: presence === 'present',
+          hazard_present: presence === "present",
           lat: Number(lat),
           lon: Number(lon),
           note: note || null,
         },
         photo,
-      )
+      );
       setMessage(
-        client.mode === 'demo'
-          ? 'Simulated report stored in this browser only. Review is pending; no score changed.'
-          : 'Report accepted by backend; await human review.',
-      )
-      refresh()
+        client.mode === "demo"
+          ? "Simulated report stored in this browser only. Review is pending; no score changed."
+          : "Report accepted by backend; await human review.",
+      );
+      refresh();
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Submission unavailable')
+      setMessage(e instanceof Error ? e.message : "Submission unavailable");
     } finally {
-      setBusy(false)
+      inFlight.current = false;
+      setBusy(false);
     }
   }
-  const step = 'kicker mb-2 flex items-center gap-2 text-ink!'
+  const step = "kicker mb-2 flex items-center gap-2 text-ink!";
   return (
     <form
       aria-label="Hazard report"
@@ -676,9 +684,9 @@ function ReportForm({ site }: { site: SiteSummary }) {
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Report a hazard</h2>
         <p className="mt-1 text-sm text-ink-2">
-          {client.mode === 'demo'
-            ? 'Demo only. Avoid private photos; selected photos stay in memory and are not persisted across reload.'
-            : 'Submitted to the configured backend only; server validates permissions and storage.'}{' '}
+          {client.mode === "demo"
+            ? "Demo only. Avoid private photos; selected photos stay in memory and are not persisted across reload."
+            : "Submitted to the configured backend only; server validates permissions and storage."}{" "}
           Note is optional.
         </p>
       </div>
@@ -715,7 +723,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
           Hazard present or absent (required)
           <select
             required
-            className={`${field} min-h-14 border-2 text-lg font-bold ${presence === 'present' ? 'border-stop bg-stop text-white' : presence === 'absent' ? 'border-ink' : ''}`}
+            className={`${field} min-h-14 border-2 text-lg font-bold ${presence === "present" ? "border-stop bg-stop text-white" : presence === "absent" ? "border-ink" : ""}`}
             value={presence}
             onChange={(e) => setPresence(e.target.value)}
           >
@@ -725,11 +733,11 @@ function ReportForm({ site }: { site: SiteSummary }) {
           </select>
         </label>
         <p className="mt-2 text-sm text-muted">
-          {presence === 'present'
-            ? 'Present: a potential-hazard notice with no instructions goes to teams in the radius after submission.'
-            : presence === 'absent'
-              ? 'Absent: no notice is sent. Your organization’s supervisor reviews the report.'
-              : 'Choose one to continue.'}
+          {presence === "present"
+            ? "Present: a potential-hazard notice with no instructions goes to teams in the radius after submission."
+            : presence === "absent"
+              ? "Absent: no notice is sent. Your organization’s supervisor reviews the report."
+              : "Choose one to continue."}
         </p>
       </div>
       <div>
@@ -739,13 +747,13 @@ function ReportForm({ site }: { site: SiteSummary }) {
         <label className={labelText}>
           <span className="inline-flex items-center gap-2">
             <Icon name="camera" className="size-4" />
-            {client.mode === 'demo'
-              ? 'Photo (optional in demo)'
-              : 'Photo (required when hazard present)'}
+            {client.mode === "demo"
+              ? "Photo (optional in demo)"
+              : "Photo (required when hazard present)"}
           </span>
           <input
             type="file"
-            required={client.mode === 'live' && presence === 'present'}
+            required={client.mode === "live" && presence === "present"}
             accept="image/jpeg,image/png,image/webp"
             className={`${field} py-2.5`}
             onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
@@ -811,15 +819,15 @@ function ReportForm({ site }: { site: SiteSummary }) {
           busy ||
           !presence ||
           !client.capabilities.reports ||
-          (client.mode === 'live' && presence === 'present' && !photo)
+          (client.mode === "live" && presence === "present" && !photo)
         }
         type="submit"
       >
         {busy
-          ? 'Submitting…'
-          : client.mode === 'demo'
-            ? 'Submit simulated report'
-            : 'Submit report'}
+          ? "Uploading…"
+          : client.mode === "demo"
+            ? "Submit simulated report"
+            : "Submit report"}
       </button>
       {!client.capabilities.reports && (
         <p className="text-sm text-muted">
@@ -837,38 +845,37 @@ function ReportForm({ site }: { site: SiteSummary }) {
         </p>
       )}
     </form>
-  )
+  );
 }
 const reviewLook = {
   pending: {
-    shape: 'nodata',
-    text: 'Pending review',
-    cls: 'border-dashed border-line-strong text-ink-2',
+    shape: "nodata",
+    text: "Pending review",
+    cls: "border-dashed border-line-strong text-ink-2",
   },
   confirmed: {
-    shape: 'warn',
-    text: 'Confirmed',
-    cls: 'border-warn text-warn-text',
+    shape: "warn",
+    text: "Confirmed",
+    cls: "border-warn text-warn-text",
   },
   rejected: {
-    shape: 'clear',
-    text: 'Rejected',
-    cls: 'border-line-strong text-muted',
+    shape: "clear",
+    text: "Rejected",
+    cls: "border-line-strong text-muted",
   },
-} as const
+} as const;
 function ReportCard({ report }: { report: CrewReport }) {
-  const { client, persona } = useApplication()
-  const photo = demoClient(client)?.photo(report.id)
+  const { client, persona } = useApplication();
+  const photo = demoClient(client)?.photo(report.id);
   const [reviewCategory, setReviewCategory] = useState<ReportCategory>(
     report.category,
-  )
-  const [severity, setSeverity] = useState<'' | 'low' | 'moderate' | 'high'>('')
-  const look = reviewLook[report.review_status]
+  );
+  const [severity, setSeverity] = useState<"" | "low" | "moderate" | "high">(
+    "",
+  );
+  const look = reviewLook[report.review_status];
   return (
-    <article
-      data-report-id={report.id}
-      className={`${card} space-y-3 p-4`}
-    >
+    <article data-report-id={report.id} className={`${card} space-y-3 p-4`}>
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${look.cls}`}
@@ -877,14 +884,14 @@ function ReportCard({ report }: { report: CrewReport }) {
           {look.text}
         </span>
         <span
-          className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${report.hazard_present ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'}`}
+          className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${report.hazard_present ? "border-stop text-stop-text" : "border-line-strong text-ink-2"}`}
         >
-          {report.hazard_present ? 'Hazard present' : 'Hazard absent'}
+          {report.hazard_present ? "Hazard present" : "Hazard absent"}
         </span>
       </div>
       <h3 className="text-lg font-bold">
-        {categories[report.category]} ·{' '}
-        {report.hazard_present ? 'present' : 'absent'} · {report.review_status}
+        {categories[report.category]} ·{" "}
+        {report.hazard_present ? "present" : "absent"} · {report.review_status}
       </h3>
       <p className="break-words font-mono text-xs text-muted">
         {report.site_id} · {report.lat}, {report.lon}
@@ -909,7 +916,9 @@ function ReportCard({ report }: { report: CrewReport }) {
         </p>
       ) : (
         <p className="text-xs text-muted">
-          No persisted photo. Demo photos are session-only.
+          {client.mode === "demo"
+            ? "No persisted photo. Demo photos are session-only."
+            : "No photo reference supplied."}
         </p>
       )}
       {report.enrichment && (
@@ -920,67 +929,83 @@ function ReportCard({ report }: { report: CrewReport }) {
           </strong>
           <p className="mt-1 text-ink">{report.enrichment.description}</p>
           <p className="mt-1 text-ink-2">
-            {report.enrichment.suggested_category};{' '}
+            {report.enrichment.suggested_category};{" "}
             {report.enrichment.severity_suggestion}; not confirmed by this
             suggestion.
           </p>
         </div>
       )}
-      {persona === 'supervisor' && report.review_status === 'pending' && (
-        <div className="space-y-3 rounded-xl border border-line bg-surface-2 p-3">
-          <p className="kicker">Supervisor review</p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className={labelText}>
-              Reviewed category
-              <select
-                className={field}
-                value={reviewCategory}
-                onChange={(e) =>
-                  setReviewCategory(e.target.value as ReportCategory)
+      {persona === "supervisor" &&
+        report.review_status === "pending" &&
+        !report.hazard_present && (
+          <div className="space-y-3 rounded-xl border border-line bg-surface-2 p-3">
+            <p className="kicker">Supervisor review</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className={labelText}>
+                Reviewed category
+                <select
+                  className={field}
+                  value={reviewCategory}
+                  onChange={(e) =>
+                    setReviewCategory(e.target.value as ReportCategory)
+                  }
+                >
+                  {Object.entries(categories).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className={labelText}>
+                Reviewed severity (optional)
+                <select
+                  className={field}
+                  value={severity}
+                  onChange={(e) =>
+                    setSeverity(e.target.value as typeof severity)
+                  }
+                >
+                  <option value="">Not specified</option>
+                  <option value="low">Low</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Action
+                tone="primary"
+                run={() =>
+                  client.review(report.id, {
+                    decision: "confirmed",
+                    category: reviewCategory,
+                    severity: severity || null,
+                  })
                 }
               >
-                {Object.entries(categories).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className={labelText}>
-              Reviewed severity (optional)
-              <select
-                className={field}
-                value={severity}
-                onChange={(e) =>
-                  setSeverity(e.target.value as typeof severity)
-                }
+                Confirm report classification
+              </Action>
+              <Action
+                run={() => client.review(report.id, { decision: "rejected" })}
               >
-                <option value="">Not specified</option>
-                <option value="low">Low</option>
-                <option value="moderate">Moderate</option>
-                <option value="high">High</option>
-              </select>
-            </label>
+                Reject report
+              </Action>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Action
-              tone="primary"
-              run={() =>
-                client.review(report.id, {
-                  decision: 'confirmed',
-                  category: reviewCategory,
-                  severity: severity || null,
-                })
-              }
-            >
-              Confirm report classification
-            </Action>
-            <Action
-              run={() => client.review(report.id, { decision: 'rejected' })}
-            >
-              Reject report
-            </Action>
-          </div>
+        )}
+      {report.hazard_present && report.review_status === "pending" && (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-caution p-3 text-sm text-ink-2">
+          <p className="min-w-0 flex-1">
+            Present report remains pending until a notified supervisor confirms
+            its potential notice.
+          </p>
+          <a
+            className={control}
+            href={`#/${persona}/sites/${encodeURIComponent(report.site_id)}`}
+          >
+            Open site notices
+          </a>
         </div>
       )}
       <p className="text-xs text-muted">
@@ -988,16 +1013,16 @@ function ReportCard({ report }: { report: CrewReport }) {
         confirmed hazards.
       </p>
     </article>
-  )
+  );
 }
 function ReportsPage({ sites }: { sites: SiteSummary[] }) {
-  const { client } = useApplication()
+  const { client, refresh } = useApplication();
   const result = useResource(
-    'reports',
+    "reports",
     useCallback(() => client.reports(), [client]),
-  )
-  const [siteId, setSiteId] = useState(sites[0].id)
-  const site = sites.find((s) => s.id === siteId) ?? sites[0]
+  );
+  const [siteId, setSiteId] = useState(sites[0].id);
+  const site = sites.find((s) => s.id === siteId) ?? sites[0];
   return (
     <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
       <div className="space-y-4 lg:col-span-7">
@@ -1016,6 +1041,10 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
             ))}
           </select>
         </label>
+        <button type="button" className={control} onClick={refresh}>
+          <Icon name="clock" className="size-4" />
+          Refresh reports and server state
+        </button>
         <ReportForm key={site.id} site={site} />
       </div>
       <div className="lg:col-span-5">
@@ -1034,16 +1063,16 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 function BriefingsPage({ sites }: { sites: SiteSummary[] }) {
-  return <StoredBriefings sites={sites} />
+  return <StoredBriefings sites={sites} />;
 }
 export function DemoClock() {
-  const now = useClock()
+  const now = useClock();
   return (
     <span className="font-mono tracking-wide">
       Replay clock: <Timestamp value={new Date(now).toISOString()} />
     </span>
-  )
+  );
 }

@@ -1,3 +1,65 @@
+## T051A deterministic scoring - 2026-10-17 11:16 UTC
+
+Cache's explicit task-specific authorization assigns `backend/app/rules/score.py` and score weights in `backend/app/rules/settings.py`. Separate `feature/cache-site-risk-scoring` branch in the functional worktree, base merged PR #30 `1b1b0c3`; reviewed later main `ee923c3` only updates README. Primary/Claude checkout, server and uncommitted work untouched. No unmerged parent PR.
+
+Code: rules-0.2 preserves compute_score/HazardScore/FactorContribution and default weights/bands. Adds trusted source/site/as-of/validity/unit qualification, matched heat-input provenance, cache-age checks, replay excluded from live completeness, current-feed coverage independent of active alert authority, report ID/shared-notice dedup and a labeled 3-point budget per reviewed category. All independent capped reports remain visible. No report expiry, injury probabilities, ML/Gemini term, timer change or clearance. Source-name checks are not authentication.
+
+Tests: new `backend/tests/score_scenarios.py`, `test_site_risk_algorithm.py`, `test_site_risk_persistence.py`; focused fixture corrections in `test_score.py` (units/source identities, distinct cap-test IDs, replay completeness) and one canonical successful-none marker in `test_refresh.py`. No acceptance was weakened: old replay-as-live expectation intentionally corrected. 35 reproducible synthetic cases, two reconciled EIA reference comparisons and five canonical examples saved to `docs/site-risk-scoring-evaluation.json`. `docs/SITE_RISK_SCORING.md` specifies formula, limits and exact owner proposals.
+
+Acceptance: initial 73 focused tests passed. Final `python -m pytest backend/tests -q`: **637 passed**, zero skipped, 11.15s, sole existing Starlette TestClient deprecation warning. `python -m ruff check backend` and format check for seven changed Python files pass. Includes canonical schemas/fixtures, stored site routes, refresh/alert transitions, history/previous score, concurrent confirmation/rollback and 18:00 briefing risk-level tests. A fresh subprocess blocks ML/Gemini imports with Gemini key absent. No new frontend/ML/browser build was needed; contracts/UI unchanged. These are offline/in-memory integration checks, not Auth0/Tiger Data/provider acceptance. Intermediate failures were stricter fixture assumptions, lint lengths/import, absent EIA IDs in illustrative frontend fixtures, and a new test's composite DB-key lookup; corrected before final acceptance.
+
+Shared edits: only T051A `[ ]` becomes `[x]` in tasks.md, exact original text and all other bytes preserved; PROJECT_CONTEXT updated in the implementation commit. No other checkboxes changed. No production service, canonical schema, route, persistence, DB/migration, auth, ingestion, Gemini, ML, frontend, manifest/lockfile or deployment file edited.
+
+Handoffs: **Rudra** reviews category cap and the mandatory numeric score's inability to express insufficient evidence, source coverage/ranking and explicit rescore orchestration outside refresh. **Braydin** reviews briefing unknowns/provenance and a future qualified report-resolution lifecycle. **Claude** keeps visual ownership; render existing states/completeness with incomplete index warnings and archived-fixture labels. Existing 7.6 display example is illustrative; recomputation is 5.0, not claimed live parity. Full proposal/acceptance details are in SITE_RISK_SCORING.md; no owner feature was implemented on their behalf. Implementation `e29baccd97d2a11758d80766dad8164753a0642a`; [PR #31](https://github.com/BraydinPG/planit-control-swamphacks/pull/31) is open against main for Rudra review. This documentation follow-up records publication refs; no merge authorized or performed.
+
+## Functional diagnostics / Claude coordination - 2026-10-17
+
+Published [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30) against main; source checkpoints `b7c8dc4` and `11806fa`. Open at publication, no Codex merge. This follow-up records exact refs; no implementation/task state changes.
+
+User authorization: Codex handles API/state/Auth0 consumption/diagnostics/tests; Claude actively owns visual files. User clarified existing Auth0 crew/supervisor test aliases are the demo accounts; do not create real-user/employee records. No identities, profiles or DB rows were created. Auth0-backed demo acceptance remains separate from isolated mocks.
+
+Separate branch/worktree `feature/cache-functional-acceptance` / `C:/Users/cache/planit-control-functional`, from merged PR #29 main `ebd6d92`. API checkpoint `b7c8dc4` is preserved below. No unmerged parent dependency; primary checkout/server and teammate jobs/configuration are untouched. Full path ownership and stable component interfaces: FUNCTIONAL_INTEGRATION_HANDOFF.md.
+
+Diagnostic changes: `frontend/scripts/check-live-integration.mjs` (explicit read-only configuration-root), `scripts/integration/acceptance.mjs` (gate every published anonymous denial before tokens; role casing, stored reads, crew notice denial and complete ack read-back), `scripts/probe-integration.py` (canonical Briefing validation; external settings without copying/code import changes), `scripts/run-live-account-check.py` (forward settings-root; hidden stdin tokens unchanged), `tests/integration.test.mjs` and `tests/test_integration_probe.py` (six/three new regression checks). API/test changes are the prior checkpoint's exact paths. No JSX/presentation/composition/auth/canonical fixtures/types/backend/ML/manifest/lockfile edits.
+
+Shared docs: PROJECT_CONTEXT, INTEGRATION_STATUS, this log, FRONTEND_REDESIGN_HANDOFF, new FUNCTIONAL_INTEGRATION_HANDOFF and functional-integration-verification.json, frontend/INTEGRATION and LIVE_INTEGRATION. Task.md is unchanged. Documentation distinguishes actual provider-authenticated demo data from mocks and preserves existing owner work.
+
+Checks: 68 Node, 521 Python (511 backend+10 probe), lint/TypeScript, fixture/API-mode builds, Ruff and existing installed Edge workflows at 1440/390/320 pass. API build warns for 531kB chunk; no conflicting layout/code-splitting change attempted. Initial new tests exposed a fixture assumption and the backend loader's source-fixed .env path; corrected test setup and explicit-root handling, with final checks passing. Actual local readiness: all11 operations match, ten anonymous/dev-header denials401, invalid bearer503, no Auth0 demo session or DB connection; exit2. Exact commands/results/files are in the machine record.
+
+Rudra/Braydin: use existing demo setup and private session/configuration handoff; no employee accounts are needed. Claude: no component migration required; retain Client/hook interfaces, server-owned alert state, explicit instruction approval and stable notice IDs. Shared type/composition/config changes require coordination. Final implementation commit and review PR follow this verified checkpoint; no merge authorized/performed by Codex.
+
+## Functional API validation checkpoint - 2026-10-17
+
+User explicitly authorized Codex API/state/diagnostics/tests while Claude owns presentation. Separate worktree/branch from merged PR #29 main `ebd6d92`; primary checkout/server untouched. This checkpoint changes only `frontend/src/api/{contracts,http-client,live-read-validation}.ts`, new `frontend/tests/live-read.test.mjs`, context and this record. Canonical types/fixtures remain read-only; no pages/components/styles/auth/backend/ML/manifests/locks.
+
+Site/alert DTOs, coordinates/nulls/source times/IDs and acknowledgement response now validated. Client method arguments unchanged; acknowledgement return is typed Alert. Six focused read/ack regressions pass; existing suite and current combined diagnostics were verified together (68 Node /521 Python; lint/build/browser pass). Final diagnostic and full coordination evidence follows in the next focused commit. No task checkbox changed; Auth0 test identities, not employee records, are intended for actual demo acceptance.
+
+## T065 frontend lifecycle integration - 2026-10-17
+
+Published implementation `60ce28082e5bf18822f758bec4f4b1686d3dc794`: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication. This metadata-only follow-up records exact refs; source validation and T065 unchecked state are unchanged. Rudra/Braydin should use the owner handoff below.
+
+Authorized scope: frontend wiring/tests and shared progress docs, using merged T053/T054/T054A/T055 and T058A contracts. No backend/auth/database/ML/deployment/manifest/lockfile change. T065 remains unchecked because actual authenticated persistence/delivery is not available locally. T063/T064/T066/T067/T068 unchanged.
+
+Git update: maintainers merged PR #24 as `f3a65a7` and the pushed T067A checkpoint `2e4cfb7` in PR #27 as `1eed70e` while this run continued. Cache performed no main merge or force push. Preserved all work and fast-forwarded the new `feature/cache-report-lifecycle-integration` to reviewed main `1eed70e`; then fast-forwarded reviewed PR #28 main `dcd9fc5` (score-history regression fix) without touching its backend or T076 task note. Final review targets main without duplicated parent changes.
+
+Changed code paths:
+- `frontend/src/api/contracts.ts`: typed HazardConfirmResponse/HazardNotice returns; existing canonical types imported.
+- `frontend/src/api/http-client.ts`: published review/notice capabilities, canonical multipart/report/review/confirmation/instruction validation; general conflict and unknown timeout outcomes, no retries.
+- `frontend/src/api/validate.ts`: report/notice shape, ID/context/state and confirmation consistency checks; no inferred ownership or instruction on a potential notice.
+- `frontend/src/components/data/Interaction.tsx`: synchronous in-flight guard; permission/conflict/malformed mutation responses refresh shared state.
+- `frontend/src/components/data/NoticeCard.tsx`: returned server notice/draft, manual fallback, confirmer-only editor, explicit final 500-character send, foreign-owner state; stable notice identity preserves edits while GETs refresh.
+- `frontend/src/pages/ConnectedPages.tsx`: absent-only review actions, present report site-notice link, stable notice keys, upload in-flight state, honest live photo-reference message and manual server refresh.
+- `frontend/src/demo/client.ts`: separate absent review/present notice confirmation, matching report confirmation, duplicate conflicts; no simulated score recalculation.
+- `frontend/tests/{data.test.mjs,lifecycle.test.mjs,browser-harness.tsx,mock-service.ts}` and `frontend/scripts/check-shell.mjs`: reuse fixtures in isolated mocked HTTP tests, 12 new lifecycle tests and browser UI flow; fixtures in test session storage, no real credentials/API access.
+
+Shared docs: PROJECT_CONTEXT, INTEGRATION_STATUS, CROSS_SCOPE_CHANGES, FRONTEND_REDESIGN_HANDOFF, frontend/INTEGRATION, frontend/LIVE_INTEGRATION and docs/t065-verification.json. No T065 task.md change. T067A task checkbox already merged.
+
+Verification: 56 Node tests, 518 backend/probe checks (511+7), lint/TS/build and isolated npm ci/build pass. Full final browser acceptance passes at 1440/390/320, including complete mock lifecycle and reload; evidence is in t065-verification.json. Early browser runs exposed a confirmation-refresh editor reset; fixed stable parent/child keys and retained server response. Another browser assertion expected raw 8.25 while the existing UI correctly rounds to 8.3; assertion corrected. These failed runs are not counted as acceptance.
+
+Actual local readiness: restarted only owned FastAPI PID 64044 via its known session; intermediate known process 69228 has DEV_AUTH_BYPASS=false, FEED_REFRESH_ENABLED=false, BRIEFING_SCHEDULE_ENABLED=false. All 11 operations present without source/running drift. Five old and five additional route denial checks pass 401; invalid bearer503 remains blocked. DATABASE_URL/Auth0 settings missing; no actual account persistence, photos, instructions or Gemini-provider response verified. Final known developer process is PID 65924 after incorporating PR #28; it has the same disabled flags. No teammate process/configuration or long job was changed.
+
+Owner handoff: Rudra reviews canonical route/response use and coordinates merge. Braydin continues independent private Auth0/Tiger Data/membership/storage/Gemini setup; use LIVE_INTEGRATION's real report lifecycle checklist afterwards. Private photo retrieval remains unconnected; UI never follows arbitrary photo URLs. Separate redesign should preserve state, evidence, roles, explicit approval and error behavior.
+
 ## T067A / T065 continuation - 2026-10-17
 
 Explicit user authorization: complete T067A first, then wire T065 without duplicating Braydin's provisioning. Branch `feature/cache-stored-briefings-report-lifecycle` stacks on PR #24 head `6a2fc4d`; reviewed main `70c20ff` incorporated in `9dcd278`, preserving merged PR #26 and Auth0/Gemini changes. Detailed teammate evidence remains linked in PROJECT_CONTEXT and owner guides.

@@ -2,13 +2,46 @@
 
 This guide tests the existing application, Auth0 provider and FastAPI client. It does not create accounts, a database, a server, sample operational records or a second authentication implementation. Keep the working demo available while the owners configure real services. No phase-4 task is completed by the diagnostics alone.
 
+## Concurrent functional work and demo accounts
+
+Current functional source is isolated on `feature/cache-functional-acceptance` from merged PR #29 (`ebd6d92`). Claude owns visual files; Codex touches no pages/components/styles. Short interface handoff: docs/FUNCTIONAL_INTEGRATION_HANDOFF.md. The earlier implementation checkpoints below remain historical.
+
+Use the existing Auth0 **test crew/supervisor accounts** for this demo. "Real" checks below mean genuine provider authentication and existing FastAPI/Tiger Data behavior, not real-person/employee records. Do not create users, persist profiles or seed account data for this runner. Existing demo subject-to-team/organization links, if required, stay with Braydin/Rudra. Mocked tests are explicitly separate evidence.
+
+Readiness can consume an approved project's existing settings while keeping this worktree's code and schemas:
+
+```powershell
+node frontend/scripts/check-live-integration.mjs --python backend/.venv/Scripts/python.exe --configuration-root C:/path/to/approved-project --frontend-origin http://localhost:5176 --check-database
+python frontend/scripts/run-live-account-check.py --configuration-root C:/path/to/approved-project --frontend-origin http://localhost:5173
+```
+
+Pass your installed backend Python; the worktree need not contain a duplicate virtual environment. Only settings are read from the supplied root; credentials are not copied, printed or committed. Existing process settings retain precedence. The private wrapper still prompts invisibly for existing demo-session access tokens and pipes them through stdin. No new identity provider or grant flow is implemented.
+
+Port5176 is the isolated fixture/mock browser check, not a newly registered Auth0 callback. Use the existing approved callback/application origin for authenticated browser proof; coordinate with Claude/Braydin before changing any live frontend configuration or server. Primary5173 was left running untouched.
+
+The runner now tests every published protected briefing/review/notice route anonymously before using account tokens, then checks crew confirmation/instruction denials and stored briefing GETs with canonical validation. A site404 is valid empty; other failures stay failures. Ack read-back must match ID, actor, alert and timestamp in fresh crew/supervisor clients. Default still performs no successful mutation; explicit test-alert ack remains opt-in. Report lifecycle acceptance remains the existing manual UI checklist. No enrichment route is guessed.
+
+Current results: 68 Node /521 Python (511 backend +10 probe), lint, both fixture/API-mode builds, Ruff and full browser regression pass. Actual 11 route inventory matches and ten anonymous/dev-header checks pass401. Invalid bearer503 and missing local settings block authenticated demo proof; T063-T068 stay unchecked. T068 also waits for the redesigned UI. Machine evidence: docs/functional-integration-verification.json.
+
 ## Current verified boundary
 
-T067A/T065 branch `feature/cache-stored-briefings-report-lifecycle` stacks on PR #24 head `6a2fc4d` and incorporates reviewed main `70c20ff`, including merged PR #26 (`9809db4`) and Braydin's T058A/Auth0 update (`7a2a886`). T053/T054/T054A/T055 and stored briefing GET routes exist in source. The diagnostics compare that source to the actual running server before any account check.
+PR #24 merged as `f3a65a7`, and T067A PR #27 merged as `1eed70e` during this run (external maintainer actions). T065 now uses `feature/cache-report-lifecycle-integration` from reviewed main `dcd9fc5` (PR #28); it does not duplicate either parent PR. T053/T054/T054A/T055 and T058A GET routes are present in source and the running service. Cache authored no backend/auth/database change.
 
-Stored site and organization briefings are read-only. A site 404 means ?No briefing yet. Briefings are generated at 6 PM site-local time.? No browser timer or mutation generates a briefing. Canonical Gemini and template fixture results remain visibly archived/simulated. Site factors provide the deterministic score breakdown.
+Stored site and organization briefings are read-only. A site 404 means "No briefing yet. Briefings are generated at 6 PM site-local time." No browser timer or mutation generates a briefing. Canonical Gemini and template fixture results remain visibly archived/simulated. Site factors provide the deterministic score breakdown.
 
 Braydin verified isolated Auth0 sign-in on main; that is owner evidence, not Cache's authenticated application/persistence acceptance. Database memberships and this application's real workflow still require verification. Do not overwrite private configuration or duplicate provisioning.
+
+## T065 implementation and remaining real proof
+
+Live HTTP capabilities for create/list, absent review, notice confirmation and instruction send are enabled. Published paths use the canonical request/response types. `api/validate.ts` rejects malformed or mismatched report/notice/confirmation responses. A potential notice cannot carry instructions or confirmation ownership. The editor initializes from the confirmed server notice and stays empty when no suggestion exists; sending is a deliberate action with a 500-character limit. Only the confirming Auth0 subject can see the send UI; the backend still authorizes every call. Present report review controls are removed and link to the site's notices instead.
+
+All successful mutations refresh shared API reads. No pending/absent/rejected client action computes a score or clears an alert. Permission/conflict failures refresh current server state without claiming ownership. Network/timeout outcomes are explicit and never retry automatically or switch to demo data. Use Refresh server state / Refresh reports before repeating an uncertain operation. Private photo retrieval remains an owner gap; live present upload still uses the canonical multipart form.
+
+The browser harness and 12 HTTP lifecycle unit tests are **mock only**. They test photo/presence rules, pending/no instruction, absent review, returned draft/manual fallback, editing, deliberate send, crew read-back/reload, malformed replies, permissions and races. Browser fixtures persist in a separate test-only session namespace; no real user/token/photo or backend request is used. Production build excludes this test entry. Demo behavior remains independently isolated in its existing namespace.
+
+Actual readiness: all 11 operations match source/running OpenAPI after restarting only our known local server. Ten anonymous/development-header denial probes pass (five prior plus five new routes); invalid bearer remains 503 because local Auth0 is unconfigured. Readiness exits 2. Local DATABASE_URL and Auth0 SPA/backend values are missing, so database contents/memberships and real authenticated persistence remain unknown. Braydin's isolated tenant sign-in verification is separate owner evidence. T065 stays unchecked until the full actual UI lifecycle is proven.
+
+For an authorized real test: crew submits a nonprivate test photo/pin/present report and an absent report; reload pending state; own-organization supervisor reviews absent; notified supervisor confirms present; inspect unsent draft or empty manual field, edit/send, then reload from the assigned crew account and confirm backend delivery. Verify direct forbidden requests with crew/unrelated supervisor and a competing confirmer. Inspect the server-provided score after confirmation, and confirm pending/absent/rejected reports and instruction sends never alter deterministic alerts. Keep DEV_AUTH_BYPASS=false; do not use the browser test harness for this proof. No extra report-write automation is added to the private account checker.
 
 ## Configure and start the existing services
 
@@ -44,7 +77,7 @@ The report records configuration presence/placeholder flags and domain/audience 
 
 `--check-database` is optional and read-only: a remote PostgreSQL connection with bounded connect/statement timeouts, transaction read-only mode, required tables, aggregate counts, formatted EIA IDs/in-range coordinates, linked crew/supervisor memberships, and the three existing Timescale hypertables. It never initializes, seeds, migrates or changes rows. Missing/placeholder URLs and local databases are blocked; SQLite is never accepted. Provider-account provenance still needs owner confirmation; the count is not a new authoritative EIA reconciliation. Without a usable URL the result is unknown/blocked, not zero sites.
 
-Exit **2** means phase-4 acceptance remains incomplete (including required real browser checks); exit **1** means a failed check/input. In this run the expected result is exit 2: five actual 401 denial checks pass, while Auth0/database/account acceptance remains blocked. A 503 for an invalid token with unconfigured Auth0 is not proof that signatures or expiry were validated. No task checkbox changes automatically.
+Exit **2** means phase-4 acceptance remains incomplete (including required real browser checks); exit **1** means a failed check/input. In this run the expected result is exit 2: the existing five denial checks pass (five additional current-route denial probes are recorded separately), while Auth0/database/account acceptance remains blocked. A 503 for an invalid token with unconfigured Auth0 is not proof that signatures or expiry were validated. No task checkbox changes automatically.
 
 ## Private real-account API check
 
@@ -85,10 +118,10 @@ Focused checks from repository root (backend Python active):
 python -m pytest frontend/tests/test_integration_probe.py backend/tests -q
 python -m ruff check frontend/scripts/probe-integration.py frontend/scripts/run-live-account-check.py frontend/tests/test_integration_probe.py
 cd frontend
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs
+node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs tests/lifecycle.test.mjs tests/live-read.test.mjs
 npm run lint
 npm run build
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Runner orchestration unit tests use explicitly labeled mock transports and read-only fake query objects. Existing backend role/persistence tests also use their normal fixtures. They are not real Auth0/Tiger Data acceptance. Current measured results and blockers are in `docs/phase4-integration-verification.json` and `docs/INTEGRATION_STATUS.md`.
+Runner orchestration unit tests use explicitly labeled mock transports and read-only fake query objects. Existing backend role/persistence tests also use their normal fixtures. They are not real Auth0/Tiger Data acceptance. Current measured results and blockers are in `docs/t065-verification.json`; prior phase-4 history is in `docs/phase4-integration-verification.json` and `docs/INTEGRATION_STATUS.md`.

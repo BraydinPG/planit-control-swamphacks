@@ -1,13 +1,23 @@
 # Frontend integration status
 
-Verified 2026-10-17. Current branch `feature/cache-stored-briefings-report-lifecycle` stacks on open PR #24 head `6a2fc4d`; merged reviewed main `70c20ff` in `9dcd278`. PR #26 merged as `9809db4`, adding T054/T054A/T055. Braydin's T058A and Auth0 changes are inherited unchanged. This current section supersedes prior missing-route statements; historical phase-4 measurements remain in phase4-integration-verification.json.
+Verified 2026-10-17. PR #29 is merged as `ebd6d92`; Codex functional changes now use separate worktree `C:/Users/cache/planit-control-functional`, branch `feature/cache-functional-acceptance`. Claude actively owns presentation in the primary checkout. No unmerged prerequisite PR at startup; no visual files touched. Current path/interface handoff: FUNCTIONAL_INTEGRATION_HANDOFF.md.
+
+Cache clarified that existing Auth0 crew/supervisor test aliases are intended for the demo. No employee/real-user records, profiles, accounts or database rows were created by Codex. Actual Auth0-backed demo behavior can satisfy integration; isolated mocked authentication cannot prove it. Local approved environment settings/sessions are still missing in both checked roots. Tenant/account existence is not inferred from missing local files; demo membership linkage remains owner setup.
+
+Current functional changes: canonical site/alert/nested evidence validation, typed acknowledgement response, all-published-route anonymous gate before account tokens, case-insensitive role metadata matching existing auth exports, crew notice denial checks, stored site/org briefing reads, full acknowledgement identity/time read-back, and read-only cross-worktree configuration selection. Source/imports stay in this worktree; private settings are never copied. No API/auth/backend/schema/fixture/dependency changes.
+
+Current checks: **68 Node**, **521 backend/probe** (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and existing browser demo/mock workflows at 1440/390/320 pass. Actual ten anonymous/development-header denials return401; invalid token503 remains unverified; all11 source/running routes match, no drift. No authenticated demo mutation performed; readiness exits2. API-mode build has a chunk-size warning (531kB); no visual/composition refactor attempted. Exact evidence: functional-integration-verification.json. Historical T065 evidence remains in t065-verification.json.
+
+T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and Claude's integrated redesign. No task checkbox changed in this run.
+
+Review: [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), source checkpoints `b7c8dc4` / `11806fa`, open against main at publication.
 
 ## Authorized sequence and task evidence
 
 | Task | Prerequisites and acceptance | State |
 | --- | --- | --- |
-| T067A | T058A checked. Stored site and organization GETs, 404 empty, 401/403/503 errors, malformed DTO/window rejection, Gemini/template labels, no fixture fallback, keyboard/phone/desktop. 44 Node, 65 focused backend/fixture/mirror checks; lint/TS/build and full browser pass. | Complete after exact check |
-| T065 | T053/T054/T054A now checked. Existing frontend form/client will be connected to reviewed routes; actual complete report lifecycle under real roles, persistence and delivery is required. | Unchecked pending actual acceptance |
+| T067A | T058A checked. Stored site and organization GETs, 404 empty, 401/403/503 errors, malformed DTO/window rejection, Gemini/template labels, no fixture fallback, keyboard/phone/desktop. 44 Node, 65 focused backend/fixture/mirror checks; lint/TS/build and full browser pass. | Checked; commit `2e4cfb7`, merged PR #27 |
+| T065 | T053/T054/T054A now checked. Create/list, absent review, present notice confirmation, returned draft/manual editor and explicit instruction send now wired and validated. Shared reads refresh; competing-owner/error states preserve authority. Demo and mocked HTTP pass; actual complete roles/persistence/delivery remain blocked. | Unchecked pending actual acceptance |
 | T063 | Shared fixture/live views exist; actual authorized site reads in application still require private setup/role memberships. | Unchecked |
 | T064 | HTTP ack and shared refresh mock-tested; actual persisted ack/reload required. | Unchecked |
 | T066 | Braydin verified isolated Auth0 sign-in (T025/T026 checked); Cache must verify actual application roles and scope. | Unchecked |
@@ -29,7 +39,11 @@ T067A removes the obsolete generated-score panel/client/types/fixture with expli
 
 The full demo remains isolated in planit:frontend-demo:v1; photos memory-only, archived fixtures labeled, EIA plants are reference points. Mocked HTTP verifies browser/request behavior, not actual Auth0/persistence. No frontend recomputes scores, authorizes work, selects real notice recipients, or clears alerts.
 
-Braydin's upstream isolated real sign-in is owner evidence. Cache's prior redacted local check found no private configuration and invalid bearer returned 503; those results are historical. The next diagnostic must inspect current configuration and running/source route drift. No real-account or database success is claimed from source availability.
+Current redacted readiness: all 11 required operations match the running FastAPI after safely restarting only Cache's known developer process. Five existing and five new-route anonymous/development-header denials return 401. Invalid bearer returns 503 because local Auth0 settings are missing, not a signature-validation success. Local DATABASE_URL, Auth0 backend/SPA, Gemini and storage settings remain missing. Database contents and membership linkage remain unknown; no real authenticated report/write/delivery was performed. Readiness exits 2; DEV_AUTH_BYPASS=false, feed refresh and briefing scheduler disabled on this diagnostic process. Braydin's isolated real sign-in is separate owner evidence.
+
+T065 frontend checks: 56 Node tests and 518 backend/probe tests (511+7), lint/TypeScript/build; clean npm ci/build without environment/ML artifacts passes. Detailed final browser status and resolved race/test issues are recorded in `t065-verification.json`. Canonical mirrors remain unchanged by T065; T067A removed only the two authorized obsolete types and fixture. No backend/auth/DB/ML/manifest/lockfile edits authored.
+
+Present and absent reports use different routes. A returned confirmation initializes the unsent instruction draft; empty manual fallback and a 500-character final text are supported. Refreshing the same notice preserves typed edits. Another confirmer produces a clear state and no send editor. Site/report views read backend state after mutations; the UI does not recompute scores or recipients. Private photos are not rendered from arbitrary API URLs.
 
 ## Owner handoffs
 

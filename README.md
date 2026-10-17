@@ -45,9 +45,11 @@ cd backend
 python -m venv .venv
 # Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --env-file .env --port 8000
 pytest
 ```
+
+`--env-file .env` loads `backend/.env` (copied from `backend/.env.example`). Without it, `DATABASE_URL` is not set and data routes answer 503.
 
 Health check: `GET http://localhost:8000/health` returns `{"status": "ok"}`.
 

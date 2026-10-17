@@ -3,6 +3,7 @@ import type {
   Briefing,
   CrewReport,
   HazardNotice,
+  HazardConfirmResponse,
   ReportCreate,
   ReportReview,
   SiteDetail,
@@ -26,11 +27,11 @@ export interface Client {
   site(id: string): Promise<SiteRecord>
   alerts(): Promise<Alert[]>
   reports(): Promise<CrewReport[]>
-  acknowledge(id: string): Promise<unknown>
+  acknowledge(id: string): Promise<Alert>
   submit(input: ReportCreate, photo: File | null): Promise<CrewReport>
   review(id: string, input: ReportReview): Promise<CrewReport>
-  confirm(id: string): Promise<unknown>
-  instruct(id: string, instruction: string): Promise<unknown>
+  confirm(id: string): Promise<HazardConfirmResponse>
+  instruct(id: string, instruction: string): Promise<HazardNotice>
   briefing(id: string): Promise<Briefing | null>
   briefings(): Promise<Briefing[]>
 }

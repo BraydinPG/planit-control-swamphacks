@@ -1,21 +1,26 @@
-import { validateBriefing } from './validate'
-import type {
-  Alert,
-  CrewReport,
-  ReportCreate,
-  ReportReview,
-  SiteSummary,
-} from '../types/api'
-import { ApiError, type Client, type SiteRecord } from './contracts'
+import {
+  validateAlert,
+  validateSiteDetail,
+  validateSiteSummary,
+  validateUniqueRows,
+} from './live-read-validation'
+import {
+  validateBriefing,
+  validateReport,
+  validateNotice,
+  validateConfirmation,
+} from './validate'
+import type { ReportCreate, ReportReview } from '../types/api'
+import { ApiError, type Client } from './contracts'
 
 export class HttpClient implements Client {
   mode = 'live' as const
-  // Published T048/T053. Review, notice instructions and AI remain separate owner dependencies.
+  // Published T048/T053/T054/T054A and T058A. Server permissions remain authoritative.
   capabilities = {
     acknowledge: true,
     reports: true,
-    reviewReports: false,
-    hazards: false,
+    reviewReports: true,
+    hazards: true,
     briefings: true,
   }
   private base: URL
@@ -26,7 +31,9 @@ export class HttpClient implements Client {
   constructor(
     base: string,
     headers: () => Promise<Record<string, string>>,
-    fetcher: typeof fetch = fetch,
+    // Wrapped, not bare `fetch`: calling it as `this.fetcher(...)` would throw "Illegal
+    // invocation" in browsers, which surfaced as "Network request failed".
+    fetcher: typeof fetch = (input, init) => fetch(input, init),
     timeout = 12000,
   ) {
     this.headers = headers
@@ -97,7 +104,7 @@ export class HttpClient implements Client {
           401: 'Session expired or token rejected. Sign in again.',
           403: 'Permission denied by the backend.',
           404: 'This endpoint or record is unavailable.',
-          409: 'Alert state changed. Refresh before acknowledging.',
+          409: 'The server state changed or this operation was already completed. Refresh before retrying.',
           422: 'The backend rejected the submitted fields.',
           503: 'The service or database is unavailable.',
         }
@@ -118,7 +125,7 @@ export class HttpClient implements Client {
       throw new ApiError(
         0,
         controller.signal.aborted
-          ? 'Request timed out. No demo data was substituted.'
+          ? 'Request timed out. Outcome unknown; refresh before retrying. No demo data was substituted.'
           : 'Network request failed. No demo data was substituted.',
       )
     } finally {
@@ -129,46 +136,38 @@ export class HttpClient implements Client {
     return Date.now() + this.clockOffset
   }
   sites() {
-    return this.request<SiteSummary[]>('/api/sites').then((rows) => {
-      if (
-        !Array.isArray(rows) ||
-        rows.some(
-          (r) =>
-            !r ||
-            typeof r.id !== 'string' ||
-            !Number.isFinite(r.lat) ||
-            !Number.isFinite(r.lon) ||
-            !Array.isArray(r.top_factors),
-        )
-      )
-        throw new ApiError(502, 'Invalid site-list response')
-      return rows
-    })
+    return this.request<unknown>('/api/sites').then((rows) =>
+      validateUniqueRows(rows, validateSiteSummary, 'site-list'),
+    )
   }
   site(id: string) {
-    return this.request<SiteRecord>(
-      `/api/sites/${encodeURIComponent(id)}`,
-    ).then((r) => {
-      if (
-        !r ||
-        r.id !== id ||
-        !Array.isArray(r.observations) ||
-        !Array.isArray(r.alerts) ||
-        !Array.isArray(r.notices)
-      )
-        throw new ApiError(502, 'Invalid site-detail response')
-      return r
-    })
+    return this.request<unknown>(`/api/sites/${encodeURIComponent(id)}`).then(
+      (value) => validateSiteDetail(value, id),
+    )
   }
   alerts() {
-    return this.request<Alert[]>('/api/alerts?state=all')
+    return this.request<unknown>('/api/alerts?state=all').then((rows) =>
+      validateUniqueRows(rows, validateAlert, 'alert-list'),
+    )
   }
   reports() {
-    return this.request<CrewReport[]>('/api/reports')
+    return this.request<unknown>('/api/reports').then((rows) => {
+      if (!Array.isArray(rows))
+        throw new ApiError(502, 'Invalid report-list response')
+      return rows.map((row) => validateReport(row))
+    })
   }
   acknowledge(id: string) {
     return this.request(`/api/alerts/${encodeURIComponent(id)}/acknowledge`, {
       method: 'POST',
+    }).then((value) => {
+      const alert = validateAlert(value, id)
+      if (!alert.acknowledgements.length)
+        throw new ApiError(
+          502,
+          'Acknowledgement was not present in the server response. Refresh before retrying.',
+        )
+      return alert
     })
   }
   submit(input: ReportCreate, photo: File | null) {
@@ -177,23 +176,74 @@ export class HttpClient implements Client {
       if (v !== undefined && v !== null) body.append(k, String(v))
     })
     if (photo) body.append('photo', photo)
-    return this.request<CrewReport>('/api/reports', { method: 'POST', body })
-  }
-  review(id: string, input: ReportReview) {
-    return this.request<CrewReport>(
-      `/api/reports/${encodeURIComponent(id)}/review`,
-      { method: 'POST', body: JSON.stringify(input) },
+    return this.request<unknown>('/api/reports', { method: 'POST', body }).then(
+      (value) => {
+        const report = validateReport(value)
+        if (
+          report.site_id !== input.site_id ||
+          report.hazard_present !== input.hazard_present ||
+          report.category !== input.category
+        )
+          throw new ApiError(
+            502,
+            'Report response does not match the submitted fields. Refresh before retrying.',
+          )
+        return report
+      },
     )
   }
-  confirm(id: string) {
-    return this.request(`/api/hazards/${encodeURIComponent(id)}/confirm`, {
-      method: 'POST',
+  review(id: string, input: ReportReview) {
+    return this.request<unknown>(
+      `/api/reports/${encodeURIComponent(id)}/review`,
+      { method: 'POST', body: JSON.stringify(input) },
+    ).then((value) => {
+      const report = validateReport(value, id)
+      if (
+        report.hazard_present ||
+        report.review_status !== input.decision ||
+        !report.reviewed_by ||
+        !report.reviewed_at
+      )
+        throw new ApiError(
+          502,
+          'Invalid absent-report review response. Refresh before retrying.',
+        )
+      return report
     })
   }
-  instruct(id: string, instruction: string) {
-    return this.request(`/api/hazards/${encodeURIComponent(id)}/instruction`, {
-      method: 'POST',
-      body: JSON.stringify({ instruction }),
+  confirm(id: string) {
+    return this.request<unknown>(
+      `/api/hazards/${encodeURIComponent(id)}/confirm`,
+      {
+        method: 'POST',
+      },
+    ).then((value) => validateConfirmation(value, id))
+  }
+  async instruct(id: string, instruction: string) {
+    const finalText = instruction.trim()
+    if (!finalText || finalText.length > 500)
+      throw new ApiError(
+        422,
+        'Enter an instruction of 1-500 nonblank characters',
+      )
+    return this.request<unknown>(
+      `/api/hazards/${encodeURIComponent(id)}/instruction`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ instruction: finalText }),
+      },
+    ).then((value) => {
+      const notice = validateNotice(value, id)
+      if (
+        notice.status !== 'confirmed' ||
+        !notice.instruction_sent_at ||
+        notice.instruction !== finalText
+      )
+        throw new ApiError(
+          502,
+          'Invalid instruction delivery response. Refresh before retrying.',
+        )
+      return notice
     })
   }
   async briefing(id: string) {

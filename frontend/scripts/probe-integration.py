@@ -136,12 +136,18 @@ def database_probe(url):
             engine.dispose()
 
 
-def inspect_backend(frontend, check_database=False):
+def inspect_backend(frontend, check_database=False, configuration_root=None):
     from app.db.init import load_env_file
     from app.ingestion.settings import get_ingestion_settings
     from app.security.settings import AuthSettings
 
-    load_env_file()
+    if configuration_root is None or configuration_root.resolve() == ROOT:
+        load_env_file()
+    else:
+        # Existing dependency of pydantic-settings; private settings stay in memory.
+        from dotenv import load_dotenv
+
+        load_dotenv(configuration_root / "backend" / ".env", override=False)
     settings = AuthSettings()
     feeds = get_ingestion_settings()
     names = (
@@ -202,7 +208,7 @@ def inspect_backend(frontend, check_database=False):
 
 
 def validate_payloads(payload):
-    from app.schemas import Alert, CrewReport, SiteDetail, SiteSummary
+    from app.schemas import Alert, Briefing, CrewReport, SiteDetail, SiteSummary
 
     try:
         for key, schema in (
@@ -210,13 +216,15 @@ def validate_payloads(payload):
             ("details", SiteDetail),
             ("alerts", Alert),
             ("reports", CrewReport),
+            ("briefings", Briefing),
         ):
             for row in payload.get(key, []):
                 schema.model_validate(row)
         return {
             "status": "passed",
             "counts": {
-                key: len(payload.get(key, [])) for key in ("sites", "details", "alerts", "reports")
+                key: len(payload.get(key, []))
+                for key in ("sites", "details", "alerts", "reports", "briefings")
             },
         }
     except Exception:  # noqa: BLE001 - schema exceptions include raw private input values.
@@ -230,15 +238,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check-database", action="store_true")
     parser.add_argument("--validate", action="store_true")
+    parser.add_argument("--configuration-root", type=Path, default=ROOT)
     args = parser.parse_args()
     sys.path.insert(0, str(ROOT / "backend"))
-    os.chdir(ROOT / "backend")
     try:
+        # Imports/schemas remain this worktree; only existing private settings come from here.
+        os.chdir(args.configuration_root.resolve() / "backend")
         payload = json.loads(sys.stdin.read(8 * 1024 * 1024) or "{}")
         result = (
             validate_payloads(payload)
             if args.validate
-            else inspect_backend(payload, args.check_database)
+            else inspect_backend(payload, args.check_database, args.configuration_root)
         )
     except Exception:  # noqa: BLE001 - redact settings/dependency exceptions at CLI boundary.
         result = {
