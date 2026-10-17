@@ -1,0 +1,9 @@
+{
+  "name": "Demo lightning replay",
+  "note": "Simulated strikes for the demo and tests. Not observed lightning. Each step is placed relative to the chosen site at the moment it is replayed.",
+  "steps": [
+    {"bearing_deg": 315, "distance_mi": 6.8, "purpose": "First strike inside 10 mi: starts stop-work and the 30-minute countdown."},
+    {"bearing_deg": 270, "distance_mi": 4.2, "purpose": "Second strike inside 10 mi: resets the countdown."},
+    {"bearing_deg": 45, "distance_mi": 14.5, "purpose": "Strike outside 10 mi: reported, but does not qualify for stop-work."}
+  ]
+}

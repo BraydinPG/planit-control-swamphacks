@@ -102,6 +102,14 @@ NWS conventions:
 - Weather and forecast Observations carry one metric each. `label` is one of the constants in `nws_weather.METRIC_LABELS`: `Temperature`, `Relative humidity`, `Heat index`, and `Precipitation probability`. Temperatures are in °F.
 - A successful flood-alert fetch with no active alerts returns one `flood_alert` Observation with `value=None` and `label="No active NWS flood alerts"`. A failed fetch returns `data_state="unavailable"`. Never read an empty list as "no flood."
 
+Lightning, hurricane, earthquake, and flood-gauge conventions (T045–T045D):
+
+- Every "none found" reading has `value=None`. Event readings carry the event's own `lat`/`lon`, so rules compute distance themselves. Each feed's search radius (`*_SEARCH_RADIUS_MILES` in `IngestionSettings`) only limits which events reach a site. It is wider than the rule distances and is not a rule setting.
+- `lightning_strike` (`lightning.py`): `value` is the distance to the site in miles, and `observed_at` is the strike time. `submit_strike(lat, lon, time, simulated=True)` normalizes a strike, and `replay_strike(site, step, at)` replays `fixtures/lightning_replay.json`. Replayed strikes are `source="lightning-replay"`, `simulated=True`, `data_state="simulated"`. Live strikes come from NOAA GOES GLM (`glm.py`, background poller started by the first `fetch()`, `LIGHTNING_LIVE_ENABLED`) as `source="GOES GLM"`, `simulated=False`, `data_state="observed"`. GLM reports total lightning, including in-cloud flashes, at about 8 km resolution and 20–60 s delay. The "no strikes" reading is `GOES GLM`/`observed` only while GLM coverage is gap-free and states the minutes watched. Otherwise it is labeled simulated with the reason (not enabled, starting, unavailable). The 10-mile stop-work rule belongs to Rudra.
+- `hurricane` (`hurricanes.py`): `source="NHC"` readings are active storms with `value` = intensity in kt and `lat`/`lon` = storm center. `source="NWS"` readings have `value` set to `Hurricane Warning`, `Hurricane Watch`, `Tropical Storm Warning`, or `Tropical Storm Watch`. The two sources are cached separately.
+- `earthquake` (`earthquakes.py`): `value` is the magnitude, `unit` is the USGS magnitude type, `lat`/`lon` is the epicenter, and `observed_at` is the origin time.
+- `flood_gauge` (`flood_gauges.py`): `label` starts with `Gage height` (ft) or `Streamflow` (ft3/s), and `source_ref` is `USGS-{site number}`. Gauges give readings, not flood stages, so NWS flood alerts remain the flood source.
+
 #### Adding a feed adapter
 
 Braydin's adapters (T045A–T045D) follow the same pattern as `nws_weather.py` and `nws_alerts.py`. Write a `fetch_site` for one site and let `FeedCache` handle freshness:
