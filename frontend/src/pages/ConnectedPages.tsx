@@ -1281,10 +1281,13 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const [siteId, setSiteId] = useState(choices[0].id)
   const site = choices.find((s) => s.id === siteId) ?? choices[0]
   return (
-    // Controls and the queue heading share row 1, so the form card and the
-    // first report card start on the same line in row 2.
-    <div className="pc-enter grid gap-4 @3xl:grid-cols-12 @3xl:items-start">
-      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-1 @3xl:self-end">
+    // One grid for the form and the review queue. Row 1 holds the controls and
+    // the queue heading. The form takes the first cell of row 2; report cards
+    // fill the other columns left to right and then continue under the form,
+    // so no column is left with blank space while the queue runs on. The form
+    // is its own container so its controls size to its column, not the page.
+    <div className="pc-enter grid items-start gap-4 @3xl:grid-cols-2 @5xl:grid-cols-3">
+      <div className="@3xl:self-end">
         <div className="flex flex-wrap items-end gap-3">
           <label className={`${labelText} min-w-0 flex-1`}>
             Report location
@@ -1307,26 +1310,33 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
           </button>
         </div>
       </div>
-      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-2">
-        <ReportForm key={site.id} site={site} />
-      </div>
-      <div className="mt-4 @3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-1 @3xl:mt-0 @3xl:self-center">
+      {/* On one column, the queue heading and cards follow the form. */}
+      <div className="mt-4 @max-3xl:order-1 @3xl:mt-0 @3xl:self-center @5xl:col-span-2">
         <SectionHead kicker="Review queue" title="Reports and review" />
       </div>
-      <div className="@3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-2">
-        {result.data ? (
-          <section className="space-y-3" aria-label="Submitted reports">
-            {result.data
-              .filter((r) => sites.some((s) => s.id === r.site_id))
-              .map((r) => (
-                <ReportCard key={r.id} report={r} />
-              ))}
-            {!result.data.length && <Empty>No reports returned.</Empty>}
-          </section>
-        ) : (
-          <LoadState error={result.error} />
-        )}
+      <div className="@container">
+        <ReportForm key={site.id} site={site} />
       </div>
+      {result.data ? (
+        <section className="contents" aria-label="Submitted reports">
+          {result.data
+            .filter((r) => sites.some((s) => s.id === r.site_id))
+            .map((r) => (
+              <div key={r.id} className="min-w-0 @max-3xl:order-2">
+                <ReportCard report={r} />
+              </div>
+            ))}
+          {!result.data.length && (
+            <div className="@max-3xl:order-2 @5xl:col-span-2">
+              <Empty>No reports returned.</Empty>
+            </div>
+          )}
+        </section>
+      ) : (
+        <div className="@max-3xl:order-2 @5xl:col-span-2">
+          <LoadState error={result.error} />
+        </div>
+      )}
     </div>
   )
 }
