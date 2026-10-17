@@ -212,6 +212,18 @@ try {
       `Array.from(document.querySelectorAll('button,a')).find(e=>e.getClientRects().length && e.textContent.trim()===${JSON.stringify(text)})?.click()`,
     )
   }
+  async function disclose(title) {
+    await until(
+      () =>
+        evaluate(
+          `Array.from(document.querySelectorAll('summary')).some(e=>e.getClientRects().length && e.textContent.trim()===${JSON.stringify(title)})`,
+        ),
+      'disclosure ' + title,
+    )
+    await evaluate(
+      `Array.from(document.querySelectorAll('summary')).find(e=>e.getClientRects().length && e.textContent.trim()===${JSON.stringify(title)}).click()`,
+    )
+  }
   async function hash(value, text) {
     await evaluate(`location.hash=${JSON.stringify(value)}`)
     await loaded(text)
@@ -231,7 +243,7 @@ try {
   // exercise the app's Reset demo control without clearing Auth0/other storage.
   await navigate(
     new URL('#/supervisor/sites/site-demo-everglades', base).href,
-    'Score factors and source evidence',
+    'Score factors and evidence',
   )
   await click('Reset demo')
   await evaluate(`(()=>{
@@ -246,16 +258,25 @@ try {
   })()`)
   await reload('Score withheld')
   await click('Reset demo')
+  await loaded('Evidence incomplete')
+  await disclose('How the score is calculated')
   await loaded('rules-0.2')
-  assert(await evaluate(`(()=>{
+  assert(
+    await evaluate(`(()=>{
     const value=JSON.parse(localStorage.getItem('planit:frontend-demo:v1'));
     const detail=value.details['site-demo-everglades'];
     return detail.risk_score===6.1 && detail.score.risk_score===6.1 &&
       detail.model_version==='rules-0.2' && detail.data_completeness===0 &&
       localStorage.getItem('@@auth0spajs@@audit-sentinel')==='synthetic-session-only';
-  })()`))
-  await reload('rules-0.2')
-  results.push({ demo_score_reset: 'legacy -> 6.1/10, rules-0.2; reload persists; synthetic Auth0 storage sentinel preserved' })
+  })()`),
+  )
+  await reload('Evidence incomplete')
+  await disclose('How the score is calculated')
+  await loaded('rules-0.2')
+  results.push({
+    demo_score_reset:
+      'legacy -> 6.1/10, rules-0.2; reload persists; synthetic Auth0 storage sentinel preserved',
+  })
   for (const [width, height, name] of [
     [1440, 1000, 'desktop'],
     [390, 844, 'phone'],
@@ -277,7 +298,7 @@ try {
       `Overflow at ${width}`,
     )
     const bounds = await evaluate(
-      "(()=>{const a=Array.from(document.querySelectorAll('a')).find(e=>e.textContent.includes('Inspect alert and acknowledge'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
+      "(()=>{const a=Array.from(document.querySelectorAll('a')).find(e=>e.textContent.includes('View alert'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
     )
     assert(
       bounds.top >= 0 && bounds.bottom <= height - 64,
@@ -294,22 +315,27 @@ try {
       overflow: false,
       nav_targets: '>=44px',
     })
-    await hash('/crew/sites', 'Score factors and source evidence')
-    assert(await evaluate(`(()=>{
+    await hash('/crew/sites', 'Score factors and evidence')
+    assert(
+      await evaluate(`(()=>{
       const score=document.querySelector('[aria-label="Site score"]');
       return score?.innerText.includes('6.1') && !score.innerText.includes('Score withheld') &&
-        score.innerText.includes('Evidence incomplete') && score.innerText.includes('rules-0.2') &&
+        score.innerText.includes('Evidence incomplete') && score.textContent.includes('rules-0.2') &&
         document.querySelectorAll('[data-outlook-id]').length===6 &&
-        document.body.innerText.includes('Historical example, not a current prediction') &&
+        document.body.innerText.includes('Archived agency forecast, not a current prediction') &&
         document.documentElement.scrollWidth<=innerWidth;
-    })()`), 'Approved simulated score and six independent outlooks')
-    await evaluate('document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})')
+    })()`),
+      'Approved simulated score and six independent outlooks',
+    )
+    await evaluate(
+      'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',
+    )
     await screenshot(`demo-score-${name}`)
     await hash('/crew/overview', 'Stop-work alert active')
   }
-  await click('Inspect alert and acknowledge')
+  await click('View alert')
   await loaded('Acknowledging does not clear the alert')
-  await click('Record simulated acknowledgement')
+  await click('Acknowledge in demo')
   await loaded('Action recorded.')
   await reload('Acknowledging does not clear the alert')
   assert(
@@ -352,21 +378,23 @@ try {
   await click('Submit simulated report')
   await loaded('Simulated report stored')
   const demoReportMs = Math.round(performance.now() - demoReportOpened)
-  assert(demoReportMs < 30000, 'Existing no-note demo report must finish in under 30 seconds')
-  results.push({ existing_report_no_note_no_gps_ms: demoReportMs,
-    scope: 'Automated existing simulated form only; T034A form/metadata acceptance remains blocked by T053A' })
+  assert(
+    demoReportMs < 30000,
+    'Existing no-note demo report must finish in under 30 seconds',
+  )
+  results.push({
+    existing_report_no_note_no_gps_ms: demoReportMs,
+    scope:
+      'Automated existing simulated form only; T034A form/metadata acceptance remains blocked by T053A',
+  })
   const reportId = await evaluate(
     "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].id",
   )
   const noticeId = await evaluate(
     "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
   )
-  assert(
-    await evaluate(
-      "!document.body.innerText.includes('Confirm report classification')",
-    ),
-  )
-  await reload(reportId)
+  assert(await evaluate("!document.body.innerText.includes('Confirm report')"))
+  await reload('Reported present')
   await click('Supervisor')
   await loaded('Needs your attention')
   // The supervisor Overview lists what needs a decision; the map and list are on Worksites.
@@ -410,7 +438,7 @@ try {
   await evaluate(
     "document.querySelector('.leaflet-popup-content button').click()",
   )
-  await loaded('Potential notices and approved instructions')
+  await loaded('Hazards and supervisor instructions')
   await hash('/supervisor/sites', '55 locations')
   await until(
     () =>
@@ -423,19 +451,21 @@ try {
     map: '55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional',
   })
   await click('Flood advisory replay')
-  await loaded('Developer/demo advisory')
+  await loaded('Simulated research replay')
+  await disclose('Research replay and source assessments')
+  await disclose('Location and source')
   assert(
     await evaluate(
-      "document.body.innerText.includes('eia860m-FL-59611') && document.body.innerText.includes('Recorded event end is not worksite clearance')",
+      "document.body.innerText.includes('eia860m-FL-59611') && document.body.innerText.includes('no work clearance is provided')",
     ),
   )
   await hash(
     '/supervisor/sites/site-demo-everglades',
-    'Potential notices and approved instructions',
+    'Hazards and supervisor instructions',
   )
   assert(
     await evaluate(
-      `document.querySelector('[data-report-id="${reportId}"]').innerText.includes('Present report remains pending') && !document.querySelector('[data-report-id="${reportId}"] button')`,
+      `document.querySelector('[data-report-id="${reportId}"]').innerText.includes('Awaiting supervisor confirmation') && !document.querySelector('[data-report-id="${reportId}"] button')`,
     ),
     'Present report must use its notice, not absent-review controls',
   )
@@ -447,9 +477,7 @@ try {
   await evaluate(
     `document.querySelector('[data-notice-id="${noticeId}"] button').click()`,
   )
-  await loaded(
-    'No suggestion available; the confirming supervisor writes the instruction',
-  )
+  await loaded('Write an instruction for the crew')
   await set(
     `[data-notice-id="${noticeId}"] textarea`,
     'Demo reviewed instruction: await qualified field inspection.',
@@ -458,14 +486,14 @@ try {
     `document.querySelector('[data-notice-id="${noticeId}"] button').click()`,
   )
   await loaded('Demo reviewed instruction: await qualified field inspection.')
-  await hash('/supervisor/briefings', 'Read-only stored briefings')
+  await hash('/supervisor/briefings', 'Briefings are scheduled')
   await set('main select', 'site-demo-everglades')
-  await loaded('Gemini output')
+  await loaded('Gemini draft')
   await set('main select', 'organization')
-  await loaded('Deterministic template fallback')
+  await loaded('Template fallback')
   await click('Crew')
   await loaded('Demo reviewed instruction: await qualified field inspection.')
-  await hash('/crew/briefings', 'Gemini output')
+  await hash('/crew/briefings', 'Gemini draft')
   await evaluate('document.querySelector(\'a[href="#main-content"]\').focus()')
   await send('Input.dispatchKeyEvent', {
     type: 'keyDown',
@@ -528,13 +556,14 @@ try {
         'alerts',
         'reports',
         'briefings',
+        ...(persona === 'supervisor' ? ['team'] : []),
       ]) {
         await hash(
           `/${persona}/${page}`,
           page === 'briefings'
-            ? 'Read-only stored briefings'
+            ? 'Briefings are scheduled'
             : page === 'reports'
-              ? 'Is it there?'
+              ? 'Is the hazard present?'
               : page === 'alerts'
                 ? 'Acknowledging does not clear the alert'
                 : persona === 'supervisor'
@@ -544,8 +573,8 @@ try {
                       ? 'Join codes'
                       : '55 locations'
                   : page === 'sites'
-                    ? 'Score factors and source evidence'
-                    : 'Inspect alert and acknowledge',
+                    ? 'Score factors and evidence'
+                    : 'View alert',
         )
         if (persona === 'supervisor' && page === 'sites')
           await until(
@@ -571,23 +600,183 @@ try {
           ),
           `Unnamed button: ${page}`,
         )
-        assert(
-          await evaluate(
-            "Array.from(document.querySelectorAll('main button,main select,main textarea,main summary,main input:not([type=checkbox]),.leaflet-control-zoom a')).filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.width>=44&&r.height>=44})",
-          ),
-          `Small primary control: ${width}/${persona}/${page}`,
+        // Round subpixel layout noise to 0.01 CSS px; the target remains 44 CSS px.
+        const smallControls = await evaluate(
+          "Array.from(document.querySelectorAll('main button,main select,main textarea,main summary,main input:not([type=checkbox]),.leaflet-control-zoom a')).filter(e=>e.getClientRects().length).flatMap(e=>{const r=e.getBoundingClientRect();return Math.round(r.width*100)/100>=44&&Math.round(r.height*100)/100>=44?[]:[{text:e.textContent.slice(0,80),tag:e.tagName,width:r.width,height:r.height}]})",
         )
+        assert.equal(
+          smallControls.length,
+          0,
+          `Small primary control: ${width}/${persona}/${page}: ${JSON.stringify(smallControls)}`,
+        )
+        await screenshot(`copy-${persona}-${page}-${width}`)
       }
   }
   results.push({
     accessibility:
-      'all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
+      'all eleven demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
+  })
+  // Team mutations use the existing in-memory demo client, never a real organization.
+  await hash('/supervisor/team', 'Join codes')
+  await click('Rename')
+  await set(
+    'form[aria-label="Rename organization"] input',
+    'Demonstration Regional Utility Restoration Organization',
+  )
+  await click('Save')
+  await loaded('Demonstration Regional Utility Restoration Organization')
+  assert(
+    await evaluate('document.documentElement.scrollWidth<=innerWidth'),
+    'Organization rename overflow',
+  )
+  const longTeam =
+    'Demonstration Restoration Team with a Long Regional Assignment Name'
+  await set('form[aria-label="Add a team"] input', longTeam)
+  await click('Add team')
+  await loaded(longTeam)
+  await evaluate(
+    `window.copyTeamId=Array.from(document.querySelectorAll('section h2')).find(e=>e.textContent===${JSON.stringify(longTeam)}).id`,
+  )
+  await evaluate(
+    `Array.from(document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"]').querySelectorAll('button')).find(e=>e.textContent.includes('Create join code')).click()`,
+  )
+  await until(
+    () =>
+      evaluate(
+        `!!document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"] .font-mono')`,
+      ),
+    'created demo join code',
+  )
+  await evaluate(
+    `document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"]').scrollIntoView({block:'center'})`,
+  )
+  await screenshot('copy-team-code-phone')
+  assert(
+    await evaluate('document.documentElement.scrollWidth<=innerWidth'),
+    'Long team/code overflow',
+  )
+  await evaluate(
+    `Array.from(document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"]').querySelectorAll('button')).find(e=>e.textContent==='Revoke code').click()`,
+  )
+  await until(
+    () =>
+      evaluate(
+        `!document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"] .font-mono')`,
+      ),
+    'revoked demo join code',
+  )
+  await evaluate(
+    `document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"] summary').click()`,
+  )
+  await evaluate(
+    `Array.from(document.querySelector('section[aria-labelledby="'+window.copyTeamId+'"]').querySelectorAll('button')).find(e=>e.textContent==='Remove team').click()`,
+  )
+  await until(
+    () => evaluate(`!document.getElementById(window.copyTeamId)`),
+    'removed empty demo team',
+  )
+  results.push({
+    teams:
+      'Existing demo: rename organization, add long-name team, create/revoke join code, remove empty team. Roster remains memory-only; no live team writes.',
+  })
+
+  // Controlled browser-only stress snapshot; never edits canonical fixtures or scores.
+  const beforeStress = await evaluate(
+    "localStorage.getItem('planit:frontend-demo:v1')",
+  )
+  await evaluate(`(()=>{
+    const key='planit:frontend-demo:v1', data=JSON.parse(localStorage.getItem(key));
+    const id='site-demo-everglades', site=data.details[id];
+    site.name='Simulated long-name worksite: Eastern Restoration and Emergency Access Corridor '+ 'X'.repeat(90);
+    data.sites.find(s=>s.id===id).name=site.name;
+    site.observations[0]={...site.observations[0],data_state:'stale',value:null,simulated:true};
+    site.observations.push({...site.observations[0],id:'copy-long-observation',label:'Simulated visibility and access observation with a deliberately long label',value:'Unavailable pending local observation',unit:null});
+    const alert={...data.alerts[0],id:'copy-second-alert',rule:'flash_flood_warning',clear_after:null};
+    data.alerts.push(alert);
+    site.active_alerts=2;
+    data.sites.find(s=>s.id===id).active_alerts=2;
+    const notice=data.notices.find(n=>n.instruction_sent_at);
+    notice.instruction='SIMULATED SUPERVISOR TEXT: '+ 'Await qualified inspection and follow the approved worksite procedure. '.repeat(5);
+    data.reports[0].note='SIMULATED CREW TEXT: '+ 'Long report detail; original wording stays intact. '.repeat(15);
+    localStorage.setItem(key,JSON.stringify(data));
+  })()`)
+  await reload('Join codes')
+  for (const width of [1440, 390, 320]) {
+    await send('Emulation.setDeviceMetricsOverride', {
+      width,
+      height: width === 1440 ? 1000 : 844,
+      deviceScaleFactor: 1,
+      mobile: width < 600,
+    })
+    await hash(
+      '/supervisor/sites/site-demo-everglades',
+      'SIMULATED SUPERVISOR TEXT',
+    )
+    await evaluate(
+      "document.querySelectorAll('details').forEach(e=>e.open=false)",
+    )
+    assert(
+      await evaluate(
+        "document.querySelectorAll('[data-outlook-id]').length===6 && document.querySelectorAll('[data-alert-id]').length===3 && document.querySelectorAll('[data-alert-id=\"copy-second-alert\"]').length===1",
+      ),
+      'Multiple alerts and six outlooks retained',
+    )
+    assert(
+      await evaluate('document.documentElement.scrollWidth<=innerWidth'),
+      `Long site/instruction overflow at ${width}`,
+    )
+    for (const [selector, name] of [
+      ['[data-notice-id]', 'instructions'],
+      ['#event-outlooks-title', 'predictions'],
+      ['#species-title', 'species'],
+      ['[data-report-id]', 'report'],
+    ]) {
+      await evaluate(
+        `document.querySelector(${JSON.stringify(selector)}).scrollIntoView({block:'start'})`,
+      )
+      await screenshot(`copy-stress-${name}-${width}`)
+    }
+    await evaluate(
+      "document.querySelectorAll('details').forEach(e=>e.open=true)",
+    )
+    assert(
+      await evaluate('document.documentElement.scrollWidth<=innerWidth'),
+      `Expanded detail overflow at ${width}`,
+    )
+    await screenshot(`copy-expanded-${width}`)
+  }
+  // Empty/unscored reference-site states must stay explicit.
+  const reference = await evaluate(
+    "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).sites.find(s=>s.id.startsWith('eia860m-') && !['eia860m-FL-59611','eia860m-AZ-68414'].includes(s.id)).id",
+  )
+  await hash(
+    '/supervisor/sites/' + encodeURIComponent(reference),
+    'Not scored yet',
+  )
+  await loaded('No observations supplied. Conditions remain unknown.')
+  await evaluate(
+    `localStorage.setItem('planit:frontend-demo:v1',${JSON.stringify(beforeStress)})`,
+  )
+  await reload('Not scored yet')
+  results.push({
+    readability:
+      'Long site/team/crew text and approved instructions, stale/null observations, six outlooks, multiple active alerts and all expanded details at 1440/390/320; empty reference-site state checked. Controlled simulation only.',
   })
   if (restartCheck) {
-    const saved = await evaluate("localStorage.getItem('planit:frontend-demo:v1')")
-    console.log(`RESTART CHECK: restart only your demo server at ${base.origin}, on the same port. Leave this browser running, then press Enter here. This checker never stops a server.`)
+    const saved = await evaluate(
+      "localStorage.getItem('planit:frontend-demo:v1')",
+    )
+    console.log(
+      `RESTART CHECK: restart only your demo server at ${base.origin}, on the same port. Leave this browser running, then press Enter here. This checker never stops a server.`,
+    )
     await new Promise((done, reject) => {
-      const timer = setTimeout(() => finish(new Error('Restart confirmation timed out after five minutes')), 300000)
+      const timer = setTimeout(
+        () =>
+          finish(
+            new Error('Restart confirmation timed out after five minutes'),
+          ),
+        300000,
+      )
       const finish = (error) => {
         clearTimeout(timer)
         process.stdin.off('data', ready)
@@ -597,20 +786,39 @@ try {
         else done()
       }
       const ready = () => finish()
-      const ended = () => finish(new Error('Restart check needs an interactive stdin'))
+      const ended = () =>
+        finish(new Error('Restart check needs an interactive stdin'))
       process.stdin.once('data', ready)
       process.stdin.once('end', ended)
       process.stdin.resume()
     })
     await until(async () => (await fetch(base)).ok, 'restarted demo server')
-    await reload('Read-only stored briefings')
-    assert.equal(await evaluate("localStorage.getItem('planit:frontend-demo:v1')"), saved, 'Restart must retain exactly the same isolated demo state')
-    await hash('/supervisor/reports', reportId)
-    await hash('/supervisor/sites/site-demo-everglades', 'Demo reviewed instruction: await qualified field inspection.')
-    assert(await evaluate(`document.querySelector('[data-notice-id="${noticeId}"]').innerText.toLowerCase().includes('confirmed')`), 'Confirmed notice must survive restart')
-    await hash('/crew/overview', 'Demo reviewed instruction: await qualified field inspection.')
-    await hash('/crew/briefings', 'Gemini output')
-    results.push({ restart: 'Operator restarted the same-origin demo server; exact demo state/report, supervisor confirmation, approved crew instruction, navigation and stored briefing survived. Browser-local simulation only; photos are memory-only.' })
+    await reload('Briefings are scheduled')
+    assert.equal(
+      await evaluate("localStorage.getItem('planit:frontend-demo:v1')"),
+      saved,
+      'Restart must retain exactly the same isolated demo state',
+    )
+    await hash('/supervisor/reports', 'Reported present')
+    await hash(
+      '/supervisor/sites/site-demo-everglades',
+      'Demo reviewed instruction: await qualified field inspection.',
+    )
+    assert(
+      await evaluate(
+        `document.querySelector('[data-notice-id="${noticeId}"]').innerText.toLowerCase().includes('confirmed')`,
+      ),
+      'Confirmed notice must survive restart',
+    )
+    await hash(
+      '/crew/overview',
+      'Demo reviewed instruction: await qualified field inspection.',
+    )
+    await hash('/crew/briefings', 'Gemini draft')
+    results.push({
+      restart:
+        'Operator restarted the same-origin demo server; exact demo state/report, supervisor confirmation, approved crew instruction, navigation and stored briefing survived. Browser-local simulation only; photos are memory-only.',
+    })
   }
   if (!production) {
     results.push(await checkReportLocation({ base, navigate, evaluate, until }))
@@ -629,14 +837,14 @@ try {
     await loaded('Stop-work alert active')
     await hash(
       '/supervisor/sites/site-fixture-b',
-      'outside the sites returned for your session',
+      'not available to your account',
     )
     assert(
       await evaluate("!document.body.innerText.includes('Preview workspace')"),
       'Live role selector leaked',
     )
     await hash('/crew/overview', 'Stop-work alert active')
-    await click('Inspect alert and acknowledge')
+    await click('View alert')
     await loaded('Acknowledge alert')
     await click('Acknowledge alert')
     await loaded('Action recorded.')
@@ -645,9 +853,9 @@ try {
         "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
       ),
     )
-    await hash('/crew/briefings', 'Gemini output')
+    await hash('/crew/briefings', 'Gemini draft')
     await set('main select', 'organization')
-    await loaded('Deterministic template fallback')
+    await loaded('Template fallback')
     for (const [code, message] of [
       [
         404,
@@ -661,12 +869,14 @@ try {
       await set('main select', 'site-demo-everglades')
       await loaded(message)
       await set('main select', 'organization')
-      await loaded('Deterministic template fallback')
+      await loaded('Template fallback')
     }
     await evaluate(
       'window.harness.briefingStatus=200; window.harness.invalidBriefing=true',
     )
     await set('main select', 'site-demo-everglades')
+    await loaded('This information could not be verified')
+    await disclose('Error details')
     await loaded('Invalid stored briefing response')
     await evaluate('window.harness.invalidBriefing=false')
     assert(
@@ -675,7 +885,7 @@ try {
       ),
       'Stored briefings must only use GET',
     )
-    await hash('/crew/reports', 'Is it there?')
+    await hash('/crew/reports', 'Is the hazard present?')
     await choose('presence', 'present')
     assert(
       await evaluate(
@@ -733,7 +943,7 @@ try {
     await evaluate("window.harness.mount('supervisor')")
     await hash(
       '/supervisor/sites/site-demo-everglades',
-      'Potential notices and approved instructions',
+      'Hazards and supervisor instructions',
     )
     assert(
       await evaluate(
@@ -747,7 +957,7 @@ try {
     await until(
       () =>
         evaluate(
-          `document.querySelector('[data-report-id="${absentId}"] h3').innerText.includes('confirmed')`,
+          `document.querySelector('[data-report-id="${absentId}"]').innerText.includes('Confirmed')`,
         ),
       'mock absent reviewed',
     )
@@ -789,7 +999,7 @@ try {
       'Edited mock supervisor instruction: request field inspection.',
     )
     const readsBeforeRefresh = await evaluate('window.harness.requests.length')
-    await click('Refresh server state')
+    await click('Refresh worksite')
     await until(
       () => evaluate(`window.harness.requests.length > ${readsBeforeRefresh}`),
       'shared server refresh requested',
@@ -821,7 +1031,7 @@ try {
       'Crew cannot edit supervisor instruction',
     )
     // A second report exercises a null suggestion and a manual final instruction.
-    await hash('/crew/reports', 'Is it there?')
+    await hash('/crew/reports', 'Is the hazard present?')
     await choose('presence', 'present')
     await attachMockPhoto()
     await click('Submit report')
@@ -834,14 +1044,12 @@ try {
     )
     await hash(
       '/supervisor/sites/site-demo-everglades',
-      'Potential notices and approved instructions',
+      'Hazards and supervisor instructions',
     )
     await evaluate(
       `document.querySelector('[data-notice-id="${manualId}"] button').click()`,
     )
-    await loaded(
-      'No suggestion available; the confirming supervisor writes the instruction',
-    )
+    await loaded('Write an instruction for the crew')
     assert(
       await evaluate(
         `document.querySelector('[data-notice-id="${manualId}"] textarea').value==='' && document.querySelector('[data-notice-id="${manualId}"] button').disabled`,
@@ -862,7 +1070,7 @@ try {
     await evaluate(
       `window.harness.settings({foreignOwner:${JSON.stringify(raceId)}}); document.querySelector('[data-notice-id="${raceId}"] button').click()`,
     )
-    await loaded('Another supervisor confirmed this hazard')
+    await loaded('Only the supervisor who confirmed this hazard')
     assert(
       await evaluate(
         `!document.querySelector('[data-notice-id="${raceId}"] textarea')`,
@@ -909,7 +1117,7 @@ try {
         url,
         setting === 'false'
           ? 'Sign-in is not configured.'
-          : 'Fixture configuration is invalid.',
+          : 'The app could not start',
       )
       assert(await evaluate("!document.body.innerText.includes('Line Crew A')"))
       results.push({

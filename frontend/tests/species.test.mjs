@@ -138,7 +138,7 @@ test('protection, habitat and encounter render independently; unknown never read
   const statusless = structuredClone(byName('American alligator'))
   statusless.protection.status = null
   const gator = pane(statusless)
-  assert.match(gator, /Status unknown \(not supplied\)/)
+  assert.match(gator, /Protection status unknown/)
   assert.match(gator, /Keep your distance/)
 })
 

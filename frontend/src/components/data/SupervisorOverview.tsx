@@ -6,6 +6,7 @@ import { card, LoadState } from './Interaction'
 import { RiskBadge, RiskShape } from './Risk'
 import { evidenceOf } from './evidence'
 import { attentionItems, highestRisk, type Shape } from './attention'
+import { factorLabel } from '../../presentation/display'
 
 /**
  * Supervisor home: what needs a decision now, and the riskiest sites. The full map, list
@@ -51,25 +52,25 @@ export function SupervisorOverview({ sites }: { sites: SiteSummary[] }) {
       <div className="grid grid-cols-2 gap-3 @3xl:grid-cols-4">
         <Tile
           value={count('alert:')}
-          label="active alerts"
+          label="Active alerts"
           shape="stop"
           href="#/supervisor/alerts"
         />
         <Tile
           value={count('notice:')}
-          label="notices to confirm"
+          label="Hazards to confirm"
           shape="caution"
           href="#/supervisor/sites"
         />
         <Tile
           value={count('report:')}
-          label="reports to review"
+          label="Reports to review"
           shape="nodata"
           href="#/supervisor/reports"
         />
         <Tile
           value={teamSites.length}
-          label="team sites"
+          label="Assigned worksites"
           shape="low"
           href="#/supervisor/team"
         />
@@ -112,8 +113,7 @@ export function SupervisorOverview({ sites }: { sites: SiteSummary[] }) {
             className={`${card} flex items-center gap-2.5 p-4 text-sm text-ink-2`}
           >
             <Icon name="check" className="size-4 text-ok" />
-            Nothing is waiting on you. Alerts, notices and reports to review
-            show up here.
+            No items awaiting review. New alerts and reports will appear here.
           </p>
         )}
       </section>
@@ -157,7 +157,7 @@ export function SupervisorOverview({ sites }: { sites: SiteSummary[] }) {
                   </span>
                   {s.top_factors[0] && (
                     <span className="text-sm text-ink-2">
-                      {s.top_factors[0].label}
+                      Main factor: {factorLabel(s.top_factors[0].factor)}
                     </span>
                   )}
                 </a>

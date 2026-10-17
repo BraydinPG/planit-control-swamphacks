@@ -10,7 +10,7 @@ export function ExpectedDuration({ outlook }: { outlook: EventOutlook }) {
     <div className="rounded-xl bg-surface-2 p-3 text-sm">
       <p className="kicker flex items-center gap-1.5">
         <Icon name="clock" className="size-3.5" />
-        Expected duration · estimate
+        Estimated duration · research
       </p>
       {sentence ? (
         <>
@@ -26,10 +26,7 @@ export function ExpectedDuration({ outlook }: { outlook: EventOutlook }) {
         </>
       ) : (
         <p className="mt-1 text-ink-2">
-          {NO_ESTIMATE}
-          {outlook.limitations[0] && (
-            <span className="text-muted"> ({outlook.limitations[0]})</span>
-          )}
+          {NO_ESTIMATE} Conditions remain unknown.
         </p>
       )}
       <details className="mt-2">

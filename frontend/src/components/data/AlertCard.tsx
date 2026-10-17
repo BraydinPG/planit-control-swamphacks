@@ -6,6 +6,8 @@ import { Timestamp } from './Status'
 import { Action } from './Interaction'
 import { RiskShape, type RiskShapeKind } from './Risk'
 import { Icon } from '../shell/Icon'
+import { displayLabel } from '../../presentation/display'
+import { Details } from './Details'
 
 function remaining(alert: Alert, now: number) {
   if (alert.state !== 'active' || !alert.clear_after) return null
@@ -89,7 +91,7 @@ function Ring({
         <span className="text-5xl font-bold tabular-nums tracking-tight">
           {clock(left)}
         </span>
-        <span className="text-sm text-muted">until all-clear</span>
+        <span className="text-sm text-muted">watch window</span>
       </div>
     </div>
   )
@@ -109,13 +111,14 @@ export function AlertCard({
   const name =
     alert.rule === 'lightning_stop_work'
       ? 'Stop-work'
-      : alert.rule.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase())
+      : displayLabel(alert.rule)
   const title = `${name} alert${alert.state === 'active' ? ' active' : ' cleared'}`
   const simulated = alert.simulated || client.mode === 'demo'
   const acks = alert.acknowledgements.length
   return (
     <section
       aria-label={`Alert ${alert.id}`}
+      data-alert-id={alert.id}
       className={`overflow-hidden rounded-2xl border-[3px] bg-surface ${style.ring}`}
     >
       <div className={`flex items-center gap-3 px-4 py-3 ${style.band}`}>
@@ -131,9 +134,7 @@ export function AlertCard({
             className={detail ? 'size-8' : 'size-8 @lg:size-10'}
           />
         </span>
-        <h2
-          className={`font-condensed uppercase leading-[0.95] ${detail ? 'text-3xl' : 'text-[2rem] @lg:text-4xl'}`}
-        >
+        <h2 className="text-2xl font-bold leading-tight @lg:text-3xl">
           {title}
         </h2>
       </div>
@@ -143,13 +144,13 @@ export function AlertCard({
             className="flex min-h-14 items-center justify-between gap-3 rounded-xl border border-line-strong bg-surface-2 px-4 text-lg font-bold text-ink hover:bg-bg"
             href={`#/${persona}/alerts/${encodeURIComponent(alert.id)}`}
           >
-            Inspect alert and acknowledge
+            View alert
             <Icon name="arrow" className="size-5 shrink-0" />
           </a>
         )}
         {!detail && left !== null && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
-            <span className="text-base font-semibold">All-clear in</span>
+            <span className="text-base font-semibold">Watch window</span>
             <span
               className="text-4xl font-bold leading-none tabular-nums tracking-tight"
               aria-hidden="true"
@@ -170,7 +171,8 @@ export function AlertCard({
           />
         )}
         <p className="text-sm text-ink-2">
-          Status: <strong className="text-ink">{alert.state}</strong>
+          Status:{' '}
+          <strong className="text-ink">{displayLabel(alert.state)}</strong>
           {simulated ? ' · Simulated replay' : ''}
           {alert.is_prototype_rule ? ' · Prototype rule' : ''}
         </p>
@@ -179,73 +181,83 @@ export function AlertCard({
         </p>
         <p
           role="timer"
-          className={`font-semibold ${detail ? 'text-center text-lg' : 'text-base'}`}
+          className={
+            left !== null && left > 0 && !detail
+              ? 'sr-only'
+              : `font-semibold ${detail ? 'text-center text-lg' : 'text-base'}`
+          }
         >
-          {countdown(alert, now)}
+          {countdown(alert, now)
+            .replace('remaining in server window', 'left in watch window')
+            .replace(
+              'No countdown supplied by server.',
+              'No watch window available.',
+            )}
         </p>
-        <p className="text-xs leading-relaxed text-muted">
-          A countdown reaching zero never clears the alert or authorizes work;
-          only the system clears it.
+        <p className="text-sm text-ink-2">
+          The timer does not clear this alert or authorize work.
         </p>
         {detail && (
           <div className="space-y-4">
-            <dl className="divide-y divide-line border-y border-line text-sm">
-              {(
-                [
+            <Details title="Alert evidence and timing">
+              <dl className="divide-y divide-line border-y border-line text-sm">
+                {(
                   [
-                    'Triggered',
-                    <Timestamp key="t" value={alert.triggered_at} />,
-                  ],
-                  alert.distance_miles !== null && [
-                    'Distance',
-                    `${alert.distance_miles} mi`,
-                  ],
-                  alert.clear_after && [
-                    'All-clear after',
-                    <Timestamp key="w" value={alert.clear_after} />,
-                  ],
-                  [
-                    'Rule',
-                    alert.is_prototype_rule
-                      ? 'Prototype rule, not employer policy'
-                      : 'Stop for any strike within 10 mi. Clear after 30 minutes without one.',
-                  ],
-                  [
-                    'Source',
-                    simulated
-                      ? 'Simulated replay, not a live feed'
-                      : 'Live feed',
-                  ],
-                ].filter(Boolean) as [string, ReactNode][]
-              ).map(([k, v], i) => (
-                <div
-                  key={i}
-                  className="flex flex-wrap justify-between gap-x-4 gap-y-1 py-2.5"
-                >
-                  <dt className="text-muted">{k}</dt>
-                  <dd className="text-right font-semibold">{v}</dd>
+                    [
+                      'Triggered',
+                      <Timestamp key="t" value={alert.triggered_at} />,
+                    ],
+                    alert.distance_miles !== null && [
+                      'Distance',
+                      `${alert.distance_miles} mi`,
+                    ],
+                    alert.clear_after && [
+                      'Watch window ends',
+                      <Timestamp key="w" value={alert.clear_after} />,
+                    ],
+                    [
+                      'Rule',
+                      alert.is_prototype_rule
+                        ? 'Prototype rule, not employer policy'
+                        : 'Stop for any strike within 10 mi. Clear after 30 minutes without one.',
+                    ],
+                    [
+                      'Source',
+                      simulated
+                        ? 'Simulated replay, not a live feed'
+                        : 'Live feed',
+                    ],
+                  ].filter(Boolean) as [string, ReactNode][]
+                ).map(([k, v], i) => (
+                  <div
+                    key={i}
+                    className="flex flex-wrap justify-between gap-x-4 gap-y-1 py-2.5"
+                  >
+                    <dt className="text-muted">{k}</dt>
+                    <dd className="text-right font-semibold">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              {/* Crew see trigger, distance, rule and source above; evidence IDs stay on the supervisor view. */}
+              {persona === 'supervisor' && alert.evidence.length > 0 && (
+                <div>
+                  <h3 className="kicker mb-2">Evidence</h3>
+                  <ul className="space-y-1.5 text-sm">
+                    {alert.evidence.map((e) => (
+                      <li
+                        key={e.id}
+                        className="break-words rounded-lg bg-surface-2 px-3 py-2"
+                      >
+                        {e.label} ·{' '}
+                        <span className="text-muted">
+                          <Timestamp value={e.observed_at} />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
-            </dl>
-            {/* Crew see trigger, distance, rule and source above; evidence IDs stay on the supervisor view. */}
-            {persona === 'supervisor' && alert.evidence.length > 0 && (
-              <div>
-                <h3 className="kicker mb-2">Evidence</h3>
-                <ul className="space-y-1.5 text-sm">
-                  {alert.evidence.map((e) => (
-                    <li
-                      key={e.id}
-                      className="break-words rounded-lg bg-surface-2 px-3 py-2"
-                    >
-                      {e.label} ·{' '}
-                      <span className="text-muted">
-                        <Timestamp value={e.observed_at} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+              )}
+            </Details>
             <p className="text-sm">
               {acks
                 ? `${acks} acknowledgement${acks === 1 ? '' : 's'} so far.`
@@ -259,7 +271,7 @@ export function AlertCard({
               run={() => client.acknowledge(alert.id)}
             >
               {client.mode === 'demo'
-                ? 'Record simulated acknowledgement'
+                ? 'Acknowledge in demo'
                 : 'Acknowledge alert'}
             </Action>
           </div>

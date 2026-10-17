@@ -1,17 +1,10 @@
+import { formatTimestamp } from '../presentation/display'
 import type { ShellMode, shellContext } from '../api/shell-fixtures'
 import type { Workspace } from '../components/shell/AppShell'
 import { Icon, type IconName } from '../components/shell/Icon'
 
 type Context = ReturnType<typeof shellContext>
-function scenarioTime(value: string | null) {
-  return value
-    ? new Intl.DateTimeFormat('en-GB', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        timeZone: 'UTC',
-      }).format(new Date(value)) + ' UTC'
-    : 'Timestamp unavailable'
-}
+const scenarioTime = formatTimestamp
 const shortcuts: {
   title: string
   page: string
@@ -19,7 +12,7 @@ const shortcuts: {
   description: string
 }[] = [
   {
-    title: 'Worksite context',
+    title: 'Worksites',
     page: 'sites',
     icon: 'sites',
     description: 'Locations, teams and site evidence.',
@@ -65,7 +58,7 @@ export function WorkspaceOverview({
                 <circle cx="55" cy="105" r="65" />
               </g>
             </svg>
-            <p className="relative flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.18em] text-teal-100">
+            <p className="relative flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-teal-100">
               <span className="size-1.5 rounded-full bg-amber-300" />
               {context
                 ? 'Simulated reference workspace'
@@ -75,9 +68,9 @@ export function WorkspaceOverview({
               id="reference-workspace"
               className="relative mt-5 max-w-md text-2xl font-semibold leading-snug tracking-tight"
             >
-              {context ? context.site.name : 'Your site context belongs here.'}
+              {context ? context.site.name : 'No worksite connected'}
             </h2>
-            <p className="relative mt-4 max-w-sm text-xs leading-relaxed text-teal-100/90">
+            <p className="relative mt-4 max-w-sm text-sm leading-relaxed text-teal-100/90">
               {context
                 ? 'A bundled scenario for exploring the workspace. This location is not a verified active job or an EIA record.'
                 : 'No site data loaded. Connect an authorized data source before using site information.'}
@@ -87,7 +80,7 @@ export function WorkspaceOverview({
             <div className="px-6 py-6 sm:px-8">
               <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                     Example team
                   </dt>
                   <dd className="mt-1.5 text-sm font-semibold">
@@ -95,7 +88,7 @@ export function WorkspaceOverview({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                     Scenario region
                   </dt>
                   <dd className="mt-1.5 text-sm font-semibold">
@@ -103,21 +96,21 @@ export function WorkspaceOverview({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                    Fixed fixture timestamp
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    Example updated
                   </dt>
                   <dd className="mt-1.5 text-xs font-medium">
                     {scenarioTime(context.site.updated_at)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                     Site score
                   </dt>
                   <dd className="mt-1.5 text-xs font-medium">
                     {context.site.risk_score === null
                       ? 'Not scored yet'
-                      : 'Not displayed in this shell'}
+                      : 'Not available in this preview'}
                   </dd>
                 </div>
               </dl>
@@ -147,7 +140,7 @@ export function WorkspaceOverview({
             </h2>
             <Icon name="grid" className="size-5 text-slate-400" />
           </div>
-          <p className="mt-2 text-xs leading-relaxed text-slate-500">
+          <p className="mt-2 text-sm leading-relaxed text-slate-500">
             Know where the information comes from.
           </p>
           <dl className="mt-6 divide-y divide-slate-100">
@@ -165,12 +158,10 @@ export function WorkspaceOverview({
             </div>
             <div className="py-4">
               <dt className="text-sm font-medium">Account session</dt>
-              <dd className="mt-1 text-xs text-slate-600">
-                Not connected to this shell
-              </dd>
+              <dd className="mt-1 text-xs text-slate-600">Not connected</dd>
             </div>
           </dl>
-          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-950">
+          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-950">
             Switching preview workspaces changes navigation only. It does not
             sign you in or grant permissions.
           </div>
@@ -200,14 +191,14 @@ export function WorkspaceOverview({
                 />
               </div>
               <h3 className="text-sm font-semibold">{item.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
                 {item.description}
               </p>
             </a>
           ))}
         </div>
       </section>
-      <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-100/70 px-5 py-4 text-xs leading-relaxed text-slate-600">
+      <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-100/70 px-5 py-4 text-sm leading-relaxed text-slate-600">
         <Icon name="alerts" className="mt-0.5 size-4 shrink-0 text-slate-500" />
         <p>
           <strong className="font-semibold text-slate-800">

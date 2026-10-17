@@ -191,7 +191,7 @@ export function SiteMap({
       <p className="text-sm text-muted">
         {habitat?.length
           ? 'Site point and USFWS critical habitat boundaries, clipped to about 3 km. The same areas are listed above for keyboard access. Boundaries are not sightings.'
-          : `Interactive geographic reference map · ${sites.length} supplied points. Use the equivalent location list below for keyboard access. Points do not establish worksite conditions.`}
+          : `${sites.length} reference locations. Use the list below to browse by keyboard. Map points do not establish worksite conditions.`}
       </p>
       <div
         ref={container}

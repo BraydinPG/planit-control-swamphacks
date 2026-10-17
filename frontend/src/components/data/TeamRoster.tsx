@@ -2,12 +2,14 @@ import { useCallback, useState, type FormEvent } from 'react'
 import type {
   Account,
   JoinCode,
+  OrganizationTeams,
   SiteSummary,
   TeamMember,
   TeamRoster,
 } from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { ApiError } from '../../api/contracts'
+import { formatTimestamp } from '../../presentation/display'
 import { Icon } from '../shell/Icon'
 import {
   Action,
@@ -41,27 +43,98 @@ export function TeamPage() {
   const free = sites.filter((s) => !s.assigned_team && !taken.has(s.id))
   return (
     <div className="pc-enter space-y-5">
-      <section className={`${card} p-5`}>
-        <p className="kicker mb-1">Organization</p>
-        <h2 className="text-2xl font-bold tracking-tight">
-          {org.organization_name}
-        </h2>
-        <p className="mt-1 text-sm text-ink-2">
-          {org.teams.length} {org.teams.length === 1 ? 'team' : 'teams'} ·
-          Supervisor{org.supervisors.length === 1 ? '' : 's'}:{' '}
-          {org.supervisors.map(display).join(', ') || 'none linked'}
-        </p>
-      </section>
+      <OrganizationHeader key={org.organization_name} org={org} />
+      <AddTeam free={free} />
       {org.teams.map((team) => (
         <TeamCard key={team.id} team={team} free={free} />
       ))}
       {!org.teams.length && (
         <p className="rounded-2xl border border-dashed border-line-strong p-4 text-sm text-ink-2">
-          No teams in this organization yet.
+          No teams in this organization yet. Add one above.
         </p>
       )}
-      <AddTeam free={free} />
     </div>
+  )
+}
+
+/** The organization's name, which its supervisor can change, and who runs it. */
+function OrganizationHeader({ org }: { org: OrganizationTeams }) {
+  const { client } = useApplication()
+  const [editing, setEditing] = useState(false)
+  const [name, setName] = useState(org.organization_name)
+  const change = useTeamChange()
+  return (
+    <section className={`${card} p-5`}>
+      <p className="kicker mb-1">Organization</p>
+      {editing ? (
+        <form
+          aria-label="Rename organization"
+          className="flex flex-wrap items-end gap-2"
+          onSubmit={async (event: FormEvent) => {
+            event.preventDefault()
+            if (await change.run(() => client.renameOrganization(name.trim())))
+              setEditing(false)
+          }}
+        >
+          <label className={`${labelText} min-w-0 flex-1`}>
+            Organization name
+            <input
+              className={field}
+              value={name}
+              maxLength={80}
+              onChange={(e) => setName(e.target.value)}
+              autoFocus
+              required
+            />
+          </label>
+          <button
+            type="submit"
+            className={primary}
+            disabled={change.busy || !name.trim()}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            className={control}
+            onClick={() => {
+              setName(org.organization_name)
+              setEditing(false)
+            }}
+          >
+            Cancel
+          </button>
+        </form>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="text-2xl font-bold tracking-tight">
+            {org.organization_name}
+          </h2>
+          <button
+            type="button"
+            className={control}
+            onClick={() => setEditing(true)}
+          >
+            Rename
+          </button>
+        </div>
+      )}
+      <p className="mt-1 text-sm text-ink-2">
+        {org.teams.length} {org.teams.length === 1 ? 'team' : 'teams'} ·
+        Supervisor{org.supervisors.length === 1 ? '' : 's'}:{' '}
+        {org.supervisors.map(display).join(', ') || 'none linked'}
+      </p>
+      {client.mode === 'demo' && (
+        <p className="mt-2 text-sm text-sim">
+          Simulated roster. Team and join-code changes reset on reload.
+        </p>
+      )}
+      {change.message && (
+        <p role="alert" className="mt-2 text-sm font-semibold text-stop-text">
+          {change.message}
+        </p>
+      )}
+    </section>
   )
 }
 
@@ -239,7 +312,7 @@ function ManageTeam({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           </button>
         </div>
         {team.members.length > 0 && (
-          <p className="text-xs text-muted">
+          <p className="text-sm text-muted">
             A team can be removed once nobody is on it.
           </p>
         )}
@@ -294,15 +367,17 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           {team.members.map((m) => (
             <li
               key={m.user_id}
-              className="flex items-center justify-between gap-3 py-2.5"
+              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
             >
               <div className="min-w-0">
-                <p className="truncate font-semibold">{display(m)}</p>
+                <p className="font-semibold [overflow-wrap:anywhere]">
+                  {display(m)}
+                </p>
                 {m.name && m.email && (
                   <p className="truncate text-sm text-ink-2">{m.email}</p>
                 )}
               </div>
-              <span className="shrink-0 text-xs text-muted">
+              <span className="shrink-0 text-sm text-muted">
                 {m.joined_at ? `Joined ${day(m.joined_at)}` : 'Added by admin'}
               </span>
             </li>
@@ -318,8 +393,8 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="kicker">Join codes</p>
-            <p className="text-xs text-muted">
-              A code adds a new crew account to this team for 7 days.
+            <p className="text-sm text-muted">
+              Share with your crew. Each code expires after 7 days.
             </p>
           </div>
           <Action capability="team" run={() => client.createJoinCode(team.id)}>
@@ -346,10 +421,12 @@ function CodeRow({ code }: { code: JoinCode }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-surface-2 px-3 py-2">
       <div>
-        <p className="font-mono text-xl font-bold tracking-[0.15em]">
+        <p className="break-all font-mono text-xl font-bold tracking-[0.1em]">
           {code.code}
         </p>
-        <p className="text-xs text-muted">Expires {day(code.expires_at)}</p>
+        <p className="text-sm text-muted">
+          Expires {formatTimestamp(code.expires_at)}
+        </p>
       </div>
       <div className="flex flex-wrap items-start gap-2">
         <button
@@ -367,7 +444,7 @@ function CodeRow({ code }: { code: JoinCode }) {
           {copied ? 'Copied' : 'Copy'}
         </button>
         <Action capability="team" run={() => client.revokeJoinCode(code.code)}>
-          Revoke
+          Revoke code
         </Action>
       </div>
     </div>

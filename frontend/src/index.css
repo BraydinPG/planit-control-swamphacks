@@ -70,7 +70,7 @@
 @utility kicker {
   font-family: var(--font-sans);
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.3;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -104,11 +104,13 @@
     font-family: var(--font-sans);
     background: var(--pc-bg);
     color: var(--pc-ink);
+    line-height: 1.55;
   }
   h1,
   h2,
   h3 {
     text-wrap: balance;
+    scroll-margin-top: 5rem;
   }
   p,
   li,
@@ -128,7 +130,7 @@
   }
   input[type='file']::file-selector-button {
     margin-right: 0.75rem;
-    min-height: 2.25rem;
+    min-height: 2.75rem;
     border: 1px solid var(--pc-line-strong);
     border-radius: 0.6rem;
     background: var(--pc-surface-2);

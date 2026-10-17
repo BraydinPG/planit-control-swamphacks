@@ -13,6 +13,7 @@ import { RiskShape } from './Risk'
 import { Status, Timestamp } from './Status'
 import { Icon } from '../shell/Icon'
 import { arrangeWildlife, type Relevance, type WildlifeRow } from './wildlife'
+import { Details } from './Details'
 const SiteMap = lazy(() =>
   import('./SiteMap').then((m) => ({ default: m.SiteMap })),
 )
@@ -50,7 +51,7 @@ export function SpeciesSection({ site }: { site: SiteDetail }) {
   return (
     <section className="space-y-3" aria-labelledby="species-title">
       <div>
-        <p className="kicker mb-1">Field awareness · read-only</p>
+        <p className="kicker mb-1">Regional wildlife and habitat</p>
         <h2 id="species-title" className="text-lg font-bold tracking-tight">
           Local species
         </h2>
@@ -92,7 +93,10 @@ export function SpeciesPanel({
         data-testid="species-caveat"
       >
         <RiskShape kind="caution" className="mt-0.5 size-4 shrink-0" />
-        <span>{context.caveat}</span>
+        <span>
+          Regional context, not a sighting. Local wildlife remains unverified;
+          this does not clear work.
+        </span>
       </p>
 
       <div className={`${card} space-y-2 p-4 text-sm text-ink-2`}>
@@ -107,16 +111,19 @@ export function SpeciesPanel({
           )}
         </p>
         <p>
-          Retrieved <Timestamp value={context.fetched_at} /> ·{' '}
-          {context.footprint_description}
+          Retrieved <Timestamp value={context.fetched_at} />
         </p>
-        <p>
-          Wording:{' '}
-          {context.generated_by === 'gemini'
-            ? `${context.simulated ? 'recorded Gemini response' : 'Gemini'}, checked line by line against the sources below`
-            : 'deterministic template'}
-          . Statuses and guidance are shown exactly as sourced.
-        </p>
+        <Details title="Species sources and coverage">
+          <p>{context.caveat}</p>
+          <p>{context.footprint_description}</p>
+          <p>
+            Wording:{' '}
+            {context.generated_by === 'gemini'
+              ? `${context.simulated ? 'recorded Gemini response' : 'Gemini'}, checked line by line against the sources below`
+              : 'deterministic template'}
+            . Statuses and guidance are shown exactly as sourced.
+          </p>
+        </Details>
       </div>
 
       <WildlifeReports reports={context.wildlife_reports} />
@@ -155,12 +162,13 @@ export function SpeciesPanel({
 
       {context.unknowns.length > 0 && (
         <div className={`${card} p-4`}>
-          <h3 className="text-sm font-bold">What this does not tell you</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2">
-            {context.unknowns.map((u) => (
-              <li key={u}>{u}</li>
-            ))}
-          </ul>
+          <Details title="What this does not tell you">
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2">
+              {context.unknowns.map((u) => (
+                <li key={u}>{u}</li>
+              ))}
+            </ul>
+          </Details>
         </div>
       )}
     </div>
@@ -174,8 +182,8 @@ function WildlifeReports({ reports }: { reports: WildlifeReportRef[] }) {
         Crew wildlife reports at this site
       </h3>
       <p className="text-sm text-muted">
-        Reports from crews, kept separate from the regional species list.
-        Reports do not name a species.
+        Crew reports are separate from regional habitat records. Species
+        identity is unverified.
       </p>
       {reports.length ? (
         <ul className="space-y-2">
@@ -306,7 +314,7 @@ export function WildlifePane({
       )}
       <p className="text-ink">
         {s.summary}{' '}
-        <span className="text-xs text-muted">
+        <span className="text-sm text-muted">
           ({s.summary_by === 'gemini' ? 'Gemini wording' : 'template'})
         </span>
       </p>
@@ -327,7 +335,7 @@ function Protection({ species: s }: { species: SpeciesEntry }) {
       {p ? (
         <>
           <p className="font-semibold text-ink">
-            {p.status ?? 'Status unknown (not supplied)'}
+            {p.status ?? 'Protection status unknown'}
           </p>
           <p className="text-ink-2">{p.jurisdiction}</p>
           <SourceLink href={p.source_url} label={p.source}>
@@ -407,7 +415,7 @@ function Encounter({ species: s }: { species: SpeciesEntry }) {
               Contact: {e.contact}
             </p>
           )}
-          <p className="mt-1.5 text-xs text-muted">
+          <p className="mt-1.5 text-sm text-muted">
             {e.review_status === 'pending_review'
               ? 'Curated from the cited source; pending safety-lead review. Your site procedures come first.'
               : `Reviewed by ${e.reviewed_by ?? 'safety lead'}.`}
@@ -553,7 +561,7 @@ function SourceLink({
   children?: ReactNode
 }) {
   return (
-    <p className="mt-1 text-xs text-muted">
+    <p className="mt-1 text-sm text-muted">
       Source:{' '}
       {href ? (
         <a

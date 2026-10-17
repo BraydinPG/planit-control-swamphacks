@@ -5,6 +5,8 @@ import { field, labelText, LoadState } from './Interaction'
 import { Timestamp } from './Status'
 import { Icon } from '../shell/Icon'
 import { ApiError } from '../../api/contracts'
+import { displayLabel } from '../../presentation/display'
+import { Details } from './Details'
 
 export const NO_BRIEFING =
   'No briefing yet. Briefings are generated at 6 PM site-local time.'
@@ -18,9 +20,11 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 const ids = (list: string[]) => (
-  <span className="font-mono text-xs text-muted">
-    evidence: {list.join(', ')}
-  </span>
+  <Details title="Evidence references">
+    <p className="font-mono">
+      {list.join(', ') || 'No evidence reference supplied'}
+    </p>
+  </Details>
 )
 
 export function BriefingCard({ value }: { value: Briefing }) {
@@ -37,44 +41,35 @@ export function BriefingCard({ value }: { value: Briefing }) {
           <Icon name={fallback ? 'doc' : 'spark'} className="size-3.5" />
           {fallback ? 'Template' : 'Gemini'}
         </span>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Stored briefing ·{' '}
-          {fallback ? 'Deterministic template fallback' : 'Gemini output'}
-        </h2>
-        <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-2">
-          <span>
-            Site: {value.site_id ?? 'Organization briefing'} · Organization:{' '}
-            {value.organization_id ?? 'Site-scoped'}
-          </span>
-        </p>
+        <h2 className="text-2xl font-bold tracking-tight">Shift briefing</h2>
         <p className="text-sm text-ink-2">
-          Forecast window: <Timestamp value={value.forecast_window_start} /> to{' '}
+          Covers <Timestamp value={value.forecast_window_start} /> to{' '}
           <Timestamp value={value.forecast_window_end} />
         </p>
         <p className="text-sm">
           {value.risk_score === null ? (
             <>
-              Risk level at generation:{' '}
-              <strong className="capitalize">{value.risk_level}</strong>
+              Risk level when written:{' '}
+              <strong>{displayLabel(value.risk_level)}</strong>
             </>
           ) : (
             <>
-              Site hazard index at generation:{' '}
+              Score when written:{' '}
               <strong>
                 {value.risk_score.toFixed(1)} / 10 ·{' '}
-                <span className="capitalize">{value.risk_level}</span>
+                <span>{displayLabel(value.risk_level)}</span>
               </strong>
               {value.data_completeness !== null &&
                 (value.data_completeness === 0 ? (
                   <span className="text-ink-2">
                     {' '}
-                    · Not enough current data to score
+                    · Evidence incomplete; current conditions unknown
                   </span>
                 ) : (
                   <span className="text-ink-2">
                     {' '}
                     · {Math.round(value.data_completeness * 100)}% of inputs
-                    current
+                    available
                   </span>
                 ))}
             </>
@@ -93,30 +88,32 @@ export function BriefingCard({ value }: { value: Briefing }) {
                 ) : (
                   <strong>+{h.points.toFixed(1)} pts</strong>
                 )}{' '}
-                · {ids(h.evidence_ids)}
+                {ids(h.evidence_ids)}
               </li>
             ))}
           </ul>
         </Section>
-        <Section title="Actions supplied for human review">
+        <Section title="Suggested actions · review required">
           <ul className="space-y-2">
             {value.recommended_actions.map((a, i) => (
               <li key={i} className="rounded-xl bg-surface-2 px-3 py-2">
-                {a.action} · {ids(a.evidence_ids)}
+                {a.action} {ids(a.evidence_ids)}
               </li>
             ))}
           </ul>
         </Section>
-        <Section title="Evidence references">
-          <ul className="divide-y divide-line text-sm">
-            {value.evidence.map((e) => (
-              <li key={e.id} className="break-words py-2">
-                <span className="font-mono text-xs text-muted">{e.id}</span> ·{' '}
-                {e.label} · <Timestamp value={e.observed_at} />
-              </li>
-            ))}
-          </ul>
-        </Section>
+        <Details title="Briefing sources">
+          <Section title="Evidence references">
+            <ul className="divide-y divide-line text-sm">
+              {value.evidence.map((e) => (
+                <li key={e.id} className="break-words py-2">
+                  <span className="font-mono text-xs text-muted">{e.id}</span> ·{' '}
+                  {e.label} · <Timestamp value={e.observed_at} />
+                </li>
+              ))}
+            </ul>
+          </Section>
+        </Details>
         <Section title="Unknowns">
           <ul className="space-y-1.5 text-sm">
             {value.unknowns.map((u, i) => (
@@ -131,15 +128,18 @@ export function BriefingCard({ value }: { value: Briefing }) {
           </ul>
         </Section>
       </div>
-      <footer className="space-y-1 border-t border-line pt-4 text-xs text-muted">
+      <footer className="space-y-2 border-t border-line pt-4 text-sm text-muted">
         <p>
-          Created <Timestamp value={value.created_at} /> · generated_by:{' '}
-          {value.generated_by}
+          Written <Timestamp value={value.created_at} /> ·{' '}
+          {fallback ? 'Template fallback' : 'Gemini draft'}
         </p>
-        <p>
-          Stored advisory text cannot authorize work or clear alerts. The
-          backend owns the generation schedule.
-        </p>
+        <p>A briefing does not authorize work or clear alerts.</p>
+        <Details title="Briefing record">
+          <p>
+            Site: {value.site_id ?? 'Organization-wide'} · Organization:{' '}
+            {value.organization_id ?? 'Site-scoped'} · Record: {value.id}
+          </p>
+        </Details>
       </footer>
     </article>
   )
@@ -171,7 +171,7 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
     <section className="space-y-5" aria-label="Stored briefings">
       <div className="grid gap-4 rounded-2xl border border-line bg-surface p-4 @lg:grid-cols-[minmax(0,22rem)_1fr] @lg:items-end">
         <label className={labelText}>
-          Briefing site or organization
+          Choose a worksite or organization
           <select
             className={field}
             value={selection}
@@ -188,18 +188,16 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
         <p className="flex items-start gap-2 text-sm text-ink-2">
           <Icon name="clock" className="mt-0.5 size-4 shrink-0" />
           <span>
-            Read-only stored briefings. Briefings are generated at 6 PM
-            site-local time. Organization access requires the backend's
-            read:org_briefings permission.
+            Briefings are scheduled for 6 PM, in the worksite's local time.
+            Organization briefings require permission.
           </span>
         </p>
       </div>
       {client.mode === 'demo' && (
         <p className="rounded-xl border border-dotted border-sim px-4 py-3 text-sm text-ink-2">
-          <span className="kicker text-sim!">Simulated</span> SIMULATED /
-          ARCHIVED FIXTURES — prerecorded examples, including a template
-          fallback. Text is not regenerated after demo mutations and is not
-          current employer policy.
+          <strong className="text-sim">Simulated briefing.</strong> Saved
+          example; it does not update after demo changes or represent current
+          employer policy.
         </p>
       )}
       {result.data === null ? (
