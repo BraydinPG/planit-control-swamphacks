@@ -195,6 +195,16 @@ Historical records below retain their original as-of facts; current status is IN
 
 # Cross-scope changes
 
+### 2026-10-17 - Access mat deterioration category
+
+Explicit user request to add timber access mat deterioration as a report category.
+Focused coordinated edits span Rudra's report enum, services, TypeScript mirror and
+spec; Cache's form, analysis labels, validation and demo client; and Braydin's Gemini
+category labels, radius reference and prompt. The additive value is
+`access_mat_deterioration`; the prototype fallback radius is 1 mile. Existing string
+DB columns and generated fixtures remain compatible. Crew stage notes stay unchanged
+by Gemini. Structured A-D grading is tracked separately as T034B, not claimed complete.
+
 ## T034A device-location preparation — 2026-10-17 12:30 UTC
 
 Explicit Cache assignment: implement report geolocation functionality under application/tests, preserving Claude's visual files and Rudra/Braydin's unpublished T053A contract. PR #33 is merged (`a54b87e`); isolated `feature/cache-report-device-location` starts at latest main `681582be17315444f5ed9785c15f0fb37e8c09eb`, no unmerged dependency. Primary checkout/server left untouched.

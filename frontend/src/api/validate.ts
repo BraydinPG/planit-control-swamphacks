@@ -106,6 +106,7 @@ const category = (v: unknown) =>
   [
     'broken_pole_downed_line',
     'on_site_fire',
+    'access_mat_deterioration',
     'wildlife',
     'flooding',
     'other',

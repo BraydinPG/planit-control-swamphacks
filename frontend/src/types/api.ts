@@ -166,7 +166,7 @@ export interface Alert {
 // ---- reports ----
 
 export type ReportCategory =
-  'broken_pole_downed_line' | 'on_site_fire' | 'wildlife' | 'flooding' | 'other'
+  'broken_pole_downed_line' | 'on_site_fire' | 'access_mat_deterioration' | 'wildlife' | 'flooding' | 'other'
 
 export type ReviewStatus = 'pending' | 'confirmed' | 'rejected'
 

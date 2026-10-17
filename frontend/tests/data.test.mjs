@@ -31,6 +31,19 @@ const storage = () => {
 }
 const assigned = 'site-demo-everglades'
 
+test('demo accepts access mat deterioration and preserves the crew assessment', async () => {
+  const client = new DemoClient(() => 'crew', storage())
+  const report = await client.submit({ site_id: assigned,
+    category: 'access_mat_deterioration', hazard_present: true,
+    lat: 25.76, lon: -80.49, note: 'Mat 12: crew stage D.' })
+  assert.equal(report.category, 'access_mat_deterioration')
+  assert.equal(report.note, 'Mat 12: crew stage D.')
+  assert.equal(report.review_status, 'pending')
+  const notice = (await client.site(assigned)).notices.find(n => n.id === report.notice_id)
+  assert.equal(notice.status, 'potential')
+  assert.equal(notice.instruction, null)
+})
+
 test('unapproved fixture model scores cannot determine demonstration ranking', async () => {
   const client = new DemoClient(() => 'supervisor', storage())
   const rows = await client.sites()

@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Access mat report category - 2026-10-17
+- User-authorized addition: `access_mat_deterioration` / "Access mat deterioration" across the canonical report enum, TypeScript mirror, form/review labels, validators, demo client, notice labels and Gemini analysis. Existing string DB columns need no migration. Potential notices use the existing review/instruction workflow and a labeled prototype 1-mile fallback radius.
+- The optional note can preserve the crew's A-D stage and section description. User clarification: individual mat IDs are impractical and no approved rubric is available. T034B therefore tracks section-based reporting, structured crew judgment and evidence-linked Gemini observations for supervisor review; automated letter grading is deferred. Gemini is prompted to describe visible damage and unknowns without claiming structural capacity or replacing the crew assessment.
+- Verification: 125 backend checks passed (`test_reports_api`, `test_report_analysis`, `test_ts_mirror`, `test_hazards_api`, `test_radius`), plus 34 focused frontend checks (`data`, `report-analysis`), production build and lint. No live Gemini evaluation or model training was needed for this category addition.
+
 ## Multi-event outlook preview - 2026-10-17
 - Cache branch `feature/cache-multi-event-outlooks` started at main `ca99e64`, then incorporated reviewed main `a7759c9` as `7c30618` after maintainers merged Rudra PR #38 and the report/map update. No unmerged dependency; both team log entries preserved. Claude's primary checkout and existing server processes are untouched. Historical branch/PR notes below are previous checkpoints, not current status.
 - [EVENT_OUTLOOKS.md](ml/EVENT_OUTLOOKS.md): `from ml.event_outlooks import EventOutlookAdapter, OutlookRequest, TrustPolicy`; independent internal `ml-event-outlooks-1.0.0`, no canonical API change. One card per event: six existing qualified duration models, issued NHC track/wind, USGS regional aftershock forecast or explicit unavailable. Default trust allowlists are empty; replay requires explicit caller policy.
