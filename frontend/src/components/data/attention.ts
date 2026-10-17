@@ -23,6 +23,7 @@ const categoryNames: Record<CrewReport['category'], string> = {
   on_site_fire: 'on-site fire',
   wildlife: 'wildlife',
   flooding: 'flooding',
+  access_mat_deterioration: 'access mat deterioration',
   other: 'other hazard',
 }
 const ruleNames: Record<string, string> = {
