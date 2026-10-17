@@ -10,6 +10,8 @@ export default defineConfig({
     // instead of silently moving to another port. See auth/SETUP.md.
     port: 5173,
     strictPort: true,
+    // Generated browser profiles contain locked Windows files; never watch test output.
+    watch: { ignored: ['**/.shell-check/**'] },
     proxy: { '/api': { target: 'http://127.0.0.1:8000', changeOrigin: false } },
   },
 })

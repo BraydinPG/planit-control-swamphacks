@@ -1,5 +1,7 @@
 # Frontend run and integration guide
 
+Current clean setup: [Windows PowerShell quick start](../docs/WINDOWS_QUICKSTART.md) and [verified results](../docs/clean-setup-verification.json). This began at main `681582b`; maintainer-merged PR #34/main `a7e2e72` is now incorporated and verified, preserving its location logic. Use explicit demo mode, `npm.cmd`, the backend venv Python, and rebuild before preview. T070 remains pending; these are credential-free demo/test checks, not live-service acceptance.
+
 Current split: Codex/Cache owns functionality; Claude is actively redesigning pages/components/styles. See docs/FUNCTIONAL_INTEGRATION_HANDOFF.md before changing shared interfaces. Nick's earlier attribution is preserved. T030's layout/navigation is retained. This is one React/Vite/Tailwind application using one shared client interface; no API server or authentication implementation was added.
 
 ## Run the interactive demo
@@ -8,8 +10,8 @@ Install Node 24, then from repository root:
 
 ```powershell
 cd frontend
-npm ci
-npm run dev -- --host localhost --port 5173 --strictPort
+npm.cmd ci
+npm.cmd run dev -- --host localhost --port 5173 --strictPort
 ```
 
 Open http://localhost:5173/. No Python setup, ignored ML model artifact, API credential or database is needed for this frontend demo. If a previous `.env.local` sets `VITE_USE_FIXTURES=false`, set it to `true` and restart Vite. Unset/`true` means demo; `false` means Auth0/API; any other value displays a configuration error. Production builds also default to explicitly labeled demo unless configured. Demo JSON is public bundled material, never a location for private records or secrets.
@@ -72,13 +74,15 @@ Main's T050 compact field was published in `9d73a77`. PR #16/#17 merged during i
 From `frontend/`, with Vite running for the browser check:
 
 ```powershell
-npm run lint
-npm run build
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs tests/lifecycle.test.mjs tests/live-read.test.mjs
+npm.cmd run lint
+npm.cmd run build
+node --test tests/*.test.mjs
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Build includes TypeScript. The combined suite has 68 focused checks (56 prior plus 12 read/ack and diagnostic regressions); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+Build includes TypeScript. The initial `681582b` clean-setup checkpoint passes 71 Node tests; final checks after incorporating main `a7e2e72` pass 90, including the 19 location tests. Mock transports are not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+
+Add `--restart-check` to the browser command to pause after the demo lifecycle. Restart only your own Vite server at the same origin in its terminal, then press Enter in the checker. It verifies exact demo state and rendered report, confirmation, instruction, navigation and briefing after restart; it never kills a server. The prompt times out after five minutes. Use alternative ports only for the explicitly simulated demo, not new Auth0 callback origins.
 
 For the built demo, run `npm run preview -- --host localhost --port 5174 --strictPort` in a second terminal after building, then `node scripts/check-shell.mjs http://localhost:5174/ --production`. This exercises the same demo lifecycle against static production assets and verifies that the mocked auth harness is absent; compile-time mode/provider tests run only against the development server. A fresh committed frontend export at `4a9e44f`, with no `.env`, cache, Python or model artifacts copied, passed `npm ci`, build and this full production-bundle browser check. The existing Auth0 dependency's postinstall allowScripts warning did not prevent installation/build; npm reported zero known vulnerabilities at that check.
 
