@@ -36,3 +36,6 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 ## Shared-file log / next owners
 - 2026-10-17: T067A changes tasks.md only after its exact checks; context and integration/redesign/cross-scope guides record the authorized mirror/fixture removal and stored briefing behavior. Commit/PR recorded in CROSS_SCOPE_CHANGES.
 - Cache next: finish authorized T065 wiring; real end-to-end acceptance remains conditional on approved private configuration and memberships. Braydin continues provisioning independently; Rudra reviews interfaces/coordinates merge. No production deployment/merge is authorized.
+- Scope decisions (Braydin, 2026-10-17): Gemini never explains or interprets the hazard score; the weighted factor breakdown is the explanation (T059 removed, T051A is Cache's deterministic algorithm). Briefings are scheduled only; crew and supervisors with `read:org_briefings` read their organization's briefings.
+- Rudra next: T069 demo seed, including demo-account `memberships`, teams, and a pre-generated briefing; set `FEED_REFRESH_ENABLED=true` wherever live scores and briefings are needed (off by default).
+- Braydin next: T069 memberships with Rudra, the Gemini notice-radius, instruction, and enrichment calls (T057, T060), and Vultr deployment. No secrets in Git.
