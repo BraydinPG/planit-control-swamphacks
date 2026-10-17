@@ -20,7 +20,7 @@ Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the 
 - Rudra: backend routes except Gemini, API contracts, NWS feeds and the shared feed cache in `backend/app/ingestion/`, alert rules, scoring, report and notice persistence, README.
 - Cache: `ml/`, model training, features, prediction, evaluation.
 - Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**` except Rudra's NWS and cache files, `backend/app/gemini/**`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, `auth/SETUP.md`.
-- Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
+- Cache (formerly Nick): remaining frontend implementation/integration in `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick retains attribution for prior contributions; separate future Claude redesign requires authorization. Auth0 internals remain Braydin-owned.
 
 ## Shared contracts
 
@@ -117,17 +117,17 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 - [x] **T028 | Braydin | Add permission helpers.** Support crew and supervisor actions in `AGENTS.md`. Needs T027. Done when tests reject crew access to supervisor-only actions.
 - [ ] **T029 | Braydin | Document demo account setup.** Explain how to test both roles without committing credentials. Needs T024 and T025. Done when setup steps are clear.
 
-### Nick: frontend and UI/UX
+### Cache: frontend and UI/UX (ownership transferred from Nick)
 
 - [x] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Style it with Tailwind utility classes. Needs T003 and T007. Done when app renders on phone and desktop sizes.
-- [ ] **T031 | Nick | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
-- [ ] **T032 | Nick | Build crew home screen.** Show site, status, alert, immediate action, update time, and a “potential {hazard}” notice with no instructions. After a supervisor sends an instruction, show that text. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
-- [ ] **T033 | Nick | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.
-- [ ] **T034 | Nick | Build hazard report form.** Add photo, category (including broken electrical pole or downed line, on-site fire, wildlife, flooding, and other), coordinates, a required present-or-absent choice, optional note, and confirmation. Needs T030. Done when submission does not require typed text.
-- [ ] **T035 | Nick | Build supervisor location list.** Show the full map and every location with its assigned team, alerts, scores, and top factors. Place locations that have a team above locations that do not. Needs T030 and T031. Done when an occupied location appears above an empty one and the team name is visible.
-- [ ] **T036 | Nick | Build site detail and report review.** Show observations, timestamps, source, reports, and review status. Needs T031 and T035. Done when a supervisor can review a fixture report.
-- [ ] **T037 | Nick | Build briefing and explanation panels.** Show recommendations, evidence, unknowns, and fallback state. Needs T007 and T031. Done when generated and fallback text look distinct.
-- [ ] **T038 | Nick | Check accessibility and responsive behavior.** Test touch targets, keyboard flow, focus, labels, and risk information without color. Needs T032–T037. Done when checklist passes or remaining issues become separate tasks.
+- [x] **T031 | Cache | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
+- [ ] **T032 | Cache | Build crew home screen.** Show site, status, alert, immediate action, update time, and a “potential {hazard}” notice with no instructions. After a supervisor sends an instruction, show that text. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
+- [ ] **T033 | Cache | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.
+- [ ] **T034 | Cache | Build hazard report form.** Add photo, category (including broken electrical pole or downed line, on-site fire, wildlife, flooding, and other), coordinates, a required present-or-absent choice, optional note, and confirmation. Needs T030. Done when submission does not require typed text.
+- [ ] **T035 | Cache | Build supervisor location list.** Show the full map and every location with its assigned team, alerts, scores, and top factors. Place locations that have a team above locations that do not. Needs T030 and T031. Done when an occupied location appears above an empty one and the team name is visible.
+- [ ] **T036 | Cache | Build site detail and report review.** Show observations, timestamps, source, reports, and review status. Needs T031 and T035. Done when a supervisor can review a fixture report.
+- [ ] **T037 | Cache | Build briefing and explanation panels.** Show recommendations, evidence, unknowns, and fallback state. Needs T007 and T031. Done when generated and fallback text look distinct.
+- [ ] **T038 | Cache | Check accessibility and responsive behavior.** Test touch targets, keyboard flow, focus, labels, and risk information without color. Needs T032–T037. Done when checklist passes or remaining issues become separate tasks.
 
 ## Phase 2: Real sites, data, scores, and alerts
 
@@ -168,12 +168,12 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 ## Phase 4: Frontend integration
 
-- [ ] **T063 | Nick | Connect site list and detail APIs.** Keep fixture mode. Needs T041 and T042. Done when live API and fixtures render the same views.
-- [ ] **T064 | Nick | Connect alert state and acknowledgement.** Preserve countdown across reloads. Needs T048. Done when acknowledgement updates shared state.
-- [ ] **T065 | Nick | Connect report creation and review.** Upload the photo, record whether the hazard is present, show the potential notice without instructions, let a notified supervisor edit the suggested instruction, and show the sent instruction to teams inside the radius. Needs T053, T054, and T054A. Done when the full report lifecycle works in the UI.
-- [ ] **T066 | Nick | Connect Auth0 exports.** Import Braydin’s provider and role guard. Do not edit auth files. Needs T025 and T026. Done when both roles see the correct screens.
-- [ ] **T067 | Nick | Connect Gemini features.** Call briefing, explanation, and enrichment endpoints. Show loading, fallback, evidence, and review states. Needs T057–T060. Done when success and failure states work.
-- [ ] **T068 | Nick | Recheck mobile and accessibility.** Test real API states, phone width, and keyboard flow. Needs T063–T067. Done when no P0 usability issue remains.
+- [ ] **T063 | Cache | Connect site list and detail APIs.** Keep fixture mode. Needs T041 and T042. Done when live API and fixtures render the same views.
+- [ ] **T064 | Cache | Connect alert state and acknowledgement.** Preserve countdown across reloads. Needs T048. Done when acknowledgement updates shared state.
+- [ ] **T065 | Cache | Connect report creation and review.** Upload the photo, record whether the hazard is present, show the potential notice without instructions, let a notified supervisor edit the suggested instruction, and show the sent instruction to teams inside the radius. Needs T053, T054, and T054A. Done when the full report lifecycle works in the UI.
+- [ ] **T066 | Cache | Connect Auth0 exports.** Import Braydin’s provider and role guard. Do not edit auth files. Needs T025 and T026. Done when both roles see the correct screens.
+- [ ] **T067 | Cache | Connect Gemini features.** Call briefing, explanation, and enrichment endpoints. Show loading, fallback, evidence, and review states. Needs T057–T060. Done when success and failure states work.
+- [ ] **T068 | Cache | Recheck mobile and accessibility.** Test real API states, phone width, and keyboard flow. Needs T063–T067. Done when no P0 usability issue remains.
 
 ## Phase 5: Validate and rehearse
 

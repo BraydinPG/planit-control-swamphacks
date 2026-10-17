@@ -176,6 +176,8 @@ RequireRole
 Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra imports them into protected routes and owns endpoint policy.
 
 ## Ownership and individual instructions
+
+Frontend ownership transfer (2026-10-17, explicit user authorization): Cache now owns remaining frontend implementation and integration previously assigned to Nick, including T031-T038 and T063-T068. Nick retains attribution for prior work; T030 and its PR remain preserved. Cache may edit frontend composition/configuration needed for this chain with documented focused changes. Rudra retains canonical API/backend ownership; Braydin retains Auth0 internals, Gemini, database and deployment. No deployment or separate Claude redesign is authorized by this transfer. See docs/CROSS_SCOPE_CHANGES.md.
 The `Do not edit` lists below are default coordination boundaries. An explicit project-level user authorization may permit focused changes outside them; preserve unrelated work and notify affected owners of integration changes.
 
 ### Cache: AI/ML
@@ -232,7 +234,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 **Integration dependency:** Nick imports frontend exports. Rudra imports the Auth0 dependencies, the database session, the ingestion adapters, and the Gemini functions, then uses them in routes and rules. Rudra does not call Gemini directly. Send import examples as soon as each interface is stable.
 
-### Nick: frontend and UI/UX
+### Cache: frontend and UI/UX (formerly Nick)
 
 **Owned paths:** `frontend/src/pages/**`, `frontend/src/components/**`, `frontend/src/styles/**`, `frontend/src/api/**`.
 

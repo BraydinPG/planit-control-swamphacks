@@ -1,5 +1,15 @@
 # Cross-scope changes
 
+## Full frontend transfer — 2026-10-17
+
+The user explicitly transferred Nick's remaining frontend responsibilities to Cache and authorized the dependent T031-T038/T063-T068 chain. Prior contributions and PR #16 remain attributed and preserved. Cache owns frontend implementation/integration; Rudra retains canonical backend/API ownership and Braydin retains Auth0 internals, Gemini, database and deployment. Claude's future redesign requires a separate authorization.
+
+Branch `feature/cache-functional-frontend` stacks on PR #16 head `84e3936`; PR #16 was verified open. No later frontend branch/open PR was found. Main `2e79cb6` includes the separately merged T050 compact advisory; live endpoint/credential gaps are recorded in INTEGRATION_STATUS. `AGENTS.md` and remaining named task owners are updated without changing task IDs/acceptance or prior completion attribution.
+
+Planned scoped changes: frontend data access/demo store, reusable UI, pages, application composition, tests, run/redesign guides and task/context evidence. A Leaflet map dependency in the frontend manifest/lockfile is necessary for T035's geospatial map; this is a focused shared-file change under the explicit project authorization, for Rudra review. No backend/auth internals/Gemini/database/ML contract edit is planned. Every completed task must carry its passing checks; live integration remains unchecked until its actual prerequisites and acceptance pass.
+
+First verified milestone: T031 source-state/score/observation components in `frontend/src/components/data/Status.tsx`, checked by `frontend/tests/status.test.mjs` (three passed), frontend lint/build. All six canonical source states have text labels; null scores are not zero/low risk; legacy ML score components are withheld without payload mutation. `AGENTS.md`, `tasks.md` (remaining named owner transfer and T031 checkbox), `PROJECT_CONTEXT.md`, this log and `docs/INTEGRATION_STATUS.md` record authorization and scope. `frontend/package.json`/lockfile add only Leaflet 1.9.4 and matching type definitions for the forthcoming map; no backend/auth/ML contract change. Cache implements; Nick remains attributed for prior work. This checkpoint is the first commit of the stacked follow-on branch.
+
 ## T030 — Cache assisting Nick, 2026-10-17
 
 Authorization: the user explicitly assigned T030 to Cache and stated, “Nick has given Cache permission to assist with frontend development.” Nick remains the owner and reviewer; this is not evidence that Nick has accepted the resulting PR. No merge is authorized without review.
