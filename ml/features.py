@@ -18,7 +18,8 @@ def _parse_timestamp(value: str) -> datetime:
 
 
 def build_active_snapshots(events: Iterable[dict[str, Any]],
-                           offsets_hours: tuple[int, ...] = SNAPSHOT_OFFSETS_HOURS
+                           offsets_hours: tuple[int, ...] = SNAPSHOT_OFFSETS_HOURS,
+                           horizons_hours: tuple[int, ...] = (6, 12, 24)
                            ) -> list[dict[str, Any]]:
     """Create at most one, six-, and twelve-hour snapshots per recorded event."""
     snapshots: list[dict[str, Any]] = []
@@ -42,10 +43,9 @@ def build_active_snapshots(events: Iterable[dict[str, Any]],
             if as_of >= end:
                 continue
             remaining_hours = (end - as_of).total_seconds() / 3600
-            horizons = (6, 12, 24)
             labels = {
                 f"recorded_event_ongoing_{horizon}h": remaining_hours > horizon
-                for horizon in horizons
+                for horizon in horizons_hours
             }
             snapshots.append({
                 "event_id": event_id,

@@ -22,12 +22,28 @@ class ActiveEventPredictor:
     def __init__(self, artifact_path: Path = MODEL_PATH, *, expected_sha256: str | None = None) -> None:
         self._model = None
         self._load_error = None
+        self._expansion_models = {}
+        self._registry = None
+        try:
+            from ml.dispatch import read_registry
+            self._registry = read_registry()
+        except (OSError, ValueError):
+            pass
         try:
             self._model = load_models(artifact_path, expected_sha256=expected_sha256)
         except Exception as error:
             self._load_error = f"trained artifact unavailable ({type(error).__name__})"
 
     def predict(self, event_context: dict[str, Any]) -> dict[str, Any]:
+        if isinstance(event_context, dict) and str(event_context.get("event_type", "")).casefold() != "flood":
+            from ml.dispatch import predict_expansion
+            from ml.predict import _json_safe
+            # Let the public boundary handle malformed and inactive inputs first.
+            try:
+                normalized = validate_event_context(event_context)
+            except (ValueError, TypeError):
+                return predict_active_event(event_context)
+            return _json_safe(predict_expansion(normalized, registry=self._registry, model_cache=self._expansion_models))
         if self._model is None:
             return unavailable_result(event_context, self._load_error or "model unavailable")
         return predict_active_event(event_context, model=self._model)

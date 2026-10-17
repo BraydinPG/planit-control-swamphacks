@@ -1,6 +1,6 @@
 # ML quickstart
 
-Run from the repository root. Only confirmed active **Flood** intervals are supported. The default is conditional Kaplan-Meier recorded-duration persistence. Outputs are advisory, marked `production_eligibility=false`, and cannot affect alerts, work clearance, or site scores. Weather remains retrospective research.
+Run from the repository root. The preserved **Flood** default is conditional Kaplan-Meier recorded-duration persistence. Five additional research targets and their separate provisioning are documented in [MULTIDISASTER.md](MULTIDISASTER.md). Outputs are marked `production_eligibility=false` and cannot affect alerts, work clearance, or site scores. Weather remains retrospective research.
 
 ## Windows setup and pinned provisioning
 

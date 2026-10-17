@@ -41,12 +41,13 @@ def _initialize_score_worker(models: SurvivalModels) -> None:
     _THREADPOOL_LIMITER = threadpool_limits(limits=1)
 
 
-def _score_snapshot(snapshot: dict[str, Any], models: SurvivalModels) -> dict[str, Any]:
+def _score_snapshot(snapshot: dict[str, Any], models: SurvivalModels,
+                    horizons_hours: tuple[int, ...] = (6, 12, 24)) -> dict[str, Any]:
     features = snapshot["features"]
     elapsed = float(features["elapsed_hours"])
     month = int(features["start_month"])
     curve = conditional_logistic_survival_curve(models, elapsed, month)
-    km_horizons = conditional_km_survival_horizons(models, elapsed, (6, 12, 24))
+    km_horizons = conditional_km_survival_horizons(models, elapsed, horizons_hours)
     km_curve = conditional_km_survival_curve(models, elapsed)
     quantiles = (
         quantiles_from_survival_curve(curve, models.max_followup_hours - elapsed, (0.1, 0.5, 0.9))
@@ -54,7 +55,7 @@ def _score_snapshot(snapshot: dict[str, Any], models: SurvivalModels) -> dict[st
     )
     probabilities = {
         horizon: curve[horizon - 1] if curve is not None and len(curve) >= horizon else None
-        for horizon in (6, 12, 24)
+        for horizon in horizons_hours
     }
     return {
         "event_id": snapshot["event_id"],

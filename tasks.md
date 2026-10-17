@@ -69,6 +69,15 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 
 ### Cache: AI/ML
 
+Multi-disaster continuation (explicitly authorized Cache scope; separate from team feature branches):
+
+- [x] **TML-EXP01 | Cache | Inventory all 15 requested NOAA types.** Done: 349,030 source rows audited with original types, episode/region/year counts, point/invalid/missingness exclusions, and pinned checksums in `ml/COVERAGE.md` and reports.
+- [x] **TML-EXP02 | Cache | Add official specialized-source adapters.** Done: observed heat/wind station parsing, NHC storm tracks and issued advisory probe, bounded NIFC/FIRMS investigation, and USGS gage-height probe; fixture tests distinguish missing/censored data from resolution/containment.
+- [x] **TML-EXP03 | Cache | Evaluate separate conditional targets.** Done: seven new NOAA fits and observed heat fit with fixed chronological grouped holdouts, baseline comparisons, reliability/duration/support/bootstrap results, and unchanged predeclared gates. Five research targets qualify; three failed types remain disabled. NHC trend is explicitly offline/post-analysis.
+- [x] **TML-EXP04 | Cache | Extend inference and compatibility.** Done: contract 1.1 dispatch, type/hash-specific model cache, target/local evidence checks, compact metadata and variable horizons; no onset/score/alert mutation. Existing shared ModelOutput accepts new dictionaries in focused backend tests.
+- [x] **TML-EXP05 | Cache | Verify reproducibility and performance.** Done: all eight duration artifacts rebuilt byte-for-byte separately without holdout reruns; Flood reference predictions preserved; serial timings and selected-distribution internal Monte Carlo recorded.
+- [x] **TML-EXP06 | Cache | Publish research evidence and handoff.** Done: runnable provisioning, per-target historical examples, coverage/evaluation/method notes, source limitations, and Rudra integration instructions in `ml/MULTIDISASTER.md`; focused ML/backend checks pass. Team review is required before merging or operational product exposure.
+
 These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fixtures first; backend integration remains a separate, opt-in dependency. Never predict event onset or interpret recorded event resolution as site clearance.
 
 - [x] **T014 | Cache | Define active-event input/output contract.** Define `predict_active_event(event_context)` and the safe `predict_site()` compatibility adapter. No T006 prerequisite. Done when schema tests cover active, inactive, invalid, simulated, and unavailable cases.

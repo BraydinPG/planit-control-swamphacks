@@ -38,6 +38,8 @@ class EventContext(TypedDict):
     recent_observations: NotRequired[list[Observation]]
     evidence: NotRequired[list[EvidenceReference]]
     is_simulated: NotRequired[bool]
+    event_definition: NotRequired[str]
+    station_id: NotRequired[str]
 
 
 class DurationOutlook(TypedDict):
@@ -46,7 +48,7 @@ class DurationOutlook(TypedDict):
     p90: float | None
     tail_horizon_hours: int
     max_remaining_hours: float
-    tail_beyond_24h: bool
+    tail_beyond_24h: bool | None
 
 
 class EventOutcomes(TypedDict):
@@ -72,3 +74,9 @@ class EventPrediction(TypedDict):
     model_version: str
     is_simulated: bool
     production_eligibility: bool
+    contract_version: NotRequired[str]
+    event_category: NotRequired[str]
+    applicable_location: NotRequired[EventLocation | None]
+    data_version: NotRequired[str | None]
+    research_only: NotRequired[bool]
+    operational_evaluation_eligible: NotRequired[bool]

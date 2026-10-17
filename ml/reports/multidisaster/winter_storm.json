@@ -1,0 +1,681 @@
+{
+  "status": "evaluated_research",
+  "event_type": "Winter Storm",
+  "category": "winter_storm",
+  "event_definition": "noaa_positive_continuous_recorded_interval",
+  "target": "NOAA regional positive-duration Winter Storm recorded-interval persistence; not intensity or site safety",
+  "supported_horizons_hours": [
+    6,
+    12,
+    24
+  ],
+  "minimum_event_age_hours": 1,
+  "artifact": "multidisaster/winter_storm.joblib",
+  "artifact_sha256": "17e614428e1051c9af8ae5e38f3e02027699d9aad4c200167906bb8ab67b4110",
+  "artifact_model_version": "active-winter_storm-pooled-logistic-v1",
+  "selected_estimator": "kaplan_meier",
+  "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+  "source_receipts": [
+    {
+      "file": "StormEvents_details-ftp_v1.0_d2021_c20260323.csv.gz",
+      "bytes": 10563953,
+      "sha256": "60c1daf96dbe8eafd48c80df5b70df51a0125ab95d467ee7009a646761d57715"
+    },
+    {
+      "file": "StormEvents_details-ftp_v1.0_d2022_c20260625.csv.gz",
+      "bytes": 11817849,
+      "sha256": "7d6b79d0049a6edec96b061738289daddba90be26fc9afe7b0a6fd617f21452e"
+    },
+    {
+      "file": "StormEvents_details-ftp_v1.0_d2023_c20260323.csv.gz",
+      "bytes": 12888092,
+      "sha256": "713784bed40d9e5a95b1d6240a654f865f3ef97703713105c7b35437270da134"
+    },
+    {
+      "file": "StormEvents_details-ftp_v1.0_d2024_c20260728.csv.gz",
+      "bytes": 12693243,
+      "sha256": "2070b83eccab041b36360ab73645b9a249c3eefc5b92b5b3fc0cbba4d9fcc09c"
+    },
+    {
+      "file": "StormEvents_details-ftp_v1.0_d2025_c20260819.csv.gz",
+      "bytes": 12585209,
+      "sha256": "d9b46b4c6aae554723cadbb9691f3d5258371c02e530ba815d6fe41e4550149f"
+    }
+  ],
+  "training_policy": "whole_episode_purge_plus_7_day_fit_selection_embargo",
+  "split": {
+    "train": {
+      "event_records": 8874,
+      "episode_groups": 1415,
+      "snapshots": 33295
+    },
+    "validation": {
+      "event_records": 2006,
+      "episode_groups": 371,
+      "snapshots": 7731
+    },
+    "test": {
+      "event_records": 2579,
+      "episode_groups": 399,
+      "snapshots": 9629
+    },
+    "excluded": {
+      "event_records": 622,
+      "episode_groups": 95,
+      "snapshots": 2454
+    }
+  },
+  "validation": {
+    "logistic": {
+      "6h": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "brier_score": 0.0842890414250158,
+        "reliability": [
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7643698681736268,
+            "observed_frequency": 0.8272884283246977,
+            "count": 1737
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8559920803344853,
+            "observed_frequency": 0.9332534656854355,
+            "count": 5843
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9058029840792502,
+            "observed_frequency": 0.9602649006622517,
+            "count": 151
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.07055015768032608,
+          "upper_95": 0.09995555663447832
+        },
+        "positive_labels": 7035,
+        "negative_labels": 696,
+        "expected_calibration_error": 0.07359352774441157
+      },
+      "12h": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "brier_score": 0.1886982284924733,
+        "reliability": [
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5445653368891842,
+            "observed_frequency": 0.5813810110974106,
+            "count": 1622
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6504532232145448,
+            "observed_frequency": 0.7629441624365483,
+            "count": 3940
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7218510235310157,
+            "observed_frequency": 0.8524665744582757,
+            "count": 2169
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.17551877486202302,
+          "upper_95": 0.20314240837741943
+        },
+        "positive_labels": 5798,
+        "negative_labels": 1933,
+        "expected_calibration_error": 0.10169893339304925
+      },
+      "24h": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "brier_score": 0.22498271430289632,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.26588990120042955,
+            "observed_frequency": 0.25876257238646755,
+            "count": 3281
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.35800624625471555,
+            "observed_frequency": 0.43086068751615403,
+            "count": 3869
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.41889695012688344,
+            "observed_frequency": 0.5180722891566265,
+            "count": 581
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.20552030628394571,
+          "upper_95": 0.24462524198833185
+        },
+        "positive_labels": 2817,
+        "negative_labels": 4914,
+        "expected_calibration_error": 0.04693823193059054
+      },
+      "duration": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "median_remaining_time_mae_hours": 11.779627473806752,
+        "median_prediction_count": 7731,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 9.869633155440166,
+          "upper_95": 14.346877641995235
+        },
+        "p10_p90_interval_coverage": 0.8283533824860949,
+        "interval_prediction_count": 7731,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.7759493670886076,
+          "upper_95": 0.8727952966328166
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "kaplan_meier": {
+      "6h": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "brier_score": 0.08365737446271225,
+        "reliability": [
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7168217609162498,
+            "observed_frequency": 0.828,
+            "count": 1750
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.812303756250727,
+            "observed_frequency": 0.8869741510390269,
+            "count": 1973
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9280460985527298,
+            "observed_frequency": 0.9570858283433133,
+            "count": 4008
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.07000692177678679,
+          "upper_95": 0.0996270997978256
+        },
+        "positive_labels": 7035,
+        "negative_labels": 696,
+        "expected_calibration_error": 0.05927795166401982
+      },
+      "12h": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "brier_score": 0.19297959013588556,
+        "reliability": [
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.49921259842519744,
+            "observed_frequency": 0.5851428571428572,
+            "count": 1750
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5822770089545304,
+            "observed_frequency": 0.7344145970603142,
+            "count": 1973
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6661013116237002,
+            "observed_frequency": 0.8032950574138792,
+            "count": 2003
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7507612495770841,
+            "observed_frequency": 0.855860349127182,
+            "count": 2005
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.1811664795881263,
+          "upper_95": 0.20723292282102182
+        },
+        "positive_labels": 5798,
+        "negative_labels": 1933,
+        "expected_calibration_error": 0.12107983204039462
+      },
+      "24h": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "brier_score": 0.22927468915747526,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.24653787713328001,
+            "observed_frequency": 0.27343540155788343,
+            "count": 3723
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.340504636433366,
+            "observed_frequency": 0.44885229540918165,
+            "count": 4008
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.2085395582788005,
+          "upper_95": 0.251798379735588
+        },
+        "positive_labels": 2817,
+        "negative_labels": 4914,
+        "expected_calibration_error": 0.06912390384269405
+      },
+      "duration": {
+        "snapshot_count": 7731,
+        "episode_count": 370,
+        "median_remaining_time_mae_hours": 12.031552623636442,
+        "median_prediction_count": 7731,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 10.00711644358696,
+          "upper_95": 14.564585735147183
+        },
+        "p10_p90_interval_coverage": 0.801190014228431,
+        "interval_prediction_count": 7731,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 370,
+          "replicates": 500,
+          "lower_95": 0.7445871097683786,
+          "upper_95": 0.848114998643884
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    }
+  },
+  "test": {
+    "logistic": {
+      "6h": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "brier_score": 0.13527524103608057,
+        "reliability": [
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7729963254820212,
+            "observed_frequency": 0.6070774862721171,
+            "count": 1639
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8606036497566647,
+            "observed_frequency": 0.8600904465799887,
+            "count": 7076
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9081938203320479,
+            "observed_frequency": 0.9671772428884027,
+            "count": 914
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.11471118823604357,
+          "upper_95": 0.16115946654866314
+        },
+        "positive_labels": 7965,
+        "negative_labels": 1664,
+        "expected_calibration_error": 0.03421780572849732
+      },
+      "12h": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "brier_score": 0.24566610723718396,
+        "reliability": [
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5615585146021145,
+            "observed_frequency": 0.32519829164124464,
+            "count": 1639
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6598074193663366,
+            "observed_frequency": 0.5186791998071825,
+            "count": 4149
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7342151929430282,
+            "observed_frequency": 0.7035490605427975,
+            "count": 3832
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8082340811203127,
+            "observed_frequency": 0.8888888888888888,
+            "count": 9
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.22894691067852757,
+          "upper_95": 0.264300532829204
+        },
+        "positive_labels": 5389,
+        "negative_labels": 4240,
+        "expected_calibration_error": 0.11332162228802545
+      },
+      "24h": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "brier_score": 0.17466117727099476,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.25176367405825845,
+            "observed_frequency": 0.1293471629042099,
+            "count": 1639
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3550301222306062,
+            "observed_frequency": 0.16108821104699092,
+            "count": 6065
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.436578438571706,
+            "observed_frequency": 0.2558746736292428,
+            "count": 1915
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5325632437577983,
+            "observed_frequency": 0.3,
+            "count": 10
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.163472662471095,
+          "upper_95": 0.18596769932880708
+        },
+        "positive_labels": 1682,
+        "negative_labels": 7947,
+        "expected_calibration_error": 0.17917454516694434
+      },
+      "duration": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "median_remaining_time_mae_hours": 8.951729151521445,
+        "median_prediction_count": 9629,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 8.12902044603506,
+          "upper_95": 9.880962797329703
+        },
+        "p10_p90_interval_coverage": 0.8735071139266798,
+        "interval_prediction_count": 9629,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.8426749130266719,
+          "upper_95": 0.9017054263565891
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "kaplan_meier": {
+      "6h": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "brier_score": 0.1326586883774123,
+        "reliability": [
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7390955924441888,
+            "observed_frequency": 0.6399796022437532,
+            "count": 1961
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8262391222096104,
+            "observed_frequency": 0.7791021056813667,
+            "count": 2517
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.933417867069588,
+            "observed_frequency": 0.9219569015725102,
+            "count": 5151
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.11070143929547029,
+          "upper_95": 0.16017965818963978
+        },
+        "positive_labels": 7965,
+        "negative_labels": 1664,
+        "expected_calibration_error": 0.03863804763320085
+      },
+      "12h": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "brier_score": 0.24015075814349923,
+        "reliability": [
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5164281625643948,
+            "observed_frequency": 0.3518612952575217,
+            "count": 1961
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6514968475637862,
+            "observed_frequency": 0.5620825147347741,
+            "count": 5090
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7701434878587197,
+            "observed_frequency": 0.712955779674166,
+            "count": 2578
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.22420361885247383,
+          "upper_95": 0.2584591613484707
+        },
+        "positive_labels": 5389,
+        "negative_labels": 4240,
+        "expected_calibration_error": 0.09609144174766117
+      },
+      "24h": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "brier_score": 0.16057781950034739,
+        "reliability": [
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.25363114300660833,
+            "observed_frequency": 0.125502456453774,
+            "count": 4478
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3605093594112977,
+            "observed_frequency": 0.217433508056688,
+            "count": 5151
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.14752337177394503,
+          "upper_95": 0.1744161161816804
+        },
+        "positive_labels": 1682,
+        "negative_labels": 7947,
+        "expected_calibration_error": 0.13612462028364178
+      },
+      "duration": {
+        "snapshot_count": 9629,
+        "episode_count": 398,
+        "median_remaining_time_mae_hours": 8.642995118911621,
+        "median_prediction_count": 9629,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 7.764860426929392,
+          "upper_95": 9.623680437653272
+        },
+        "p10_p90_interval_coverage": 0.8283310831862083,
+        "interval_prediction_count": 9629,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 398,
+          "replicates": 500,
+          "lower_95": 0.7786565547128927,
+          "upper_95": 0.8695174343091218
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    }
+  },
+  "validation_mean_brier": {
+    "logistic": 0.16598999474012846,
+    "kaplan_meier": 0.16863721791869102
+  },
+  "qualification_rules": {
+    "minimum_evaluation_episode_groups": 30,
+    "minimum_labels_per_class": 10,
+    "maximum_expected_calibration_error": 0.15,
+    "logistic_validation_improvement_fraction": 0.02
+  },
+  "qualification_failures": [],
+  "historical_asof_availability_verified": false,
+  "operational_evaluation_eligible": false,
+  "production_eligibility": false,
+  "prediction_eligible": true,
+  "example_context": {
+    "event_id": "1236639",
+    "event_type": "Winter Storm",
+    "event_status": "historical_replay",
+    "event_start_utc": "2025-01-10T10:30:00Z",
+    "as_of_utc": "2025-01-10T11:30:00Z",
+    "event_definition": "noaa_positive_continuous_recorded_interval",
+    "is_simulated": true,
+    "location": {
+      "region": "HARALSON, GEORGIA",
+      "spatial_match_quality": "region_only"
+    }
+  },
+  "limitations": [
+    "Recorded/observed episode end is not worksite clearance.",
+    "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+    "Historical source revision/availability is not verified as of the past decision time.",
+    "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+    "NOAA regional recorded interval, not verified worksite exposure or safety.",
+    "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+  ],
+  "timings_seconds": {
+    "split_snapshot_seconds": 0.6884178000036627,
+    "validation_fit_seconds": 1.5143612999818288,
+    "validation_score_bootstrap_seconds": 3.794818300026236,
+    "final_fit_seconds": 1.5231986000144389,
+    "test_score_bootstrap_seconds": 4.7689013999770395,
+    "total": 12.34019410001929
+  },
+  "fit_recipe": {
+    "offsets_hours": [
+      1,
+      3,
+      6,
+      12
+    ],
+    "train_end_year": 2023,
+    "validation_year": 2024,
+    "test_year": 2025,
+    "embargo_days": 7
+  },
+  "reference_ongoing_probability": {
+    "6h": 0.9582413539367182,
+    "12h": 0.7701434878587197,
+    "24h": 0.3853016924208967
+  },
+  "example_observed_remaining_hours": 6.0
+}

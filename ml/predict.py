@@ -1,4 +1,4 @@
-"""Deterministic production inference for confirmed, already-active Flood events."""
+"""Deterministic conditional-event inference; all outlooks remain research only."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any
 
 from ml.config import HORIZONS_HOURS, MODEL_PATH, SUPPORTED_EVENT_TYPE
 from ml.schemas import (ACTIVE_STATUSES, INACTIVE_STATUSES, PREDICTION_SCOPE,
-                        not_applicable_result, prediction_metadata, unavailable_result, validate_event_context)
+                        evidence_references, not_applicable_result, prediction_metadata, unavailable_result, validate_event_context)
 from ml.train import (
     MINIMUM_AT_RISK_SUPPORT,
     SurvivalModels,
@@ -67,14 +67,14 @@ def _stale_observation_count(context: dict[str, Any]) -> int:
 
 
 def _outcomes(models: SurvivalModels, elapsed_hours: float, start_month: int,
-              estimator: str) -> dict[str, Any] | None:
+              estimator: str, horizons: tuple[int, ...] = HORIZONS_HOURS) -> dict[str, Any] | None:
     ongoing: dict[str, float] = {}
     ended: dict[str, float] = {}
     baseline: dict[str, float | None] = {}
-    km_horizons = conditional_km_survival_horizons(models, elapsed_hours, HORIZONS_HOURS)
+    km_horizons = conditional_km_survival_horizons(models, elapsed_hours, horizons)
     curve = (conditional_km_survival_curve(models, elapsed_hours) if estimator == "kaplan_meier"
              else conditional_logistic_survival_curve(models, elapsed_hours, start_month))
-    for horizon in HORIZONS_HOURS:
+    for horizon in horizons:
         if curve is None or elapsed_hours + horizon > models.max_followup_hours or len(curve) < horizon:
             return None
         probability = _finite_probability(curve[horizon - 1])
@@ -98,7 +98,7 @@ def _outcomes(models: SurvivalModels, elapsed_hours: float, start_month: int,
             "p90": quantiles[0.9],
             "tail_horizon_hours": models.max_followup_hours,
             "max_remaining_hours": max_remaining,
-            "tail_beyond_24h": ongoing["24h"] > 0.0,
+            "tail_beyond_24h": (curve[23] > 0.0) if len(curve) >= 24 else None,
         },
         "baseline_recorded_event_ongoing_probability": baseline,
         "trend": "unknown",
@@ -127,7 +127,8 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
         return _json_safe(unavailable_result(context, "estimator must be kaplan_meier or logistic"))
 
     if context["event_type"].casefold() != SUPPORTED_EVENT_TYPE.casefold():
-        return _json_safe(unavailable_result(context, f"event type {context['event_type']!r} is not supported"))
+        from ml.dispatch import predict_expansion
+        return _json_safe(predict_expansion(context, model=model))
     if not _has_location_association(context):
         return _json_safe(unavailable_result(context, "a site, region, or valid location association is required"))
     event_start = context.get("_event_start_datetime")
@@ -187,6 +188,10 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
             "available_features": ["event_type", "elapsed_hours", "start_month"],
             "missing_features": ["historical_weather", "current_site_measurements", "verified_site_hazard"],
             "evidence_ids": [item["id"] for item in context.get("evidence", [])],
+            "evidence_references": evidence_references(context),
+            "data_completeness": None,
+            "confidence": None,
+            "uncertainty_basis": "group_bootstrap_evaluation_intervals;_not_individual_confidence",
             "evidence_sources": sorted({item["source"] for item in context.get("evidence", [])}),
             "provenance_status": "supplied_not_independently_verified" if context.get("evidence") else "missing_event_provenance",
             "observations_missing_acquisition_time": sum("acquired_at_utc" not in item for item in context.get("recent_observations", [])),
@@ -216,8 +221,8 @@ def predict_site(features: dict[str, Any], *, model: SurvivalModels | None = Non
     probabilities: dict[str, float] = {}
     if result["status"] == "ok":
         probabilities = {
-            f"active_event_persists_{horizon}": result["outcomes"]["recorded_event_ongoing_probability"][f"{horizon}h"]
-            for horizon in HORIZONS_HOURS
+            f"active_event_persists_{horizon.removesuffix('h')}": probability
+            for horizon, probability in result["outcomes"].get("recorded_event_ongoing_probability", {}).items()
         }
     return _json_safe({
         "hazard_probabilities": probabilities,

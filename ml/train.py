@@ -18,6 +18,7 @@ from sklearn.linear_model import LogisticRegression
 
 from ml.config import MAX_FOLLOWUP_HOURS, MODEL_PATH, RANDOM_SEED, SUPPORTED_EVENT_TYPE
 from ml.labels import discrete_time_hazard_rows, duration_records
+from ml.event_types import model_version_for
 
 MODEL_VERSION = "noaa-flood-pooled-logistic-v2"
 MINIMUM_AT_RISK_SUPPORT = 20
@@ -59,13 +60,14 @@ def _survival_feature_matrix(risk_rows: list[dict[str, Any]]) -> tuple[np.ndarra
 
 
 def fit_models(events: Iterable[dict[str, Any]], *, max_followup_hours: int = MAX_FOLLOWUP_HOURS,
-               minimum_events: int = 50, minimum_episodes: int = 20) -> SurvivalModels:
+               minimum_events: int = 50, minimum_episodes: int = 20,
+               event_type: str = SUPPORTED_EVENT_TYPE, source_scope: str | None = None) -> SurvivalModels:
     """Fit pooled logistic hazards and retain same-sample KM baseline data."""
-    event_list = [event for event in events if event.get("event_type") == SUPPORTED_EVENT_TYPE]
+    event_list = [event for event in events if event.get("event_type") == event_type]
     records, _ = duration_records(event_list, max_followup_hours=max_followup_hours)
     episodes = {str(record["episode_id"]) for record in records}
     if len(records) < minimum_events:
-        raise ValueError(f"training requires at least {minimum_events} complete Flood intervals; found {len(records)}")
+        raise ValueError(f"training requires at least {minimum_events} {event_type} intervals; found {len(records)}")
     if len(episodes) < minimum_episodes:
         raise ValueError(f"training requires at least {minimum_episodes} independent NOAA episodes; found {len(episodes)}")
 
@@ -107,6 +109,9 @@ def fit_models(events: Iterable[dict[str, Any]], *, max_followup_hours: int = MA
         training_episode_count=len(episodes),
         max_followup_hours=max_followup_hours,
         max_supported_age_hours=max_supported_age,
+        event_type=event_type,
+        model_version=model_version_for(event_type),
+        source_scope=source_scope or f"NOAA regional recorded {event_type} intervals",
     )
 
 
@@ -135,7 +140,8 @@ def save_models(models: SurvivalModels, path: Path = MODEL_PATH) -> Path:
     return path
 
 
-def load_models(path: Path = MODEL_PATH, *, expected_sha256: str | None = None) -> SurvivalModels:
+def load_models(path: Path = MODEL_PATH, *, expected_sha256: str | None = None,
+                expected_event_type: str = SUPPORTED_EVENT_TYPE) -> SurvivalModels:
     """Load a locally trained artifact; callers must only load trusted project files."""
     if expected_sha256 is not None and hashlib.sha256(path.read_bytes()).hexdigest() != expected_sha256:
         raise ValueError("model artifact SHA-256 does not match the trusted receipt")
@@ -149,7 +155,10 @@ def load_models(path: Path = MODEL_PATH, *, expected_sha256: str | None = None) 
         models = SurvivalModels(**state)
     else:
         raise ValueError("model artifact has an unsupported schema")
-    if models.event_type != SUPPORTED_EVENT_TYPE or models.model_version not in {MODEL_VERSION, "noaa-flood-pooled-logistic-v1"}:
+    supported_versions = {model_version_for(expected_event_type)}
+    if expected_event_type == SUPPORTED_EVENT_TYPE:
+        supported_versions.add("noaa-flood-pooled-logistic-v1")
+    if models.event_type != expected_event_type or models.model_version not in supported_versions:
         raise ValueError("model artifact version or event type is unsupported")
     if not hasattr(models, "sorted_durations_hours"):
         models.sorted_durations_hours = tuple(sorted(models.durations_hours))
