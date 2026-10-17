@@ -239,3 +239,36 @@ def test_loop_is_off_by_default(monkeypatch) -> None:
         assert started == []
     finally:
         get_ingestion_settings.cache_clear()
+
+
+def test_history_rescore_ignores_expired_alerts_and_old_fetches(session) -> None:
+    """T076: a report confirmation rescores from stored history, not the latest fetch."""
+    from app.services.scoring import score_site
+
+    flood = {"value": "Flood Warning"}
+
+    def make(site, now):
+        value = flood["value"]
+        return [
+            reading(
+                site,
+                HazardType.FLOOD_ALERT,
+                now,
+                value=value,
+                source="NWS",
+                key=f"{value}:{now.isoformat()}",
+                fetched_at=now,
+            )
+        ]
+
+    make.hazard_type = HazardType.FLOOD_ALERT
+    feeds = [per_site(make), none_feed(HazardType.LIGHTNING_STRIKE)]
+    refresh_all(session, NOW, feeds)
+    flood["value"] = None  # the warning expired
+    later = NOW + timedelta(hours=2)
+    refresh_all(session, later, feeds)
+
+    rescored = score_site(session, "site-a", later + timedelta(minutes=1))
+    points = {f.factor: f for f in rescored.factor_contributions}
+    assert points["flood"].contribution == 0.0
+    assert points["flood"].data_state is DataState.OBSERVED
