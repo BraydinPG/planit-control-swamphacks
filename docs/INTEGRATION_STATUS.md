@@ -1,6 +1,6 @@
 # Frontend integration status
 
-Phase-4 checkpoint verified 2026-10-17. PR #19 merged as `64cf632` during this run. Branch `feature/cache-live-integration-checks` now incorporates reviewed main `4e94c52` (initial phase-4 base `9ba1b7c`) (T052/T053, PR #20/#21) initially by fast-forward, then merged latest reviewed T049A/T049B main while preserving both sets of context notes. It will target main. Rudra's canonical backend/auth/types/fixtures remain unchanged by Cache.
+Phase-4 checkpoint verified 2026-10-17. PR #19 merged as `64cf632` during this run. Branch `feature/cache-live-integration-checks` now incorporates reviewed main `9b395f0` (initial phase-4 base `9ba1b7c`) (T052/T053, PR #20/#21) initially by fast-forward, then merged latest reviewed T049A/T049B main while preserving both sets of context notes. It will target main. Rudra's canonical backend/auth/types/fixtures remain unchanged by Cache.
 
 Review: [PR #24](https://github.com/BraydinPG/planit-control-swamphacks/pull/24), open against main; initial implementation `ff35b7b`. Latest main T049A/T049B is inherited unchanged. The source-context conflict is resolved without dropping teammate notes. Local feed refresh stays explicitly disabled; no background provider job was started by this acceptance.
 
@@ -34,7 +34,7 @@ These APIs/fixtures are not work authorization. The ML library/contracts are unc
 
 ## Checks actually run
 
-See `docs/phase4-integration-verification.json` for the exact recorded commands/results and the redacted actual HTTP report. Current totals: **39 Node frontend tests** (23 existing + 16 new orchestration checks), **400 Python checks** (393 existing backend + 7 probe checks), frontend lint/TypeScript/build, Ruff lint/format and complete installed headless Edge workflow at 1440/390/320 widths. One pre-existing Starlette/httpx deprecation remains. New orchestration/SQL unit mocks are explicitly test-only; no real credentials/database verification is substituted.
+See `docs/phase4-integration-verification.json` for the exact recorded commands/results and the redacted actual HTTP report. Current totals: **39 Node frontend tests** (23 existing + 16 new orchestration checks), **432 Python checks** (425 existing backend + 7 probe checks), frontend lint/TypeScript/build, Ruff lint/format and complete installed headless Edge workflow at 1440/390/320 widths. One pre-existing Starlette/httpx deprecation remains. New orchestration/SQL unit mocks are explicitly test-only; no real credentials/database verification is substituted.
 
 The existing browser workflow still exercises crew ack/report and supervisor review/confirm/send in demo, 55-point map/list, exact-site advisory, generated/fallback text, mock provider transitions/HTTP failures, phone/touch/labels/focus and fixture-off/invalid modes. Early configuration-server checks exceeded the old 10-second cold-start limit; final measured runs pass at 13-15 seconds with isolated caches/30-second allowance. This was developer-server compilation, not a real Auth0 login measurement.
 

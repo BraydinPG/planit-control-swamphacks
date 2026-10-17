@@ -1,6 +1,6 @@
 {
   "branch": "feature/cache-live-integration-checks",
-  "base": "4e94c52085f5ac88e1566a4a447573ad1c3aa308",
+  "base": "9b395f0fb241000df96b1651a483d91628a47873",
   "parent_pr": {
     "number": 19,
     "state": "merged",
@@ -8,7 +8,7 @@
   },
   "readiness_exit_code": 2,
   "readiness": {
-    "checked_at": "2026-10-17T10:16:55.464Z",
+    "checked_at": "2026-10-17T10:20:28.018Z",
     "status": "blocked",
     "scope": "local real-integration readiness and API acceptance; never task auto-completion",
     "frontend": {
@@ -232,12 +232,16 @@
     },
     "python": {
       "command": "python -m pytest frontend/tests/test_integration_probe.py backend/tests -q",
-      "passed": 400,
-      "backend": 393,
+      "passed": 432,
+      "backend": 425,
       "probe": 7,
       "warnings": 1,
       "warning": "pre-existing Starlette/httpx deprecation",
-      "previous_base_passed": 355
+      "previous_base_passed": 355,
+      "earlier_compatibility_totals": [
+        355,
+        400
+      ]
     },
     "lint": "npm run lint passed",
     "typescript_build": "npm run build passed",
@@ -327,7 +331,7 @@
     "review/instruction/Gemini endpoints"
   ],
   "task_checkboxes_changed": [],
-  "code_boundaries": "No Cache backend/auth internals/canonical type/fixture/ML/deployment/manifest/task edits relative to reviewed main 4e94c52.",
+  "code_boundaries": "No Cache backend/auth internals/canonical type/fixture/ML/deployment/manifest/task edits relative to reviewed main 9b395f0.",
   "changed_files": [
     "PROJECT_CONTEXT.md",
     "docs/CROSS_SCOPE_CHANGES.md",
@@ -361,17 +365,16 @@
     "merged_by_agent": false
   },
   "merge_resolution": {
-    "source": "4e94c52085f5ac88e1566a4a447573ad1c3aa308",
+    "source": "9b395f0fb241000df96b1651a483d91628a47873",
     "conflict": "PROJECT_CONTEXT.md only",
-    "resolution": "Preserved current phase-4 facts and Rudra source/readiness notes",
+    "resolution": "Preserved current phase-4 facts and all Rudra T049A/T049B/T073 source/readiness notes",
     "local_runtime_controls": {
       "DEV_AUTH_BYPASS": false,
       "FEED_REFRESH_ENABLED": false
     }
   },
   "final_remote_audit": {
-    "main": "9b395f0",
-    "change": "T073 feed-failure/scoring checks; no frontend/API/schema changes",
-    "integration_scope": "PR diff retains only the 20 Cache frontend/docs paths; later main work is not reverted"
+    "main": "9b395f0fb241000df96b1651a483d91628a47873",
+    "change": "Inherited reviewed T049A/T049B/T073 with context-only conflict resolutions; no Cache backend/auth/contract edits"
   }
 }

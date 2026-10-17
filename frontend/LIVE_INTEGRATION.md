@@ -4,7 +4,7 @@ This guide tests the existing application, Auth0 provider and FastAPI client. It
 
 ## Current verified boundary
 
-PR #19 merged as `64cf632`. This phase-4 branch incorporates reviewed main `4e94c52` (initial phase-4 base `9ba1b7c`), including T052 photo storage and T053 report list/create. Site and alert reads/acknowledgement plus report reads/create are published. Report review, hazard confirmation/instruction and Gemini endpoints remain absent at this checkpoint. Nick now owns T054/T054A/T055 under Rudra's contract review; Braydin owns Auth0, database/seed linkage, Gemini and Vultr provisioning. Read current tasks/ownership before editing.
+PR #19 merged as `64cf632`. This phase-4 branch incorporates reviewed main `9b395f0` (initial phase-4 base `9ba1b7c`), including T052 photo storage and T053 report list/create. Site and alert reads/acknowledgement plus report reads/create are published. Report review, hazard confirmation/instruction and Gemini endpoints remain absent at this checkpoint. Nick now owns T054/T054A/T055 under Rudra's contract review; Braydin owns Auth0, database/seed linkage, Gemini and Vultr provisioning. Read current tasks/ownership before editing.
 
 The frontend enables report creation/listing separately from review. In real mode a present report requires a photo; absent reports do not. The existing multipart client sends canonical fields and lets the server enforce team/organization scope and validate image bytes. Review/instruction/AI actions stay unavailable until their routes exist. No actual report was submitted during this run; real credentials/database are still missing. The frontend offers JPEG/PNG/WebP; the new backend additionally supports HEIC. Private photo retrieval still needs its authorized owner integration.
 

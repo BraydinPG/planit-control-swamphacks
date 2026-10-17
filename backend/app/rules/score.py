@@ -141,7 +141,11 @@ def lightning_factor(
             label="Lightning status unknown (feed stale or unavailable)",
             contribution=0.0,
             source="lightning",
-            data_state=DataState.STALE if readings else DataState.UNAVAILABLE,
+            data_state=(
+                DataState.STALE
+                if any(o.data_state is not DataState.UNAVAILABLE for o in readings)
+                else DataState.UNAVAILABLE
+            ),
             is_prototype=True,
         )
     latest = max(readings, key=lambda o: o.observed_at)
