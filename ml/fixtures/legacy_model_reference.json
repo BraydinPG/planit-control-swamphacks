@@ -1,0 +1,111 @@
+{
+  "model_version": "noaa-flood-pooled-logistic-v1",
+  "training_event_count": 8418,
+  "training_episode_count": 2378,
+  "preserved_artifact_sha256": "4f296347ef289bad37cf6623dccae35d06b7e269f7b5118ae5897d1946a40a80",
+  "interpretation": "Reference arithmetic only; synthetic contexts are not independent validation or real site exposure.",
+  "predictions": [
+    {
+      "estimator": "kaplan_meier",
+      "context": {
+        "site_id": "fixture-site",
+        "event_id": "synthetic-reference",
+        "event_type": "Flood",
+        "event_status": "historical_replay",
+        "event_start_utc": "2024-01-01T00:00:00Z",
+        "as_of_utc": "2024-01-01T00:00:00Z",
+        "is_simulated": true
+      },
+      "ongoing_probability": {
+        "6h": 0.43228795438346407,
+        "12h": 0.3069612734616302,
+        "24h": 0.22748871465906476
+      }
+    },
+    {
+      "estimator": "kaplan_meier",
+      "context": {
+        "site_id": "fixture-site",
+        "event_id": "synthetic-reference",
+        "event_type": "Flood",
+        "event_status": "historical_replay",
+        "event_start_utc": "2024-06-01T00:00:00Z",
+        "as_of_utc": "2024-06-01T06:30:00Z",
+        "is_simulated": true
+      },
+      "ongoing_probability": {
+        "6h": 0.7217981340118755,
+        "12h": 0.61803788521346,
+        "24h": 0.48600508905852596
+      }
+    },
+    {
+      "estimator": "kaplan_meier",
+      "context": {
+        "site_id": "fixture-site",
+        "event_id": "synthetic-reference",
+        "event_type": "Flood",
+        "event_status": "historical_replay",
+        "event_start_utc": "2024-09-01T00:00:00Z",
+        "as_of_utc": "2024-09-01T12:00:00Z",
+        "is_simulated": true
+      },
+      "ongoing_probability": {
+        "6h": 0.8529411764705903,
+        "12h": 0.7410990712074322,
+        "24h": 0.6153250773993824
+      }
+    },
+    {
+      "estimator": "logistic",
+      "context": {
+        "site_id": "fixture-site",
+        "event_id": "synthetic-reference",
+        "event_type": "Flood",
+        "event_status": "historical_replay",
+        "event_start_utc": "2024-01-01T00:00:00Z",
+        "as_of_utc": "2024-01-01T00:00:00Z",
+        "is_simulated": true
+      },
+      "ongoing_probability": {
+        "6h": 0.4867439757763942,
+        "12h": 0.36753275785543704,
+        "24h": 0.26195446318695026
+      }
+    },
+    {
+      "estimator": "logistic",
+      "context": {
+        "site_id": "fixture-site",
+        "event_id": "synthetic-reference",
+        "event_type": "Flood",
+        "event_status": "historical_replay",
+        "event_start_utc": "2024-06-01T00:00:00Z",
+        "as_of_utc": "2024-06-01T06:30:00Z",
+        "is_simulated": true
+      },
+      "ongoing_probability": {
+        "6h": 0.7415870682314336,
+        "12h": 0.6033621842977399,
+        "24h": 0.4493928778888005
+      }
+    },
+    {
+      "estimator": "logistic",
+      "context": {
+        "site_id": "fixture-site",
+        "event_id": "synthetic-reference",
+        "event_type": "Flood",
+        "event_status": "historical_replay",
+        "event_start_utc": "2024-09-01T00:00:00Z",
+        "as_of_utc": "2024-09-01T12:00:00Z",
+        "is_simulated": true
+      },
+      "ongoing_probability": {
+        "6h": 0.7246046819617719,
+        "12h": 0.5641333328082971,
+        "24h": 0.3837965083501152
+      }
+    }
+  ]
+}

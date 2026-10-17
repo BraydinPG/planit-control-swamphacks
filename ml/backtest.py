@@ -6,7 +6,6 @@ import argparse
 import json
 import math
 import multiprocessing
-import os
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
@@ -16,13 +15,14 @@ from typing import Any
 
 from ml.config import MODEL_PATH, RAW_DATA_DIR, REPORT_DIR, SUPPORTED_EVENT_TYPE
 from ml.events import read_noaa_detail_files
-from ml.evaluate import binary_metrics
+from ml.evaluate import binary_metrics, duration_metrics
 from ml.features import build_active_snapshots, split_events_by_episode, split_snapshots_by_episode
 from ml.predict import predict_active_event
 from ml.weather_features import deterministic_episode_sample
 from ml.train import (
     SurvivalModels,
     conditional_km_survival_horizons,
+    conditional_km_survival_curve,
     conditional_logistic_survival_curve,
     fit_models,
     quantiles_from_survival_curve,
@@ -47,6 +47,7 @@ def _score_snapshot(snapshot: dict[str, Any], models: SurvivalModels) -> dict[st
     month = int(features["start_month"])
     curve = conditional_logistic_survival_curve(models, elapsed, month)
     km_horizons = conditional_km_survival_horizons(models, elapsed, (6, 12, 24))
+    km_curve = conditional_km_survival_curve(models, elapsed)
     quantiles = (
         quantiles_from_survival_curve(curve, models.max_followup_hours - elapsed, (0.1, 0.5, 0.9))
         if curve is not None else {quantile: None for quantile in (0.1, 0.5, 0.9)}
@@ -62,6 +63,8 @@ def _score_snapshot(snapshot: dict[str, Any], models: SurvivalModels) -> dict[st
         "logistic_probabilities": probabilities,
         "km_probabilities": km_horizons,
         "quantiles": quantiles,
+        "km_quantiles": (quantiles_from_survival_curve(km_curve, models.max_followup_hours - elapsed, (0.1, 0.5, 0.9))
+                         if km_curve is not None else {q: None for q in (0.1, 0.5, 0.9)}),
     }
 
 
@@ -72,8 +75,9 @@ def _score_snapshot_chunk(snapshots: list[dict[str, Any]]) -> list[dict[str, Any
 
 
 def recommended_worker_count() -> int:
-    available = getattr(os, "process_cpu_count", lambda: None)() or os.cpu_count() or 1
-    return min(8, max(1, available))
+    # On the measured bounded workload, Windows spawn/import overhead outweighed
+    # scoring work at 4/8/12 processes. Keep parallelism explicitly opt-in.
+    return 1
 
 
 def _show_progress(label: str, completed: int, total: int, started_at: float | None = None,
@@ -197,6 +201,12 @@ def score_snapshots(snapshots: list[dict[str, Any]], models: SurvivalModels,
         "unidentifiable_interval_count": len(snapshots) - coverage_count,
         "largest_6h_probability_errors": example_candidates[:5],
     }
+    results["duration_by_estimator"] = {
+        name: duration_metrics([row["remaining_hours"] for row in scored_rows],
+                               [row[key] for row in scored_rows],
+                               [row["episode_id"] for row in scored_rows])
+        for name, key in (("logistic", "quantiles"), ("kaplan_meier", "km_quantiles"))
+    }
     return results
 
 
@@ -239,6 +249,10 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
                  show_progress: bool = True, workers: int = 1, smoke: bool = False,
                  smoke_events_per_year: int = 20,
                  report_filename: str = "backtest_metrics.json") -> dict[str, Any]:
+    if smoke and model_path == MODEL_PATH:
+        model_path = MODEL_PATH.with_name("active_event_smoke.joblib")
+    if smoke and report_filename == "backtest_metrics.json":
+        report_filename = "backtest_smoke_metrics.json"
     timings: dict[str, float] = {}
     stage_started = time.perf_counter()
     if show_progress:
@@ -281,7 +295,7 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
     final_model = fit_models(final_training)
     timings["final_model_fit_seconds"] = time.perf_counter() - stage_started
     if show_progress:
-        _phase("scoring untouched test snapshots")
+        _phase("scoring previously inspected out-of-time test snapshots")
     stage_started = time.perf_counter()
     final_test_scores = score_snapshots(
         split_snapshots["test"], final_model,
@@ -335,11 +349,12 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
             "train_years": f"<= {train_end_year}",
             "validation_year": validation_year,
             "test_year": test_year,
-            "grouping": "NOAA EPISODE_ID; every event/snapshot in an episode is assigned together by earliest episode start year",
+            "grouping": "NOAA EPISODE_ID; intact episodes assigned by earliest start, with entire episodes crossing fit/selection cutoffs purged",
             "train": _summary(split_events["train"], split_snapshots["train"]),
             "validation": _summary(split_events["validation"], split_snapshots["validation"]),
             "test": _summary(split_events["test"], split_snapshots["test"]),
             "excluded_events": len(split_events["excluded"]),
+            "excluded_episode_count": len({event["episode_id"] for event in split_events["excluded"]}),
         },
         "validation_2024_train_through_2023": validation_scores,
         "out_of_time_test_2025_train_through_2024": final_test_scores,
@@ -351,7 +366,11 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
             "features": list(final_model.feature_names),
             "max_supported_age_hours": final_model.max_supported_age_hours,
             "weather_features_used": False,
+            "training_policy": final_model.training_policy,
+            "default_estimator": "kaplan_meier",
         },
+        "test_interpretation": "2025 was previously inspected; corrected rerun, not a fresh untouched holdout",
+        "production_eligibility": False,
         "execution": {
             "workers_requested": workers,
             "validation_scoring_workers": min(workers, max(1, len(split_snapshots["validation"]))),
@@ -385,7 +404,7 @@ def main() -> None:
     parser.add_argument("--test-year", type=int, default=2025)
     parser.add_argument("--workers", type=int, default=None,
                         help=f"scoring processes (default: {recommended_worker_count()} from available CPUs)")
-    parser.add_argument("--smoke", action="store_true",
+    parser.add_argument("--smoke", "--fast", action="store_true",
                         help="run a deterministic small sample; metrics are not final validation")
     parser.add_argument("--smoke-events-per-year", type=int, default=20)
     args = parser.parse_args()
@@ -412,7 +431,8 @@ def main() -> None:
         "status": report["validation_status"],
         "workers": workers,
         "timings_seconds": report["execution"]["timings_seconds"],
-        "test": report["out_of_time_test_2025_train_through_2024"],
+        "test_brier": {name: {h: metrics["brier_score"] for h, metrics in report["out_of_time_test_2025_train_through_2024"][name].items()}
+                       for name in ("logistic", "kaplan_meier")},
         "report_filename": report_filename,
     }, indent=2))
 

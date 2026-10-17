@@ -53,7 +53,8 @@ class SnapshotTests(unittest.TestCase):
             event("c", "test", "2025-02-01T00:00:00Z", "2025-02-01T04:00:00Z"),
         ]
         split = split_events_by_episode(events)
-        self.assertEqual({row["event_id"] for row in split["validation"]}, {"a", "b"})
+        self.assertEqual({row["event_id"] for row in split["excluded"]}, {"a", "b"})
+        self.assertEqual(split["validation"], [])
         self.assertEqual({row["event_id"] for row in split["test"]}, {"c"})
         self.assertFalse(set(row["episode_id"] for row in split["validation"]) &
                          set(row["episode_id"] for row in split["test"]))

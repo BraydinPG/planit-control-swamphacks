@@ -36,12 +36,19 @@ def deterministic_episode_sample(events: Iterable[dict[str, Any]], *, per_year: 
     episodes: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for event in events:
         episode_id = str(event.get("episode_id") or event.get("event_id") or "")
-        if episode_id and event.get("begin_lat") is not None and event.get("begin_lon") is not None:
+        if episode_id:
             episodes[episode_id].append(event)
 
     representatives: list[tuple[str, dict[str, Any]]] = []
     for episode_id, rows in episodes.items():
-        representative = min(rows, key=lambda row: (str(row.get("start_utc", "")), str(row.get("event_id", ""))))
+        candidates = [row for row in rows if row.get("begin_lat") is not None and row.get("begin_lon") is not None]
+        if not candidates:
+            continue
+        representative = dict(min(candidates, key=lambda row: (str(row.get("start_utc", "")), str(row.get("event_id", "")))))
+        # Preserve full episode boundaries even when its earliest event has no
+        # reported coordinates and cannot be the weather sample representative.
+        representative["episode_start_utc"] = min(str(row["start_utc"]) for row in rows)
+        representative["episode_end_utc"] = max(str(row.get("end_utc") or row["start_utc"]) for row in rows)
         representatives.append((episode_id, representative))
 
     by_year: dict[int, list[tuple[str, dict[str, Any]]]] = defaultdict(list)

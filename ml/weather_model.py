@@ -16,7 +16,7 @@ from ml.config import MAX_FOLLOWUP_HOURS, RANDOM_SEED
 from ml.weather_features import WEATHER_FEATURE_NAMES
 
 BASE_FEATURE_NAMES = ("log1p_elapsed_hours", "start_month_sin", "start_month_cos")
-WEATHER_MODEL_VERSION = "noaa-flood-era5-retrospective-research-v1"
+WEATHER_MODEL_VERSION = "noaa-flood-era5-retrospective-research-v2"
 
 
 def _angle_features(elapsed_hours: float, start_month: int) -> list[float]:
@@ -60,7 +60,7 @@ def build_weather_risk_rows(snapshots: Iterable[dict[str, Any]], *, max_followup
         elapsed = float(features["elapsed_hours"])
         remaining = float(snapshot["labels"]["remaining_duration_hours"])
         episode_weight = 1.0 / snapshots_by_episode[str(snapshot["episode_id"])]
-        intervals = min(math.ceil(remaining), max_followup_hours)
+        intervals = min(math.ceil(remaining), max(0, math.ceil(max_followup_hours - elapsed)))
         for lead_hour in range(intervals):
             ended = remaining <= lead_hour + 1
             rows.append({
@@ -112,20 +112,30 @@ def fit_weather_model(snapshots: Iterable[dict[str, Any]], *, minimum_snapshots:
 
 
 def conditional_weather_survival(model: WeatherSurvivalModel, snapshot: dict[str, Any],
-                                 horizon_hours: int) -> float:
+                                 horizon_hours: int) -> float | None:
     if horizon_hours < 0:
         raise ValueError("horizon_hours must be non-negative")
-    features = dict(snapshot["features"])
-    elapsed = float(features["elapsed_hours"])
-    start_month = int(features["start_month"])
-    base_weather = [features.get(name) for name in WEATHER_FEATURE_NAMES]
-    matrix = np.asarray([
-        _angle_features(elapsed + lead, start_month)
-        + [float(value) if value is not None and math.isfinite(float(value)) else np.nan for value in base_weather]
-        for lead in range(horizon_hours)
-    ], dtype=float)
     if not horizon_hours:
         return 1.0
+    elapsed = float(snapshot["features"]["elapsed_hours"])
+    if elapsed + horizon_hours > MAX_FOLLOWUP_HOURS:
+        return None
+    curve = conditional_weather_survival_curve(model, snapshot)
+    return curve[horizon_hours - 1] if curve is not None else None
+
+
+def conditional_weather_survival_curve(model: WeatherSurvivalModel, snapshot: dict[str, Any]) -> tuple[float, ...] | None:
+    """Hold weather fixed at as-of; use the same absolute age cap as references."""
+    features = dict(snapshot["features"])
+    elapsed = float(features["elapsed_hours"])
+    remaining = MAX_FOLLOWUP_HOURS - elapsed
+    if not math.isfinite(elapsed) or elapsed < 0 or remaining <= 0:
+        return None
+    steps = math.ceil(remaining)
+    matrix = np.asarray([_feature_vector(features, elapsed + step) for step in range(steps)], dtype=float)
     hazards = model.pipeline.predict_proba(matrix)[:, 1]
-    survival = math.prod(1.0 - float(hazard) for hazard in hazards)
-    return min(1.0, max(0.0, survival))
+    survival, curve = 1.0, []
+    for step, hazard in enumerate(hazards):
+        survival *= (1.0 - float(hazard)) ** min(1.0, remaining - step)
+        curve.append(min(1.0, max(0.0, survival)))
+    return tuple(curve)

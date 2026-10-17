@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import argparse
 import json
+import hashlib
 from bisect import bisect_left, bisect_right
 from collections import Counter
 from dataclasses import dataclass
@@ -18,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from ml.config import MAX_FOLLOWUP_HOURS, MODEL_PATH, RANDOM_SEED, SUPPORTED_EVENT_TYPE
 from ml.labels import discrete_time_hazard_rows, duration_records
 
-MODEL_VERSION = "noaa-flood-pooled-logistic-v1"
+MODEL_VERSION = "noaa-flood-pooled-logistic-v2"
 MINIMUM_AT_RISK_SUPPORT = 20
 
 
@@ -39,6 +40,7 @@ class SurvivalModels:
     event_type: str = SUPPORTED_EVENT_TYPE
     source_scope: str = "NOAA regional recorded Flood intervals"
     feature_names: tuple[str, ...] = ("log1p_elapsed_hours", "start_month_sin", "start_month_cos")
+    training_policy: str = "episode_grouped_with_boundary_outcomes_purged"
 
 
 def _vector(elapsed_hours: float, start_month: int) -> list[float]:
@@ -111,7 +113,7 @@ def fit_models(events: Iterable[dict[str, Any]], *, max_followup_hours: int = MA
 def save_models(models: SurvivalModels, path: Path = MODEL_PATH) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
-        "artifact_schema_version": 2,
+        "artifact_schema_version": 3,
         "classifier": models.classifier,
         "durations_hours": models.durations_hours,
         "sorted_durations_hours": models.sorted_durations_hours,
@@ -127,26 +129,36 @@ def save_models(models: SurvivalModels, path: Path = MODEL_PATH) -> Path:
         "event_type": models.event_type,
         "source_scope": models.source_scope,
         "feature_names": models.feature_names,
+        "training_policy": models.training_policy,
     }
     joblib.dump(payload, path)
     return path
 
 
-def load_models(path: Path = MODEL_PATH) -> SurvivalModels:
+def load_models(path: Path = MODEL_PATH, *, expected_sha256: str | None = None) -> SurvivalModels:
     """Load a locally trained artifact; callers must only load trusted project files."""
+    if expected_sha256 is not None and hashlib.sha256(path.read_bytes()).hexdigest() != expected_sha256:
+        raise ValueError("model artifact SHA-256 does not match the trusted receipt")
     payload = joblib.load(path)
     if isinstance(payload, SurvivalModels):
         models = payload
-    elif isinstance(payload, dict) and payload.get("artifact_schema_version") in {1, 2}:
+    elif isinstance(payload, dict) and payload.get("artifact_schema_version") in {1, 2, 3}:
         state = {key: value for key, value in payload.items() if key != "artifact_schema_version"}
         state.setdefault("sorted_durations_hours", tuple(sorted(state["durations_hours"])))
+        state.setdefault("training_policy", "legacy_earliest_start_assignment_not_boundary_purged")
         models = SurvivalModels(**state)
     else:
         raise ValueError("model artifact has an unsupported schema")
-    if models.event_type != SUPPORTED_EVENT_TYPE or models.model_version != MODEL_VERSION:
+    if models.event_type != SUPPORTED_EVENT_TYPE or models.model_version not in {MODEL_VERSION, "noaa-flood-pooled-logistic-v1"}:
         raise ValueError("model artifact version or event type is unsupported")
     if not hasattr(models, "sorted_durations_hours"):
         models.sorted_durations_hours = tuple(sorted(models.durations_hours))
+    if (not models.durations_hours or not models.km_event_times
+            or len(models.durations_hours) != models.training_event_count
+            or len(models.km_event_times) != len(models.km_survival_values)
+            or not all(math.isfinite(value) and value > 0 for value in models.durations_hours)
+            or not all(math.isfinite(value) and 0 <= value <= 1 for value in models.km_survival_values)):
+        raise ValueError("model artifact contains invalid survival state")
     return models
 
 
@@ -200,6 +212,18 @@ def conditional_km_survival_horizons(models: SurvivalModels, elapsed_hours: floa
         )
         for horizon in horizons
     }
+
+
+def conditional_km_survival_curve(models: SurvivalModels, elapsed_hours: float) -> tuple[float, ...] | None:
+    """KM curve over the supported remaining horizon, including a partial last hour."""
+    if not math.isfinite(elapsed_hours) or elapsed_hours < 0:
+        raise ValueError("elapsed_hours must be finite and non-negative")
+    remaining = models.max_followup_hours - elapsed_hours
+    denominator = km_survival_at(models, elapsed_hours)
+    if remaining <= 0 or km_support_at(models, elapsed_hours) < MINIMUM_AT_RISK_SUPPORT or denominator <= 0:
+        return None
+    return tuple(km_survival_at(models, min(elapsed_hours + step, models.max_followup_hours)) / denominator
+                 for step in range(1, math.ceil(remaining) + 1))
 
 
 def logistic_hourly_hazard(models: SurvivalModels, elapsed_hours: float, start_month: int) -> float:
@@ -332,17 +356,12 @@ def conditional_quantiles(models: SurvivalModels, elapsed_hours: float, start_mo
         raise ValueError("estimator must be logistic or km")
     if estimator == "km" and km_support_at(models, elapsed_hours) < MINIMUM_AT_RISK_SUPPORT:
         return {quantile: None for quantile in quantile_values}
-    steps = math.ceil(max_remaining)
     if estimator == "logistic":
         curve = conditional_logistic_survival_curve(models, elapsed_hours, start_month)
-        if curve is None:
-            return {quantile: None for quantile in quantile_values}
     else:
-        denominator = km_survival_at(models, elapsed_hours)
-        if denominator <= 0:
-            return {quantile: None for quantile in quantile_values}
-        curve = tuple(km_survival_at(models, elapsed_hours + step) / denominator
-                      for step in range(1, steps + 1))
+        curve = conditional_km_survival_curve(models, elapsed_hours)
+    if curve is None:
+        return {quantile: None for quantile in quantile_values}
     return quantiles_from_survival_curve(curve, max_remaining, quantile_values)
 
 
@@ -378,7 +397,10 @@ def main() -> None:
     if not files:
         raise SystemExit(f"No NOAA detail archives found under {args.input_dir}; run ml.sources.noaa first.")
     events, source_counts = read_noaa_detail_files(files)
-    training_events = [event for event in events if int(event["source_year"]) <= args.through_year]
+    from ml.features import split_events_by_episode
+    splits = split_events_by_episode(events, train_end_year=args.through_year,
+                                     validation_year=args.through_year + 1, test_year=args.through_year + 2)
+    training_events = splits["train"]
     models = fit_models(training_events)
     save_models(models, args.output)
     print(json.dumps({

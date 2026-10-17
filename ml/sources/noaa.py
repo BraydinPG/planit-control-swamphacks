@@ -94,7 +94,10 @@ def _request_with_retries(url: str, timeout: float, retries: int, limit: int | N
 def _validate_gzip(path: Path) -> None:
     try:
         with gzip.open(path, "rb") as archive:
-            archive.read(1)
+            # Read through the trailer so truncated streams and CRC failures
+            # cannot pass an artifact-provisioning check.
+            while archive.read(1024 * 1024):
+                pass
     except (OSError, EOFError) as error:
         raise ValueError(f"Downloaded NOAA archive is not a valid gzip stream: {path.name}") from error
 
@@ -163,7 +166,6 @@ def download_years(years: Iterable[int], output_dir: Path = RAW_DATA_DIR, **kwar
             "Archive rows and narratives may be revised after the historical event; only allowlisted pre-as-of fields are predictors.",
         ],
     }
-    manifest_path = output_dir / "source_manifest.json"
     manifest_path = output_dir / "source_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

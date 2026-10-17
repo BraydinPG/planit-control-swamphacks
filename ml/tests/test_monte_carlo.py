@@ -26,6 +26,13 @@ class MonteCarloTests(unittest.TestCase):
         self.assertEqual(result["simulated_ongoing_proportion"]["24h"], 0.0)
         self.assertEqual(result["remaining_duration_hours"]["median"], 1.0)
 
+    def test_unresolved_tail_stays_in_quantile_denominator(self) -> None:
+        result = simulate_hazards([0.2] + [0.0] * 23, trials=2000, seed=42)
+        duration = result["remaining_duration_hours"]
+        self.assertEqual(duration["p10"], 1.0)
+        self.assertIsNone(duration["median"])
+        self.assertIsNone(duration["p90"])
+
     def test_rejects_hazard_values_outside_probability_bounds(self) -> None:
         with self.assertRaises(ValueError):
             simulate_hazards([0.1, 1.2], trials=10)

@@ -28,7 +28,7 @@ class WeatherModelTests(unittest.TestCase):
         prediction_24h = conditional_weather_survival(model, snapshots[0], 24)
         self.assertTrue(0 <= prediction_24h <= prediction_12h <= prediction <= 1)
         self.assertEqual(model.training_snapshot_count, len(snapshots))
-        self.assertEqual(model.model_version, "noaa-flood-era5-retrospective-research-v1")
+        self.assertEqual(model.model_version, "noaa-flood-era5-retrospective-research-v2")
 
     def test_all_missing_weather_is_refused(self) -> None:
         snapshots = [snapshot(index, [2, 4, 8, 12][index % 4], None) for index in range(60)]

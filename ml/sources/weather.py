@@ -102,7 +102,7 @@ def filter_hourly_as_of(payload: dict[str, Any], as_of_utc: str) -> list[dict[st
 
 def fetch_historical_weather(latitude: float, longitude: float, start_date: str, end_date: str,
                             as_of_utc: str, *, cache_dir: Path = RAW_DATA_DIR / "weather",
-                            timeout: float = 20.0, retries: int = 3) -> dict[str, Any]:
+                            timeout: float = 20.0, retries: int = 3, cache_only: bool = False) -> dict[str, Any]:
     url = build_archive_url(latitude, longitude, start_date, end_date)
     cache_dir.mkdir(parents=True, exist_ok=True)
     cache_key = hashlib.sha256(url.encode("utf-8")).hexdigest()
@@ -111,6 +111,8 @@ def fetch_historical_weather(latitude: float, longitude: float, start_date: str,
     if cache_hit:
         body = cache_path.read_bytes()
     else:
+        if cache_only:
+            raise FileNotFoundError("weather response is not cached; cache-only mode makes no network requests")
         body = _retrieve(url, timeout=timeout, retries=retries)
         cache_path.write_bytes(body)
     payload = json.loads(body)
@@ -118,7 +120,9 @@ def fetch_historical_weather(latitude: float, longitude: float, start_date: str,
     return {
         "source": "Open-Meteo Historical Weather API",
         "source_url": url,
-        "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+        "retrieved_at_utc": None if cache_hit else datetime.now(timezone.utc).isoformat(),
+        "accessed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "response_sha256": hashlib.sha256(body).hexdigest(),
         "spatial_match_quality": "caller_supplied_location_not_verified_site_measurement",
         "data_state": "retrospective_reanalysis",
         "operational_forecast_skill": False,

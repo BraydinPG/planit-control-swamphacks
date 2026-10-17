@@ -14,12 +14,14 @@ from ml.schemas import validate_event_context
 from ml.train import SurvivalModels, load_models, logistic_hourly_hazard
 
 
-def _quantile(values: list[float], quantile: float) -> float | None:
+def _quantile(values: list[float], quantile: float, total_draws: int) -> float | None:
     if not values:
         return None
     ordered = sorted(values)
-    rank = math.ceil(quantile * len(ordered)) - 1
-    return ordered[min(max(rank, 0), len(ordered) - 1)]
+    # Unresolved draws remain in the denominator, beyond the finite horizon.
+    # Quantiles of only resolved draws would understate remaining duration.
+    rank = math.ceil(quantile * total_draws) - 1
+    return ordered[max(rank, 0)] if rank < len(ordered) else None
 
 
 def _draw_duration(hazards: Sequence[float], rng: random.Random) -> int | None:
@@ -60,9 +62,9 @@ def simulate_hazards(hazards: Sequence[float], *, trials: int = 5000, seed: int 
             horizon: abs(simulated[horizon] - analytical[horizon]) for horizon in analytical
         },
         "remaining_duration_hours": {
-            "p10": _quantile(finite_durations, 0.10),
-            "median": _quantile(finite_durations, 0.50),
-            "p90": _quantile(finite_durations, 0.90) if len(finite_durations) / trials >= 0.90 else None,
+            "p10": _quantile(finite_durations, 0.10, trials),
+            "median": _quantile(finite_durations, 0.50, trials),
+            "p90": _quantile(finite_durations, 0.90, trials),
             "unresolved_beyond_simulation_horizon_count": unresolved_count,
             "unresolved_beyond_simulation_horizon_probability": unresolved_count / trials,
         },

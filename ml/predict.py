@@ -8,16 +8,21 @@ from pathlib import Path
 from typing import Any
 
 from ml.config import HORIZONS_HOURS, MODEL_PATH, SUPPORTED_EVENT_TYPE
-from ml.schemas import ACTIVE_STATUSES, INACTIVE_STATUSES, PREDICTION_SCOPE, not_applicable_result, unavailable_result, validate_event_context
+from ml.schemas import (ACTIVE_STATUSES, INACTIVE_STATUSES, PREDICTION_SCOPE,
+                        not_applicable_result, prediction_metadata, unavailable_result, validate_event_context)
 from ml.train import (
     MINIMUM_AT_RISK_SUPPORT,
     SurvivalModels,
-    conditional_km_survival,
-    conditional_logistic_survival,
-    conditional_quantile,
+    conditional_km_survival_curve,
+    conditional_km_survival_horizons,
+    conditional_logistic_survival_curve,
+    quantiles_from_survival_curve,
     km_support_at,
     load_models,
 )
+
+DEFAULT_ESTIMATOR = "kaplan_meier"
+KM_MODEL_VERSION = "noaa-flood-conditional-km-v2"
 
 
 def _finite_probability(value: float | None) -> float | None:
@@ -61,34 +66,38 @@ def _stale_observation_count(context: dict[str, Any]) -> int:
     )
 
 
-def _outcomes(models: SurvivalModels, elapsed_hours: float, start_month: int) -> dict[str, Any] | None:
+def _outcomes(models: SurvivalModels, elapsed_hours: float, start_month: int,
+              estimator: str) -> dict[str, Any] | None:
     ongoing: dict[str, float] = {}
     ended: dict[str, float] = {}
     baseline: dict[str, float | None] = {}
+    km_horizons = conditional_km_survival_horizons(models, elapsed_hours, HORIZONS_HOURS)
+    curve = (conditional_km_survival_curve(models, elapsed_hours) if estimator == "kaplan_meier"
+             else conditional_logistic_survival_curve(models, elapsed_hours, start_month))
     for horizon in HORIZONS_HOURS:
-        model_survival = conditional_logistic_survival(models, elapsed_hours, start_month, horizon)
-        baseline_survival = conditional_km_survival(models, elapsed_hours, horizon)
-        if model_survival is None:
+        if curve is None or elapsed_hours + horizon > models.max_followup_hours or len(curve) < horizon:
             return None
-        probability = _finite_probability(model_survival)
+        probability = _finite_probability(curve[horizon - 1])
         if probability is None:
             return None
         key = f"{horizon}h"
         ongoing[key] = probability
         ended[key] = 1.0 - probability
-        baseline[key] = _finite_probability(baseline_survival)
+        baseline[key] = _finite_probability(km_horizons[horizon])
 
     max_remaining = models.max_followup_hours - elapsed_hours
     if max_remaining <= 0:
         return None
+    quantiles = quantiles_from_survival_curve(curve, max_remaining, (0.1, 0.5, 0.9))
     return {
         "recorded_event_ongoing_probability": ongoing,
         "recorded_event_ended_probability": ended,
         "remaining_duration_hours": {
-            "p10": conditional_quantile(models, elapsed_hours, start_month, 0.10),
-            "median": conditional_quantile(models, elapsed_hours, start_month, 0.50),
-            "p90": conditional_quantile(models, elapsed_hours, start_month, 0.90),
+            "p10": quantiles[0.1],
+            "median": quantiles[0.5],
+            "p90": quantiles[0.9],
             "tail_horizon_hours": models.max_followup_hours,
+            "max_remaining_hours": max_remaining,
             "tail_beyond_24h": ongoing["24h"] > 0.0,
         },
         "baseline_recorded_event_ongoing_probability": baseline,
@@ -98,7 +107,7 @@ def _outcomes(models: SurvivalModels, elapsed_hours: float, start_month: int) ->
 
 
 def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels | None = None,
-                         artifact_path: Path = MODEL_PATH) -> dict[str, Any]:
+                         artifact_path: Path = MODEL_PATH, estimator: str = DEFAULT_ESTIMATOR) -> dict[str, Any]:
     """Predict recorded-event persistence conditional on an active supported event.
 
     No training, network calls, or stochastic simulation occurs during inference.
@@ -106,14 +115,16 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
     if not isinstance(event_context, dict):
         return _json_safe(unavailable_result(event_context, "event_context must be a JSON object"))
     status = event_context.get("event_status")
-    if status in INACTIVE_STATUSES or not event_context.get("event_id"):
+    if (isinstance(status, str) and status in INACTIVE_STATUSES) or not event_context.get("event_id"):
         return _json_safe(not_applicable_result(event_context, "no confirmed active event was supplied"))
-    if status not in ACTIVE_STATUSES:
+    if not isinstance(status, str) or status not in ACTIVE_STATUSES:
         return _json_safe(unavailable_result(event_context, "event_status is not a supported confirmed-active state"))
     try:
         context = validate_event_context(event_context)
     except (TypeError, ValueError) as error:
         return _json_safe(unavailable_result(event_context, str(error)))
+    if estimator not in ("kaplan_meier", "logistic"):
+        return _json_safe(unavailable_result(context, "estimator must be kaplan_meier or logistic"))
 
     if context["event_type"].casefold() != SUPPORTED_EVENT_TYPE.casefold():
         return _json_safe(unavailable_result(context, f"event type {context['event_type']!r} is not supported"))
@@ -125,8 +136,10 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
 
     try:
         fitted = model if model is not None else load_models(artifact_path)
-    except (OSError, ValueError, EOFError) as error:
-        return _json_safe(unavailable_result(context, f"trained model artifact unavailable: {error}"))
+    except Exception as error:
+        # Deserialization can raise pickle/import/schema errors as well as I/O
+        # errors. This boundary returns no probabilities and no local file paths.
+        return _json_safe(unavailable_result(context, f"trained model artifact unavailable ({type(error).__name__})"))
     if not isinstance(fitted, SurvivalModels):
         return _json_safe(unavailable_result(context, "supplied model artifact has an unsupported schema"))
     if fitted.event_type.casefold() != context["event_type"].casefold():
@@ -134,7 +147,9 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
 
     elapsed_hours = max(0.0, (context["_as_of_datetime"] - event_start).total_seconds() / 3600)
     support = km_support_at(fitted, elapsed_hours)
-    outcomes = _outcomes(fitted, elapsed_hours, event_start.month)
+    if support < MINIMUM_AT_RISK_SUPPORT:
+        return _json_safe(unavailable_result(context, "insufficient training risk-set support at the current event age"))
+    outcomes = _outcomes(fitted, elapsed_hours, event_start.month, estimator)
     if outcomes is None:
         return _json_safe(unavailable_result(context, "model support does not cover the requested age and horizons"))
 
@@ -146,7 +161,10 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
         "Historical weather and live site measurements are not included in this trained model.",
         "Recorded event resolution does not mean site conditions are safe or work may resume.",
     ]
+    if fitted.training_policy != "episode_grouped_with_boundary_outcomes_purged":
+        limitations.append("Legacy artifact predates boundary-episode purging; its evaluation is superseded.")
     result = {
+        **prediction_metadata(context),
         "status": "ok",
         "scope": PREDICTION_SCOPE,
         "site_id": context.get("site_id"),
@@ -168,8 +186,17 @@ def predict_active_event(event_context: dict[str, Any], *, model: SurvivalModels
             "stale_observation_count": stale_observations,
             "available_features": ["event_type", "elapsed_hours", "start_month"],
             "missing_features": ["historical_weather", "current_site_measurements", "verified_site_hazard"],
+            "evidence_ids": [item["id"] for item in context.get("evidence", [])],
+            "evidence_sources": sorted({item["source"] for item in context.get("evidence", [])}),
+            "provenance_status": "supplied_not_independently_verified" if context.get("evidence") else "missing_event_provenance",
+            "observations_missing_acquisition_time": sum("acquired_at_utc" not in item for item in context.get("recent_observations", [])),
         },
-        "model_version": fitted.model_version,
+        "estimator": estimator,
+        "selection_basis": "2024_validation_favors_km;_2025_already_inspected_not_used_to_select_default",
+        "artifact_version": fitted.model_version,
+        "training_policy": fitted.training_policy,
+        "model_version": ((KM_MODEL_VERSION if fitted.model_version.endswith("v2") else "noaa-flood-conditional-km-v1")
+                          if estimator == "kaplan_meier" else fitted.model_version),
         "is_simulated": bool(context.get("is_simulated", False) or status == "historical_replay"),
     }
     return _json_safe(result)

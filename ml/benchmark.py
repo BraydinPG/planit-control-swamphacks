@@ -19,14 +19,17 @@ from typing import Any
 
 import psutil
 
-from ml.backtest import score_snapshots
+from ml.backtest import _score_snapshot, score_snapshots
 from ml.config import MODEL_PATH, RAW_DATA_DIR, REPORT_DIR
 from ml.evaluate import episode_bootstrap_brier
 from ml.events import read_noaa_detail_files
 from ml.features import build_active_snapshots, split_events_by_episode
 from ml.monte_carlo import simulate_model
 from ml.sources.weather import build_archive_url, filter_hourly_as_of
-from ml.train import conditional_logistic_survival_horizons, fit_models, load_models
+from ml.train import (conditional_km_survival, conditional_logistic_survival,
+                      conditional_logistic_survival_curve,
+                      conditional_logistic_survival_horizons, fit_models, load_models,
+                      quantiles_from_survival_curve)
 from ml.weather_features import deterministic_episode_sample, extract_weather_features
 
 
@@ -135,20 +138,83 @@ def _active_backtest_processes() -> list[dict[str, Any]]:
     active: list[dict[str, Any]] = []
     for process in psutil.process_iter(["pid", "name", "cmdline"]):
         try:
-            command_line = " ".join(process.info.get("cmdline") or [])
-            if process.info.get("pid") != os.getpid() and "-m ml.backtest" in command_line:
-                active.append({"pid": process.info["pid"], "name": process.info.get("name")})
+            command = process.info.get("cmdline") or []
+            if (process.info.get("pid") != os.getpid()
+                    and any(command[index:index + 2] in (["-m", "ml.backtest"], ["-m", "ml.weather_backtest"])
+                            for index in range(len(command) - 1))):
+                scope = ("smoke" if "--smoke" in command or "--fast" in command else
+                         "retrospective_weather" if "ml.weather_backtest" in command else "full_historical_backtest")
+                active.append({"pid": process.info["pid"], "name": process.info.get("name"), "scope": scope})
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
     return active
 
 
+def _legacy_score_snapshot(snapshot: dict[str, Any], models: Any) -> dict[str, Any]:
+    """Reference call pattern from 9281c1f:ml/backtest.py and ml/train.py.
+
+    Four scalar horizons (including the repeated 6h error example) and three
+    independently computed duration curves. Only prediction timing is compared;
+    this is not a reproduction of the running process or full-backtest runtime.
+    """
+    age = float(snapshot["features"]["elapsed_hours"])
+    month = int(snapshot["features"]["start_month"])
+    probabilities = {h: conditional_logistic_survival(models, age, month, h) for h in (6, 12, 24)}
+    conditional_logistic_survival(models, age, month, 6)
+    quantiles: dict[float, float | None] = {}
+    for q in (0.1, 0.5, 0.9):
+        curve = conditional_logistic_survival_curve(models, age, month)
+        quantiles[q] = (quantiles_from_survival_curve(curve, models.max_followup_hours - age, (q,))[q]
+                        if curve is not None else None)
+    result = {
+        "event_id": snapshot["event_id"], "episode_id": str(snapshot["episode_id"]),
+        "remaining_hours": float(snapshot["labels"]["remaining_duration_hours"]),
+        "logistic_probabilities": probabilities,
+        "km_probabilities": {h: conditional_km_survival(models, age, h) for h in (6, 12, 24)},
+        "quantiles": quantiles,
+    }
+    # KM duration metrics were added after the reference revision. Compute the
+    # same addition in both paths so the legacy-vs-reuse comparison stays paired.
+    from ml.train import conditional_quantiles
+    result["km_quantiles"] = conditional_quantiles(models, age, month, (0.1, 0.5, 0.9), estimator="km")
+    return result
+
+
+def benchmark_curve_reuse(snapshots: list[dict[str, Any]], model: Any, repeats: int = 5) -> dict[str, Any]:
+    """Time equivalent predictions separately from metrics/bootstrap overhead."""
+    sample = snapshots[:24]
+    # Warm both paths; alternate order to reduce first-call bias.
+    for scorer in (_legacy_score_snapshot, _score_snapshot):
+        for snapshot in sample:
+            scorer(snapshot, model)
+    timings = {"legacy": [], "reused_curve": []}
+    outputs: dict[str, Any] = {}
+    for repeat in range(repeats):
+        order = ("legacy", "reused_curve") if repeat % 2 == 0 else ("reused_curve", "legacy")
+        for name in order:
+            scorer = _legacy_score_snapshot if name == "legacy" else _score_snapshot
+            started = time.perf_counter()
+            outputs[name] = [scorer(snapshot, model) for snapshot in sample]
+            timings[name].append(time.perf_counter() - started)
+    import statistics
+    legacy = statistics.median(timings["legacy"])
+    reused = statistics.median(timings["reused_curve"])
+    if not _same_scores(outputs["legacy"], outputs["reused_curve"]):
+        raise RuntimeError("optimized predictions differ from the preserved reference")
+    return {"reference_revision": "9281c1f", "snapshot_count": len(sample), "repeats": repeats,
+            "elapsed_seconds_by_repeat": timings, "legacy_median_seconds": legacy,
+            "reused_curve_median_seconds": reused, "measured_prediction_speedup": legacy / reused,
+            "predictions_match_tolerance_1e_12": True, "full_backtest_speedup_measured": False}
+
+
 def run_benchmark(*, input_dir: Path = RAW_DATA_DIR, artifact_path: Path = MODEL_PATH,
                   cache_dir: Path = RAW_DATA_DIR / "weather", events_per_year: int = 20,
-                  worker_counts: tuple[int, ...] = (1, 4, 8, 12, 16, 20),
+                  worker_counts: tuple[int, ...] = (1, 4, 8, 12),
                   bootstrap_replicates: int = 200,
                   output_path: Path = REPORT_DIR / "worker_benchmark.json") -> dict[str, Any]:
     worker_counts = tuple(dict.fromkeys((1, *worker_counts)))
+    if events_per_year < 20 or any(count < 1 or count > 20 for count in worker_counts):
+        raise ValueError("use at least 20 events per year and worker counts between 1 and 20")
     active_jobs = _active_backtest_processes()
     started = time.perf_counter()
     archive_paths = sorted(input_dir.glob("StormEvents_details-ftp_v1.0_d*.csv.gz"))
@@ -171,6 +237,18 @@ def run_benchmark(*, input_dir: Path = RAW_DATA_DIR, artifact_path: Path = MODEL
     phase_start = time.perf_counter()
     model = load_models(artifact_path)
     artifact_load_seconds = time.perf_counter() - phase_start
+    print("[benchmark] comparing preserved repeated-curve scoring with curve reuse", file=sys.stderr, flush=True)
+    curve_reuse = benchmark_curve_reuse(snapshots, model)
+    phase_start = time.perf_counter()
+    curves = [conditional_logistic_survival_curve(model, float(s["features"]["elapsed_hours"]),
+                                                 int(s["features"]["start_month"])) for s in snapshots]
+    curve_seconds = time.perf_counter() - phase_start
+    phase_start = time.perf_counter()
+    for snapshot, curve in zip(snapshots, curves):
+        if curve is not None:
+            quantiles_from_survival_curve(curve, model.max_followup_hours - float(snapshot["features"]["elapsed_hours"]),
+                                          (0.1, 0.5, 0.9))
+    quantile_seconds = time.perf_counter() - phase_start
 
     smoke_training = event_splits["train"]
     print(f"[benchmark] fitting one smoke model on {len(smoke_training)} training events", file=sys.stderr, flush=True)
@@ -241,7 +319,8 @@ def run_benchmark(*, input_dir: Path = RAW_DATA_DIR, artifact_path: Path = MODEL
             "physical_cpu_count": psutil.cpu_count(logical=False),
             "available_memory_mb_at_start": memory_budget_mb / 0.55,
         },
-        "active_full_backtest_processes_at_benchmark_start": active_jobs,
+        "active_full_backtest_processes_at_benchmark_start": [job for job in active_jobs if job["scope"] == "full_historical_backtest"],
+        "other_active_backtest_processes_at_benchmark_start": [job for job in active_jobs if job["scope"] != "full_historical_backtest"],
         "benchmark_interference_note": "Timings are hardware observations from a bounded repeated scoring smoke sample, not full-backtest wall time. Active background jobs can affect timings.",
         "data": {
             "archives": [path.name for path in archive_paths],
@@ -254,6 +333,8 @@ def run_benchmark(*, input_dir: Path = RAW_DATA_DIR, artifact_path: Path = MODEL
             "noaa_parse_and_normalization": parse_seconds,
             "grouping_and_snapshot_generation": snapshot_seconds,
             "artifact_load": artifact_load_seconds,
+            "survival_prediction_only": curve_seconds,
+            "quantile_extraction_only": quantile_seconds,
             "smoke_model_fit_once": smoke_fit_seconds,
             "cached_weather_feature_attachment": weather_cache_profile,
             "monte_carlo_500_trials": monte_carlo_seconds,
@@ -262,14 +343,18 @@ def run_benchmark(*, input_dir: Path = RAW_DATA_DIR, artifact_path: Path = MODEL
             "bootstrap": bootstrap_timing,
         },
         "monte_carlo_smoke_summary": monte_carlo_summary,
+        "curve_reuse_comparison": curve_reuse,
         "worker_benchmarks": results,
         "cprofile_top_calls": profile_output.getvalue(),
         "reproducibility": {"seed": 42, "episode_sampling_cap_per_year": events_per_year},
         "production_eligibility": False,
     }
+    report["stage_timings_seconds"]["benchmark_total_before_report_write"] = time.perf_counter() - started
+    phase_start = time.perf_counter()
+    json.dumps(report, indent=2, allow_nan=False)
+    report["stage_timings_seconds"]["serialization"] = time.perf_counter() - phase_start
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")
-    report["stage_timings_seconds"]["benchmark_total_before_report_write"] = time.perf_counter() - started
     return report
 
 
@@ -279,7 +364,7 @@ def main() -> None:
     parser.add_argument("--artifact", type=Path, default=MODEL_PATH)
     parser.add_argument("--cache-dir", type=Path, default=RAW_DATA_DIR / "weather")
     parser.add_argument("--events-per-year", type=int, default=20)
-    parser.add_argument("--worker-counts", type=int, nargs="+", default=[1, 4, 8, 12, 16, 20])
+    parser.add_argument("--worker-counts", type=int, nargs="+", default=[1, 4, 8, 12])
     parser.add_argument("--bootstrap-replicates", type=int, default=200)
     parser.add_argument("--output", type=Path, default=REPORT_DIR / "worker_benchmark.json")
     args = parser.parse_args()

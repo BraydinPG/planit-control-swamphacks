@@ -89,24 +89,38 @@ def validate_snapshot_features(snapshot: dict[str, Any]) -> None:
 def split_events_by_episode(events: Iterable[dict[str, Any]], *, train_end_year: int = 2023,
                             validation_year: int = 2024, test_year: int = 2025
                             ) -> dict[str, list[dict[str, Any]]]:
-    """Assign every event in an NOAA episode to the episode's earliest start year."""
+    """Keep episodes intact and purge outcomes crossing a fit/selection cutoff.
+
+    Earliest-start assignment alone leaks labels when an episode continues into
+    the next evaluation year. Purge those episodes from every split instead.
+    """
     if not train_end_year < validation_year < test_year:
         raise ValueError("split years must be strictly chronological")
     event_list = list(events)
     group_year: dict[str, int] = {}
+    group_bounds: dict[str, tuple[datetime, datetime]] = {}
     for event in event_list:
         episode_id = str(event.get("episode_id") or event.get("event_id") or "")
         start_value = event.get("start_utc")
         if not episode_id or not start_value:
             continue
-        year = _parse_timestamp(str(start_value)).year
+        start = _parse_timestamp(str(event.get("episode_start_utc") or start_value))
+        end = _parse_timestamp(str(event.get("episode_end_utc") or event.get("end_utc") or start_value))
+        year = start.year
         group_year[episode_id] = min(year, group_year.get(episode_id, year))
+        previous = group_bounds.get(episode_id, (start, end))
+        group_bounds[episode_id] = (min(start, previous[0]), max(end, previous[1]))
+
+    boundaries = (datetime(train_end_year + 1, 1, 1, tzinfo=timezone.utc),
+                  datetime(test_year, 1, 1, tzinfo=timezone.utc))
+    purged = {group for group, (start, end) in group_bounds.items()
+              if any(start < boundary < end for boundary in boundaries)}
 
     split: dict[str, list[dict[str, Any]]] = {"train": [], "validation": [], "test": [], "excluded": []}
     for event in event_list:
         episode_id = str(event.get("episode_id") or event.get("event_id") or "")
         year = group_year.get(episode_id)
-        if year is None:
+        if year is None or episode_id in purged:
             split["excluded"].append(event)
         elif year <= train_end_year:
             split["train"].append(event)
