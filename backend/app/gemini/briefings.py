@@ -208,10 +208,22 @@ def gather_inputs(
             observed_at=score.created_at,
         )
     )
+    if score.data_completeness <= 0:
+        inputs.unknowns.append(
+            "No monitored input (heat, flood, live lightning) is current, so the index is "
+            "not evidence of low risk."
+        )
+    elif score.data_completeness < 1:
+        inputs.unknowns.append(
+            f"Only {score.data_completeness:.0%} of the monitored inputs (heat, flood, live "
+            "lightning) are current; the index may understate conditions."
+        )
     for index, factor in enumerate(score.factor_contributions):
         if factor.data_state in UNKNOWN_STATES:
             inputs.unknowns.append(f"{factor.label}: {factor.data_state.value}")
-        elif factor.contribution > 0:
+        # A stale reading that still adds points stays a hazard with its points, so the
+        # briefing's hazards add up to the stored index. It is also listed as unknown.
+        if factor.contribution > 0:
             # Several factors can share a name (one per confirmed report), so ids stay unique.
             evidence_id = f"factor:{site.id}:{factor.factor}"
             if evidence_id in inputs.factor_of:

@@ -170,3 +170,42 @@ The merged redesign passes the repeated mock/demo/browser checks; T068 still nee
 the live workflows and their accessibility acceptance. The functional Vite5176
 instance is a development preview, not a newly approved Auth0 callback. Use an
 owner-approved origin (normally5173) for real login, or have Braydin configure it.
+
+## Score display integration review — Rudra, 2026-10-17 (rules-0.2, T069)
+
+Reviewed main `ca99e64` before changing anything. Already correct and kept: stored
+`HazardScore` rows are the only score source; list/detail/briefing read them; live mode
+never substitutes fixtures (`HttpClient` errors instead); `live-read-validation.ts`
+rejects headline/stored disagreement; ScorePanel, ranked list, search and map already
+carry the unknown/incomplete wording from PR #36; briefings show the stored index and
+per-hazard points (T058C); pending/rejected/absent reports add nothing (T055/T051A tests).
+
+Fixed (actual integration problems):
+
+| Problem | Fix |
+| --- | --- |
+| T069 seeds a **7.1 high** score at **0%** completeness (replay is never live coverage). The UI treated every 0% score as "Unknown", demoting a real 7.1 to small print. | `evidence.ts`: only a **zero** with no current input is "Unknown"; a positive index at 0% shows its number qualified as "Evidence incomplete". |
+| Site detail showed `top_factors` (top 3) as the "score factors" breakdown, so lower factors and their points were missing. | Site page renders the full stored `score.factor_contributions`; stale/replay detection uses it too. |
+| Ranking tied an unknown zero with an observed zero and broke ties by name, so missing evidence could sort as "safer". | Backend `_sort_key` and frontend `sortSites`: at equal scores, lower completeness ranks first. Numeric order, assigned-first and unscored-last are unchanged. |
+| Briefings put a **stale** factor that still adds points only in `unknowns`, so hazard points no longer summed to the stored index. | The factor stays a hazard with its points and is also listed as unknown. |
+| Briefings did not label an incomplete index; "0.0/10 (low)" at 0% read as low risk. | `unknowns` states when no monitored input is current ("not evidence of low risk") or what share is current. Gemini still never sets score, level or points. |
+
+No canonical schema, DTO, scoring weight or `compute_score` change. Files touched outside
+Rudra's paths: `gemini/briefings.py` (Braydin) and `api/contracts.ts` (Codex) — focused
+lines, noted in CROSS_SCOPE_CHANGES.md.
+
+Controlled evidence (in-memory SQLite, fake JWTs, canned/replayed inputs; **not** Tiger
+Data or Auth0 acceptance): `backend/tests/test_score_display_integration.py` seeds T069 and
+checks list = detail = latest DB row = briefing snapshot for crew and supervisor,
+`rules-0.2`, top factors ⊂ stored breakdown, briefing points sum to the index, and the
+ranking/briefing cases above. `frontend/tests/score-display.test.mjs` renders those
+shapes (7.1@0%, unknown zero, observed zero, 3@67% outage, unscored) through ScorePanel.
+Existing `test_site_scoring_workflow.py` still covers weather change 2.1→3.0, pending
+report unchanged, confirmation 3.0→4.0, rejected/absent unchanged, lightning 7.0 and
+feed outage held at 7.0 with completeness 0. Results: 727 backend, 108 frontend tests,
+Ruff, lint, build and `check-shell.mjs` pass.
+
+Not verified here: a running backend with the approved `.env` against Tiger Data and
+real Auth0 sign-in. No backend was running locally, and seeding T069 rewrites the
+shared demo rows, so that run needs an owner go-ahead. Check `model_version` in
+`GET /api/sites` reads `rules-0.2` to confirm the server is the merged scorer.

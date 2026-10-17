@@ -75,6 +75,10 @@ export function sortSites(sites: SiteSummary[], excludeLegacy = false) {
       Number(!a.assigned_team) - Number(!b.assigned_team) ||
       Number(score(a) === null) - Number(score(b) === null) ||
       (score(b) ?? 0) - (score(a) ?? 0) ||
+      // Same order as the backend: at equal scores, less evidence ranks first, so an
+      // unknown zero never sinks below a fully observed zero.
+      (score(a) === null ? 0 : a.data_completeness) -
+        (score(b) === null ? 0 : b.data_completeness) ||
       a.name.localeCompare(b.name),
   )
 }
