@@ -1,7 +1,7 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 07:32:07; update with each relevant checkpoint.
+- UTC verification: 2026-10-17 07:43:12; update with each relevant checkpoint.
 - Working branch: `feature/cache-hazard-coverage` (new comprehensive coverage push).
 - Current base includes `origin/main` at `cc67e58`; site routes and nullable-score schema preserved.
 - Published implementation checkpoint `84d3d2d`; synchronized main without force-pushing it.
@@ -25,7 +25,8 @@
 - Gauge/site transfers, trusted live reports/assets and local US-site ShakeMap remain unavailable.
 - Code checkpoint `c61c9ab` pushed; full suite/builds and clean Git-export checks pass.
 - Clean export: 31 scenarios/50 sites pass without models and with verified artifact copies; no source caches/credentials.
-- Final owner handoffs are in HAZARD_INTEGRATION; review PR publication is pending.
+- PR #12 is open/ready against main: https://github.com/BraydinPG/planit-control-swamphacks/pull/12
+- Owner handoff posted: PR #12 comment 6231337589; full details in HAZARD_INTEGRATION.
 - Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
 
 ## Mission and boundaries
@@ -180,5 +181,6 @@ python -m pytest ml/tests backend/tests -q
 - 2026-10-17: preserve existing duration fits; prioritize evidence-only site conditions.
 - 2026-10-17: all-category census and two-layer research slice verified; site ML not forced.
 - 2026-10-17: 256 checks passed on base `7950971`; feature pushed and PR #9 opened for review.
+- 2026-10-17: PR #9 merged; new 2.1 hazard package passes 361 checks and clean-export fallback/provisioned replay; PR #12 open, not merged.
 - Update this file in the same commit as model/contract/source/handoff/test changes.
 - Reconcile teammate edits; keep deep details in ML docs, not a transcript here.
