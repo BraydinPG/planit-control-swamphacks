@@ -1,15 +1,15 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 06:40:52; update with each relevant checkpoint.
+- UTC verification: 2026-10-17 06:42:40; update with each relevant checkpoint.
 - Working branch: `feature/cache-combined-disaster-outlooks`.
-- Base: `origin/main` at `2bf48e9`; teammate API/DB commits preserved by clean rebase.
-- Verified implementation: `5aa49a0`; context/verification follow-up commits may follow.
+- Base: `origin/main` at `7950971`; teammate API/DB/EIA commits preserved by clean rebase.
+- Implementation: `01982f0`, source-catalog follow-up `35273ec`; verification commits may follow.
 - GitHub PR #4: merged 2026-10-17, merge `cf9d3bb`; already an ancestor of main.
 - GitHub PR #6: merged 2026-10-17, merge `20af37d`; source head `28b89cf`.
 - Both merge states verified through GitHub API and local ancestry, not assumed.
 - Python: `ml/.venv/Scripts/python.exe`, 3.14.5; pinned ML dependencies exist.
-- Fresh isolated environment: 252 ML/backend tests passed, including 62 new worker checks.
+- Fresh isolated environment: 256 ML/backend tests passed, including 62 new worker checks.
 - Backend lint/format, new Python lint/format, frontend lint/typecheck/build passed.
 - Existing nine duration artifacts/reference predictions verified without refitting.
 - New PR is pending publication at this checkpoint; do not merge into main.
@@ -44,7 +44,7 @@
 - `backend/app/schemas/observations.py`: current reading/location/time shape.
 - `backend/app/schemas/sites.py`: SiteSummary and SiteDetail.
 - Existing backend Observation lacks the full issue/availability/vintage/coverage contract.
-- Main now includes Tiger Data models/schema setup and an empty seed; no EIA import yet.
+- Main includes Tiger Data models/schema setup and Braydin's EIA importer; deployed DB state unverified here.
 - Do not invent those missing fields from a fetched timestamp.
 - `ml/predict.py`: `predict_active_event`, legacy `predict_site` adapter.
 - `ml/backend_adapter.py`: cached `ActiveEventPredictor`, including `predict_for_site`.
@@ -123,6 +123,7 @@ python -m pytest ml/tests backend/tests -q
 ## Verified limits and current dependencies
 - EIA August 2026: 28,379 generator rows, 14,700 valid unique plant locations, 50 exported.
 - This is a research fixture set, not a backend database import or verified worksites.
+- Braydin's separate EIA importer uses `eia860m-{state}-{plant_id}` IDs; do not assume ML fixture IDs match.
 - Existing duration artifacts were hash/reference verified in the fresh environment.
 - NOAA episode groups are reporting clusters, not proven independent disasters.
 - 2025 holdouts were inspected; do not tune on them or call them fresh tests.
