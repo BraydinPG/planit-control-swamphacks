@@ -227,6 +227,35 @@ try {
       `(()=>{const e=document.querySelector(${JSON.stringify(selector)});const prototype=e.tagName==='SELECT'?HTMLSelectElement.prototype:e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(e,${JSON.stringify(value)});e.dispatchEvent(new Event(e.tagName==='SELECT'?'change':'input',{bubbles:true}))})()`,
     )
   }
+  // Only this isolated browser profile: recreate saved pre-rules fixtures, then
+  // exercise the app's Reset demo control without clearing Auth0/other storage.
+  await navigate(
+    new URL('#/supervisor/sites/site-demo-everglades', base).href,
+    'Score factors and source evidence',
+  )
+  await click('Reset demo')
+  await evaluate(`(()=>{
+    const key='planit:frontend-demo:v1', value=JSON.parse(localStorage.getItem(key));
+    const id='site-demo-everglades', legacy={factor:'model',contribution:1.6};
+    value.sites.find(s=>s.id===id).top_factors=[legacy];
+    value.details[id].top_factors=[legacy];
+    value.details[id].risk_score=7.6;
+    value.details[id].model_version='baseline-0.1';
+    localStorage.setItem(key,JSON.stringify(value));
+    localStorage.setItem('@@auth0spajs@@audit-sentinel','synthetic-session-only');
+  })()`)
+  await reload('Score withheld')
+  await click('Reset demo')
+  await loaded('rules-0.2')
+  assert(await evaluate(`(()=>{
+    const value=JSON.parse(localStorage.getItem('planit:frontend-demo:v1'));
+    const detail=value.details['site-demo-everglades'];
+    return detail.risk_score===6.1 && detail.score.risk_score===6.1 &&
+      detail.model_version==='rules-0.2' && detail.data_completeness===0 &&
+      localStorage.getItem('@@auth0spajs@@audit-sentinel')==='synthetic-session-only';
+  })()`))
+  await reload('rules-0.2')
+  results.push({ demo_score_reset: 'legacy -> 6.1/10, rules-0.2; reload persists; synthetic Auth0 storage sentinel preserved' })
   for (const [width, height, name] of [
     [1440, 1000, 'desktop'],
     [390, 844, 'phone'],
@@ -265,6 +294,18 @@ try {
       overflow: false,
       nav_targets: '>=44px',
     })
+    await hash('/crew/sites', 'Score factors and source evidence')
+    assert(await evaluate(`(()=>{
+      const score=document.querySelector('[aria-label="Site score"]');
+      return score?.innerText.includes('6.1') && !score.innerText.includes('Score withheld') &&
+        score.innerText.includes('Evidence incomplete') && score.innerText.includes('rules-0.2') &&
+        document.querySelectorAll('[data-outlook-id]').length===6 &&
+        document.body.innerText.includes('Historical example, not a current prediction') &&
+        document.documentElement.scrollWidth<=innerWidth;
+    })()`), 'Approved simulated score and six independent outlooks')
+    await evaluate('document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})')
+    await screenshot(`demo-score-${name}`)
+    await hash('/crew/overview', 'Stop-work alert active')
   }
   await click('Inspect alert and acknowledge')
   await loaded('Acknowledging does not clear the alert')
@@ -506,7 +547,7 @@ try {
                     ? 'Score factors and source evidence'
                     : 'Inspect alert and acknowledge',
         )
-        if (persona === 'supervisor' && ['overview', 'sites'].includes(page))
+        if (persona === 'supervisor' && page === 'sites')
           await until(
             () =>
               evaluate(
