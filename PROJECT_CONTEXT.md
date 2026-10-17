@@ -1,25 +1,27 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 08:20:44 UTC; task T087 only in this run.
-- Branch: `feature/cache-worker-preview`, from current main `cd36d32` (no stacked dependency).
-- PR #12 merged 2026-10-17T07:59:44Z at `bcf61e2`; verified through API and ancestry.
-- Earlier PR #4/#6/#9 remain merged; new backend T045-T045D feed work is preserved.
-- T087: independent static HTML/terminal preview; `python -m ml.worker_preview`.
-- Exact callable: `ml.worker.comprehensive.build_comprehensive_outlook`; schema 2.1.0 unchanged.
-- Output: `ml/reports/worker_preview/index.html`, canonical per-site JSON, schemas, `preview.txt`.
-- 50 reference sites / 150 validated outputs; Flood, High Wind and missing-source replays.
-- Fixed snapshot: 2026-10-17T07:18:48.564672Z; weather evidence 2/50, qualified notices 10/50.
-- Model artifacts reused; all local hazard probabilities null, manual dangers unknown.
-- Baseline 130 passed; new preview tests 15 passed; complete ML/backend suite 415 passed (one deprecation warning).
-- Existing declared backend h5py dependency installed after initial collection failure; no requirements changed.
-- Changed Python lint/format and pip check pass. No frontend/shared contract changes or frontend build needed.
-- Clean candidate Git export: all 150 outputs validate without artifacts and with verified artifact copies; 15 preview tests pass.
-- No credentials, source caches, downloads, refits or operational validation needed for the offline run.
-- Browser rendering inspected in Edge; generated HTML has no scripts, network assets or API.
-- T087 checkbox updated with implementation after its done check; other task states preserved.
-- Implementation commit: `555ce0a856608c263fb2a69c7ff684e3db25b926`; PR #14 open/ready: https://github.com/BraydinPG/planit-control-swamphacks/pull/14 (not merged).
-- Handoffs: `ml/WORKER_PREVIEW.md` and `ml/HAZARD_INTEGRATION.md`; T050/T063/application acceptance stay open.
+- UTC verification: 2026-10-17 08:43:07 UTC; current task T030 only, Cache assisting Nick with explicit user authorization.
+- Branch: `feature/cache-t030-app-shell`, based on main `3dd52cc`; no uncommitted frontend work or published Nick branch/open PR found at startup.
+- PR #14 is merged in that main; prior PR #4/#6/#9/#12 remain merged. No stacked dependency.
+- Main now includes Braydin's Auth0 modules and site-route guards; tenant/live token behavior not verified in T030.
+- T030 replaces the Vite starter with the responsive React/TypeScript/Tailwind application shell.
+- Exact entrypoint: `frontend/src/App.tsx` -> `components/shell/AppShell.tsx`; fixture overview in `pages/WorkspaceOverview.tsx`.
+- Run: `cd frontend; npm ci; npm run dev`; current printed URL http://localhost:5173/ (developer server left running).
+- Fixture mode defaults on when unset; `VITE_USE_FIXTURES=false` or invalid input shows unavailable, never silent sample/live fallback.
+- Existing generated SiteSummary/SiteDetail fixtures used for reference context; all sample data explicitly simulated, not EIA/live jobs.
+- Crew/supervisor preview navigation grants no permissions. Auth0/API integration, site list/detail, score components and alert/report workflows remain separate.
+- Browser acceptance: 1440x1000, 390x844, 320x740; ten crew/supervisor destinations per size, no horizontal overflow, >=44px nav targets.
+- Reload/back/keyboard skip link, null-score text, false/invalid fixture states passed; zero browser exceptions and backend API requests.
+- `npm run lint`, `npm run build`, browser acceptance and visual desktop/phone inspection pass; details in `docs/t030-acceptance.json`.
+- Visible Edge launch was blocked by automatic approval review; headless browser rendering succeeded. No security workaround enabled.
+- Only T030 checkbox changed after its done criterion passed; T031/T032/T063 and every other state preserved.
+- No auth/backend/shared type/fixture JSON/ML/manifest/lockfile edits; no new project dependencies.
+- Cross-scope authorization, all changed paths and Nick handoff: `docs/CROSS_SCOPE_CHANGES.md`; fixture commands/limits: `frontend/SHELL.md`.
+- Implementation commit/review PR: T030 checkpoint in this branch, pending publication for Nick review; no merge authorized.
+- Existing offline ML preview remains `python -m ml.worker_preview` (T087); combined 2.1.0 callable/contracts unchanged.
+- Prior ML source snapshot: 2026-10-17T07:18:48.564672Z, 50 sites/150 replay outputs; environmental evidence 2/50, notices 10/50.
+- Next unblocked task: Nick T031 (T006/T007 checked), before T032 crew home. T063 remains a later integration task.
 
 ## Mission and boundaries
 - Layer A: conditional evolution of an already confirmed event, never event onset.
@@ -37,11 +39,11 @@
 
 ## Ownership
 - Cache: `ml/**`, datasets, evaluation, advisory contracts and offline demos.
-- T087 authorizes `ml/**`, its exact `tasks.md` entry and factual `PROJECT_CONTEXT.md` updates only.
+- Current T030 authorization permits Cache to assist Nick in the frontend, plus cross-scope docs, context and the exact T030 checkbox. No auth/API/ML contract changes authorized.
 - Rudra: API contracts/routes, deterministic alerts/scoring, root README; see AGENTS.
 - Nick: frontend pages/components/styles/API client; preserve his files.
 - Braydin: auth, database/ingestion, Gemini, Vultr deployment per current AGENTS.
-- Do not change routes, migrations, auth, frontend screens or shared manifests here.
+- T030 permits the shell frontend changes only; preserve routes, migrations, auth modules, API types and shared manifests.
 - Propose integration through fixtures/tests/handoff; do not merge into main yourself.
 - Read current `AGENTS.md`, `spec.md`, `tasks.md` for the authoritative ownership map.
 
@@ -51,7 +53,7 @@
 - `backend/app/schemas/observations.py`: current reading/location/time shape.
 - `backend/app/schemas/sites.py`: SiteSummary and SiteDetail.
 - Existing backend Observation lacks the full issue/availability/vintage/coverage contract.
-- Main site routes are present; Auth0/assigned-site checks are pending, not verified by this library.
+- Main site routes include Auth0/assigned-site guard code; real tenant/token behavior is not verified by this shell.
 - Main includes Tiger Data models/schema setup and Braydin's EIA importer; deployed DB state unverified here.
 - Do not invent those missing fields from a fetched timestamp.
 - `ml/predict.py`: `predict_active_event`, legacy `predict_site` adapter.
@@ -159,7 +161,7 @@ python -m pytest ml/tests backend/tests -q
 - New cold/warm/batch/validation and traced-allocation measurements are in hazard acceptance.json.
 
 ## Next actions and handoff
-- Next unblocked tracked task: Nick T063 (T041/T042 checked); Cache preview does not complete it.
+- Next unblocked tracked task: Nick T031 (T006/T007 checked); T030 shell does not complete scores/status components or T063.
 1. Rudra: review opt-in FastAPI wiring after assigned-site authorization; keep controls separate.
 2. Braydin: supply true event confirmation, source timestamps/versions, auth and basin evidence.
 3. Nick: display method/window/source, derived/demo badges and unknowns; no clearance countdown.
@@ -179,3 +181,5 @@ python -m pytest ml/tests backend/tests -q
 - Reconcile teammate edits; keep deep details in ML docs, not a transcript here.
 
 - 2026-10-17 08:20:44 UTC: T087 changes `tasks.md` (one new Cache task/check-off) and this index for accurate coordination; code/tests/docs stay in `ml/`. Rudra, Nick and Braydin should read WORKER_PREVIEW. Evidence and candidate export identity: `ml/preview_verification.json`; implementation `555ce0a`, PR #14 (open for Rudra review).
+
+- 2026-10-17 08:43:07 UTC: T030 cross-scope shell accepted on desktop/phones; only its checkbox changed. Nick reviews the scoped PR; `docs/CROSS_SCOPE_CHANGES.md` records authorization, files and checks.

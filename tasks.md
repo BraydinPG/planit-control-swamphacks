@@ -119,7 +119,7 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 ### Nick: frontend and UI/UX
 
-- [ ] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Style it with Tailwind utility classes. Needs T003 and T007. Done when app renders on phone and desktop sizes.
+- [x] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Style it with Tailwind utility classes. Needs T003 and T007. Done when app renders on phone and desktop sizes.
 - [ ] **T031 | Nick | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
 - [ ] **T032 | Nick | Build crew home screen.** Show site, status, alert, immediate action, update time, and a “potential {hazard}” notice with no instructions. After a supervisor sends an instruction, show that text. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
 - [ ] **T033 | Nick | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.
