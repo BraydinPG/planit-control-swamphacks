@@ -226,12 +226,17 @@ def test_one_site_failing_does_not_stop_the_others(session, monkeypatch) -> None
 
 
 def test_loop_is_off_by_default(monkeypatch) -> None:
+    import app.main as main
     import app.services.refresh as refresh
+    from app.ingestion.settings import IngestionSettings
 
     monkeypatch.delenv("FEED_REFRESH_ENABLED", raising=False)
     get_ingestion_settings.cache_clear()
     try:
-        assert get_ingestion_settings().feed_refresh_enabled is False
+        # The code default, not a developer's backend/.env (which may turn the loop on).
+        defaults = IngestionSettings(_env_file=None)
+        assert defaults.feed_refresh_enabled is False
+        monkeypatch.setattr(main, "get_ingestion_settings", lambda: defaults)
         started = []
         monkeypatch.setattr(refresh, "run_forever", lambda stop: started.append(1))
         with TestClient(app) as client:
@@ -273,3 +278,32 @@ def test_history_rescore_ignores_expired_alerts_and_old_fetches(session) -> None
     points = {f.factor: f for f in rescored.factor_contributions}
     assert points["flood"].contribution == 0.0
     assert points["flood"].data_state is DataState.OBSERVED
+
+
+def test_demo_site_is_frozen_while_other_sites_get_live_data(session) -> None:
+    session.add(
+        db.Site(
+            id="demo-everglades", name="Demo", lat=25.39, lon=-80.58,
+            location_type="demo_site", source="Demo scenario (simulated)",
+        )
+    )  # fmt: skip
+    session.commit()
+    result = refresh_all(session, NOW, [none_feed(HazardType.FLOOD_ALERT)])
+    assert result.sites == 2  # site-a and site-b; never the demo site
+    assert count(session, db.Observation, db.Observation.site_id == "demo-everglades") == 0
+    assert count(session, db.HazardScore, db.HazardScore.site_id == "demo-everglades") == 0
+    assert count(session, db.Observation, db.Observation.site_id == "site-a") == 1
+
+
+def test_one_upsert_stores_a_batch_and_keeps_the_last_duplicate(session) -> None:
+    from app.services.refresh import store_observations
+
+    site = session.get(db.Site, "site-a")
+    first = reading(site, HazardType.EARTHQUAKE, NOW, value=2.0, key="eq1")
+    later = first.model_copy(update={"value": 3.5, "fetched_at": NOW})
+    other = reading(site, HazardType.EARTHQUAKE, NOW, value=1.0, key="eq2")
+    store_observations(session, [first, later, other])
+    session.commit()
+    rows = {r.id: r.value for r in session.scalars(select(db.Observation))}
+    assert rows == {first.id: "3.5", other.id: "1.0"}
+    store_observations(session, [])  # nothing to write is fine

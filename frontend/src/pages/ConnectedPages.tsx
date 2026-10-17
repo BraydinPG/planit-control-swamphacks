@@ -20,6 +20,7 @@ import {
 import { useReportLocation } from '../application/useReportLocation'
 import type { LocationReason } from '../application/report-location'
 import { StoredBriefings } from '../components/data/StoredBriefings'
+import { SpeciesSection } from '../components/data/SpeciesPanel'
 import { sortSites } from '../api/contracts'
 import {
   Action,
@@ -35,6 +36,8 @@ import { AlertCard } from '../components/data/AlertCard'
 import { EventOutlooks } from '../components/data/EventOutlooks'
 import { NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
+import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
+import { SupervisorOverview } from '../components/data/SupervisorOverview'
 import {
   ScorePanel,
   Factors,
@@ -89,12 +92,16 @@ export function ConnectedPages() {
     'sites',
     useCallback(() => client.sites(), [client]),
   )
+  if (page === 'team' && persona === 'supervisor') return <TeamPage />
   if (!sites.data) return <LoadState error={sites.error} />
   if (!sites.data.length)
-    return (
+    // A live crew account sees no sites until it joins a team with a code.
+    return client.mode === 'live' && persona === 'crew' ? (
+      <JoinTeam />
+    ) : (
       <p role="status" className={`${card} p-5 text-ink-2`}>
-        No authorized sites returned. Ask your administrator to verify your team
-        assignment.
+        No sites for this account yet. Your account isn't linked to an
+        organization; supervisor accounts are linked by an administrator.
       </p>
     )
   const selected = encodedId ? decodeId(encodedId) : sites.data[0].id
@@ -144,7 +151,7 @@ function SitePage({
     `site:${id}`,
     useCallback(() => client.site(id), [client, id]),
   )
-  if (dashboard) return <SitesPage sites={sites} />
+  if (dashboard) return <SupervisorOverview sites={sites} />
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
     active = site.alerts.filter((a) => a.state === 'active')
@@ -281,6 +288,8 @@ function SitePage({
         </div>
       </div>
       {!compact && <EventOutlooks cards={site.event_outlooks ?? []} />}
+      {/* Read-only regional context for team sites; never feeds score or alerts. */}
+      {site.assigned_team && <SpeciesSection site={site} />}
       <Suspense
         fallback={
           <p role="status" className="kicker">
@@ -338,6 +347,17 @@ function Stat({
   )
 }
 
+const factorNames: Record<string, string> = {
+  lightning: 'Lightning',
+  heat_index: 'Heat',
+  flood: 'Flooding',
+  hurricane: 'Hurricane',
+  earthquake: 'Earthquake',
+  crew_report: 'Crew reports',
+}
+const factorName = (f: string) =>
+  factorNames[f] ?? f.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase())
+
 function SitesPage({ sites }: { sites: SiteSummary[] }) {
   const { persona, client } = useApplication()
   const [search, setSearch] = useState(''),
@@ -394,17 +414,14 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
     <div className="pc-enter space-y-6">
       <div className="space-y-2">
         <p className="text-base font-semibold">
-          {sites.length}{' '}
-          {client.mode === 'demo' ? 'sample/reference' : 'backend-authorized'}{' '}
-          locations. Assigned teams first, then eligible supplied score. Unknown
-          is never low risk.
+          {sites.length} locations · {counts.teams} with a team. Team sites come
+          first, then the highest score. A site with no score is never treated
+          as low risk.
         </p>
         {client.mode === 'demo' && (
           <p className="max-w-3xl text-sm text-muted">
-            Includes 50 reconciled EIA reference plants, not verified active
-            jobs, plus five canonical simulated sites. Reference plants have no
-            live readings or score. Legacy ML fixture scores are excluded from
-            ranking.
+            Demo data: simulated sites and EIA reference power plants, with no
+            live readings.
           </p>
         )}
       </div>
@@ -432,7 +449,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
         />
         <Stat
           value={counts.unscored}
-          label="not scored, withheld or without evidence"
+          label="not scored or missing data"
           shape="nodata"
         />
       </div>
@@ -460,7 +477,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
           </select>
         </label>
         <label className={labelText}>
-          State / reference region
+          State
           <select
             className={field}
             value={region}
@@ -473,20 +490,24 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
           </select>
         </label>
         <label className={labelText}>
-          Supplied factor
+          Hazard
           <select
             className={field}
             value={hazard}
             onChange={(e) => setHazard(e.target.value)}
           >
-            <option value="all">All factors</option>
+            <option value="all">All hazards</option>
             {[
               ...new Set(
                 sites.flatMap((s) => s.top_factors.map((f) => f.factor)),
               ),
-            ].map((f) => (
-              <option key={f}>{f}</option>
-            ))}
+            ]
+              .filter((f) => f !== 'model')
+              .map((f) => (
+                <option key={f} value={f}>
+                  {factorName(f)}
+                </option>
+              ))}
           </select>
         </label>
         <label className="flex min-h-11 items-center gap-3 rounded-xl border border-line-strong px-3 text-sm font-semibold text-ink-2">
@@ -496,7 +517,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
             checked={alerts}
             onChange={(e) => setAlerts(e.target.checked)}
           />
-          Active alerts supplied
+          Only sites with active alerts
         </label>
       </section>
       {shown.length ? (
@@ -559,7 +580,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                     {s.name}
                   </a>
                   <p className="text-sm text-muted">
-                    {s.assigned_team?.name ?? 'No team assigned'} · {s.id}
+                    {s.assigned_team?.name ?? 'No team assigned'}
                   </p>
                 </div>
                 <div className="space-y-1 @2xl:pt-2">
@@ -594,16 +615,18 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                   )}
                 </div>
                 <p className="text-sm leading-snug text-ink-2 @2xl:pt-2">
-                  <span className="@2xl:sr-only">Top supplied factors: </span>
+                  <span className="@2xl:sr-only">Main factors: </span>
                   {s.top_factors.length
                     ? s.top_factors
                         .map((factor) =>
                           factor.factor === 'model'
-                            ? 'unapproved legacy ML factor withheld'
-                            : `${factor.label} (${factor.data_state})`,
+                            ? 'legacy demo factor withheld'
+                            : factor.data_state === 'observed'
+                              ? factor.label
+                              : `${factor.label} (${factor.data_state})`,
                         )
                         .join('; ')
-                    : 'not supplied'}
+                    : 'No factors reported yet'}
                 </p>
                 <p className="text-sm text-ink-2 @2xl:pt-2">
                   <span
@@ -617,19 +640,26 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                         className="mr-1 inline size-3.5 align-[-2px]"
                       />
                     )}
-                    {s.active_alerts}{' '}
-                    {client.mode === 'demo' ? 'demo' : 'supplied'} active alerts
+                    {s.active_alerts
+                      ? `${s.active_alerts} active alert${s.active_alerts === 1 ? '' : 's'}`
+                      : 'No active alerts'}
                   </span>{' '}
-                  · Completeness {Math.round(s.data_completeness * 100)}% ·
-                  Updated <Timestamp value={s.updated_at} />
+                  · Data {Math.round(s.data_completeness * 100)}% ·{' '}
+                  {s.updated_at ? (
+                    <>
+                      Updated <Timestamp value={s.updated_at} />
+                    </>
+                  ) : (
+                    'Not scored yet'
+                  )}
                 </p>
               </li>
             ))}
           </ol>
         </div>
         <p className="text-sm text-muted">
-          Completeness is the share of inputs that reported. Missing inputs
-          lower confidence; they never count as zero risk.
+          Data is the share of a site's inputs that are current. Missing inputs
+          never count as zero risk.
         </p>
       </section>
     </div>
@@ -1239,14 +1269,21 @@ function ReportCard({ report }: { report: CrewReport }) {
     </article>
   )
 }
+/** Reports and briefings exist only for sites with a team, so supervisors pick from those. */
+const teamSitesFirst = (sites: SiteSummary[]) =>
+  sites.some((s) => s.assigned_team)
+    ? sites.filter((s) => s.assigned_team)
+    : sites
+
 function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const { client, refresh } = useApplication()
+  const choices = teamSitesFirst(sites)
   const result = useResource(
     'reports',
     useCallback(() => client.reports(), [client]),
   )
-  const [siteId, setSiteId] = useState(sites[0].id)
-  const site = sites.find((s) => s.id === siteId) ?? sites[0]
+  const [siteId, setSiteId] = useState(choices[0].id)
+  const site = choices.find((s) => s.id === siteId) ?? choices[0]
   return (
     <div className="pc-enter grid gap-6 @3xl:grid-cols-12 @3xl:items-start">
       <div className="space-y-4 @3xl:col-span-7">
@@ -1258,7 +1295,7 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
             value={site.id}
             onChange={(e) => setSiteId(e.target.value)}
           >
-            {sites.map((s) => (
+            {choices.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
               </option>
@@ -1290,7 +1327,7 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   )
 }
 function BriefingsPage({ sites }: { sites: SiteSummary[] }) {
-  return <StoredBriefings sites={sites} />
+  return <StoredBriefings sites={teamSitesFirst(sites)} />
 }
 export function DemoClock() {
   const now = useClock()

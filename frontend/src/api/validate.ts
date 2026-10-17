@@ -1,9 +1,14 @@
 import { ApiError } from './contracts'
 import type {
+  Account,
   Briefing,
   CrewReport,
   HazardNotice,
   HazardConfirmResponse,
+  JoinCode,
+  OrganizationTeams,
+  TeamRoster,
+  SiteSpeciesContext,
 } from '../types/api'
 
 export const record = (v: unknown): v is Record<string, unknown> =>
@@ -27,6 +32,8 @@ export const evidence = (v: unknown) =>
         'score_factor',
         'model_output',
         'notice',
+        // Trusted start of a confirmed event, written server-side (T050A).
+        'event_start',
       ].includes(String(e.kind)) &&
       (e.observed_at === null || date(e.observed_at)),
   )
@@ -36,6 +43,83 @@ const risk = (v: unknown) =>
 const inRange = (v: unknown, max: number) =>
   v === null ||
   (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= max)
+const role = (v: unknown) => v === 'crew' || v === 'supervisor'
+const nullable = (v: unknown) => v === null || text(v)
+export function validateAccount(v: unknown): Account {
+  if (
+    !record(v) ||
+    !role(v.role) ||
+    ![
+      'organization_id',
+      'organization_name',
+      'team_id',
+      'team_name',
+      'site_id',
+    ].every((k) => nullable(v[k]))
+  )
+    throw new ApiError(502, 'Invalid account response')
+  return v as unknown as Account
+}
+const codeShape = /^[A-Z2-9]{4}-[A-Z2-9]{4}$/
+export function validateJoinCode(v: unknown): JoinCode {
+  if (
+    !record(v) ||
+    !text(v.code) ||
+    !codeShape.test(v.code) ||
+    !text(v.team_id) ||
+    !date(v.created_at) ||
+    !date(v.expires_at)
+  )
+    throw new ApiError(502, 'Invalid join code response')
+  return v as unknown as JoinCode
+}
+export function validateTeamRoster(v: unknown): TeamRoster {
+  if (
+    !record(v) ||
+    !text(v.id) ||
+    !text(v.name) ||
+    !nullable(v.site_id) ||
+    !nullable(v.site_name) ||
+    !Array.isArray(v.members) ||
+    !v.members.every(member) ||
+    !Array.isArray(v.join_codes) ||
+    !v.join_codes.every((c) => {
+      try {
+        return Boolean(validateJoinCode(c))
+      } catch {
+        return false
+      }
+    })
+  )
+    throw new ApiError(502, 'Invalid team response')
+  return v as unknown as TeamRoster
+}
+const member = (v: unknown) =>
+  record(v) &&
+  text(v.user_id) &&
+  nullable(v.name) &&
+  nullable(v.email) &&
+  role(v.role) &&
+  (v.joined_at === null || date(v.joined_at))
+export function validateTeams(v: unknown): OrganizationTeams {
+  if (
+    !record(v) ||
+    !text(v.organization_id) ||
+    !text(v.organization_name) ||
+    !Array.isArray(v.supervisors) ||
+    !v.supervisors.every(member) ||
+    !Array.isArray(v.teams) ||
+    !v.teams.every((t) => {
+      try {
+        return Boolean(validateTeamRoster(t))
+      } catch {
+        return false
+      }
+    })
+  )
+    throw new ApiError(502, 'Invalid team response')
+  return v as unknown as OrganizationTeams
+}
 export function validateBriefing(v: unknown, site?: string): Briefing {
   if (
     !record(v) ||
@@ -95,7 +179,9 @@ const analysis = (v: unknown) =>
   (v.severity_suggestion === null ||
     ['low', 'moderate', 'high'].includes(String(v.severity_suggestion))) &&
   (v.confidence === null ||
-    (typeof v.confidence === 'number' && v.confidence >= 0 && v.confidence <= 1)) &&
+    (typeof v.confidence === 'number' &&
+      v.confidence >= 0 &&
+      v.confidence <= 1)) &&
   (v.status === 'unavailable'
     ? v.verdict === null
     : v.status === 'complete' &&
@@ -209,4 +295,76 @@ export function validateConfirmation(
       'Invalid confirmation response. Refresh before retrying.',
     )
   return v as unknown as HazardConfirmResponse
+}
+
+const dataStates = [
+  'observed',
+  'forecast',
+  'crew_reported',
+  'simulated',
+  'stale',
+  'unavailable',
+]
+const optionalText = (v: unknown) => v === null || text(v)
+/**
+ * GET /api/sites/{id}/species. Background species context may never claim a crew
+ * report: `confirmed_report` is valid only on `wildlife_reports`.
+ */
+export function validateSpeciesContext(
+  v: unknown,
+  site: string,
+): SiteSpeciesContext {
+  const valid =
+    record(v) &&
+    v.site_id === site &&
+    text(v.source) &&
+    text(v.caveat) &&
+    text(v.footprint_description) &&
+    optionalText(v.api_version) &&
+    (v.fetched_at === null || date(v.fetched_at)) &&
+    dataStates.includes(String(v.data_state)) &&
+    dataStates.includes(String(v.critical_habitat_state)) &&
+    typeof v.simulated === 'boolean' &&
+    ['gemini', 'fallback'].includes(String(v.generated_by)) &&
+    strings(v.unknowns) &&
+    Array.isArray(v.species) &&
+    v.species.every(
+      (s) =>
+        record(s) &&
+        text(s.id) &&
+        text(s.summary) &&
+        text(s.match_note) &&
+        ['regional_range', 'possible_regional_context', 'unknown'].includes(
+          String(s.match_basis),
+        ) &&
+        strings(s.evidence_ids) &&
+        (s.protection === null ||
+          (record(s.protection) &&
+            optionalText(s.protection.status) &&
+            text(s.protection.source) &&
+            date(s.protection.as_of))) &&
+        (s.encounter === null ||
+          (record(s.encounter) &&
+            strings(s.encounter.actions) &&
+            text(s.encounter.source) &&
+            text(s.encounter.source_url))),
+    ) &&
+    Array.isArray(v.critical_habitat) &&
+    v.critical_habitat.every(
+      (a) =>
+        record(a) &&
+        text(a.id) &&
+        text(a.source) &&
+        (a.geometry === null || record(a.geometry)),
+    ) &&
+    Array.isArray(v.wildlife_reports) &&
+    v.wildlife_reports.every(
+      (r) =>
+        record(r) &&
+        text(r.report_id) &&
+        date(r.reported_at) &&
+        ['confirmed', 'pending', 'rejected'].includes(String(r.confirmation)),
+    )
+  if (!valid) throw new ApiError(502, 'Invalid species context response')
+  return v as unknown as SiteSpeciesContext
 }

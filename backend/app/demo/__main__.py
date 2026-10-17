@@ -1,7 +1,10 @@
 """`python -m app.demo seed` restores the demo; `python -m app.demo strike N` replays lightning.
 
-Run from backend/. Reads `DATABASE_URL`, `DEMO_CREW_USER_ID`, and
-`DEMO_SUPERVISOR_USER_ID` from backend/.env. User IDs are never printed.
+`python -m app.demo briefing-test` sets up the separate 6 PM briefing-test organization.
+
+Run from backend/. Reads `DATABASE_URL`, `DEMO_CREW_USER_ID`, `DEMO_SUPERVISOR_USER_ID`,
+`DEMO_EXTRA_CREW_USER_IDS`, and `BRIEFING_TEST_SUPERVISOR_USER_ID` from backend/.env.
+User IDs are never printed.
 """
 
 import argparse
@@ -26,11 +29,14 @@ class DemoSettings(BaseSettings):
 
     demo_crew_user_id: str = ""
     demo_supervisor_user_id: str = ""
+    demo_extra_crew_user_ids: str = ""  # comma-separated: teammates as crew
+    briefing_test_supervisor_user_id: str = ""
 
     def accounts(self) -> DemoAccounts:
         return DemoAccounts(
             self.demo_crew_user_id.strip() or PLACEHOLDER_CREW,
             self.demo_supervisor_user_id.strip() or PLACEHOLDER_SUPERVISOR,
+            tuple(i.strip() for i in self.demo_extra_crew_user_ids.split(",") if i.strip()),
         )
 
 
@@ -38,6 +44,9 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="python -m app.demo", description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("seed", help="remove the previous demo rows and restore the scenario")
+    commands.add_parser(
+        "briefing-test", help="set up the organization that checks the 6 PM briefing schedule"
+    )
     strike = commands.add_parser("strike", help="replay one lightning step at the demo site")
     strike.add_argument("step", type=int, help="replay step, 1 to 3 (2 resets the countdown)")
     args = parser.parse_args(argv)
@@ -54,7 +63,24 @@ def _run(args: argparse.Namespace) -> None:
     from app.outlook import get_event_outlook_service
 
     now = datetime.now(UTC)
-    if args.command == "seed":
+    if args.command == "briefing-test":
+        from app.demo.briefing_test import setup_briefing_test
+
+        settings = DemoSettings()
+        supervisor = settings.briefing_test_supervisor_user_id.strip()
+        if supervisor in settings.accounts().user_ids:
+            raise ValueError(
+                "BRIEFING_TEST_SUPERVISOR_USER_ID must be a different account from the demo "
+                "accounts (each account belongs to one organization)"
+            )
+        with get_session() as session:
+            test = setup_briefing_test(session, supervisor, now)
+        print(
+            f"Briefing test ready: {test.site_name} ({test.site_id}). No stored briefing; "
+            f"the schedule writes one at {test.next_run_local:%Y-%m-%d %H:%M %Z} (site time) "
+            "on the backend that has BRIEFING_SCHEDULE_ENABLED."
+        )
+    elif args.command == "seed":
         initialize_database()
         accounts = DemoSettings().accounts()
         with get_session() as session:

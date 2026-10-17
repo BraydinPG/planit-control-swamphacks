@@ -1,3 +1,47 @@
+## Team onboarding, supervisor Overview, and supervisor UI cleanup (Braydin) — 2026-10-17
+
+Explicit user requests (Braydin): join codes (`XXXX-XXXX`, 7 days); supervisors see exactly who is on each team; the supervisor UI should follow Rudra's design but be functional, logical and free of bloat, covering spec.md and tasks.md. Rudra now owns all frontend/UI (Cache's ownership update), so every change below is focused and listed for his review.
+
+- **Backend.** New `app/api/teams.py` (Rudra's route area) and `app/schemas/teams.py`; registered in `app/main.py`.
+  - `app/security/dependencies.py`: name and email profile claims; only crew fall back to role permissions when the list is empty.
+  - `app/db`: `JoinCode` table and membership `email`, `display_name`, `joined_at` (applied to Tiger).
+- **Robustness.** `app/services/refresh.py` commits after reading sites, so its ~20-minute fetch no longer holds locks. `app/db/init.py` alters only missing columns and hypertables, with a 15 s lock timeout. Before this, a migration queued live API requests behind the refresh transaction.
+- **Frontend (Rudra's).** `types/api.ts` mirror, plus `api/contracts.ts`, `api/http-client.ts`, `api/validate.ts`, and `demo/client.ts` (simulated roster and codes).
+  - `components/shell/AppShell.tsx` and `Icon.tsx`: a supervisor-only Team tab with a "team" icon; the phone nav uses 6 columns for supervisors.
+  - New `components/data/TeamRoster.tsx` (Team page; "Join your team" for crew with no team), `SupervisorOverview.tsx` and `attention.ts`.
+  - `pages/ConnectedPages.tsx`:
+    - The supervisor Overview is now "Needs your attention" (active alerts, potential notices to confirm, absent reports to review, team sites) plus the three highest-risk sites. Worksites keeps the map, list and filters.
+    - Developer and fixture wording removed (`site-…` IDs on rows, "sample/reference", "supplied", raw factor IDs).
+    - Reports and Briefings pickers list team sites only.
+  - `components/data/AlertCard.tsx`: plain titles ("Flood alert active"), "Status · Simulated replay", empty distance and window fields hidden, evidence shown by label, pluralized acknowledgements.
+- **Team management** (user request: a supervisor runs more than one team): `POST /api/teams`, `PATCH`/`DELETE /api/teams/{id}` (one team per site; only empty teams with no reports are removed); `TeamCreate`/`TeamUpdate` schemas and TS mirror; client and demo methods; Add team and Manage team on the Team tab.
+- **`scripts/check-shell.mjs`**: the supervisor Overview waits for "Needs your attention", and the map and list checks run on Worksites ("55 locations"). It still stops earlier, on main's existing crew 320 px layout issue.
+
+Checks: 800+ backend and 121 frontend tests, Ruff, oxlint, `tsc -b`, and build clean. The demo-mode supervisor tabs were re-read in headless Chrome.
+## Site species context (Rudra; cross-scope into Braydin's Gemini and Cache's frontend) — 2026-10-17
+
+Explicit user request (Rudra): a read-only, site-aware species guide for team sites using the USFWS IPaC Location API, USFWS critical habitat boundaries on the existing map, and the existing Gemini client. Guide: [SPECIES_CONTEXT.md](SPECIES_CONTEXT.md).
+
+- **Rudra (owned):** new route `GET /api/sites/{id}/species` (`backend/app/api/species.py`, registered in `main.py`), schemas `backend/app/schemas/species.py` + TS mirror, `backend/app/species/**`, fixture generator (`species-context.json`), `.env.example`, AGENTS.md/spec.md route lists. No database models or migrations.
+- **Braydin (review requested):** new `backend/app/gemini/species.py` only. It uses the existing `GeminiClient.generate_structured` and changes no other Gemini file. Please review the grounding rules and confirm the IPaC source/provenance notes.
+- **Cache (review requested):** new `frontend/src/components/data/SpeciesPanel.tsx` and `frontend/tests/species.test.mjs`. Focused edits: `Client.species()` in `api/contracts.ts`, `api/http-client.ts`, `api/validate.ts`, `demo/client.ts`; optional `habitat` overlay prop in `components/data/SiteMap.tsx` (no change when omitted); one `SpeciesSection` line in `pages/ConnectedPages.tsx`. Formatted with the existing prettier style.
+- **Safety lead (open):** curated encounter guidance in `backend/app/species/guidance.py` is `pending_review` until signed off.
+- Score, alerts, report review and clearance are untouched; a test compares site detail, list, alerts and row counts before and after species reads.
+
+Checks: 782 backend tests (47 new), ruff check/format; 118 frontend tests (9 new), oxlint, `tsc -b`, fixture- and API-mode builds; browser check at 1510 px and 390 px with no console errors.
+
+## Live feeds on, demo site frozen, faster refresh (Braydin) — 2026-10-17
+
+Explicit user decision (Braydin): live data for every real site, one frozen scripted demo site.
+
+- `app/services/refresh.py` (Rudra's):
+  - `refresh_all` skips `location_type="demo_site"` (`DEMO_LOCATION_TYPE`), so live feeds never overwrite the T069 scenario. `app/demo/scenario.py` uses the constant, and its docstring says so.
+  - Each site's readings are written in one `INSERT … ON CONFLICT (id, observed_at) DO UPDATE` (`store_observations`) instead of one `session.merge` per reading. Against Tiger, saving went from ~7 sites/min (a full round of ~40 readings per site took ~35 min to save) to ~0.2 s per site.
+  - `python -m app.services.refresh` now loads `backend/.env` (it failed with "DATABASE_URL is not set").
+- `tests/conftest.py`: tests force `FEED_REFRESH_ENABLED=false` and `BRIEFING_SCHEDULE_ENABLED=false`, so starting the app in a test never reaches live feeds or Tiger. `test_loop_is_off_by_default` checks the code default instead of the developer's `.env`.
+- `tests/test_refresh.py`: the demo site is never refreshed; one upsert stores a batch and keeps the last duplicate.
+
+Measured on a live round: the fetch phase is ~20 min for 256 sites. NWS weather and alerts are ~1 s per site; USGS flood gauges are the slowest, with occasional 503 responses. The NWS contact is set through `NWS_USER_AGENT` in each machine's uncommitted `.env`.
 ## Multi-event ML integration handoff (Cache) - 2026-10-17
 
 Explicit user assignment: reuse existing qualified event models and build a typed

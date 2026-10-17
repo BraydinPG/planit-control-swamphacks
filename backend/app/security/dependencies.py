@@ -50,12 +50,18 @@ _bearer = HTTPBearer(auto_error=False, description="Auth0 access token")
 
 @dataclass(frozen=True)
 class CurrentUser:
-    """The caller, from a verified Auth0 access token. Holds no profile data."""
+    """The caller, from a verified Auth0 access token.
+
+    `email` and `name` come from the "Add PlanIT roles" Action's profile claims. They are
+    used only for the supervisor's team roster, never for access decisions.
+    """
 
     sub: str
     role: Role
     permissions: frozenset[str]
     dev_bypass: bool = False
+    email: str | None = None
+    name: str | None = None
 
     def can(self, permission: str) -> bool:
         return permission in self.permissions
@@ -107,7 +113,11 @@ AuthenticatedUser = Annotated[CurrentUser, Depends(get_current_user)]
 def user_from_claims(claims: dict[str, Any], roles_claim: str) -> CurrentUser:
     """Map verified claims to a user. A token without a PlanIT role is refused (403).
 
-    Role names match regardless of case or surrounding spaces ("Supervisor" counts).
+    Role names match regardless of case or surrounding spaces ("Supervisor" counts). A new
+    account gets the `crew` role claim from the Auth0 Action before any role is assigned in
+    the dashboard; its permissions list is then empty, so the crew permissions apply. Crew
+    permissions show nothing until the account joins a team with a join code. A supervisor
+    always needs its permissions assigned in Auth0.
     """
     assigned = claims.get(roles_claim)
     items = assigned if isinstance(assigned, list) else []
@@ -119,11 +129,26 @@ def user_from_claims(claims: dict[str, Any], roles_claim: str) -> CurrentUser:
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Account has no PlanIT Control role")
     granted = claims.get("permissions")
-    if isinstance(granted, list):
+    if isinstance(granted, list) and (granted or role != "crew"):
         permissions = frozenset(p for p in granted if isinstance(p, str))
     else:
+        # No permissions claim, or a new account's default crew role with none assigned yet.
+        # Only crew, the least-privileged role, falls back: supervisors are always explicit.
         permissions = ROLE_PERMISSIONS[role]
-    return CurrentUser(sub=str(claims["sub"]), role=role, permissions=permissions)
+    namespace = roles_claim.rsplit("/", 1)[0] + "/"
+    return CurrentUser(
+        sub=str(claims["sub"]),
+        role=role,
+        permissions=permissions,
+        email=_text(claims.get(namespace + "email")),
+        name=_text(claims.get(namespace + "name")),
+    )
+
+
+def _text(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    return value.strip()[:200] or None
 
 
 def require_permission(*permissions: str) -> Callable[..., CurrentUser]:

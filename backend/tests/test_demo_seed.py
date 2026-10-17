@@ -302,3 +302,117 @@ def test_everything_seeded_is_labeled_simulated(seeded) -> None:
             "flood_alert": 1,
             "lightning_strike": 1,
         }
+
+
+# ---- teammates as crew, and the separate 6 PM briefing-test organization ----
+
+
+def test_teammates_join_the_demo_team_as_crew(factory) -> None:
+    accounts = DemoAccounts(CREW, SUPERVISOR, ("auth0|rudra", "auth0|cache"))
+    with factory() as session:
+        seed_demo(session, NOW, accounts, OUTLOOKS)
+        later = NOW + timedelta(minutes=1)
+        seed_demo(session, later, accounts, OUTLOOKS)  # re-running keeps one row each
+        rows = session.scalars(select(db.Membership).order_by(db.Membership.user_id)).all()
+    assert [(m.user_id, m.role, m.team_id) for m in rows] == [
+        ("auth0|cache", "crew", "demo-team"),
+        ("auth0|demo-crew", "crew", "demo-team"),
+        ("auth0|demo-supervisor", "supervisor", None),
+        ("auth0|rudra", "crew", "demo-team"),
+    ]
+
+
+def test_extra_crew_come_from_settings() -> None:
+    settings = DemoSettings(
+        demo_crew_user_id="auth0|a",
+        demo_supervisor_user_id="auth0|b",
+        demo_extra_crew_user_ids=" auth0|c, ,auth0|d ",
+        _env_file=None,
+    )
+    assert settings.accounts().extra_crew_user_ids == ("auth0|c", "auth0|d")
+
+
+def test_an_account_listed_twice_is_refused(factory) -> None:
+    with factory() as session, pytest.raises(ValueError):
+        seed_demo(session, NOW, DemoAccounts(CREW, SUPERVISOR, (CREW,)), OUTLOOKS)
+
+
+def eia_site(session, site_id="eia860m-FL-56799") -> None:
+    session.add(
+        db.Site(
+            id=site_id, name="Greenland Energy Center", lat=30.2, lon=-81.5,
+            location_type="power_plant", source="EIA-860M (representative)", region="FL",
+        )
+    )  # fmt: skip
+    session.commit()
+
+
+def test_briefing_test_org_gets_a_team_supervisor_and_no_briefing(seeded) -> None:
+    from app.demo.briefing_test import TEST_ORG_ID, setup_briefing_test
+
+    with seeded() as session:
+        eia_site(session)
+        session.add(
+            db.Briefing(
+                id="briefing:eia860m-FL-56799:old", site_id="eia860m-FL-56799",
+                forecast_window_start=NOW, forecast_window_end=NOW + timedelta(hours=12),
+                summary="old", risk_level="low", hazards=[], recommended_actions=[],
+                evidence=[], unknowns=[], generated_by="fallback", created_at=NOW,
+            )
+        )  # fmt: skip
+        session.commit()
+        test = setup_briefing_test(session, "auth0|braydin-test", NOW)
+        setup_briefing_test(session, "auth0|braydin-test", NOW)  # resets cleanly
+        member = session.scalars(
+            select(db.Membership).where(db.Membership.user_id == "auth0|braydin-test")
+        ).one()
+        assert (member.organization_id, member.role) == (TEST_ORG_ID, "supervisor")
+        assert (
+            session.scalar(select(db.Team.site_id).where(db.Team.organization_id == TEST_ORG_ID))
+            == test.site_id
+        )
+        assert (
+            session.scalars(select(db.Briefing).where(db.Briefing.site_id == test.site_id)).all()
+            == []
+        )
+        assert session.get(db.Site, test.site_id).timezone == "America/New_York"
+        # The demo organization is untouched.
+        demo = session.scalars(
+            select(db.Membership).where(db.Membership.organization_id == DEMO_ORG_ID)
+        ).all()
+        assert {m.user_id for m in demo} == {CREW, SUPERVISOR}
+    # NOW is 14:30 in Jacksonville, so the schedule briefs it at 18:00 site time.
+    assert (test.next_run_local.hour, test.next_run_local.minute) == (18, 0)
+
+
+def test_the_six_pm_schedule_briefs_the_test_org_by_itself(seeded) -> None:
+    from app.demo.briefing_test import setup_briefing_test
+    from app.gemini.briefing_schedule import run_due_briefings
+    from app.gemini.client import GeminiClient
+
+    with seeded() as session:
+        eia_site(session)
+        test = setup_briefing_test(session, "auth0|braydin-test", NOW)
+        before = run_due_briefings(session, NOW, GeminiClient(None, None, 1), lambda s, n: [], None)
+        assert test.site_id not in {b.site_id for b in before}  # 14:30 local: not due
+        at_six = NOW.replace(hour=22, minute=1)  # 18:01 EDT
+        after = run_due_briefings(
+            session, at_six, GeminiClient(None, None, 1), lambda s, n: [], None
+        )
+    assert test.site_id in {b.site_id for b in after}
+
+
+@pytest.mark.parametrize("bad", ["", "demo|supervisor"])
+def test_briefing_test_needs_a_real_account(seeded, bad) -> None:
+    from app.demo.briefing_test import setup_briefing_test
+
+    with seeded() as session, pytest.raises(ValueError):
+        eia_site(session)
+        setup_briefing_test(session, bad, NOW)
+
+
+def test_briefing_test_refuses_a_site_another_org_uses(seeded) -> None:
+    from app.demo.briefing_test import setup_briefing_test
+
+    with seeded() as session, pytest.raises(ValueError):
+        setup_briefing_test(session, "auth0|braydin-test", NOW, site_id=DEMO_SITE_ID)

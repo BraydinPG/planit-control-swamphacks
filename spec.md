@@ -253,6 +253,11 @@ Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. H
 | Confirm a potential hazard from a received notice | No | Any notified supervisor |
 | Edit and send the instruction for that hazard | No | The confirming supervisor |
 | Read organization-wide briefings | Own organization only | Own organization only |
+| Join a team with a join code | Only when on no team yet | No (linked by an administrator) |
+| See the team roster; create and revoke join codes | No | Own organization only |
+| Add, rename, move, or remove teams | No | Own organization only |
+
+Team onboarding: a new Auth0 account starts as crew (the post-login Action) and sees no site until it enters a join code on the "Join your team" screen. Supervisors create codes on the Team tab, see exactly who is on each team, and revoke codes. Supervisor accounts are assigned in Auth0 and linked to an organization by an administrator.
 
 Keep secrets in environment variables. Provide one demo account per role. Any development bypass must be explicit, local-only, and disabled by default.
 
@@ -277,6 +282,13 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
 | `GET /api/sites/{id}/briefing` | The site's latest stored next-day briefing (crew: their team's site; supervisors: their organization's team sites). When there is none to show, the 403 or 404 carries `{"detail": {"reason", "message"}}`: `not_your_site`, `no_team`, `not_linked`, `other_organization`, `no_supervisor`, or `not_generated`. |
 | `GET /api/briefings` | The latest briefing for every team site in the caller's organization (crew and supervisors). |
+| `GET /api/me` | The caller's organization, team, and site, or nulls before joining. Refreshes the roster name and email. |
+| `POST /api/join` | A crew account with no organization joins the team behind a join code. |
+| `GET /api/team` | Supervisor: the organization's supervisors and, per team, its site, members (name, email, joined), and active join codes. |
+| `POST /api/teams/{id}/join-codes` | Supervisor: create an `XXXX-XXXX` join code for a team in their organization. Expires after 7 days. |
+| `DELETE /api/join-codes/{code}` | Supervisor: revoke one of their organization's codes. Existing members stay. |
+| `POST /api/teams`, `PATCH /api/teams/{id}`, `DELETE /api/teams/{id}` | Supervisor: add a team to their organization, rename it or change its site (a site has at most one team), or remove a team with no members and no reports. |
+| `GET /api/sites/{id}/species` | Read-only species context for a team site: USFWS IPaC federally listed species whose range overlaps the site (regional context, not a sighting), USFWS critical habitat nearby, curated encounter guidance, and the site's crew wildlife reports kept separate. Same access as site detail; 404 `no_team` for sites without a team. Never affects the score, alerts, or clearance. See `docs/SPECIES_CONTEXT.md`. |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.
 
