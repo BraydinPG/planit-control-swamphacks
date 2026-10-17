@@ -80,6 +80,19 @@ def run(h, fake: FakeGemini | None, **fields) -> dict:
 # ---- the analysis ----
 
 
+def test_access_mat_analysis_accepts_category_without_overwriting_crew_assessment(h) -> None:
+    fake = FakeGemini({**SUPPORTS, "suggested_category": "access_mat_deterioration"})
+    note = "Mat 12: crew stage D, broken timber."
+    result = run(h, fake, category="access_mat_deterioration", note=note)
+    row = result["row"]
+    assert row.category == "access_mat_deterioration"
+    assert row.note == note
+    assert row.review_status == "pending"
+    assert row.enrichment["suggested_category"] == "access_mat_deterioration"
+    assert "load capacity" in fake.prompts[0]
+    assert "approved grading rubric" in fake.prompts[0]
+
+
 def test_supported_report_stores_a_complete_analysis(h) -> None:
     fake = FakeGemini()
     result = run(h, fake)

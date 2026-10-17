@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Access mat report category - 2026-10-17
+- User-authorized addition: `access_mat_deterioration` / "Access mat deterioration" across the canonical report enum, TypeScript mirror, form/review labels, validators, demo client, notice labels and Gemini analysis. Existing string DB columns need no migration. Potential notices use the existing review/instruction workflow and a labeled prototype 1-mile fallback radius.
+- The optional note can preserve the crew's A-D stage and section description. User clarification: individual mat IDs are impractical and no approved rubric is available. T034B therefore tracks section-based reporting, structured crew judgment and evidence-linked Gemini observations for supervisor review; automated letter grading is deferred. Gemini is prompted to describe visible damage and unknowns without claiming structural capacity or replacing the crew assessment.
+- Verification: 125 backend checks passed (`test_reports_api`, `test_report_analysis`, `test_ts_mirror`, `test_hazards_api`, `test_radius`), plus 34 focused frontend checks (`data`, `report-analysis`), production build and lint. No live Gemini evaluation or model training was needed for this category addition.
 ## Demo score and prediction failure fixes - 2026-10-17
 - [PR44](https://github.com/BraydinPG/planit-control-swamphacks/pull/44) is open for review against main; implementation `9ae6866`, reviewed-main merge `07c71db`. No automatic merge or operational enablement.
 - Explicit Cache bug-fix assignment on `feature/cache-demo-score-prediction-fixes`, initially main `0a0d5c8`; reviewed main `3272930` incorporated with team/species and supervisor changes preserved. Authorized Rudra-path changes are in `docs/CROSS_SCOPE_CHANGES.md`; no scoring algorithm/weights, ML, Auth0, DB configuration or canonical schema edits by Cache.

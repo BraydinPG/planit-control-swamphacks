@@ -152,6 +152,7 @@ Monte Carlo is an offline/internal validation and stress-testing tool only. It d
 | Earthquake | 25 miles |
 | Broken electrical pole or downed line | 1 mile |
 | On-site fire | 1 mile |
+| Access mat deterioration | 1 mile |
 | Any other category | 1 mile |
 
 These defaults are prototype notice distances, except lightning, which matches the required stop-work distance. Do not present the other defaults as official policy.
@@ -215,7 +216,8 @@ Create a small evaluation set for grounding, schema validity, unknown handling, 
 - Put site status, current alert, immediate action, and update time at the top.
 - Large, glove-friendly controls, minimum 44 by 44 CSS pixels for primary touch targets.
 - For a confirmed hazard, show how much longer it is expected to last in one plain sentence beside the instruction, labeled as an estimate.
-- Report hazard flow with photo, category, coordinates, a required present-or-absent choice, and optional text. Categories include broken electrical pole or downed line, on-site fire, wildlife, flooding, and other. These on-site hazards have no automated feed, so the crew report is how they enter the system.
+- Report hazard flow with photo, category, coordinates, a required present-or-absent choice, and optional text. Categories include broken electrical pole or downed line, on-site fire, access mat deterioration, wildlife, flooding, and other. These on-site hazards have no automated feed, so the crew report is how they enter the system.
+- Access mat deterioration uses `access_mat_deterioration` in the API. Crews may record their A-D stage in the optional note (D means unusable under the proposed crew convention). Structured stage selection and Gemini stage comparison are follow-up work requiring an approved grading rubric. Gemini may describe visible damage and unknowns; it cannot determine structural capacity from a photo or overwrite the crew assessment.
 - High contrast and large text suitable for bright outdoor use.
 - Use icons and labels in addition to color. Support keyboard access, visible focus, semantic labels, and screen readers.
 
