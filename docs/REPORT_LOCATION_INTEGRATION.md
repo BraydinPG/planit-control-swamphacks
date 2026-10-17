@@ -3,6 +3,9 @@
 Verified 2026-10-17. Branch `feature/cache-report-device-location` starts at merged main
 `681582be17315444f5ed9785c15f0fb37e8c09eb`. PR #33 is merged (`a54b87e`); no unmerged
 parent dependency. Work is isolated in `C:/Users/cache/planit-control-functional`.
+Implementation `cc7b86b99c2327b6459cad6bebd1828c172c5f4a` is published in
+[PR #34](https://github.com/BraydinPG/planit-control-swamphacks/pull/34), open for review;
+no automatic merge or operational activation.
 
 **T034A remains unchecked.** T034 is checked; T053A is unchecked and not published in
 `backend/app/schemas/reports.py`, `frontend/src/types/api.ts`, or report persistence.
