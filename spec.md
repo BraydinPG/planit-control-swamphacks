@@ -47,7 +47,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 3. Open an alert to see its trigger, evidence, distance, and countdown.
 4. Acknowledge an alert.
 5. Submit a hazard report with a photo, category, coordinates, whether the hazard is present, and an optional note. Marking the hazard present creates a potential-hazard notice. A report that the hazard is absent stays with that crew member’s organization for its supervisor to review.
-6. Receive a “potential {hazard}” notice when the crew member’s team is inside the notice radius. That notice does not include instructions. After a supervisor confirms the hazard, receive the instruction that supervisor accepted or edited.
+6. Receive a “potential {hazard}” notice when the crew member’s team is inside the notice radius. That notice does not include instructions. After a supervisor confirms the hazard, receive the instruction that supervisor accepted or edited. For a confirmed event the model supports (flooding today), also see in plain words how much longer it is expected to last, labeled as an estimate and never as an all-clear.
 
 ### Supervisor
 
@@ -57,7 +57,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 4. Open a site to inspect score factors, observations, freshness, active alerts, and crew reports.
 5. Review this organization’s reports that say no hazard is present, and make the final call on those reports.
 6. Receive a “potential {hazard}” notice, with no instructions, when one of this supervisor’s teams is inside the radius. Any supervisor who received that notice can confirm the hazard.
-7. After confirming, review Gemini’s suggested instruction, change it if needed, and send that text to every team inside the same radius.
+7. After confirming, review Gemini’s suggested instruction, change it if needed, and send that text to every team inside the same radius. For a confirmed event the model supports (flooding today), also see in plain words how much longer it is expected to last, labeled as an estimate and never as an all-clear.
 8. Review the next-day briefing, generated automatically at 6 PM local time, and use the evidence links to inspect its inputs.
 
 ## 4. MVP scope and priorities
@@ -125,6 +125,8 @@ Use as-of snapshots, strict feature allowlists, and episode/storm-grouped chrono
 
 The primary callable is `predict_active_event(event_context)`. Keep the documented `predict_site(features)` shape as a compatibility adapter only: it must not emit event-onset probabilities, and its model score component is excluded until Rudra explicitly approves its meaning. The model does not set the final Hazard Index, deterministic alerts, lightning timer, or work status. No model output may authorize work, declare a site safe, or suppress an alert. Missing evidence/artifacts produce an explicit unavailable/fallback result, never a fabricated low-risk probability.
 
+Shown to users: when a confirmed event has an outlook, crew and supervisors see one plain sentence, for example "This flood is likely to continue for about 6 more hours (likely range 2–14 hours). Estimate from past NOAA flood records. Not an all-clear." It appears on the site detail and on the crew home beside the confirmed hazard and its instruction, and the 6 PM briefing and the suggested instruction may cite it. With no outlook, the screen says "No duration estimate for this hazard", never zero hours or ending. Live support today is a supervisor-confirmed flood; flash flood follows (T050A). Other qualified research targets stay unsupported until a feed or report category confirms them.
+
 Monte Carlo is an offline/internal validation and stress-testing tool only. It does not establish real-world accuracy; independent historical backtesting is the validation method. Production inference must be deterministic and return compact summaries, not simulation trajectories.
 
 ### Deterministic rules
@@ -163,7 +165,7 @@ All Gemini calls run server-side. Send only the evidence needed for the task. Va
 
 ### Next-day briefing
 
-Input: forecast observations, site score and factors, active alerts, confirmed crew reports, timestamps, and missing-data flags.
+Input: forecast observations, site score and factors, active alerts, confirmed crew reports, the advisory event outlook for a confirmed event when available, timestamps, and missing-data flags.
 
 Output fields: `summary`, `risk_level`, `hazards[]`, `recommended_actions[]`, `evidence[]`, `unknowns[]`.
 
@@ -197,7 +199,7 @@ Rules: Gemini chooses the radius only. It does not write instructions in this st
 
 ### Confirmed instruction
 
-Input: confirmed hazard label, radius, source, and the evidence already stored with the notice.
+Input: confirmed hazard label, radius, source, the evidence already stored with the notice, and the advisory event outlook when available.
 
 Output fields: `suggested_instruction`, `evidence[]`, `unknowns[]`.
 
@@ -212,6 +214,7 @@ Create a small evaluation set for grounding, schema validity, unknown handling, 
 - Mobile-first site and alert screens.
 - Put site status, current alert, immediate action, and update time at the top.
 - Large, glove-friendly controls, minimum 44 by 44 CSS pixels for primary touch targets.
+- For a confirmed hazard, show how much longer it is expected to last in one plain sentence beside the instruction, labeled as an estimate.
 - Report hazard flow with photo, category, coordinates, a required present-or-absent choice, and optional text. Categories include broken electrical pole or downed line, on-site fire, wildlife, flooding, and other. These on-site hazards have no automated feed, so the crew report is how they enter the system.
 - High contrast and large text suitable for bright outdoor use.
 - Use icons and labels in addition to color. Support keyboard access, visible focus, semantic labels, and screen readers.
@@ -223,6 +226,7 @@ Create a small evaluation set for grounding, schema validity, unknown handling, 
 - Filters for region, hazard, and alert state.
 - Site detail with observations, sources, timestamps, reports, and score breakdown.
 - Briefing view with action recommendations, evidence links, and unknowns.
+- For a confirmed event, the expected remaining duration in plain words on site detail, with "How this is estimated" details on request.
 
 ### UX acceptance checks
 
@@ -324,7 +328,7 @@ Ownership summary:
 
 - Cache: `ml/`, model training, features, evaluation, model handoff, and the deterministic 0–10 site risk algorithm (`backend/app/rules/score.py`).
 - Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/` except Rudra's NWS and cache files, `backend/app/gemini/`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, Auth0 setup notes.
-- Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick deploys the frontend.
+- Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/` (now Cache's). Braydin deploys the frontend (T082).
 - Rudra: `backend/app/` except `security/`, `db/`, Braydin's adapters in `ingestion/`, and `gemini/`, API contracts, NWS weather, forecast, and flood-alert feeds and the shared feed cache in `ingestion/`, deterministic alert rules, scoring, report and notice persistence, root README. Rudra imports Braydin’s database session, other ingestion adapters, and Gemini functions, and does not edit migrations, Braydin's feed adapters, or Gemini calls.
 
 Rudra creates and publishes the shared schemas first. Other members start against fixtures and their own module boundaries. Do not have two people edit the same file. Shared manifest and lockfile changes go through Rudra.
@@ -353,7 +357,7 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 | Auth0 (sponsor track) | Role-based sign-in and backend authorization demonstrated with two accounts. |
 | Tiger Data (sponsor track) | Time-ordered hazard records in Tiger Data, including hypertables for observations, alerts, and audit events. |
 | Vultr (sponsor track) | FastAPI app and frontend hosted on Vultr, with crew photos in Vultr Object Storage. |
-| AI/ML | Trained historical-data model, documented features, time-based evaluation, baseline comparison, public README. |
+| AI/ML | Trained historical-data model, documented features, time-based evaluation, baseline comparison, public README. Shown to crew and supervisors as a plain-language estimate of how much longer a confirmed flood will last. |
 
 ## 14. Demo script and acceptance criteria
 
@@ -364,8 +368,9 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 3. Replay a lightning strike within 10 miles. Show stop-work, evidence, acknowledgement, and 30-minute timer. Replay another strike and show the timer reset.
 4. Sign in as crew and submit a hazard photo and pin. Show Gemini’s suggested classification, then confirm it as a person.
 5. Sign in as supervisor. Review the report and inspect the score's weighted factor breakdown.
-6. Show tomorrow’s briefing, generated automatically at 6 PM local time, and its recommended actions linked to evidence.
-7. Point to the public README’s model evaluation, data sources, Auth0 roles, and Gemini safeguards.
+6. Confirm a flood notice (replay, labeled simulated) and show its expected remaining duration on the crew and supervisor screens, labeled as an estimate and not an all-clear.
+7. Show tomorrow’s briefing, generated automatically at 6 PM local time, and its recommended actions linked to evidence.
+8. Point to the public README’s model evaluation, data sources, Auth0 roles, and Gemini safeguards.
 
 ### Release acceptance
 
@@ -375,5 +380,6 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 - Crew can submit a photo and pin. Supervisor can review it.
 - Gemini outputs validate against schemas, cite supplied evidence, and expose unknowns.
 - Crew and supervisor access differs at the UI and API boundaries.
+- A confirmed flood shows its expected remaining duration in plain words, or "No duration estimate" when there is none.
 - Model training and evaluation are documented and reproducible from the repository.
 - Core demo works with simulated lightning and fallback behavior when external feeds or Gemini are unavailable.
