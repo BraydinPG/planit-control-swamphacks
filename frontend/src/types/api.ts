@@ -129,7 +129,8 @@ export interface HazardScore {
 
 // ---- alerts ----
 
-export type AlertRule = 'lightning_stop_work' | 'flood' | 'heat' | 'hurricane' | 'earthquake'
+export type AlertRule =
+  'lightning_stop_work' | 'flood' | 'heat' | 'hurricane' | 'earthquake'
 
 export type AlertState = 'active' | 'cleared'
 
@@ -163,11 +164,7 @@ export interface Alert {
 // ---- reports ----
 
 export type ReportCategory =
-  | 'broken_pole_downed_line'
-  | 'on_site_fire'
-  | 'wildlife'
-  | 'flooding'
-  | 'other'
+  'broken_pole_downed_line' | 'on_site_fire' | 'wildlife' | 'flooding' | 'other'
 
 export type ReviewStatus = 'pending' | 'confirmed' | 'rejected'
 
@@ -265,7 +262,7 @@ export interface InstructionSend {
   instruction: string
 }
 
-// ---- briefings and explanations ----
+// ---- stored briefings ----
 
 export interface BriefingHazard {
   hazard: string
@@ -278,14 +275,6 @@ export interface RecommendedAction {
   evidence_ids: string[]
 }
 
-/**
- * Removed from the API 2026-10-17: briefings are generated at 6 PM site-local time and read
- * with GET /api/sites/{id}/briefing. Delete once the frontend stops using it (T067A).
- */
-export interface BriefingRequest {
-  scope?: 'site' | 'organization'
-}
-
 export interface Briefing {
   id: string
   site_id: string | null
@@ -296,22 +285,6 @@ export interface Briefing {
   risk_level: RiskLevel
   hazards: BriefingHazard[]
   recommended_actions: RecommendedAction[]
-  evidence: Evidence[]
-  unknowns: string[]
-  generated_by: GeneratedBy
-  created_at: string
-}
-
-/**
- * Removed from the API 2026-10-17: Gemini no longer explains scores; the weighted factor
- * breakdown is the explanation. Delete once the frontend stops using it (T067A).
- */
-export interface Explanation {
-  site_id: string
-  score_created_at: string
-  explanation: string | null
-  top_factors: FactorContribution[]
-  change_since_previous: string | null
   evidence: Evidence[]
   unknowns: string[]
   generated_by: GeneratedBy

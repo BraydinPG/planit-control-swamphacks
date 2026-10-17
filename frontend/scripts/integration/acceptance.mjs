@@ -9,8 +9,8 @@ export const REQUIRED_ROUTES = [
   ['/api/reports/{report_id}/review', 'post'],
   ['/api/hazards/{hazard_id}/confirm', 'post'],
   ['/api/hazards/{hazard_id}/instruction', 'post'],
-  ['/api/sites/{site_id}/briefings', 'post'],
-  ['/api/sites/{site_id}/explanations', 'post'],
+  ['/api/sites/{site_id}/briefing', 'get'],
+  ['/api/briefings', 'get'],
 ]
 
 export function origin(value) {

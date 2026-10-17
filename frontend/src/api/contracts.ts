@@ -2,7 +2,6 @@ import type {
   Alert,
   Briefing,
   CrewReport,
-  Explanation,
   HazardNotice,
   ReportCreate,
   ReportReview,
@@ -20,7 +19,7 @@ export interface Client {
     reports: boolean
     reviewReports: boolean
     hazards: boolean
-    ai: boolean
+    briefings: boolean
   }
   now?(): number
   sites(): Promise<SiteSummary[]>
@@ -32,8 +31,8 @@ export interface Client {
   review(id: string, input: ReportReview): Promise<CrewReport>
   confirm(id: string): Promise<unknown>
   instruct(id: string, instruction: string): Promise<unknown>
-  briefing(id: string, fallback?: boolean): Promise<Briefing>
-  explanation(id: string, fallback?: boolean): Promise<Explanation>
+  briefing(id: string): Promise<Briefing | null>
+  briefings(): Promise<Briefing[]>
 }
 export interface DemoSnapshot {
   version: 1

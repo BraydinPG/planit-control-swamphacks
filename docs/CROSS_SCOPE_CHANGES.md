@@ -1,3 +1,15 @@
+## T067A / T065 continuation - 2026-10-17
+
+Explicit user authorization: complete T067A first, then wire T065 without duplicating Braydin's provisioning. Branch `feature/cache-stored-briefings-report-lifecycle` stacks on PR #24 head `6a2fc4d`; reviewed main `70c20ff` incorporated in `9dcd278`, preserving merged PR #26 and Auth0/Gemini changes. Detailed teammate evidence remains linked in PROJECT_CONTEXT and owner guides.
+
+T067A changed paths: `frontend/src/api/{contracts,http-client,validate}.ts`, `src/demo/client.ts`, `src/pages/ConnectedPages.tsx`, new `src/components/data/StoredBriefings.tsx`, `scripts/integration/acceptance.mjs`, `scripts/check-shell.mjs`, `tests/{briefings,data,status}.test.mjs`, `tests/browser-harness.tsx`; removed only explicitly authorized obsolete interfaces in `src/types/api.ts` and `src/fixtures/explanations.json`. No unrelated canonical fixtures edited. Unit SSR caches isolated to prevent browser profile/file watcher conflicts; verified test time improved from 48 to 5 seconds.
+
+Shared docs: `tasks.md` exact T067A box only, `PROJECT_CONTEXT.md`, this log, `docs/INTEGRATION_STATUS.md`, `docs/FRONTEND_REDESIGN_HANDOFF.md`, `frontend/INTEGRATION.md`, `frontend/LIVE_INTEGRATION.md`. Before: removed-feature request buttons/POSTs and fallback-generation checkbox. After: read-only site/organization stored GETs, exact scheduled 404 empty, validated window/context/source, retained deterministic score factors. No generation scheduler in browser.
+
+T067A verification: lint/TypeScript/build, 44 Node checks, 65 focused backend fixture/briefing/TS-mirror checks; full installed Edge browser at 1440/390/320, stored success/404/401/403/503/invalid responses, Gemini/template labels, GET-only requests and keyboard checks pass. Actual role/persistence is separate; T065 stays unchecked without it. Backend/auth/database/ML/manifests/locks remain unchanged by Cache. Rudra should review contract compatibility; Braydin should use the current GET-only UI. Implementation commit follows this entry; PR metadata follows publication.
+
+Historical records below retain their original as-of facts; current status is INTEGRATION_STATUS.
+
 # Cross-scope changes
 
 ## Phase 4 integration preparation - 2026-10-17

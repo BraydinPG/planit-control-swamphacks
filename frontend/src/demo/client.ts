@@ -4,13 +4,11 @@ import reportsJSON from '../fixtures/reports.json'
 import alertsJSON from '../fixtures/alerts.json'
 import noticesJSON from '../fixtures/hazard-notices.json'
 import briefingsJSON from '../fixtures/briefings.json'
-import explanationsJSON from '../fixtures/explanations.json'
 import references from './generated/references.json'
 import type {
   Alert,
   Briefing,
   CrewReport,
-  Explanation,
   HazardNotice,
   ReportCreate,
   ReportReview,
@@ -107,7 +105,7 @@ export class DemoClient implements Client {
     reports: true,
     reviewReports: true,
     hazards: true,
-    ai: true,
+    briefings: true,
   }
   private state: DemoSnapshot
   private photoURLs = new Map<string, string>()
@@ -363,26 +361,16 @@ export class DemoClient implements Client {
     this.save()
     return clone(n)
   }
-  async briefing(id: string, fallback = false) {
+  async briefing(id: string) {
     this.allowed(id)
-    const b = clone(
-      (briefingsJSON as Briefing[]).find(
-        (b) => b.generated_by === (fallback ? 'fallback' : 'gemini'),
-      )!,
-    )
-    if (id !== assigned)
-      throw new ApiError(503, 'No briefing fixture for this reference site')
-    return b
+    const rows = (briefingsJSON as Briefing[])
+      .filter((b) => b.site_id === id)
+      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+    return rows.length ? clone(rows[0]) : null
   }
-  async explanation(id: string, fallback = false) {
-    this.allowed(id)
-    if (id !== assigned)
-      throw new ApiError(503, 'No explanation fixture for this reference site')
-    return clone(
-      (explanationsJSON as Explanation[]).find(
-        (e) => e.generated_by === (fallback ? 'fallback' : 'gemini'),
-      )!,
-    )
+  async briefings() {
+    // Public archived fixture examples, including a template; never generated here.
+    return clone(briefingsJSON as Briefing[])
   }
   replay(kind: 'strike' | 'cleared') {
     const a = this.state.alerts.find((a) => a.id === 'alert-ltg-demo')!

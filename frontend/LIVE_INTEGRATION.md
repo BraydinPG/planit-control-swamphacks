@@ -4,9 +4,11 @@ This guide tests the existing application, Auth0 provider and FastAPI client. It
 
 ## Current verified boundary
 
-PR #19 merged as `64cf632`. This phase-4 branch incorporates reviewed main `9b395f0` (initial phase-4 base `9ba1b7c`), including T052 photo storage and T053 report list/create. Site and alert reads/acknowledgement plus report reads/create are published. Report review, hazard confirmation/instruction and Gemini endpoints remain absent at this checkpoint. Nick now owns T054/T054A/T055 under Rudra's contract review; Braydin owns Auth0, database/seed linkage, Gemini and Vultr provisioning. Read current tasks/ownership before editing.
+T067A/T065 branch `feature/cache-stored-briefings-report-lifecycle` stacks on PR #24 head `6a2fc4d` and incorporates reviewed main `70c20ff`, including merged PR #26 (`9809db4`) and Braydin's T058A/Auth0 update (`7a2a886`). T053/T054/T054A/T055 and stored briefing GET routes exist in source. The diagnostics compare that source to the actual running server before any account check.
 
-The frontend enables report creation/listing separately from review. In real mode a present report requires a photo; absent reports do not. The existing multipart client sends canonical fields and lets the server enforce team/organization scope and validate image bytes. Review/instruction/AI actions stay unavailable until their routes exist. No actual report was submitted during this run; real credentials/database are still missing. The frontend offers JPEG/PNG/WebP; the new backend additionally supports HEIC. Private photo retrieval still needs its authorized owner integration.
+Stored site and organization briefings are read-only. A site 404 means ?No briefing yet. Briefings are generated at 6 PM site-local time.? No browser timer or mutation generates a briefing. Canonical Gemini and template fixture results remain visibly archived/simulated. Site factors provide the deterministic score breakdown.
+
+Braydin verified isolated Auth0 sign-in on main; that is owner evidence, not Cache's authenticated application/persistence acceptance. Database memberships and this application's real workflow still require verification. Do not overwrite private configuration or duplicate provisioning.
 
 ## Configure and start the existing services
 
@@ -71,8 +73,8 @@ The extra prompt requests that specific alert ID. The write requires real role r
 | T063 | Sign in, get 200 authorized site list/detail, and inspect the same view components used in demo. Supervisor sees the actual seeded monitored locations; crew sees only its assignment. Confirm source/freshness/null states and no demo substitution on errors. |
 | T064 | Use the real seeded simulated alert, acknowledge in the UI, reload, and confirm the same backend acknowledgement. Observe server-provided countdown/state; local zero never clears it. Independent API read-back supplements this browser check. |
 | T066 | Owner verifies T025/T026 first. Real crew and supervisor login/logout, roles/screens and session transitions; direct unrelated-site request denied server-side. Missing/expired/invalid token and prohibited operations must have actual outcomes, not mocked-provider assertions. |
-| T065 | After Nick's T054/T054A routes land, use the existing real report form: present/photo and absent cases, pending state, potential notice without instruction, notified supervisor confirmation/edit/send and team delivery. Private local photo storage is development-only; deployed Vultr configuration stays owner work. |
-| T067 | After Braydin publishes T057-T060, verify generated/fallback briefing, explanation, source references, enrichment suggestion and human review. No Gemini secret or direct request in browser. |
+| T065 | With the merged T054/T054A routes, use the existing real report form: present/photo and absent cases, pending state, potential notice without instruction, notified supervisor confirmation/edit/send and team delivery. Private local photo storage is development-only; deployed Vultr configuration stays owner work. |
+| T067 | Verify stored site/organization briefing GETs, template labels, source references, enrichment suggestion and human review. No Gemini secret or direct request in browser. |
 | T068 | Re-run phone/desktop, keyboard/focus and failure states with those actual API/session paths. Demo checks remain regression evidence only. |
 
 The checker explicitly leaves browser sign-in/reload acceptance unverified. Do not check T063-T068 merely because API reads or this harness pass. Keep AI advisory output separate from deterministic score/alert authority and work authorization. Reported electrical/structural/access hazards require confirmed field evidence; simulated or missing data cannot mean safe conditions.
@@ -83,7 +85,7 @@ Focused checks from repository root (backend Python active):
 python -m pytest frontend/tests/test_integration_probe.py backend/tests -q
 python -m ruff check frontend/scripts/probe-integration.py frontend/scripts/run-live-account-check.py frontend/tests/test_integration_probe.py
 cd frontend
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs
+node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs
 npm run lint
 npm run build
 node scripts/check-shell.mjs http://localhost:5173/

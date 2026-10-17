@@ -16,15 +16,15 @@ Open http://localhost:5173/. No Python setup, ignored ML model artifact, API cre
 
 1. **Crew:** open Overview, inspect the active alert, record a simulated acknowledgement, and reload to see persistence. In Alerts, replay another server strike or an explicitly cleared payload. Countdown expiry alone never clears an alert.
 2. Open Reports. Choose category and present/absent; coordinates start at the reference site and are editable. Add an optional JPEG/PNG/WebP (maximum 5 MB); leave the note empty and submit. The new report is pending, and a present report creates a potential notice with no instructions.
-3. **Supervisor:** switch workspace; open the map/list, use filters, and open the Everglades simulated site. Review the new report's classification, confirm its relevant potential notice, write/edit an instruction and send it. Switch back to Crew to see that approved instruction. These operations change only the isolated browser demo.
-4. Open Briefings for the Everglades simulated site. Request the prerecorded Gemini example, then select the deterministic fallback checkbox and request again. Review evidence, time window and unknowns. These canonical historical texts are not regenerated after demo mutations and are not current employer instructions.
+3. **Supervisor:** switch workspace; open the map/list, use filters, and open the Everglades simulated site. Review an absent report, or confirm a present report's relevant potential notice, write/edit an instruction and send it. Switch back to Crew to see that approved instruction. These operations change only the isolated browser demo.
+4. Open Briefings: the latest stored site fixture loads automatically. Choose Organization briefings to inspect the archived Gemini and template examples. Review evidence, forecast window and unknowns. These texts are read-only, not regenerated after demo mutations, and are not current employer instructions.
 5. In supervisor locations, **Flood advisory replay** opens `eia860m-FL-59611`; **Wind advisory replay** opens `eia860m-AZ-68414`. Inspect the 2.1 research event persistence, duration, accepted/rejected site evidence, source times and explicit unverified worker hazards. Other sites report no supported outlook; they never borrow these probabilities.
 
 Demo state is stored only in `planit:frontend-demo:v1`. Reset demo restores this namespace without deleting Auth0 or unrelated storage. Photos are object URLs in memory and disappear on reload; the report does not claim durable photo storage. Corrupt/oversized saved demo data resets locally; blocked/full storage reports that mutations are memory-only. Never use real private photos or personal information in this public demonstration.
 
 ## Data and map provenance
 
-- Five canonical simulated sites, alerts, reports, notices, briefings and explanations are read unchanged from Rudra's generated `src/fixtures/*.json` using `src/types/api.ts`.
+- Five canonical simulated sites, alerts, reports, notices and briefings are read unchanged from Rudra's generated `src/fixtures/*.json` using `src/types/api.ts`.
 - Fifty EIA reference plants use the reconciled `eia860m-{state}-{plant_id}` identities and coordinates from the existing ML/backend-selector export. They are not verified active worksites and have null scores/timestamps and no supplied live observations. Demo organization/team assignments apply to the canonical simulated examples, not all reference plants.
 - `src/demo/generated/references.json` and `advisories.json` are committed exports of approved ML fixtures. Rebuild only after checking source changes, from repository root with the documented ML Python environment:
 
@@ -57,7 +57,9 @@ Configure the actual Auth0 application callback/logout URLs for localhost:5173 a
 
 An empty API base uses same-origin `/api`. Vite proxies it to the existing FastAPI at `127.0.0.1:8000`; start that backend using its own documented environment. An absolute API base requires owner-configured CORS. Production hosting must route `/api` to FastAPI; Vite's development proxy is not deployment configuration. HTTP is allowed only for loopback; remote APIs require HTTPS. No tokens are stored by the demo client and no redirects or fake development-role headers are sent.
 
-The shared `HttpClient` supports published canonical request types and routes, multipart `ReportCreate` with `photo`, review/confirmation/instruction bodies, briefing/explanation and the separately published optional T050 `event_outlook`. Verified main `9ba1b7c` publishes site reads, T048 alert listing/acknowledgement and T053 report listing/create. The client requests `state=all`, enables acknowledgement only for active alerts, and refreshes shared views after the server responds. Response Date headers correct the display clock estimate; an elapsed countdown still cannot change server state. `capabilities.reports` now enables published list/create. Separate `.reviewReports`, `.hazards` and `.ai` remain false until review/confirmation/instruction/Gemini routes are published and tested. Live present reports require a photo; absent reports do not. Enable each deliberately after owner review. There is no automatic POST retry.
+The shared `HttpClient` uses canonical multipart `ReportCreate` and published response types. Stored briefings are read with `GET /api/sites/{id}/briefing` and `GET /api/briefings`. Site 404 is an empty scheduled-briefing state; other errors stay errors. There is no browser scheduler or generation action. `StoredBriefings.tsx` separates display from transport and labels Gemini versus deterministic template results. The deterministic factor breakdown remains in site detail.
+
+Report lifecycle wiring is the next checkpoint in this branch; see LIVE_INTEGRATION for its current capability and actual acceptance state.
 
 `401`, `403`, `404`, `409`, `422`, `503`, invalid JSON, token acquisition failure, request timeout and network failure have explicit UI outcomes. Live failure never switches to fixtures. Missing Auth0 settings show the existing provider's unconfigured sign-in state. Missing Tiger Data configuration remains a service blocker, not permission for a local database or bypass. Live lists/details share the same view components as demos; authenticated successful real data is not yet verified locally.
 
@@ -70,11 +72,11 @@ From `frontend/`, with Vite running for the browser check:
 ```powershell
 npm run lint
 npm run build
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs
+node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Build includes TypeScript. The focused suite now has 39 tests (23 foundation and 16 integration-orchestration tests); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+Build includes TypeScript. T067A has 44 focused checks (39 prior plus 5 stored-briefing checks); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
 
 For the built demo, run `npm run preview -- --host localhost --port 5174 --strictPort` in a second terminal after building, then `node scripts/check-shell.mjs http://localhost:5174/ --production`. This exercises the same demo lifecycle against static production assets and verifies that the mocked auth harness is absent; compile-time mode/provider tests run only against the development server. A fresh committed frontend export at `4a9e44f`, with no `.env`, cache, Python or model artifacts copied, passed `npm ci`, build and this full production-bundle browser check. The existing Auth0 dependency's postinstall allowScripts warning did not prevent installation/build; npm reported zero known vulnerabilities at that check.
 
