@@ -15,6 +15,9 @@
   --pc-bg: #f2f2f7;
   --pc-surface: #ffffff;
   --pc-surface-2: #f2f2f7;
+  /* Hover on white surfaces: lighter than the page background so a hovered
+     card never blends into it. */
+  --pc-hover: #f9f9fb;
   --pc-nav: #f9f9fb;
   --pc-line: #d2d2d7;
   --pc-line-strong: #8e8e93;
@@ -46,6 +49,7 @@
   --color-bg: var(--pc-bg);
   --color-surface: var(--pc-surface);
   --color-surface-2: var(--pc-surface-2);
+  --color-hover: var(--pc-hover);
   --color-nav: var(--pc-nav);
   --color-line: var(--pc-line);
   --color-line-strong: var(--pc-line-strong);
