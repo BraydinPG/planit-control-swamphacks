@@ -1,16 +1,17 @@
 import {
+  validateAlert,
+  validateSiteDetail,
+  validateSiteSummary,
+  validateUniqueRows,
+} from './live-read-validation'
+import {
   validateBriefing,
   validateReport,
   validateNotice,
   validateConfirmation,
 } from './validate'
-import type {
-  Alert,
-  ReportCreate,
-  ReportReview,
-  SiteSummary,
-} from '../types/api'
-import { ApiError, type Client, type SiteRecord } from './contracts'
+import type { ReportCreate, ReportReview } from '../types/api'
+import { ApiError, type Client } from './contracts'
 
 export class HttpClient implements Client {
   mode = 'live' as const
@@ -133,42 +134,19 @@ export class HttpClient implements Client {
     return Date.now() + this.clockOffset
   }
   sites() {
-    return this.request<SiteSummary[]>('/api/sites').then((rows) => {
-      if (
-        !Array.isArray(rows) ||
-        rows.some(
-          (r) =>
-            !r ||
-            typeof r.id !== 'string' ||
-            !Number.isFinite(r.lat) ||
-            !Number.isFinite(r.lon) ||
-            !Array.isArray(r.top_factors),
-        )
-      )
-        throw new ApiError(502, 'Invalid site-list response')
-      return rows
-    })
+    return this.request<unknown>('/api/sites').then((rows) =>
+      validateUniqueRows(rows, validateSiteSummary, 'site-list'),
+    )
   }
   site(id: string) {
-    return this.request<SiteRecord>(
-      `/api/sites/${encodeURIComponent(id)}`,
-    ).then((r) => {
-      if (
-        !r ||
-        r.id !== id ||
-        !Array.isArray(r.observations) ||
-        !Array.isArray(r.alerts) ||
-        !Array.isArray(r.notices) ||
-        !Array.isArray(r.reports)
-      )
-        throw new ApiError(502, 'Invalid site-detail response')
-      r.notices.forEach((n) => validateNotice(n))
-      r.reports.forEach((n) => validateReport(n))
-      return r
-    })
+    return this.request<unknown>(`/api/sites/${encodeURIComponent(id)}`).then(
+      (value) => validateSiteDetail(value, id),
+    )
   }
   alerts() {
-    return this.request<Alert[]>('/api/alerts?state=all')
+    return this.request<unknown>('/api/alerts?state=all').then((rows) =>
+      validateUniqueRows(rows, validateAlert, 'alert-list'),
+    )
   }
   reports() {
     return this.request<unknown>('/api/reports').then((rows) => {
@@ -180,6 +158,14 @@ export class HttpClient implements Client {
   acknowledge(id: string) {
     return this.request(`/api/alerts/${encodeURIComponent(id)}/acknowledge`, {
       method: 'POST',
+    }).then((value) => {
+      const alert = validateAlert(value, id)
+      if (!alert.acknowledgements.length)
+        throw new ApiError(
+          502,
+          'Acknowledgement was not present in the server response. Refresh before retrying.',
+        )
+      return alert
     })
   }
   submit(input: ReportCreate, photo: File | null) {

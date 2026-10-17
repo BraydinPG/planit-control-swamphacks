@@ -1,3 +1,9 @@
+## Functional API validation checkpoint - 2026-10-17
+
+User explicitly authorized Codex API/state/diagnostics/tests while Claude owns presentation. Separate worktree/branch from merged PR #29 main `ebd6d92`; primary checkout/server untouched. This checkpoint changes only `frontend/src/api/{contracts,http-client,live-read-validation}.ts`, new `frontend/tests/live-read.test.mjs`, context and this record. Canonical types/fixtures remain read-only; no pages/components/styles/auth/backend/ML/manifests/locks.
+
+Site/alert DTOs, coordinates/nulls/source times/IDs and acknowledgement response now validated. Client method arguments unchanged; acknowledgement return is typed Alert. Six focused read/ack regressions pass; existing suite and current combined diagnostics were verified together (68 Node /521 Python; lint/build/browser pass). Final diagnostic and full coordination evidence follows in the next focused commit. No task checkbox changed; Auth0 test identities, not employee records, are intended for actual demo acceptance.
+
 ## T065 frontend lifecycle integration - 2026-10-17
 
 Published implementation `60ce28082e5bf18822f758bec4f4b1686d3dc794`: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication. This metadata-only follow-up records exact refs; source validation and T065 unchecked state are unchanged. Rudra/Braydin should use the owner handoff below.

@@ -2,6 +2,12 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Functional worktree API checkpoint - 2026-10-17
+- New user authorization splits Codex functionality from Claude's active visual redesign. Separate worktree `C:/Users/cache/planit-control-functional`, branch `feature/cache-functional-acceptance`, from merged PR #29 main `ebd6d92`. No page/component/style/auth/backend change.
+- Site/list/detail and alert/ack responses now validate canonical identities, nested source timestamps, enum/numeric fields and duplicate IDs. Missing values stay null; no derived score or alert state. `Client.acknowledge` now explicitly returns canonical `Alert`; other method arguments are unchanged.
+- Six new read/ack regression tests pass with all existing checks; full working implementation verified 68 Node/521 Python and browser fixture/mock workflows. Diagnostics and complete shared handoff follow in the next focused commit; no live integration task checked off.
+- Cache clarified demo sessions use existing Auth0 test crew/supervisor accounts, not real-person records. No identities or DB rows were created; actual demo authentication/persistence proof still requires approved local settings/session handoff.
+
 ## Current frontend checkpoint - 2026-10-17
 - Authorized sequence: Cache T067A, then T065; no backend/auth/database/ML changes in this run.
 - Current branch `feature/cache-report-lifecycle-integration` from reviewed main `dcd9fc5` (PR #28 scoring-history fix; initial base `1eed70e`). Maintainers merged PR #24 (`f3a65a7`) and our verified T067A checkpoint `2e4cfb7` as PR #27 (`1eed70e`) during this run; remaining T065 PR targets main. No PR merges performed by Cache.
