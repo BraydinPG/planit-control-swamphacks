@@ -263,6 +263,25 @@ def test_cyclone_phase_and_identity_must_match_issued_product(inputs):
     assert reason(payload, inputs) == "official_event_mismatch"
 
 
+def test_corrupt_official_product_is_a_partial_card_not_a_batch_failure(inputs):
+    payload = request(inputs, "multiple-events")
+    storm = request(inputs, "nhc-helene-issued")["events"][0]
+    payload["events"].append(storm)
+    products = {
+        **inputs[1],
+        "helene-015": inputs[1]["helene-015"].model_copy(
+            update={"forecast_points": []}
+        ),
+    }
+    batch = EventOutlookAdapter(
+        trust_policy=REPLAY_POLICY,
+        predictor=MustNotPredict(),
+        official_products=products,
+    ).build(payload)
+    assert len(batch.event_outlooks) == 5
+    assert batch.event_outlooks[-1].forecast.reason_code == "official_product_invalid"
+
+
 def test_real_aftershock_windows_are_regional_not_quake_duration(inputs):
     payload = request(inputs, "usgs-aftershock-issued")
     card = result(payload, inputs).event_outlooks[0]

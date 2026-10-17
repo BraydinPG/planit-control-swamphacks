@@ -223,7 +223,13 @@ class EventOutlookAdapter:
             "Tropical Depression",
             "Earthquake",
         }:
-            return self._official(request, event, base, unavailable)
+            try:
+                return self._official(request, event, base, unavailable)
+            except (ValueError, TypeError, KeyError, AttributeError, OverflowError):
+                return unavailable(
+                    "official_product_invalid",
+                    "The supplied official product failed validation; no substitute forecast is inferred.",
+                )
 
         try:
             entry = read_registry()["events"].get(event.event_type)
