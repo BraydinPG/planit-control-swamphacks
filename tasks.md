@@ -17,7 +17,7 @@ Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the 
 
 ## Owners
 
-- Rudra: backend routes except Gemini, API contracts, NWS feeds and the shared feed cache in `backend/app/ingestion/`, alert rules, scoring, report and notice persistence, README.
+- Rudra: backend routes except Gemini, API contracts, NWS feeds and the shared feed cache in `backend/app/ingestion/`, photo storage in `backend/app/storage/`, alert rules, scoring, report and notice persistence, README.
 - Cache: `ml/`, model training, features, prediction, evaluation.
 - Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**` except Rudra's NWS and cache files, `backend/app/gemini/**`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, `auth/SETUP.md`.
 - Cache (formerly Nick): remaining frontend implementation/integration in `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick retains attribution for prior contributions; separate future Claude redesign requires authorization. Auth0 internals remain Braydin-owned.
@@ -153,7 +153,7 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 ## Phase 3: Reports, Gemini, and permissions
 
-- [ ] **T052 | Braydin | Configure photo storage.** Use Vultr Object Storage, with a private local directory for development. Add size and type limits. Needs T012. Done when invalid uploads are rejected.
+- [x] **T052 | Rudra | Configure photo storage.** Use Vultr Object Storage, with a private local directory for development. Add size and type limits. Needs T012. Done when invalid uploads are rejected.
 - [ ] **T053 | Rudra | Implement report creation and potential notices.** Store organization, team, reporter, category, whether the hazard is present, coordinates, photo, optional note, time, and pending status. Call Braydin’s Gemini radius function. Send “potential {hazard}” with no instructions to teams and supervisors inside the returned radius. If that function reports Gemini unresponsive or an invalid radius, use that category’s labeled default from `spec.md`. Needs T052, T027, and T056. Done when the report persists and recipients inside the radius are notified.
 - [ ] **T054 | Rudra | Implement hazard confirmation.** Any supervisor who received the potential notice can confirm it. The reporting organization’s supervisor still reviews a report that no hazard is present. Record reviewer and time. Needs T053 and T028. Done when crew is denied, a supervisor outside the notice is denied, and an absent report stays with its own organization.
 - [ ] **T054A | Rudra | Send the supervisor’s instruction.** After confirmation, call Braydin’s Gemini instruction function. Let the confirming supervisor edit the suggestion, then send that text to every team inside the stored radius. Needs T054 and T056. Done when the potential notice contains no instruction and teams receive the supervisor’s final text.

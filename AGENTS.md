@@ -228,7 +228,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Do not implement alert rules or scores. Rudra's rules read your Observations.
 - Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, explanation, enrichment, notice-radius, and instruction-suggestion calls. Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
 - Register the Gemini router from `backend/app/main.py` without changing Rudra’s other routes.
-- Own Vultr deployment: deployment config, backend deploy, photo object storage, and the deployed security and CORS check. Nick still deploys the frontend. Rudra still writes the root README and Devpost submission.
+- Own Vultr deployment: deployment config, backend deploy, and the deployed security and CORS check. Rudra owns the photo storage helper (T052), and Braydin provisions the Vultr Object Storage bucket and its credentials for deployment. Nick still deploys the frontend. Rudra still writes the root README and Devpost submission.
 
 **Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module and ingestion adapters after Rudra publishes the API schemas. Adapters can return fixture Observations until the database is ready. The Gemini package can grow from the existing client before the routes that call it are finished.
 
@@ -271,7 +271,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
 - Implement the prototype hurricane and earthquake rules from `spec.md` using Braydin's Observations. Each creates a potential-hazard notice and a score factor. Label distance and magnitude settings as prototype values.
 - Integrate Cache’s `predict_site()` output and compute the final score from model output, current factors, and confirmed reports.
-- Implement crew reports, review state, acknowledgements, and audit events. Store photos through the Vultr helper Braydin publishes. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
+- Implement crew reports, review state, acknowledgements, and audit events. Store photos through your photo storage helper in `backend/app/storage/` (T052): Vultr Object Storage when configured, and a private local directory in development. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
 - Call Braydin’s radius function for that notice. If it reports Gemini unresponsive or an invalid radius, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate. Do not call Gemini from route or rule files.
 - Let any supervisor who received the notice confirm the hazard. Call Braydin’s instruction function, let the confirming supervisor edit the suggestion, and send that final text to every team inside the stored radius.
 - The reporting organization’s supervisor still reviews a report that no hazard is present. Gemini enrichment stays a suggestion until that review.
