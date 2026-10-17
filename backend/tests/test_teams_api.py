@@ -334,3 +334,17 @@ def test_crew_cannot_manage_teams(client) -> None:
     assert (
         client.post("/api/teams", json={"name": "X"}, headers=person("auth0|c")).status_code == 403
     )
+
+
+def test_supervisor_renames_their_organization(client) -> None:
+    response = client.patch("/api/organization", json={"name": " Gator Power "}, headers=SUPERVISOR)
+    assert response.status_code == 200, response.text
+    assert response.json()["organization_name"] == "Gator Power"
+    assert client.get("/api/team", headers=SUPERVISOR).json()["organization_name"] == "Gator Power"
+    # Only their own organization, and never crew.
+    other = client.get("/api/team", headers=OTHER_SUPERVISOR).json()
+    assert other["organization_name"] == "Coastal"
+    crew = client.patch("/api/organization", json={"name": "X"}, headers=person("auth0|c"))
+    assert crew.status_code == 403
+    blank = client.patch("/api/organization", json={"name": ""}, headers=SUPERVISOR)
+    assert blank.status_code == 422

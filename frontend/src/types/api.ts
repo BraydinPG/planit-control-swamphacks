@@ -116,6 +116,11 @@ export interface Account {
   site_id: string | null
 }
 
+/** Body for PATCH /api/organization: the supervisor renames their organization. */
+export interface OrganizationUpdate {
+  name: string
+}
+
 /** Body for POST /api/teams: a supervisor adds a team, optionally at a site with no team. */
 export interface TeamCreate {
   name: string

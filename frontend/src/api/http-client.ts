@@ -327,6 +327,12 @@ export class HttpClient implements Client {
       body: JSON.stringify({ code }),
     }).then(validateAccount)
   }
+  renameOrganization(name: string) {
+    return this.request<unknown>('/api/organization', {
+      method: 'PATCH',
+      body: JSON.stringify({ name }),
+    }).then(validateTeams)
+  }
   createTeam(input: TeamCreate) {
     return this.request<unknown>('/api/teams', {
       method: 'POST',

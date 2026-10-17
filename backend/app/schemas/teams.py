@@ -78,3 +78,9 @@ class TeamUpdate(Schema):
 
     name: str | None = Field(default=None, min_length=1, max_length=80)
     site_id: str | None = None
+
+
+class OrganizationUpdate(Schema):
+    """Body for `PATCH /api/organization`: the supervisor renames their organization."""
+
+    name: str = Field(min_length=1, max_length=80)
