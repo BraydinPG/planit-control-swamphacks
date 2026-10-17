@@ -1,6 +1,9 @@
-# planit-control-swamphacks
+# FORESITE
 
-Swamphacks 2026 Official Repository
+FORESITE: utility field operations for crews and supervisors. SwampHacks 2026 official repository.
+
+The product is now **FORESITE**. Repository/package names and deployed service
+identifiers remain compatible; see [branding and deployment handoff](docs/REBRANDING.md).
 
 React + TypeScript UI, built with Vite and Tailwind CSS. API routes, auth checks, scoring, alerts, and Gemini calls run in a separate FastAPI app under `backend/app/`. Auth0 is the identity provider. Tiger Data is the application database. Vultr hosts the app and stores crew photos. Auth0, Tiger Data, and Vultr are sponsors for tracks. Many organizations share one deployment. A supervisor manages every team in one organization. The supervisor list shows every location and its assigned team, with occupied locations first. A detected hazard, or a crew member marking one present, sends “potential {hazard}” with no instructions to teams and supervisors inside a radius chosen by Gemini. If Gemini is unresponsive, the notice uses that category’s default radius. Any notified supervisor can confirm it, edit Gemini’s suggested instruction, and send that instruction to the teams inside the radius. The reporting organization’s supervisor still decides when a crew member reports that no hazard is present.
 

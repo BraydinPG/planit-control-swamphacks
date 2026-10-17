@@ -17,7 +17,7 @@ export type AuthMode = 'auth0' | 'dev' | 'unconfigured'
 
 export interface AuthContextValue {
   user: AuthUser | null
-  /** Null when signed out, or signed in without a PlanIT Control role. */
+  /** Null when signed out, or signed in without a FORESITE role. */
   role: Role | null
   isAuthenticated: boolean
   isLoading: boolean

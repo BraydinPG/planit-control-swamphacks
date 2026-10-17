@@ -1,4 +1,4 @@
-"""PlanIT Control FastAPI application.
+"""FORESITE FastAPI application.
 
 All API routes live in this FastAPI app under backend/app/. Do not add a second API server.
 """
@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
                 await task
 
 
-app = FastAPI(title="PlanIT Control API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="FORESITE API", version="0.1.0", lifespan=lifespan)
 app.include_router(sites.router)
 app.include_router(alerts.router)
 app.include_router(reports.router)

@@ -1,4 +1,4 @@
-# PlanIT Control Task Backlog
+# FORESITE Task Backlog
 
 Read `spec.md`, `AGENTS.md`, and `tasks.md` before starting. Use task IDs to sequence and record implementation. An explicit user-approved scope may include a focused chain of dependent tasks; preserve per-task acceptance checks and completion states.
 
