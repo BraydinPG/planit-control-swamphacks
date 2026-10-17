@@ -5,6 +5,7 @@ Read this verified index first, then `AGENTS.md`, `spec.md`, `tasks.md` and rele
 ## Last verified: 2026-10-17
 - Explicit user transfer: Cache owns remaining frontend implementation/integration, formerly Nick. Prior attribution and T030 remain preserved. Claude's later visual redesign requires separate authorization.
 - Branch `feature/cache-frontend-workflows`, targeting main `723a5b8`. PR #16 (T030) and #17 (`140d118`, ownership/T031) merged during this run; the new branch preserves them and incorporates reviewed main via `dc35458`. T032-T038 implementation: `3fbd98f`.
+- Rudra completed T049A: prototype hurricane/earthquake rules in `backend/app/rules/regional.py` (score factors, P1, outside data completeness) and feed-detected "potential {hazard}" notices in `backend/app/services/feed_notices.py` (default radius 50/25 mi, one notice per event, fresh readings only). `compute_score` takes an optional `site`. Tests: `backend/tests/test_regional_rules.py`; full backend suite 378 passed.
 - Rudra published T050 (`9d73a77`) and T048 (`944471f`, PR #18). Their canonical backend/fixtures/types were inherited from main unchanged, with no Cache-authored backend/API diff.
 - T031-T038 foundation/demo acceptance passed; T032-T038 checked with implementation/evidence in this checkpoint. T063-T068 remain unchecked, with exact dependencies in `docs/INTEGRATION_STATUS.md`.
 - Vite: http://localhost:5173/; interactive simulated crew/supervisor app, 55 map/list points, reporting/review/instruction flow and exact-site research advisory.

@@ -48,6 +48,7 @@ def score_site(
         now,
         previous,
         settings,
+        site=session.get(db.Site, site_id),
     )
     session.add(
         db.HazardScore(
