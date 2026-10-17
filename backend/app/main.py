@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import alerts, sites
+from app.api import alerts, reports, sites
 from app.db import validate_database_url
 
 
@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="PlanIT Control API", version="0.1.0", lifespan=lifespan)
 app.include_router(sites.router)
 app.include_router(alerts.router)
+app.include_router(reports.router)
 
 
 @app.get("/health")

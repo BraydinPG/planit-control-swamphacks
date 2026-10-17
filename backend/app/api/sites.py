@@ -290,30 +290,32 @@ def load_reports(session: Session, site_id: str) -> list[CrewReport]:
         .order_by(db.CrewReport.created_at.desc())
         .limit(REPORT_LIMIT)
     ).all()
-    return [
-        CrewReport(
-            id=r.id,
-            organization_id=r.organization_id,
-            team_id=r.team_id,
-            site_id=r.site_id,
-            reporter_id=r.reporter_id,
-            category=r.category,
-            hazard_present=r.hazard_present,
-            note=r.note,
-            photo_url=r.photo_url,
-            lat=r.lat,
-            lon=r.lon,
-            review_status=r.review_status,
-            reviewed_by=r.reviewed_by,
-            reviewed_at=_aware(r.reviewed_at) if r.reviewed_at else None,
-            confirmed_category=r.confirmed_category,
-            confirmed_severity=r.confirmed_severity,
-            enrichment=r.enrichment,
-            notice_id=r.notice_id,
-            created_at=_aware(r.created_at),
-        )
-        for r in rows
-    ]
+    return [report_schema(r) for r in rows]
+
+
+def report_schema(r: db.CrewReport) -> CrewReport:
+    """A crew report row as an API object."""
+    return CrewReport(
+        id=r.id,
+        organization_id=r.organization_id,
+        team_id=r.team_id,
+        site_id=r.site_id,
+        reporter_id=r.reporter_id,
+        category=r.category,
+        hazard_present=r.hazard_present,
+        note=r.note,
+        photo_url=r.photo_url,
+        lat=r.lat,
+        lon=r.lon,
+        review_status=r.review_status,
+        reviewed_by=r.reviewed_by,
+        reviewed_at=_aware(r.reviewed_at) if r.reviewed_at else None,
+        confirmed_category=r.confirmed_category,
+        confirmed_severity=r.confirmed_severity,
+        enrichment=r.enrichment,
+        notice_id=r.notice_id,
+        created_at=_aware(r.created_at),
+    )
 
 
 def _notices(session: Session, site: db.Site) -> list[HazardNotice]:
