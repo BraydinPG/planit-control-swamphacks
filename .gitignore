@@ -37,3 +37,4 @@ venv/
 
 # Local development photo uploads
 .photos/
+backend/data/photos/
