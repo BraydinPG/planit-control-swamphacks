@@ -15,6 +15,8 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel
 
+from app.gemini.client import GeminiClient
+from app.gemini.species import word_species
 from app.schemas import (
     Acknowledgement,
     Alert,
@@ -735,8 +737,10 @@ def species_context() -> SiteSpeciesContext:
     """The demo site's species context, built by the real service from recorded responses.
 
     The IPaC and critical habitat responses in `app/species/fixtures/` were recorded for
-    these coordinates on 2026-10-17. Wording is the deterministic template, so the fixture
-    never changes between runs. Labeled simulated: it is a snapshot, not a live lookup.
+    these coordinates on 2026-10-17. The wording replays one recorded Gemini response
+    (`gemini_species_everglades.json`) through the real grounding check, so the demo shows
+    Gemini wording and the fixture never changes between runs. Labeled simulated: it is a
+    snapshot, not a live lookup.
     """
     recorded = Path(__file__).resolve().parents[1] / "app" / "species" / "fixtures"
     ipac_json = json.loads((recorded / "ipac_everglades.json").read_text(encoding="utf-8"))
@@ -749,13 +753,22 @@ def species_context() -> SiteSpeciesContext:
         empty = {"type": "FeatureCollection", "features": []}
         return httpx.Response(200, json=crithab_json if layer == "2" else empty)
 
+    gemini_json = json.loads(
+        (recorded / "gemini_species_everglades.json").read_text(encoding="utf-8")
+    )
+    recorded_gemini = GeminiClient(
+        "recorded",
+        gemini_json["_recorded"]["model"],
+        10.0,
+        transport=lambda prompt, schema: json.dumps(gemini_json["response"]),
+    )
     settings = SpeciesSettings(_env_file=None)
     transport = httpx.MockTransport(respond)
     service = SpeciesContextService(
         settings,
         ipac.IpacClient(settings.ipac_resources_url, 5, transport),
         crithab.CritHabClient(settings.crithab_service_url, 5, transport),
-        wording=lambda facts: None,
+        wording=lambda facts: word_species(facts, client=recorded_gemini),
     )
     site = SITE_DETAIL
     context = service.context(site, NOW, reports=REPORTS, notices=NOTICES)
@@ -766,7 +779,8 @@ def species_context() -> SiteSpeciesContext:
             "simulated": True,
             "unknowns": [
                 "Demo fixture: a recorded IPaC and critical habitat snapshot "
-                "(retrieved 2026-10-17), not a live lookup.",
+                "(retrieved 2026-10-17), not a live lookup. Species wording is one "
+                "recorded Gemini response, checked against these facts.",
                 *context.unknowns,
             ],
         }

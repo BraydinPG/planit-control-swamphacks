@@ -117,7 +117,9 @@ test('panel always shows the caveat, source, date, and match labels', () => {
 test('protection and encounter render independently, unknown never reads as harmless', () => {
   const byName = (name) => fixture.species.find((s) => s.common_name === name)
   const indigo = html(
-    React.createElement(SpeciesCard, { species: byName('Eastern indigo snake') }),
+    React.createElement(SpeciesCard, {
+      species: byName('Eastern indigo snake'),
+    }),
   )
   assert.match(indigo, /Threatened/)
   assert.match(indigo, /does not describe a worker hazard/)
@@ -148,6 +150,15 @@ test('unavailable lookups never read as "no species"', () => {
   assert.match(text, /unavailable right now\. This does not mean no species/)
   assert.match(text, /boundaries are unavailable\. This does not mean/)
   assert.doesNotMatch(text, /no federally listed species/)
+})
+
+test('demo shows recorded Gemini wording, labeled and still sourced', () => {
+  assert.equal(fixture.generated_by, 'gemini')
+  assert.ok(fixture.species.every((s) => s.summary_by === 'gemini'))
+  const text = panel(fixture)
+  assert.match(text, /recorded Gemini response, checked line by line/)
+  assert.match(text, /Gemini wording/)
+  assert.ok(text.includes('Similarity of Appearance (Threatened)'))
 })
 
 test('critical habitat lists status, citation and date', () => {

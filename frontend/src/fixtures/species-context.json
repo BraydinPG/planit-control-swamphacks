@@ -46,8 +46,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:american-alligator"
       },
-      "summary": "American alligator: federal status Similarity of Appearance (Threatened). Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "American alligator is a reptile with federal status Similarity of Appearance (Threatened). Keep your distance if you see one. Never feed an alligator. Report a threat to FWC.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[8396]",
         "guidance:american-alligator"
@@ -85,8 +85,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:american-crocodile"
       },
-      "summary": "American crocodile: federal status Threatened. Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "American crocodile is a reptile with federal status Threatened. Keep your distance if you see one. Never feed a crocodile. Report a threat to FWC.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[176]",
         "guidance:american-crocodile"
@@ -124,8 +124,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:eastern-indigo-snake"
       },
-      "summary": "Eastern indigo snake: federal status Threatened. Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "Eastern indigo snake is a reptile with federal status Threatened. Stop activity near the snake until procedure is followed. Do not harm it. Notify USFWS.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[173]",
         "guidance:eastern-indigo-snake"
@@ -163,8 +163,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:bats"
       },
-      "summary": "Florida bonneted bat: federal status Endangered. Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "Florida bonneted bat is a mammal with federal status Endangered. Do not touch or handle a bat. Wash contact areas with soap and water. Report contact promptly.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[9725]",
         "guidance:bats"
@@ -203,8 +203,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:florida-panther"
       },
-      "summary": "Florida panther: federal status Endangered. Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "Florida panther is a mammal with federal status Endangered. Do not run. Give space to leave. Face the animal and stand tall. Make yourself look larger.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[8]",
         "guidance:florida-panther"
@@ -243,8 +243,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:florida-panther"
       },
-      "summary": "Puma (=mountain lion): federal status Similarity of Appearance (Threatened). Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "Puma (=mountain lion) is a mammal with federal status Similarity of Appearance (Threatened). Do not run. Give space to leave. Face the animal and stand tall.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[8061]",
         "guidance:florida-panther"
@@ -282,8 +282,8 @@
         "reviewed_by": null,
         "evidence_id": "guidance:bats"
       },
-      "summary": "Tricolored bat: federal status Proposed Endangered. Known range, not a sighting. See encounter guidance.",
-      "summary_by": "fallback",
+      "summary": "Tricolored bat is a mammal with federal status Proposed Endangered. Do not touch or handle a bat. Wash contact areas with soap and water. Report contact promptly.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[11365]",
         "guidance:bats"
@@ -308,8 +308,8 @@
         "evidence_id": "ipac:Population$Sid[11319]"
       },
       "encounter": null,
-      "summary": "Eastern Black rail: federal status Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Eastern Black rail is a bird with federal status Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[11319]"
       ]
@@ -333,8 +333,8 @@
         "evidence_id": "ipac:Population$Sid[1221]"
       },
       "encounter": null,
-      "summary": "Everglade snail kite: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Everglade snail kite is a bird with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1221]"
       ]
@@ -358,8 +358,8 @@
         "evidence_id": "ipac:Population$Sid[10710]"
       },
       "encounter": null,
-      "summary": "Monarch butterfly: federal status Proposed Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Monarch butterfly is an insect with federal status Proposed Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[10710]"
       ]
@@ -383,8 +383,8 @@
         "evidence_id": "ipac:Population$Sid[7]"
       },
       "encounter": null,
-      "summary": "West Indian Manatee: federal status Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "West Indian Manatee is a mammal with federal status Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[7]"
       ]
@@ -408,8 +408,8 @@
         "evidence_id": "ipac:Population$Sid[953]"
       },
       "encounter": null,
-      "summary": "Beach jacquemontia: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Beach jacquemontia is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[953]"
       ]
@@ -433,8 +433,8 @@
         "evidence_id": "ipac:Population$Sid[5233]"
       },
       "encounter": null,
-      "summary": "Blodgett's silverbush: federal status Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Blodgett's silverbush is a flowering plant with federal status Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[5233]"
       ]
@@ -458,8 +458,8 @@
         "evidence_id": "ipac:Population$Sid[8336]"
       },
       "encounter": null,
-      "summary": "Cape Sable Thoroughwort: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Cape Sable Thoroughwort is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[8336]"
       ]
@@ -483,8 +483,8 @@
         "evidence_id": "ipac:Population$Sid[1015]"
       },
       "encounter": null,
-      "summary": "Carter's mustard: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Carter's mustard is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1015]"
       ]
@@ -508,8 +508,8 @@
         "evidence_id": "ipac:Population$Sid[7206]"
       },
       "encounter": null,
-      "summary": "Carter's small-flowered flax: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Carter's small-flowered flax is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[7206]"
       ]
@@ -533,8 +533,8 @@
         "evidence_id": "ipac:Population$Sid[1043]"
       },
       "encounter": null,
-      "summary": "Crenulate lead-plant: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Crenulate lead-plant is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1043]"
       ]
@@ -558,8 +558,8 @@
         "evidence_id": "ipac:Population$Sid[1229]"
       },
       "encounter": null,
-      "summary": "Deltoid spurge: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Deltoid spurge is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1229]"
       ]
@@ -583,8 +583,8 @@
         "evidence_id": "ipac:Population$Sid[4395]"
       },
       "encounter": null,
-      "summary": "Everglades bully: federal status Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Everglades bully is a flowering plant with federal status Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[4395]"
       ]
@@ -608,8 +608,8 @@
         "evidence_id": "ipac:Population$Sid[4420]"
       },
       "encounter": null,
-      "summary": "Florida brickell-bush: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Florida brickell-bush is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[4420]"
       ]
@@ -633,8 +633,8 @@
         "evidence_id": "ipac:Population$Sid[4712]"
       },
       "encounter": null,
-      "summary": "Florida pineland crabgrass: federal status Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Florida pineland crabgrass is a flowering plant with federal status Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[4712]"
       ]
@@ -658,8 +658,8 @@
         "evidence_id": "ipac:Population$Sid[5273]"
       },
       "encounter": null,
-      "summary": "Florida prairie-clover: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Florida prairie-clover is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[5273]"
       ]
@@ -683,8 +683,8 @@
         "evidence_id": "ipac:Population$Sid[1525]"
       },
       "encounter": null,
-      "summary": "Florida semaphore Cactus: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Florida semaphore Cactus is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1525]"
       ]
@@ -708,8 +708,8 @@
         "evidence_id": "ipac:Population$Sid[4253]"
       },
       "encounter": null,
-      "summary": "Pineland sandmat: federal status Threatened. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Pineland sandmat is a flowering plant with federal status Threatened.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[4253]"
       ]
@@ -733,8 +733,8 @@
         "evidence_id": "ipac:Population$Sid[1535]"
       },
       "encounter": null,
-      "summary": "Sand flax: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Sand flax is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1535]"
       ]
@@ -758,8 +758,8 @@
         "evidence_id": "ipac:Population$Sid[1044]"
       },
       "encounter": null,
-      "summary": "Small's milkpea: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Small's milkpea is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[1044]"
       ]
@@ -783,8 +783,8 @@
         "evidence_id": "ipac:Population$Sid[989]"
       },
       "encounter": null,
-      "summary": "Tiny polygala: federal status Endangered. Known range, not a sighting.",
-      "summary_by": "fallback",
+      "summary": "Tiny polygala is a flowering plant with federal status Endangered.",
+      "summary_by": "gemini",
       "evidence_ids": [
         "ipac:Population$Sid[989]"
       ]
@@ -901,9 +901,9 @@
       "note": "Alligator on the east access road."
     }
   ],
-  "generated_by": "fallback",
+  "generated_by": "gemini",
   "unknowns": [
-    "Demo fixture: a recorded IPaC and critical habitat snapshot (retrieved 2026-10-17), not a live lookup.",
+    "Demo fixture: a recorded IPaC and critical habitat snapshot (retrieved 2026-10-17), not a live lookup. Species wording is one recorded Gemini response, checked against these facts.",
     "IPaC covers only federally listed species. Species that are not federally listed, such as the water moccasin, never appear here, so their absence says nothing about local wildlife.",
     "State protection status (for example Florida FWC listings) is not supplied by IPaC.",
     "IPaC gives no date for its range data. The date shown is when PlanIT Control retrieved it."

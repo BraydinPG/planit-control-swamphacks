@@ -118,7 +118,11 @@ substitute for employer site procedures.
 > None of this changes the score or the alerts."
 
 In demo/fixture mode, the panel shows a recorded snapshot labeled "Recorded demo snapshot"
-and `simulated`.
+and `simulated`. Its species wording is one real Gemini response (`gemini-3.5-flash-lite`,
+recorded 2026-10-17 in `backend/app/species/fixtures/gemini_species_everglades.json`),
+replayed by the fixture generator through the same grounding check. All 27 lines passed, so
+every card reads "Gemini wording" and the panel says "recorded Gemini response". The demo makes
+no live Gemini call.
 
 ## Settings (`backend/.env`)
 

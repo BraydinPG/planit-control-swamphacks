@@ -1,0 +1,210 @@
+{
+ "_recorded": {
+  "source": "Gemini API via app.gemini.species.word_species",
+  "model": "gemini-3.5-flash-lite",
+  "recorded_at": "2026-10-17",
+  "input": "frontend/src/fixtures/species-context.json species facts",
+  "edits": "none; raw structured response"
+ },
+ "response": {
+  "species": [
+   {
+    "species_id": "ipac:Population$Sid[8396]",
+    "summary": "American alligator is a reptile with federal status Similarity of Appearance (Threatened). Keep your distance if you see one. Never feed an alligator. Report a threat to FWC.",
+    "evidence": [
+     "ipac:Population$Sid[8396]",
+     "guidance:american-alligator"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[176]",
+    "summary": "American crocodile is a reptile with federal status Threatened. Keep your distance if you see one. Never feed a crocodile. Report a threat to FWC.",
+    "evidence": [
+     "ipac:Population$Sid[176]",
+     "guidance:american-crocodile"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[173]",
+    "summary": "Eastern indigo snake is a reptile with federal status Threatened. Stop activity near the snake until procedure is followed. Do not harm it. Notify USFWS.",
+    "evidence": [
+     "ipac:Population$Sid[173]",
+     "guidance:eastern-indigo-snake"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[9725]",
+    "summary": "Florida bonneted bat is a mammal with federal status Endangered. Do not touch or handle a bat. Wash contact areas with soap and water. Report contact promptly.",
+    "evidence": [
+     "ipac:Population$Sid[9725]",
+     "guidance:bats"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[8]",
+    "summary": "Florida panther is a mammal with federal status Endangered. Do not run. Give space to leave. Face the animal and stand tall. Make yourself look larger.",
+    "evidence": [
+     "ipac:Population$Sid[8]",
+     "guidance:florida-panther"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[8061]",
+    "summary": "Puma (=mountain lion) is a mammal with federal status Similarity of Appearance (Threatened). Do not run. Give space to leave. Face the animal and stand tall.",
+    "evidence": [
+     "ipac:Population$Sid[8061]",
+     "guidance:florida-panther"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[11365]",
+    "summary": "Tricolored bat is a mammal with federal status Proposed Endangered. Do not touch or handle a bat. Wash contact areas with soap and water. Report contact promptly.",
+    "evidence": [
+     "ipac:Population$Sid[11365]",
+     "guidance:bats"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[11319]",
+    "summary": "Eastern Black rail is a bird with federal status Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[11319]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1221]",
+    "summary": "Everglade snail kite is a bird with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1221]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[10710]",
+    "summary": "Monarch butterfly is an insect with federal status Proposed Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[10710]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[7]",
+    "summary": "West Indian Manatee is a mammal with federal status Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[7]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[953]",
+    "summary": "Beach jacquemontia is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[953]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[5233]",
+    "summary": "Blodgett's silverbush is a flowering plant with federal status Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[5233]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[8336]",
+    "summary": "Cape Sable Thoroughwort is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[8336]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1015]",
+    "summary": "Carter's mustard is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1015]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[7206]",
+    "summary": "Carter's small-flowered flax is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[7206]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1043]",
+    "summary": "Crenulate lead-plant is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1043]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1229]",
+    "summary": "Deltoid spurge is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1229]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[4395]",
+    "summary": "Everglades bully is a flowering plant with federal status Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[4395]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[4420]",
+    "summary": "Florida brickell-bush is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[4420]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[4712]",
+    "summary": "Florida pineland crabgrass is a flowering plant with federal status Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[4712]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[5273]",
+    "summary": "Florida prairie-clover is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[5273]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1525]",
+    "summary": "Florida semaphore Cactus is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1525]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[4253]",
+    "summary": "Pineland sandmat is a flowering plant with federal status Threatened.",
+    "evidence": [
+     "ipac:Population$Sid[4253]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1535]",
+    "summary": "Sand flax is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1535]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[1044]",
+    "summary": "Small's milkpea is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[1044]"
+    ]
+   },
+   {
+    "species_id": "ipac:Population$Sid[989]",
+    "summary": "Tiny polygala is a flowering plant with federal status Endangered.",
+    "evidence": [
+     "ipac:Population$Sid[989]"
+    ]
+   }
+  ],
+  "unknowns": []
+ }
+}
