@@ -12,10 +12,13 @@ Read this verified index first, then `AGENTS.md`, `spec.md`, `tasks.md` and rele
 - Clean committed frontend export `4a9e44f`: npm ci/build and full static-bundle demo browser acceptance pass without local env/Python/ML artifacts. No whole-app/deployment acceptance claimed.
 - Actual health 200; protected site reads directly and via Vite proxy return 401. No real signed-in site data, report persistence, Auth0 tenant login or Gemini response was verified.
 - Local Auth0/Tiger Data settings and missing report/notice/Gemini routes block real integration. Published alert listing/acknowledgement is connected and mock-tested. No production deployment, bypass, model retraining or ML contract changes.
+- Score explanations removed from scope 2026-10-17 (Braydin): Gemini never explains or interprets the hazard score. The 0–10 score is a deterministic weighted algorithm and its factor breakdown is the explanation. Deleted: `POST /api/sites/{id}/explanations`, the Python `Explanation` schema and fixture generator entry, `request:explanations` permission, and T059. The TS `Explanation` type and `explanations.json` stay, marked for removal, until Cache's frontend drops them (T067A); T037/T057/T067 now cover briefings and enrichment only.
+- Briefings are scheduled, never on request (2026-10-17, Braydin): generated at 6 PM site-local time for team sites whose organization has a supervisor, stored, and read via `GET /api/sites/{id}/briefing` and supervisor-only `GET /api/briefings`. `POST .../briefings`, the Python `BriefingRequest`, and `generate:briefings` are gone (now `read:org_briefings`); the TS `BriefingRequest` goes with T067A. Risk level comes from the computed score. The demo uses a pre-generated briefing (T069). New `sites.timezone` column applied to Tiger.
+- Auth0 tenant `dev-qwsm71sgsbiajl7x.us.auth0.com` configured via the Auth0 MCP (SPA, API `https://api.planit-control` with 8 permissions, deployed roles Action). Roles, the Action's post-login binding, and demo users are still dashboard steps; see `auth/SETUP.md`.
 
 ## Ownership and safety
-- Cache: `ml/**` plus remaining frontend composition/data access/pages/components/styles/tests and integration preparation under this explicit transfer.
-- Rudra: canonical API/types/fixtures, backend routes, deterministic alerts/scoring and shared coordination.
+- Cache: `ml/**` plus remaining frontend composition/data access/pages/components/styles/tests and integration preparation under this explicit transfer. Also the 0–10 site risk algorithm (`backend/app/rules/score.py` and the score weights in `backend/app/rules/settings.py`), assigned by Braydin 2026-10-17 as T051A: deterministic, weighted by risk, no ML or Gemini input.
+- Rudra: canonical API/types/fixtures, backend routes, deterministic alerts, storing/serving scores, and shared coordination.
 - Braydin: Auth0 internals, Tiger Data/database/ingestion/Gemini and deployment under current AGENTS; no credential or backend rewrite by Cache.
 - Nick retains prior attribution; no parallel remaining UI implementation is assigned. See `docs/CROSS_SCOPE_CHANGES.md` for exact paths, dependency/commit/PR evidence.
 - EIA plants are representative locations, not active jobs. Unknown is not zero/low risk.
@@ -49,8 +52,8 @@ npm run dev -- --host localhost --port 5173 --strictPort
 - Monte Carlo stays offline arithmetic/sensitivity research; never UI trajectories or proof of safety.
 
 ## Current owner handoff and shared-file log
-- Rudra: review T048 client and implement/test report/photo/review and notice confirmation/instruction routes; retain canonical T050 and review Leaflet frontend dependency; keep scores/alerts isolated.
+- Rudra: T044A, store feed readings on a schedule (nothing saves feed readings yet, so scores and briefings see no live data). Also review T048 client and implement/test report/photo/review and notice confirmation/instruction routes; retain canonical T050 and review Leaflet frontend dependency; keep scores/alerts isolated.
 - Braydin: configure real tenant/roles/audience, Tiger Data/seed assignments, durable photo storage and Gemini endpoints/fallbacks. No secrets in Git.
-- Cache: next integration is T063 when real configuration is available, then T064-T068 after actual server prerequisites. No remaining authorized live acceptance can be completed with mock credentials alone.
+- Cache: T051A, the site risk algorithm, and T067A, removing score explanations and manual briefing requests from the frontend (see `tasks.md`). Next integration is T063 when real configuration is available, then T064-T068 after actual server prerequisites. No remaining authorized live acceptance can be completed with mock credentials alone.
 - 2026-10-17 UTC: T031 owner transfer/check-off in `140d118` updates AGENTS/tasks/context. `3fbd98f` changes only T032-T038 boxes after their checks and updates the context/coordination docs; no adjacent owner tasks changed.
 - Published review PR [#19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open against main, implementation head `8834867`. Earlier delivery commits: `3fbd98f`, reviewed-main incorporation `dc35458`, T048 client `4a9e44f`. Metadata-only follow-up records this publication. Rudra coordinates review/merge; no automatic merge or deployment.

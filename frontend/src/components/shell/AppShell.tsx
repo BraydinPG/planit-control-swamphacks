@@ -49,7 +49,7 @@ const descriptions: Record<
     title: 'Shift briefings',
     description:
       'A place for evidence-based summaries, source references and the conditions that remain unknown.',
-    pending: 'Briefings and explanations are not connected yet.',
+    pending: 'Briefings are not connected yet.',
   },
 }
 

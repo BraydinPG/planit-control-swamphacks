@@ -132,7 +132,7 @@ def test_role_policy_matches_the_spec() -> None:
         roles.REVIEW_REPORTS,
         roles.CONFIRM_HAZARDS,
         roles.SEND_INSTRUCTIONS,
-        roles.GENERATE_BRIEFINGS,
+        roles.READ_ORG_BRIEFINGS,
     }
     assert crew.isdisjoint(supervisor_only)
     assert crew < supervisor

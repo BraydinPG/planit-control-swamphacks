@@ -278,7 +278,10 @@ export interface RecommendedAction {
   evidence_ids: string[]
 }
 
-/** Body for POST /api/sites/{id}/briefings. `organization` is supervisor-only. */
+/**
+ * Removed from the API 2026-10-17: briefings are generated at 6 PM site-local time and read
+ * with GET /api/sites/{id}/briefing. Delete once the frontend stops using it (T067A).
+ */
 export interface BriefingRequest {
   scope?: 'site' | 'organization'
 }
@@ -299,7 +302,10 @@ export interface Briefing {
   created_at: string
 }
 
-/** On fallback, `explanation` is null and the UI shows `top_factors` without prose. */
+/**
+ * Removed from the API 2026-10-17: Gemini no longer explains scores; the weighted factor
+ * breakdown is the explanation. Delete once the frontend stops using it (T067A).
+ */
 export interface Explanation {
   site_id: string
   score_created_at: string

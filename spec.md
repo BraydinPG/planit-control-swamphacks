@@ -9,7 +9,7 @@ The product combines three distinct functions:
 
 - Deterministic rules trigger operational alerts, including the required lightning stop-work and all-clear logic.
 - A trained machine-learning model estimates recorded-event persistence and remaining duration conditional on an already-confirmed active event. It does not estimate event onset or safe-to-work status.
-- Gemini summarizes supplied evidence, explains model outputs, and suggests structured labels for crew reports. Gemini does not set scores, trigger alerts, or declare work safe.
+- Gemini summarizes supplied evidence and suggests structured labels for crew reports. Gemini does not set, explain, or interpret scores, trigger alerts, or declare work safe.
 
 The demo should show an Everglades-style site scenario, a lightning alert, a crew hazard report, a ranked supervisor view, and a next-day briefing.
 
@@ -58,7 +58,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 5. Review this organization’s reports that say no hazard is present, and make the final call on those reports.
 6. Receive a “potential {hazard}” notice, with no instructions, when one of this supervisor’s teams is inside the radius. Any supervisor who received that notice can confirm the hazard.
 7. After confirming, review Gemini’s suggested instruction, change it if needed, and send that text to every team inside the same radius.
-8. Generate or review the next-day briefing and use the evidence links to inspect its inputs.
+8. Review the next-day briefing, generated automatically at 6 PM local time, and use the evidence links to inspect its inputs.
 
 ## 4. MVP scope and priorities
 
@@ -80,10 +80,9 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 ### P1: judging-track features
 
 - Gemini-generated, evidence-grounded next-day briefing.
-- Gemini explanation of a hazard score and its changes.
 - Gemini-assisted report classification with human confirmation.
 - Mobile-first crew interface and polished supervisor dashboard.
-- 6 PM local briefing schedule, with a manual generation action for the demo.
+- Briefings generated automatically every day at 6 PM site-local time and stored. There is no manual generation; the demo shows a briefing the schedule already produced (seeded for the demo site).
 - P1 live feeds from section 5: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
 - Public repository README documenting architecture, data, model, evaluation, Gemini safeguards, Auth0 setup, and demo steps.
 
@@ -169,13 +168,11 @@ Output fields: `summary`, `risk_level`, `hazards[]`, `recommended_actions[]`, `e
 
 Rules: each material claim must reference supplied evidence. The model must state unknowns and must not declare work safe or clear an alert. On failure, generate a deterministic template briefing from the same data.
 
-### Score explanation
+Schedule: generated automatically at 6 PM in each site's local time zone, once per day, for every site with an assigned team whose organization has a supervisor. Unassigned sites and organizations without a supervisor get none. It covers the next workday (07:00–19:00 local) and is stored, then read back; it is never generated on request. The briefing's overall `risk_level` is the site's computed score level at generation time, never Gemini's judgment.
 
-Input: existing model output, final score factors, prior score if available, timestamps, and data-quality flags.
+### Hazard score: no generated explanation
 
-Output fields: `explanation`, `top_factors[]`, `change_since_previous`, `evidence[]`, `unknowns[]`.
-
-Rules: Gemini explains a score that the application already calculated. Gemini cannot change the score or alert state. On failure, show the factor breakdown without generated prose.
+Gemini does not explain or interpret the hazard score. The 0–10 score is a deterministic weighted algorithm over current risk factors and confirmed reports. The interface shows its factor breakdown as the explanation: each factor's weighted contribution, source, time, data state, and prototype label. There is no score-explanation route.
 
 ### Crew report enrichment
 
@@ -244,8 +241,7 @@ Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. H
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
 | Confirm a potential hazard from a received notice | No | Any notified supervisor |
 | Edit and send the instruction for that hazard | No | The confirming supervisor |
-| Generate organization-wide briefing | No | Own organization only |
-| Request site explanation | Yes, assigned site | Yes |
+| Read organization-wide briefings | No | Own organization only |
 
 Keep secrets in environment variables. Provide one demo account per role. Any development bypass must be explicit, local-only, and disabled by default.
 
@@ -268,8 +264,8 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
 | `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
-| `POST /api/sites/{id}/briefings` | Generate a grounded briefing. |
-| `POST /api/sites/{id}/explanations` | Explain an existing score. |
+| `GET /api/sites/{id}/briefing` | The site's latest stored next-day briefing. Same site access as `GET /api/sites/{id}`. |
+| `GET /api/briefings` | Supervisor: the latest briefing for every team site in their organization. |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.
 
@@ -312,7 +308,7 @@ The primary active-event model export is `predict_active_event(event_context)`. 
 - A feed outage never clears an alert or lowers a score to zero risk.
 - Keep lightning alerts and rule evaluation independent from Gemini and model availability.
 - Restrict photo size and file types. Keep photo storage private. Use Vultr Object Storage outside local development.
-- Keep credentials out of git. Log alert triggers, acknowledgements, report review, and briefing generation.
+- Keep credentials out of git. Log alert triggers, acknowledgements, report review, and scheduled briefing generation.
 - Do not store more user data than needed for roles and audit records.
 
 ## 11. Team ownership and parallel work
@@ -321,7 +317,7 @@ See `AGENTS.md` for detailed individual ownership, prompts, path boundaries, con
 
 Ownership summary:
 
-- Cache: `ml/`, model training, features, evaluation, and model handoff.
+- Cache: `ml/`, model training, features, evaluation, model handoff, and the deterministic 0–10 site risk algorithm (`backend/app/rules/score.py`).
 - Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/` except Rudra's NWS and cache files, `backend/app/gemini/`, database migrations, EIA-860M site import, lightning, hurricane, earthquake, and flood-gauge feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, Auth0 setup notes.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick deploys the frontend.
 - Rudra: `backend/app/` except `security/`, `db/`, Braydin's adapters in `ingestion/`, and `gemini/`, API contracts, NWS weather, forecast, and flood-alert feeds and the shared feed cache in `ingestion/`, deterministic alert rules, scoring, report and notice persistence, root README. Rudra imports Braydin’s database session, other ingestion adapters, and Gemini functions, and does not edit migrations, Braydin's feed adapters, or Gemini calls.
@@ -347,7 +343,7 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 | Track | Proof to show |
 |---|---|
 | Sperry Tech | 50+ real locations, multi-hazard site view with live weather, flood, lightning, hurricane, and earthquake data, lightning rule, crew reports, ranking, next-day brief. |
-| Gemini API | Useful, grounded structured briefing and score explanation with evidence and fallbacks. |
+| Gemini API | Useful, grounded structured briefing, report classification, notice radius, and instruction suggestions, with evidence and fallbacks. |
 | UI/UX | Fast crew flow, readable field interface, polished supervisor dashboard, accessible controls. |
 | Auth0 (sponsor track) | Role-based sign-in and backend authorization demonstrated with two accounts. |
 | Tiger Data (sponsor track) | Time-ordered hazard records in Tiger Data, including hypertables for observations, alerts, and audit events. |
@@ -362,10 +358,9 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 2. Show 50+ mapped locations and the supervisor’s ranked list.
 3. Replay a lightning strike within 10 miles. Show stop-work, evidence, acknowledgement, and 30-minute timer. Replay another strike and show the timer reset.
 4. Sign in as crew and submit a hazard photo and pin. Show Gemini’s suggested classification, then confirm it as a person.
-5. Sign in as supervisor. Review the report and inspect score factors.
-6. Ask Gemini to explain the score, showing its evidence references and unknowns.
-7. Generate tomorrow’s briefing and show recommended actions linked to evidence.
-8. Point to the public README’s model evaluation, data sources, Auth0 roles, and Gemini safeguards.
+5. Sign in as supervisor. Review the report and inspect the score's weighted factor breakdown.
+6. Show tomorrow’s briefing, generated automatically at 6 PM local time, and its recommended actions linked to evidence.
+7. Point to the public README’s model evaluation, data sources, Auth0 roles, and Gemini safeguards.
 
 ### Release acceptance
 

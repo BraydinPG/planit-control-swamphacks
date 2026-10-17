@@ -19,22 +19,19 @@ DEFAULT_ROLES_CLAIM = "https://planit-control/roles"
 READ_ASSIGNED_SITES = "read:assigned_sites"
 ACKNOWLEDGE_ALERTS = "acknowledge:alerts"
 SUBMIT_REPORTS = "submit:reports"
-REQUEST_EXPLANATIONS = "request:explanations"
 READ_ALL_SITES = "read:all_sites"
 REVIEW_REPORTS = "review:reports"
 CONFIRM_HAZARDS = "confirm:hazards"
 SEND_INSTRUCTIONS = "send:instructions"
-GENERATE_BRIEFINGS = "generate:briefings"
+READ_ORG_BRIEFINGS = "read:org_briefings"
 
-CREW_PERMISSIONS = frozenset(
-    {READ_ASSIGNED_SITES, ACKNOWLEDGE_ALERTS, SUBMIT_REPORTS, REQUEST_EXPLANATIONS}
-)
+CREW_PERMISSIONS = frozenset({READ_ASSIGNED_SITES, ACKNOWLEDGE_ALERTS, SUBMIT_REPORTS})
 SUPERVISOR_PERMISSIONS = CREW_PERMISSIONS | {
     READ_ALL_SITES,
     REVIEW_REPORTS,
     CONFIRM_HAZARDS,
     SEND_INSTRUCTIONS,
-    GENERATE_BRIEFINGS,
+    READ_ORG_BRIEFINGS,
 }
 ROLE_PERMISSIONS: dict[Role, frozenset[str]] = {
     "crew": CREW_PERMISSIONS,
@@ -45,10 +42,9 @@ PERMISSION_DESCRIPTIONS = {
     READ_ASSIGNED_SITES: "Read assigned sites and alerts",
     ACKNOWLEDGE_ALERTS: "Acknowledge alerts",
     SUBMIT_REPORTS: "Submit hazard reports",
-    REQUEST_EXPLANATIONS: "Request score explanations (crew: assigned site only)",
     READ_ALL_SITES: "Read all sites, assigned teams, and the full map",
     REVIEW_REPORTS: "Review reports that no hazard is present (own organization)",
     CONFIRM_HAZARDS: "Confirm a potential hazard from a received notice",
     SEND_INSTRUCTIONS: "Edit and send the instruction for a confirmed hazard",
-    GENERATE_BRIEFINGS: "Generate organization-wide briefings (own organization)",
+    READ_ORG_BRIEFINGS: "Read the latest briefings for every team site (own organization)",
 }
