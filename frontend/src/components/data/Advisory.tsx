@@ -6,13 +6,14 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
   const compact = site.event_outlook
   return (
     <section
-      className="space-y-3 rounded-xl border border-slate-300 bg-white p-4"
+      className="space-y-3 rounded-2xl border border-line bg-surface p-5 text-sm leading-relaxed text-ink-2 [&_h3]:text-ink [&_li]:break-words [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
       aria-labelledby="advisory-title"
     >
-      <h2 id="advisory-title" className="text-xl font-semibold">
+      <p className="kicker">Research advisory</p>
+      <h2 id="advisory-title" className="text-xl font-bold text-ink">
         Event outlook and site evidence
       </h2>
-      <p className="font-semibold">
+      <p className="rounded-xl border-l-4 border-warn bg-surface-2 px-3 py-2 font-semibold text-ink">
         Research advisory only. Recorded event end is not worksite clearance. No
         local injury/hazard probabilities are validated.
       </p>
@@ -45,18 +46,18 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
               <li key={i}>{x}</li>
             ))}
           </ul>
-          <h3 className="font-semibold">
+          <h3 className="pt-2 font-bold">
             Layer B — accepted and rejected evidence
           </h3>
           <details>
-            <summary className="min-h-11 cursor-pointer py-2">
+            <summary className="flex min-h-11 cursor-pointer items-center font-semibold text-ink">
               Inspect {replay.evidence.length} source assessments
             </summary>
             <ul className="space-y-3">
               {replay.evidence.map((a) => (
                 <li
                   key={a.evidence.evidence_id}
-                  className="break-words border-t pt-2"
+                  className="break-words border-t border-line pt-2"
                 >
                   <strong>
                     {a.accepted ? 'Accepted' : 'Rejected'}:{' '}
