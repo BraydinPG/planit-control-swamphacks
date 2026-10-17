@@ -1,0 +1,154 @@
+{
+  "scope": "offline_internal_only",
+  "new_learned_site_targets": 0,
+  "new_historical_model_backtests": 0,
+  "flood_reference_verified": true,
+  "monte_carlo": {
+    "Flood": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "6h": 0.7093663911845713,
+        "12h": 0.6049586776859471,
+        "24h": 0.47300275482093423
+      },
+      "simulated_ongoing_proportion": {
+        "6h": 0.71485,
+        "12h": 0.60715,
+        "24h": 0.47545
+      },
+      "absolute_probability_error": {
+        "6h": 0.005483608815428642,
+        "12h": 0.002191322314052835,
+        "24h": 0.002447245179065749
+      },
+      "remaining_duration_hours": {
+        "p10": 2.0,
+        "median": 22.0,
+        "p90": null,
+        "unresolved_beyond_simulation_horizon_count": 3536,
+        "unresolved_beyond_simulation_horizon_probability": 0.1768
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "noaa-flood-pooled-logistic-v2",
+      "scope": "offline_internal_only",
+      "estimator": "kaplan_meier"
+    },
+    "High Wind": {
+      "trials": 20000,
+      "seed": 42,
+      "analytical_ongoing_probability": {
+        "6h": 0.47711267605633756,
+        "12h": 0.2843309859154932,
+        "24h": 0.10871478873239418
+      },
+      "simulated_ongoing_proportion": {
+        "6h": 0.4735,
+        "12h": 0.2837,
+        "24h": 0.1079
+      },
+      "absolute_probability_error": {
+        "6h": 0.0036126760563375826,
+        "12h": 0.0006309859154932096,
+        "24h": 0.0008147887323941838
+      },
+      "remaining_duration_hours": {
+        "p10": 1.0,
+        "median": 6.0,
+        "p90": 25.0,
+        "unresolved_beyond_simulation_horizon_count": 25,
+        "unresolved_beyond_simulation_horizon_probability": 0.00125
+      },
+      "raw_trajectories_included": false,
+      "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+      "model_version": "active-high_wind-pooled-logistic-v1",
+      "scope": "offline_internal_only",
+      "estimator": "kaplan_meier"
+    }
+  },
+  "evidence_sensitivity": {
+    "Flood": [
+      {
+        "station_context_limit_km": 5,
+        "observation_max_age_hours": 1,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 5,
+        "observation_max_age_hours": 2,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 25,
+        "observation_max_age_hours": 1,
+        "accepted_evidence": 27,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 25,
+        "observation_max_age_hours": 2,
+        "accepted_evidence": 27,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 50,
+        "observation_max_age_hours": 1,
+        "accepted_evidence": 27,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 50,
+        "observation_max_age_hours": 2,
+        "accepted_evidence": 27,
+        "operational_evaluation_eligible": false
+      }
+    ],
+    "High Wind": [
+      {
+        "station_context_limit_km": 5,
+        "observation_max_age_hours": 1,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 5,
+        "observation_max_age_hours": 2,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 25,
+        "observation_max_age_hours": 1,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 25,
+        "observation_max_age_hours": 2,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 50,
+        "observation_max_age_hours": 1,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      },
+      {
+        "station_context_limit_km": 50,
+        "observation_max_age_hours": 2,
+        "accepted_evidence": 24,
+        "operational_evaluation_eligible": false
+      }
+    ]
+  },
+  "limitations": [
+    "Monte Carlo checks model-implied arithmetic, not real-world predictive accuracy.",
+    "Existing 2025 historical evaluations were already inspected and were neither retuned nor rerun here.",
+    "Site evidence checks concern units/time/association, without invented Brier or injury metrics.",
+    "No joint wind/rain/flood probability or independent-factor multiplication is calculated."
+  ]
+}

@@ -1,5 +1,7 @@
 # Agent Instructions for PlanIT Control
 
+Read `PROJECT_CONTEXT.md` first, then this file and targeted code/contracts. Update the context in the same commit when models, contracts, source availability, handoff status, or verified tests change; reconcile teammate edits rather than overwriting them.
+
 This file assigns implementation ownership to the four coding agents. Read `spec.md` before making changes. Each agent works in its owned paths and integrates through the contracts below.
 
 ## Task workflow

@@ -1,0 +1,285 @@
+{
+  "sources": [
+    {
+      "url": "https://api.weather.gov/points/27.9658,-82.5328",
+      "file": "eia-59769_nws_point.json",
+      "bytes": 3914,
+      "sha256": "bb774edf105ef0b7e335f37a26adf8be45f70f0cb5eb742f361005d4c30b796b",
+      "retrieved_at_utc": "2026-10-17T05:37:01.579279+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/gridpoints/TBW/68,98/forecast/hourly",
+      "file": "eia-59769_hourly.json",
+      "bytes": 162440,
+      "sha256": "135082715edc72471afa345073aaa6148eaa457751117baa53f3b2bc6e36aa3d",
+      "retrieved_at_utc": "2026-10-17T05:37:01.699731+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/alerts/active?point=27.9658%2C-82.5328",
+      "file": "eia-59769_alerts.json",
+      "bytes": 233,
+      "sha256": "1a6635de37562b75a4751aef2207b1ca9da6e4bd5e2891ccbd2c223729d2cd04",
+      "retrieved_at_utc": "2026-10-17T05:37:02.345229+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/gridpoints/TBW/68,98/stations",
+      "file": "eia-59769_stations.json",
+      "bytes": 72057,
+      "sha256": "11ef4013c4ece5b81efa0f6814b04bd906b7f70a6901057c041d4232c86b2f24",
+      "retrieved_at_utc": "2026-10-17T05:37:02.680973+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/stations/KTPA/observations/latest",
+      "file": "eia-59769_observation.json",
+      "bytes": 4320,
+      "sha256": "b74e04610df83d30c81b388278a1ec058ce22dedbf03235223fa3938c85af794",
+      "retrieved_at_utc": "2026-10-17T05:37:02.962266+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/points/33.4345,-111.9842",
+      "file": "eia-58708_nws_point.json",
+      "bytes": 3925,
+      "sha256": "6c37d966620f90dbcd13879da01c8ec92007a16a1c29c561fefb9dacd794d46f",
+      "retrieved_at_utc": "2026-10-17T05:37:03.308601+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/gridpoints/PSR/162,57/forecast/hourly",
+      "file": "eia-58708_hourly.json",
+      "bytes": 163924,
+      "sha256": "dd17af2933acaed57cb35882a4ccca071c3756838aaa6aceecec527ac16ca9d1",
+      "retrieved_at_utc": "2026-10-17T05:37:03.654622+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/alerts/active?point=33.4345%2C-111.9842",
+      "file": "eia-58708_alerts.json",
+      "bytes": 234,
+      "sha256": "3fac4e283fb7e3db09e38e7e504eeee94f52bb568926e8074864635cc6cec9b8",
+      "retrieved_at_utc": "2026-10-17T05:37:03.935918+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/gridpoints/PSR/162,57/stations",
+      "file": "eia-58708_stations.json",
+      "bytes": 38949,
+      "sha256": "7a7289a67f653ea5cb3577dc1ce1c876945382fed415d9ac066168cfe47c5806",
+      "retrieved_at_utc": "2026-10-17T05:37:04.356684+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.weather.gov/stations/KPHX/observations/latest",
+      "file": "eia-58708_observation.json",
+      "bytes": 4340,
+      "sha256": "c5b738a3608f5323dd620253153f23c9f44c971654293663d410f6c79b18d9ac",
+      "retrieved_at_utc": "2026-10-17T05:37:04.524782+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8726520&product=wind&date=recent&units=metric&time_zone=gmt&format=json&application=PlanIT_Control_research",
+      "file": "coops_8726520_wind.json",
+      "bytes": 58598,
+      "sha256": "4fa2388bb91328c2fde5ec915eb593c177e4a97d8d367f9d5aeb0b7e44852fdd",
+      "retrieved_at_utc": "2026-10-17T05:37:04.832395+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8726520&product=air_temperature&date=recent&units=metric&time_zone=gmt&format=json&application=PlanIT_Control_research",
+      "file": "coops_8726520_air_temperature.json",
+      "bytes": 36048,
+      "sha256": "e333891a89b9cd2f87346903663f8ecf3bde021553f887e79b0150d5859517c0",
+      "retrieved_at_utc": "2026-10-17T05:37:05.033801+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8726520&product=humidity&date=recent&units=metric&time_zone=gmt&format=json&application=PlanIT_Control_research",
+      "file": "coops_8726520_humidity.json",
+      "bytes": 115,
+      "sha256": "500bdf8b7540e3b178fa94711e95e7bd7633578dac4778da5faed9dc45cbfb0f",
+      "retrieved_at_utc": "2026-10-17T05:37:05.147002+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?station=8726520&product=water_level&date=recent&units=metric&time_zone=gmt&format=json&application=PlanIT_Control_research&datum=MLLW",
+      "file": "coops_8726520_water_level.json",
+      "bytes": 172,
+      "sha256": "ddd5c51fe8f00aa35c0b4bf77552cc2002645b2cd2db69ff2cbbadb8a3dae68d",
+      "retrieved_at_utc": "2026-10-17T05:37:05.245803+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2026-10-16T00%3A00%3A00&endtime=2026-10-17T05%3A00%3A00&minmagnitude=4&limit=20&orderby=time",
+      "file": "earthquakes_20261016.json",
+      "bytes": 14436,
+      "sha256": "fc5c4d87525ec9df171c790f478d039a5d0c37fa70f0a807502dc067dfc67b4a",
+      "retrieved_at_utc": "2026-10-17T05:37:05.782659+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
+      "file": "swpc_kp.json",
+      "bytes": 4417,
+      "sha256": "53cd6501afabd6a16c436ba15727343cab8005def2e7c41e9091a9db9c27a45c",
+      "retrieved_at_utc": "2026-10-17T05:37:06.014384+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://www.ndbc.noaa.gov/activestations.xml",
+      "file": "ndbc_stations.xml",
+      "bytes": 272488,
+      "sha256": "d90b4412e1eb87dec1ff233ded621045351e50f14d76840bac798f763d47d28e",
+      "retrieved_at_utc": "2026-10-17T05:42:43.797811+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://www.ndbc.noaa.gov/data/realtime2/41009.txt",
+      "file": "ndbc_41009.txt",
+      "bytes": 600848,
+      "sha256": "9244ffd488c0c4dc941545b27e9cc7d841f053737737cb4fb5078524fb800a67",
+      "retrieved_at_utc": "2026-10-17T05:42:44.000015+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    }
+  ],
+  "datasets": [
+    {
+      "name": "NWS_point",
+      "file": "eia-59769_nws_point.json",
+      "record_count": 1,
+      "site_id": "eia-59769"
+    },
+    {
+      "name": "NWS_hourly",
+      "file": "eia-59769_hourly.json",
+      "record_count": 156,
+      "normalized_evidence_count": 125,
+      "site_id": "eia-59769"
+    },
+    {
+      "name": "NWS_alerts",
+      "file": "eia-59769_alerts.json",
+      "record_count": 0,
+      "normalized_evidence_count": 0,
+      "site_id": "eia-59769"
+    },
+    {
+      "name": "NWS_observation",
+      "file": "eia-59769_observation.json",
+      "record_count": 1,
+      "normalized_evidence_count": 5,
+      "site_id": "eia-59769"
+    },
+    {
+      "name": "NWS_point",
+      "file": "eia-58708_nws_point.json",
+      "record_count": 1,
+      "site_id": "eia-58708"
+    },
+    {
+      "name": "NWS_hourly",
+      "file": "eia-58708_hourly.json",
+      "record_count": 156,
+      "normalized_evidence_count": 125,
+      "site_id": "eia-58708"
+    },
+    {
+      "name": "NWS_alerts",
+      "file": "eia-58708_alerts.json",
+      "record_count": 0,
+      "normalized_evidence_count": 0,
+      "site_id": "eia-58708"
+    },
+    {
+      "name": "NWS_observation",
+      "file": "eia-58708_observation.json",
+      "record_count": 1,
+      "normalized_evidence_count": 5,
+      "site_id": "eia-58708"
+    },
+    {
+      "name": "COOPS_wind",
+      "file": "coops_8726520_wind.json",
+      "record_count": 719,
+      "normalized_evidence_count": 6,
+      "site_id": null
+    },
+    {
+      "name": "COOPS_air_temperature",
+      "file": "coops_8726520_air_temperature.json",
+      "record_count": 719,
+      "normalized_evidence_count": 3,
+      "site_id": null
+    },
+    {
+      "name": "COOPS_water_level",
+      "file": "coops_8726520_water_level.json",
+      "record_count": 1,
+      "normalized_evidence_count": 1,
+      "site_id": null
+    },
+    {
+      "name": "USGS_earthquakes",
+      "file": "earthquakes_20261016.json",
+      "record_count": 20,
+      "normalized_evidence_count": 20,
+      "site_id": null
+    },
+    {
+      "name": "SWPC_Kp",
+      "file": "swpc_kp.json",
+      "record_count": 57,
+      "normalized_evidence_count": 3,
+      "site_id": null
+    },
+    {
+      "name": "NDBC_buoy",
+      "file": "ndbc_41009.txt",
+      "record_count": 6390,
+      "normalized_evidence_count": 7,
+      "site_id": null
+    }
+  ],
+  "failures": [
+    {
+      "name": "COOPS_humidity",
+      "reason": "ValueError"
+    }
+  ],
+  "network_policy": "serial bounded cached official snapshots; no live inference I/O",
+  "as_of_utc": "2026-10-17T05:42:44.000015+00:00",
+  "elapsed_seconds": 3.672832299984293,
+  "exported_evidence_counts": {
+    "eia-59769": 29,
+    "eia-58708": 25
+  },
+  "limitations": [
+    "Real environmental readings accompany explicitly hypothetical confirmed-event demo contexts.",
+    "No real disaster activation, local flood depth, worker exposure, or site probability is asserted.",
+    "NWS first 25 forecast periods normalized; windows 0/6/12/24 and latest local station variables exported; unlisted hours are unknown, never interpolated.",
+    "CO-OPS latest three rows normalized; one latest row/variable exported where within the 25km context bound. Regional probes are catalog evidence, not local exposure.",
+    "Retrieval is a conservative known-availability time, not the original first publication timestamp."
+  ],
+  "canonical_export_sha256": "fd47f16074a3829a3b1061b0896ca5ffdb1700e41e3e89a61f5becd22e7aeb2a"
+}
