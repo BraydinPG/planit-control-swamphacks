@@ -136,7 +136,7 @@ export function LocationSearch({
         suggested location and Enter to open it.
       </p>
       <div
-        className={`absolute top-full left-0 z-[1100] mt-1.5 w-[max(100%,min(30rem,calc(100vw-2rem)))] overflow-hidden rounded-xl border border-line-strong bg-surface shadow-2xl shadow-black/40 ${expanded ? '' : 'hidden'}`}
+        className={`absolute top-full left-0 z-[1100] mt-1.5 w-[max(100%,min(30rem,calc(100vw-2rem)))] overflow-hidden rounded-xl border border-line bg-surface/95 shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl ${expanded ? '' : 'hidden'}`}
       >
         <p className="kicker border-b border-line px-3 py-2" aria-hidden="true">
           {query ? 'Matching locations' : 'Suggested locations'}
@@ -156,7 +156,7 @@ export function LocationSearch({
               onMouseDown={(e) => e.preventDefault()}
               onMouseEnter={() => setActive(index)}
               onClick={() => pick(site)}
-              className={`flex min-h-12 cursor-pointer items-center gap-3 px-3 py-2 ${index === active ? 'bg-surface-2 shadow-[inset_3px_0_0_var(--pc-focus)]' : ''}`}
+              className={`flex min-h-12 cursor-pointer items-center gap-3 px-3 py-2 ${index === active ? 'bg-accent/10' : ''}`}
             >
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-semibold text-ink">

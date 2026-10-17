@@ -308,7 +308,7 @@ function Stat({
         </span>
         <span className="text-sm text-ink-2">{label}</span>
         {onToggle && (
-          <span className="mt-1.5 block font-mono text-[11px] font-semibold tracking-wider text-muted uppercase">
+          <span className="mt-1.5 block text-xs font-semibold text-accent">
             {pressed ? 'Filter on · show all' : 'Filter list'}
           </span>
         )}
@@ -320,7 +320,7 @@ function Stat({
       type="button"
       aria-pressed={pressed}
       onClick={onToggle}
-      className={`pc-press flex items-start gap-3 rounded-2xl border p-4 text-left hover:border-line-strong ${pressed ? 'border-ink bg-surface-2' : 'border-line bg-surface'}`}
+      className={`pc-press flex items-start gap-3 rounded-2xl border-2 p-4 text-left hover:border-line ${pressed ? 'border-accent bg-accent/10' : 'border-transparent bg-surface'}`}
     >
       {body}
     </button>
@@ -429,7 +429,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
       </div>
       <section
         aria-label="Location filters"
-        className={`${card} grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end @3xl:shadow-xl @3xl:shadow-black/30`}
+        className={`${card} grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end @3xl:shadow-[0_1px_2px_rgba(0,0,0,0.06)]`}
       >
         <LocationSearch
           sites={ranked}
@@ -978,13 +978,13 @@ function ReportCard({ report }: { report: CrewReport }) {
     <article data-report-id={report.id} className={`${card} space-y-3 p-4`}>
       <div className="flex flex-wrap items-center gap-2">
         <span
-          className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${look.cls}`}
+          className={`chip inline-flex items-center gap-1.5 border ${look.cls}`}
         >
           <RiskShape kind={look.shape} className="size-3.5" />
           {look.text}
         </span>
         <span
-          className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${report.hazard_present ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'}`}
+          className={`chip inline-flex items-center gap-1.5 border ${report.hazard_present ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'}`}
         >
           {report.hazard_present ? 'Hazard present' : 'Hazard absent'}
         </span>

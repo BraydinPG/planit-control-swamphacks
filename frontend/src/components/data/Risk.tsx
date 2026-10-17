@@ -122,11 +122,11 @@ const levelWord: Record<RiskLevel, string> = {
 /** Hex fill per level, for places that cannot use CSS variables (Leaflet). */
 // oxlint-disable-next-line react/only-export-components
 export const levelHex: Record<RiskLevel | 'none', string> = {
-  critical: '#c8102e',
-  high: '#e86a00',
-  moderate: '#d4ad00',
-  low: '#7b8592',
-  none: '#9aa3ad',
+  critical: '#d70015',
+  high: '#c93400',
+  moderate: '#e0b000',
+  low: '#8e8e93',
+  none: '#c7c7cc',
 }
 
 /**

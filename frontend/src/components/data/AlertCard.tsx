@@ -37,7 +37,7 @@ function look(alert: Alert): {
     }
   return {
     kind: 'warn',
-    band: 'bg-warn text-[#1a1e24]',
+    band: 'bg-warn text-white',
     ring: 'border-warn',
     word: 'Warning',
   }
@@ -216,7 +216,8 @@ export function AlertCard({
                 </div>
               ))}
             </dl>
-            {alert.evidence.length > 0 && (
+            {/* Crew see trigger, distance, rule and source above; evidence IDs stay on the supervisor view. */}
+            {persona === 'supervisor' && alert.evidence.length > 0 && (
               <div>
                 <h3 className="kicker mb-2">Evidence</h3>
                 <ul className="space-y-1.5 text-sm">

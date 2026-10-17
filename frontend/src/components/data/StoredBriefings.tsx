@@ -9,13 +9,7 @@ import { ApiError } from '../../api/contracts'
 export const NO_BRIEFING =
   'No briefing yet. Briefings are generated at 6 PM site-local time.'
 
-function Section({
-  title,
-  children,
-}: {
-  title: string
-  children: ReactNode
-}) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="space-y-2">
       <h3 className="kicker">{title}</h3>
@@ -38,7 +32,7 @@ export function BriefingCard({ value }: { value: Briefing }) {
     >
       <header className="space-y-3 border-b border-line pb-4">
         <span
-          className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${fallback ? 'border-dashed border-line-strong text-ink-2' : 'border-sim text-sim'}`}
+          className={`inline-flex items-center gap-1.5 chip border ${fallback ? 'border-dashed border-line-strong text-ink-2' : 'border-sim text-sim'}`}
         >
           <Icon name={fallback ? 'doc' : 'spark'} className="size-3.5" />
           {fallback ? 'Template' : 'Gemini'}
@@ -202,10 +196,10 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
       </div>
       {client.mode === 'demo' && (
         <p className="rounded-xl border border-dotted border-sim px-4 py-3 text-sm text-ink-2">
-          <span className="kicker text-sim!">Simulated</span>{' '}
-          SIMULATED / ARCHIVED FIXTURES — prerecorded examples, including a
-          template fallback. Text is not regenerated after demo mutations and is
-          not current employer policy.
+          <span className="kicker text-sim!">Simulated</span> SIMULATED /
+          ARCHIVED FIXTURES — prerecorded examples, including a template
+          fallback. Text is not regenerated after demo mutations and is not
+          current employer policy.
         </p>
       )}
       {result.data === null ? (

@@ -107,12 +107,12 @@ const stateTone: Record<DataState, string> = {
   crew_reported: 'border-line-strong text-ink-2',
   simulated: 'border-dotted border-sim text-sim',
   stale: 'border-warn bg-warn/10 text-warn-text',
-  unavailable: 'border-line-strong text-faint line-through decoration-1',
+  unavailable: 'border-line-strong text-muted line-through decoration-1',
 }
 export function Status({ state }: { state: DataState }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase leading-none tracking-wider ${stateTone[state]}`}
+      className={`inline-flex items-center gap-1.5 chip border ${stateTone[state]}`}
     >
       <StateMark state={state} />
       {stateLabels[state]}

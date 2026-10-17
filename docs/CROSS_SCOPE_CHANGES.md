@@ -296,3 +296,14 @@ Verification: `npm run build`, `npm run lint` (clean), the four `node --test` su
 - Motion tokens (one easing, three durations): button press feedback, page entry fade, stop-work beacon. All disabled under `prefers-reduced-motion`. Report form shows a local photo preview thumbnail (object URL revoked on change/unmount).
 
 Verification: build, lint (clean), 90/90 Node tests, `check-shell.mjs` pass with no browser exceptions; before/after screenshots at 390 and 1440.
+
+### 2026-10-17 — Apple Human Interface style (approved mockup), light theme
+
+Rudra approved an Apple-style mockup and chose its light theme for both workspaces (this replaces the earlier dark supervisor request).
+
+- `index.css` tokens: grouped grey background `#F2F2F7`, white surfaces, hairline `#D2D2D7`, ink `#1D1D1F`, system blue accent `#0071E3`, darkened system risk colours (stop `#D70015`, warning `#C93400`) so white text passes 4.5:1. System font stack (San Francisco on Apple devices); the Google Fonts import is removed. `kicker` is now an iOS grouped-list header, new `chip` utility for status pills, expo-out motion easing.
+- Primary buttons are system blue; secondary are grey fills; cards are borderless white on the grouped background. Translucent header, sidebar and tab bar; tab bar marks the current tab with blue and bold text (plus `aria-current`); the preview workspace switch is a segmented control.
+- **Behavior-visible change:** the crew alert detail no longer lists evidence IDs (Rudra's request). Trigger, distance, rule, source and the acknowledgement warning remain; supervisors still see the evidence list. No data, API or check changed.
+- All strings, roles, shapes-plus-words, null/unknown/incomplete handling and 44/72px targets are unchanged.
+
+Verification: build, lint (clean), 95/95 Node tests, `check-shell.mjs` pass with no browser exceptions; phone and desktop screenshots reviewed.
