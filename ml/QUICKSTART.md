@@ -1,5 +1,7 @@
 # ML quickstart
 
+For opt-in 2.1 hazard acceptance, run `python -m ml.hazard_rehearsal --require-models` after provisioning below. This checks 31 scenarios and 50 reconciled backend EIA sites offline. See [HAZARD_INTEGRATION.md](HAZARD_INTEGRATION.md) for migration, source gaps and owner handoffs.
+
 For the combined worker advisory, follow [WORKER_OUTLOOK.md](WORKER_OUTLOOK.md), then run `python -m ml.demo_worker_outlook --require-models` after provisioning. The demo is offline and uses real captured weather with labeled hypothetical event contexts; it does not assert a real active disaster.
 
 Run from the repository root. The preserved **Flood** default is conditional Kaplan-Meier recorded-duration persistence. Five additional research targets and their separate provisioning are documented in [MULTIDISASTER.md](MULTIDISASTER.md). Outputs are marked `production_eligibility=false` and cannot affect alerts, work clearance, or site scores. Weather remains retrospective research.
@@ -49,7 +51,3 @@ The corrected full evaluation took about eight seconds here. Entire episodes cro
 The weather command makes zero network requests in cache-only mode. A fresh checkout has no weather cache; insufficient cached support fails explicitly. An intentional run without `--cache-only` may fetch up to 20 responses per year sequentially. ERA5 valid time does not establish historical operational availability.
 
 See `ml/INTEGRATION.md` for typed input, the tested adapter, exact output example, receipt verification, and backend import setup. No ML route is added.
-# Comprehensive hazard acceptance: `python -m ml.hazard_rehearsal --require-models`
-
-After the existing provisioning steps below, this runs the 31 scenarios and 50 reconciled EIA sites offline. See [HAZARD_INTEGRATION.md](HAZARD_INTEGRATION.md) for 2.1 migration, frozen schemas, source gaps and owner handoffs.
-

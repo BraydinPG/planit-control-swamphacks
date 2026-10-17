@@ -23,7 +23,9 @@
 - New captures: 553 national NWS notices, all 50 point queries successful (11 notice records).
 - Actual replay coverage: two sites with local weather, ten with qualified official notices.
 - Gauge/site transfers, trusted live reports/assets and local US-site ShakeMap remain unavailable.
-- Checkpoint pushed; full tests/builds pass. Final clean-export rehearsal/docs/review PR pending.
+- Code checkpoint `c61c9ab` pushed; full suite/builds and clean Git-export checks pass.
+- Clean export: 31 scenarios/50 sites pass without models and with verified artifact copies; no source caches/credentials.
+- Final owner handoffs are in HAZARD_INTEGRATION; review PR publication is pending.
 - Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
 
 ## Mission and boundaries

@@ -1,5 +1,6 @@
 {
-  "status": "full suite and builds passed; clean-export verification pending",
+  "status": "full suite, builds and clean-export verification passed",
+  "verified_code_commit": "c61c9ab",
   "base_main_commit": "cc67e58",
   "published_checkpoint": "84d3d2d",
   "environment": "Fresh Python 3.14.5 venv; pinned ML lock plus backend development requirements",
@@ -20,6 +21,14 @@
   "artifacts_rebuilt": false,
   "historical_backtests_rerun": false,
   "large_archives_redownloaded": false,
+  "clean_git_export": {
+    "source": "git archive c61c9ab; LF source files; fresh isolated dependency environment",
+    "without_artifacts": "31 scenarios and 50 sites passed; typed unavailable Layer A",
+    "with_verified_artifact_copies": "31 scenarios and 50 sites passed with --require-models",
+    "raw_source_caches_or_credentials_copied": false,
+    "network_blocked": true,
+    "fixture_hashes_portable": "Verified UTF-8/LF manifest against clean Git-export line endings"
+  },
   "offline_monte_carlo": "20,000 draws each for Flood/High Wind and 12 evidence-policy cases; arithmetic/sensitivity only, not predictive validation",
   "site_probabilities_independently_validated": 0,
   "operationally_validated": false,
