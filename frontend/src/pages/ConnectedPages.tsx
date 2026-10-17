@@ -1002,7 +1002,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
           value={note}
           placeholder={
             category === 'access_mat_deterioration'
-              ? 'Record the mat or section, your A-D stage (D: unusable), and visible damage.'
+              ? 'Describe the affected section, visible damage and your crew assessment.'
               : undefined
           }
           onChange={(e) => setNote(e.target.value)}

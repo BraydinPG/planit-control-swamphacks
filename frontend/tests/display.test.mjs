@@ -20,6 +20,7 @@ const {
   formatTimestamp,
   unitLabel,
   errorSummary,
+  outlookUnavailableLabel,
 } = await server.ssrLoadModule('/src/presentation/display.ts')
 const { ApplicationContext } = await server.ssrLoadModule(
   '/src/application/context.tsx',
@@ -105,6 +106,18 @@ test('dates show local timezone and handle null/invalid; units are labels withou
   )
   assert.equal(errorSummary('Permission denied'), 'Permission denied')
   assert.equal(errorSummary('Session expired'), 'Session expired')
+  assert.equal(
+    outlookUnavailableLabel('event_start_missing'),
+    'The event start time is unknown.',
+  )
+  assert.equal(
+    outlookUnavailableLabel('official_forecast_stale'),
+    'The agency forecast is out of date.',
+  )
+  assert.equal(
+    outlookUnavailableLabel('site_association_unverified'),
+    'The event could not be linked to this worksite.',
+  )
 })
 test('six primary outlooks retain replay/research/archive/unknown and do not expose model IDs', () => {
   const html = render(EventOutlooks, { cards: site.event_outlooks })

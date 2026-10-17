@@ -1,6 +1,7 @@
 # UI copy and worker readability
 
-Cache's user-authorized presentation pass on `feature/cache-ui-readability-polish`.
+Cache's user-authorized presentation pass on `feature/cache-ui-readability-polish`,
+initially `5045790`, incorporating reviewed main `e2092dc` (including PR44–46).
 Rudra remains the frontend maintainer. Start the existing app in explicit demo mode;
 the change adds no API, service, identity or dataset.
 
@@ -72,6 +73,21 @@ expanded details, keyboard focus, touch targets, and mocked HTTP/auth failures.
 Screenshots and machine-readable results remain under ignored
 `frontend/.shell-check/`; `ui-polish-before/` holds the local baseline captures.
 It does not establish real Auth0/Tiger Data acceptance or complete T063–T068.
+
+Verified 2026-10-17: **166 frontend tests**, lint, TypeScript, default/live-mode
+build and explicit fixture-mode production build pass. **881 backend tests** pass
+with the existing Starlette deprecation warning. The default/live build retains
+its existing large-chunk warning; the fixture build passes without it.
+Both development demo/mock and built-demo browser suites pass at all three
+widths, including organization rename, team/code actions and all evidence
+disclosures open. Zero browser exceptions or actual backend requests. The
+six event cards and simulated **6.1/10 rules-0.2** score remain verified.
+
+Backend check, from `backend/`: `python -m pytest tests -q`.
+For a built-demo check, set `VITE_USE_FIXTURES=true` in the build process, run
+`npm.cmd run build`, start `npm.cmd run preview` on a free loopback port, then
+run `node scripts/check-shell.mjs http://127.0.0.1:PORT/ --production`.
+These process settings do not require editing the local environment files.
 
 The existing integration unit harness now disables file watching, matching the
 other isolated Vite tests. Watching accumulated browser profiles could stall it.

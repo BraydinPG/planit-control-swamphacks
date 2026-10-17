@@ -6,7 +6,10 @@ import type {
   OfficialEventForecast,
   UnavailableForecast,
 } from '../../types/api'
-import { displayLabel } from '../../presentation/display'
+import {
+  displayLabel,
+  outlookUnavailableLabel,
+} from '../../presentation/display'
 import { Details } from './Details'
 import { Timestamp } from './Status'
 
@@ -23,8 +26,8 @@ const presentationText: Record<EventOutlookCard['presentation'], string> = {
 }
 const kindText: Record<EventOutlookCard['forecast']['kind'], string> = {
   historical_duration_research: 'Research duration estimate',
-  official_event_forecast: 'Issued NHC forecast',
-  official_aftershock_forecast: 'Issued USGS aftershock forecast',
+  official_event_forecast: 'National Hurricane Center forecast',
+  official_aftershock_forecast: 'U.S. Geological Survey forecast',
   unavailable: 'Prediction unavailable',
 }
 
@@ -73,9 +76,11 @@ function OutlookCard({ card }: { card: EventOutlookCard }) {
           >
             {presentationText[card.presentation]}
           </span>
-          <span className="chip border border-line-strong text-ink-2">
-            {kindText[f.kind]}
-          </span>
+          {f.kind !== 'unavailable' && (
+            <span className="chip border border-line-strong text-ink-2">
+              {kindText[f.kind]}
+            </span>
+          )}
         </div>
         {card.presentation === 'historical_example' && (
           <p className="text-sm font-semibold text-sim">
@@ -93,7 +98,10 @@ function OutlookCard({ card }: { card: EventOutlookCard }) {
       <p className="text-sm font-medium text-ink-2">
         {displayLabel(card.association.method, 'Site link unknown')}
       </p>
-      <Details title="How was this estimated?">
+      <Details
+        title="How was this estimated?"
+        label={`${card.event_type}: how was this estimated?`}
+      >
         <p className="font-semibold">{card.event_name}</p>
         <dl className="divide-y divide-line rounded-xl bg-surface-2">
           <Row label="Event start">
@@ -361,10 +369,7 @@ function Unavailable({ f }: { f: UnavailableForecast }) {
     <div className="rounded-xl border border-dashed border-line-strong p-3">
       <p className="font-semibold">Prediction unavailable</p>
       <p className="mt-1 text-sm text-ink-2">
-        {f.reason_code === 'missing_event_start'
-          ? 'The event start time is unknown.'
-          : 'A supported estimate is not available for this event.'}{' '}
-        No probability is substituted.
+        {outlookUnavailableLabel(f.reason_code)} No probability is substituted.
       </p>
     </div>
   )

@@ -114,7 +114,7 @@ export function AppShell({
         aria-label={mobile ? 'Mobile workspace' : 'Workspace'}
         className={
           mobile
-            ? `grid ${visible.length > 5 ? 'grid-cols-6' : 'grid-cols-5'} gap-1.5`
+            ? `grid ${visible.length > 5 ? 'grid-cols-6 gap-0.5' : 'grid-cols-5 gap-1.5'}`
             : 'space-y-1'
         }
       >
@@ -140,7 +140,7 @@ export function AppShell({
                 }
               />
               <span className={mobile ? 'max-w-full' : 'min-w-0 truncate'}>
-                {label(item)}
+                {mobile && item.id === 'overview' ? 'Home' : label(item)}
               </span>
             </a>
           )

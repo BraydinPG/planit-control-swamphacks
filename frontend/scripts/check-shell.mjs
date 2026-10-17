@@ -618,6 +618,17 @@ try {
   })
   // Team mutations use the existing in-memory demo client, never a real organization.
   await hash('/supervisor/team', 'Join codes')
+  await click('Rename')
+  await set(
+    'form[aria-label="Rename organization"] input',
+    'Demonstration Regional Utility Restoration Organization',
+  )
+  await click('Save')
+  await loaded('Demonstration Regional Utility Restoration Organization')
+  assert(
+    await evaluate('document.documentElement.scrollWidth<=innerWidth'),
+    'Organization rename overflow',
+  )
   const longTeam =
     'Demonstration Restoration Team with a Long Regional Assignment Name'
   await set('form[aria-label="Add a team"] input', longTeam)
@@ -666,7 +677,7 @@ try {
   )
   results.push({
     teams:
-      'Existing demo: add long-name team, create/revoke join code, remove empty team. Roster remains memory-only; no live team writes.',
+      'Existing demo: rename organization, add long-name team, create/revoke join code, remove empty team. Roster remains memory-only; no live team writes.',
   })
 
   // Controlled browser-only stress snapshot; never edits canonical fixtures or scores.

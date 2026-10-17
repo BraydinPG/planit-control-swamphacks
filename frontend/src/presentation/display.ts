@@ -100,6 +100,25 @@ export function errorSummary(message: string) {
   return message
 }
 
+export function outlookUnavailableLabel(code: string) {
+  const reasons: Record<string, string> = {
+    event_start_missing: 'The event start time is unknown.',
+    invalid_event_start: 'A valid event start time is needed.',
+    no_confirmed_active_event: 'No confirmed active event is available.',
+    model_unavailable: 'The duration model is unavailable.',
+    unsupported_target: 'No supported prediction exists for this hazard.',
+    site_association_unverified:
+      'The event could not be linked to this worksite.',
+    local_confirmation_missing: 'Local confirmation is missing.',
+    stale_local_confirmation: 'Local confirmation is out of date.',
+    official_forecast_missing: 'No qualifying agency forecast is available.',
+    official_forecast_stale: 'The agency forecast is out of date.',
+  }
+  return (
+    reasons[code] ?? 'A supported estimate is not available for this event.'
+  )
+}
+
 /** Browser-local time, with timezone; the original ISO value stays on <time>. */
 export function formatTimestamp(value: string | null, timeZone?: string) {
   if (!value || !Number.isFinite(Date.parse(value))) return 'Time unavailable'

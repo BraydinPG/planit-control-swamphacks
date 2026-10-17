@@ -29,6 +29,21 @@ backend fixture/outlook/score/lightning tests; Edge demo/mock browser checks at
 Rudra reviews the UI; backend-authored wording questions and screen audit are in
 `docs/UI_READABILITY.md`. T063–T068 live acceptance remains separate.
 
+Final verification, 2026-10-17 22:30 UTC: incorporated upstream `e2092dc` in
+`42dbd18`, after implementation checkpoint `9863599`. Resolved the three UI
+conflicts by retaining organization renaming/Add Team placement, recorded Gemini
+species attribution and all six report categories. PR diff against this main has
+**no backend, ML, Auth0, API/schema, fixture, task or manifest changes**.
+All **166 frontend and 881 backend tests** pass; lint, TypeScript, both live-mode
+and simulated production builds pass. Development demo/mock and built-demo Edge
+suites pass all eleven destinations, long content, stale/missing data, multiple
+alerts and expanded evidence at 1440/390/320; zero browser exceptions or actual
+backend requests. Simulated organization rename/team/code actions pass. The
+existing Starlette deprecation and default/live bundle-size warning remain.
+Nine ignored environment/artifact files are hash-unchanged. Demo remains at
+http://localhost:5177/; no teammate server was restarted. Review: Rudra for UI,
+Braydin/Rudra for the unchanged backend-authored wording noted in the guide.
+
 ## Canonical demo scores and prediction failure handling (Cache) — 2026-10-17
 
 Explicit user authorization: fix the obsolete fixture score and both reproduced
