@@ -322,9 +322,9 @@ See `AGENTS.md` for detailed individual ownership, prompts, path boundaries, con
 Ownership summary:
 
 - Cache: `ml/`, model training, features, evaluation, and model handoff.
-- Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/`, database migrations, EIA-860M site import, live data feeds, `frontend/src/auth/`, Auth0 setup notes.
-- Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
-- Rudra: `backend/app/` except `security/`, `db/`, and `ingestion/`, API contracts, deterministic alert rules, scoring, Gemini endpoints, integration, deployment, root README. Rudra imports Braydin’s database session and ingestion adapters, and does not edit migrations or feed adapters.
+- Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/`, `backend/app/gemini/`, database migrations, EIA-860M site import, live data feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, Auth0 setup notes.
+- Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`. Nick deploys the frontend.
+- Rudra: `backend/app/` except `security/`, `db/`, `ingestion/`, and `gemini/`, API contracts, deterministic alert rules, scoring, report and notice persistence, root README. Rudra imports Braydin’s database session, ingestion adapters, and Gemini functions, and does not edit migrations, feed adapters, or Gemini calls.
 
 Rudra creates and publishes the shared schemas first. Other members start against fixtures and their own module boundaries. Do not have two people edit the same file. Shared manifest and lockfile changes go through Rudra.
 

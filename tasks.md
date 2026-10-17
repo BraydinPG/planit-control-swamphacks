@@ -13,13 +13,13 @@ For each task:
 5. Check each box only after its done check passes.
 6. Report changed files, checks run, and blockers. Leave blocked tasks unchecked.
 
-Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the default path ownership in `AGENTS.md`; explicit project-level authorization may permit focused cross-owner changes. Preserve unrelated work. Rudra coordinates shared schemas, manifests, deployment configuration, and integration. Braydin owns Tiger Data migrations.
+Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the default path ownership in `AGENTS.md`; explicit project-level authorization may permit focused cross-owner changes. Preserve unrelated work. Rudra coordinates shared schemas, manifests, alert rules, and scoring. Braydin owns Tiger Data migrations, Gemini endpoints, and Vultr deployment.
 
 ## Owners
 
-- Rudra: backend routes, API contracts, alert rules, scoring, Gemini endpoints, integration, deployment, README.
+- Rudra: backend routes except Gemini, API contracts, alert rules, scoring, report and notice persistence, README.
 - Cache: `ml/`, model training, features, prediction, evaluation.
-- Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**`, database migrations, EIA-860M site import, live data feeds, `frontend/src/auth/`, `auth/SETUP.md`.
+- Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**`, `backend/app/gemini/**`, database migrations, EIA-860M site import, live data feeds, Gemini endpoints, Vultr deployment, `frontend/src/auth/`, `auth/SETUP.md`.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
 
 ## Shared contracts
@@ -127,17 +127,17 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 
 ## Phase 3: Reports, Gemini, and permissions
 
-- [ ] **T052 | Rudra | Configure photo storage.** Use Vultr Object Storage, with a private local directory for development. Add size and type limits. Needs T012. Done when invalid uploads are rejected.
-- [ ] **T053 | Rudra | Implement report creation and potential notices.** Store organization, team, reporter, category, whether the hazard is present, coordinates, photo, optional note, time, and pending status. A source detection or a present report asks Gemini for a radius and sends “potential {hazard}” with no instructions to teams and supervisors inside it. If Gemini is unresponsive or the radius is invalid, use that category’s labeled default from `spec.md`. Needs T052, T027, and T056. Done when the report persists and recipients inside the radius are notified.
+- [ ] **T052 | Braydin | Configure photo storage.** Use Vultr Object Storage, with a private local directory for development. Add size and type limits. Needs T012. Done when invalid uploads are rejected.
+- [ ] **T053 | Rudra | Implement report creation and potential notices.** Store organization, team, reporter, category, whether the hazard is present, coordinates, photo, optional note, time, and pending status. Call Braydin’s Gemini radius function. Send “potential {hazard}” with no instructions to teams and supervisors inside the returned radius. If that function reports Gemini unresponsive or an invalid radius, use that category’s labeled default from `spec.md`. Needs T052, T027, and T056. Done when the report persists and recipients inside the radius are notified.
 - [ ] **T054 | Rudra | Implement hazard confirmation.** Any supervisor who received the potential notice can confirm it. The reporting organization’s supervisor still reviews a report that no hazard is present. Record reviewer and time. Needs T053 and T028. Done when crew is denied, a supervisor outside the notice is denied, and an absent report stays with its own organization.
-- [ ] **T054A | Rudra | Send the supervisor’s instruction.** After confirmation, ask Gemini for one concise instruction. Let the confirming supervisor edit it, then send that text to every team inside the stored radius. Needs T054 and T056. Done when the potential notice contains no instruction and teams receive the supervisor’s final text.
+- [ ] **T054A | Rudra | Send the supervisor’s instruction.** After confirmation, call Braydin’s Gemini instruction function. Let the confirming supervisor edit the suggestion, then send that text to every team inside the stored radius. Needs T054 and T056. Done when the potential notice contains no instruction and teams receive the supervisor’s final text.
 - [ ] **T055 | Rudra | Add confirmed reports to scores.** Count only confirmed reports that the hazard is present. Exclude pending, rejected, and confirmed-absent reports. Needs T051 and T054. Done when only those confirmed reports affect the score.
 - [x] **T056 | Rudra | Configure Gemini client.** Keep key server-side and define timeouts. Needs T004. Done when missing key returns a controlled unavailable state.
-- [ ] **T057 | Rudra | Implement briefing endpoint.** Use forecast, score factors, alerts, confirmed reports, timestamps, and unknowns. Validate structured output and evidence IDs. Needs T042, T051, and T056. Done when material claims cite supplied evidence.
-- [ ] **T058 | Rudra | Add deterministic briefing fallback.** Generate a template when Gemini fails or returns invalid output. Needs T057. Done when briefing remains available without Gemini.
-- [ ] **T059 | Rudra | Implement score explanation endpoint.** Explain the existing score without changing score or alert state. Needs T051 and T056. Done when evidence maps to supplied factors.
-- [ ] **T060 | Rudra | Implement report enrichment.** Ask Gemini to suggest category and visible evidence. Require human review. Needs T053 and T056. Done when suggestions cannot change score before confirmation.
-- [ ] **T061 | Rudra | Add Gemini evaluation cases.** Test grounding, schema, unknown handling, radius validation, instruction review, and unsupported safety claims. Needs T057, T059, T060, and T054A. Done when results and limitations are documented.
+- [ ] **T057 | Braydin | Implement Gemini endpoints.** In `backend/app/gemini/`, add the briefing, score explanation, report enrichment, notice radius, and confirmed-instruction calls. Register that router from `backend/app/main.py` without changing Rudra’s other routes. Validate structured output and evidence IDs. Needs T042, T051, and T056. Done when a briefing cites supplied evidence and the radius and instruction functions are importable by Rudra’s report routes.
+- [ ] **T058 | Braydin | Add deterministic briefing fallback.** Generate a template when Gemini fails or returns invalid output. Needs T057. Done when briefing remains available without Gemini.
+- [ ] **T059 | Braydin | Implement score explanation endpoint.** Explain the existing score without changing score or alert state. Needs T051 and T056. Done when evidence maps to supplied factors.
+- [ ] **T060 | Braydin | Implement report enrichment.** Ask Gemini to suggest category and visible evidence. Require human review. Needs T053 and T056. Done when suggestions cannot change score before confirmation.
+- [ ] **T061 | Braydin | Add Gemini evaluation cases.** Test grounding, schema, unknown handling, radius validation, instruction review, and unsupported safety claims. Needs T057, T059, T060, and T054A. Done when results and limitations are documented.
 - [ ] **T062 | Braydin + Rudra | Verify API permissions.** Test crew, supervisor, no token, and invalid token on protected routes. Needs T028 and protected routes. Done when policy matches `spec.md`.
 
 ## Phase 4: Frontend integration
@@ -168,12 +168,12 @@ These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fix
 ## Phase 6: Documentation and deployment
 
 - [ ] **T077 | Rudra | Complete public README.** Document setup, architecture, data sources, model evaluation and limits, Gemini safeguards, Auth0 setup, Tiger Data, Vultr, the sponsor tracks, and demo. Needs T021, T024, T061, and T070. Done when a new developer can run the app.
-- [ ] **T078 | Rudra | Record the Vultr deployment.** Host the FastAPI app and frontend on Vultr. Keep the database on Tiger Data and identity on Auth0. Needs T001. Done when build commands and required env variables are recorded.
-- [ ] **T079 | Rudra | Prepare deployment config.** Add health checks, build settings, migrations, allowed origins, and secret names. Needs T078. Done when config validates locally.
-- [ ] **T080 | Rudra | Deploy the backend to Vultr.** Configure secrets in Vultr, run Tiger Data migrations, and seed data. Needs T076 and T079. Done when health and sites endpoints succeed.
+- [ ] **T078 | Braydin | Record the Vultr deployment.** Host the FastAPI app and frontend on Vultr. Keep the database on Tiger Data and identity on Auth0. Needs T001. Done when build commands and required env variables are recorded.
+- [ ] **T079 | Braydin | Prepare deployment config.** Add health checks, build settings, migrations, allowed origins, and secret names. Needs T078. Done when config validates locally.
+- [ ] **T080 | Braydin | Deploy the backend to Vultr.** Configure secrets in Vultr, run Tiger Data migrations, and seed data. Needs T076 and T079. Done when health and sites endpoints succeed.
 - [ ] **T081 | Braydin | Configure Auth0 for deployed URLs.** Add exact callbacks, logout URLs, and allowed origins. Needs T080. Done when both demo roles sign in.
 - [ ] **T082 | Nick | Deploy the frontend on Vultr.** Set the backend URL and public Auth0 configuration. Needs T080 and T081. Done when the deployed frontend reaches the backend.
-- [ ] **T083 | Rudra | Verify deployed security and CORS.** Test role access, allowed origins, and secret exposure. Needs T081 and T082. Done when authorized requests work and unauthorized requests fail.
+- [ ] **T083 | Braydin | Verify deployed security and CORS.** Test role access, allowed origins, and secret exposure. Needs T081 and T082. Done when authorized requests work and unauthorized requests fail.
 - [ ] **T084 | All | Run deployed acceptance checks.** Test sites, scores, alerts, reports, Gemini, fallbacks, and Auth0. Needs T083. Done when P0 checks pass on deployment.
 - [ ] **T085 | Rudra | Finish Devpost submission.** Add repo/deployed links, track mapping, data and model disclosure, screenshots, and limitations. Needs T077 and T084. Done when claims match the implementation.
 - [ ] **T086 | All | Prepare a demo fallback.** Record the full demo or create a stable local replay. Label simulated data. Needs T075. Done when backup demo is ready.
@@ -189,10 +189,12 @@ T001–T008: kickoff, repo, contracts
   └── T030–T038: frontend lane
                 ↓
 T039–T045D: sites and live feeds (Braydin, backend/app/ingestion/)
-T046–T062: alerts, rules, scoring, reports, Gemini, permissions (Rudra; reads Braydin's Observations)
+T046–T055: alerts, rules, scoring, reports, permissions (Rudra; calls Braydin's Gemini functions)
+T056–T061: Gemini endpoints (Braydin, backend/app/gemini/)
                 ↓
 T063–T068: frontend integration
                 ↓
 T069–T076: validation, rehearsal, feature freeze
                 ↓
-T077–T086: documentation, deployment, submission
+T077, T085: README and Devpost (Rudra)
+T078–T083: Vultr deployment (Braydin; Nick deploys the frontend in T082)

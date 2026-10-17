@@ -141,11 +141,11 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 **Integration dependency:** Rudra imports the function and combines its output with live deterministic factors. Do not implement the final risk score or lightning alert logic. Live feeds supply deterministic factors, not model training labels. The model scope stays as described above.
 
-### Braydin: Auth0, access control, Tiger Data setup, and data ingestion
+### Braydin: Auth0, Tiger Data, ingestion, Gemini, and Vultr deployment
 
-**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, database migrations, `frontend/src/auth/**`, `auth/SETUP.md`.
+**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, `backend/app/gemini/**`, database migrations, Vultr deployment files, `frontend/src/auth/**`, `auth/SETUP.md`.
 
-**Do not edit:** Nick’s pages/components/styles, Rudra’s route, alert-rule, and scoring files, shared manifests, lockfiles, root README.
+**Do not edit:** Nick’s pages/components/styles, Rudra’s alert-rule and scoring files, shared manifests, lockfiles, root README. A Gemini router may be registered in `backend/app/main.py`. Do not change Rudra’s other routes there.
 
 **Tasks:**
 
@@ -165,10 +165,13 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Build the P1 live feeds when P0 is stable: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
 - Cache each feed's last successful result, track freshness per feed, and mark stale and unavailable states. A failed refresh must never appear current. Keep each adapter replaceable.
 - Do not implement alert rules or scores. Rudra's rules read your Observations.
+- Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, explanation, enrichment, notice-radius, and instruction-suggestion calls. Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
+- Register the Gemini router from `backend/app/main.py` without changing Rudra’s other routes.
+- Own Vultr deployment: deployment config, backend deploy, photo object storage, and the deployed security and CORS check. Nick still deploys the frontend. Rudra still writes the root README and Devpost submission.
 
-**Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module and ingestion adapters after Rudra publishes the API schemas. Adapters can return fixture Observations until the database is ready.
+**Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module and ingestion adapters after Rudra publishes the API schemas. Adapters can return fixture Observations until the database is ready. The Gemini package can grow from the existing client before the routes that call it are finished.
 
-**Integration dependency:** Nick imports frontend exports. Rudra imports the Auth0 dependencies, the database session, and the ingestion adapters, then attaches them to routes and rules. Send import examples as soon as each interface is stable.
+**Integration dependency:** Nick imports frontend exports. Rudra imports the Auth0 dependencies, the database session, the ingestion adapters, and the Gemini functions, then uses them in routes and rules. Rudra does not call Gemini directly. Send import examples as soon as each interface is stable.
 
 ### Nick: frontend and UI/UX
 
@@ -192,11 +195,11 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 **Integration dependency:** Replace fixture calls with Rudra’s API client and import Braydin’s auth exports when available. Keep all auth code inside Braydin’s paths.
 
-### Rudra: backend, alert rules, scoring, Gemini, and integration
+### Rudra: backend routes, alert rules, and scoring
 
-**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, and `backend/app/ingestion/**`, shared API types, root `README.md`, deployment files, shared configuration and manifests.
+**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, and `backend/app/gemini/**`, shared API types, root `README.md`, shared configuration and manifests.
 
-**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, database migrations, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
+**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, `backend/app/gemini/**`, database migrations, Vultr deployment files, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
 
 **Tasks:**
 
@@ -207,18 +210,17 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
 - Implement the prototype hurricane and earthquake rules from `spec.md` using Braydin's Observations. Each creates a potential-hazard notice and a score factor. Label distance and magnitude settings as prototype values.
 - Integrate Cache’s `predict_site()` output and compute the final score from model output, current factors, and confirmed reports.
-- Implement crew reports, photo handling in Vultr Object Storage, review state, acknowledgements, and audit events. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
-- Ask Gemini for the notice radius. Validate the result. If Gemini is unresponsive or the radius is invalid, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate.
-- Let any supervisor who received the notice confirm the hazard. Gemini then drafts one concise instruction. The confirming supervisor can edit it, and that final text is sent to every team inside the stored radius. Gemini cannot send the instruction, declare work safe, or clear the alert.
-- Implement Gemini briefing and explanation endpoints with structured output validation, evidence IDs, explicit unknowns, and deterministic fallbacks.
-- Use Gemini for report enrichment only as a suggestion pending human confirmation. The reporting organization’s supervisor still reviews a report that no hazard is present.
+- Implement crew reports, review state, acknowledgements, and audit events. Store photos through the Vultr helper Braydin publishes. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
+- Call Braydin’s radius function for that notice. If it reports Gemini unresponsive or an invalid radius, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate. Do not call Gemini from route or rule files.
+- Let any supervisor who received the notice confirm the hazard. Call Braydin’s instruction function, let the confirming supervisor edit the suggestion, and send that final text to every team inside the stored radius.
+- The reporting organization’s supervisor still reviews a report that no hazard is present. Gemini enrichment stays a suggestion until that review.
 - Import Braydin’s Auth0 dependencies and protect routes according to the role policy in `spec.md`.
-- Add seed/demo data, health check, focused backend tests, Vultr deployment notes, and README.
+- Add seed/demo data, health check, focused backend tests, and README.
 - Own package/lockfile changes and shared configuration. Tell teammates before changing shared contracts.
 
 **Can start immediately:** Yes. Start with contract, app skeleton, seed fixtures, site endpoints, and deterministic alert logic.
 
-**Integration dependencies:** Cache supplies the model function. Braydin supplies token/role dependencies, the database session, and the ingestion adapters. Nick supplies the frontend. Use temporary stubs until each module arrives.
+**Integration dependencies:** Cache supplies the model function. Braydin supplies token/role dependencies, the database session, the ingestion adapters, and the Gemini functions. Nick supplies the frontend. Use temporary stubs until each module arrives.
 
 ## Role and permission policy
 
@@ -240,7 +242,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 ## Integration and merge schedule
 
 1. **Kickoff, hour 0–1:** Rudra creates the skeleton and publishes contracts. Each person confirms path ownership and creates a branch.
-2. **Parallel build, hours 1–8:** Cache works in `ml/`, Braydin in auth, database, and ingestion paths, Nick in frontend paths, Rudra in backend route, rule, and scoring paths. Use fixtures and stubs.
+2. **Parallel build, hours 1–8:** Cache works in `ml/`, Braydin in auth, database, ingestion, and Gemini paths, Nick in frontend paths, Rudra in backend route, rule, and scoring paths. Use fixtures and stubs.
 3. **First integration, hours 8–12:** Merge API contract and seed data, then Cache interface, Braydin modules, then Nick screens. Keep `main` runnable.
 4. **Feature integration, hours 12–27:** Connect model, Auth0, API, and UI. Each owner keeps edits inside their paths. Resolve interface questions in the contract before editing code.
 5. **Freeze, hours 27–32:** Stop adding features. Test role boundaries, lightning reset, report review, Gemini fallback, model fallback, and stale data.
