@@ -1,0 +1,295 @@
+# PlanIT Control Project Specification
+
+## 1. Project summary
+
+PlanIT Control is a web platform that helps utility field crews and supervisors make site safety decisions using one shared view of current hazards, forecasts, historical risk, and crew reports.
+
+The product combines three distinct functions:
+
+- Deterministic rules trigger operational alerts, including the required lightning stop-work and all-clear logic.
+- A trained machine-learning model estimates hazard likelihood from historical weather and environmental features.
+- Gemini summarizes supplied evidence, explains model outputs, and suggests structured labels for crew reports. Gemini does not set scores, trigger alerts, or declare work safe.
+
+The demo should show an Everglades-style site scenario, a lightning alert, a crew hazard report, a ranked supervisor view, and a next-day briefing.
+
+## 2. Challenge requirements and scope assumptions
+
+The Sperry Tech brief asks for:
+
+1. At least 50 actual power plant locations.
+2. A combined environmental risk picture for each location.
+3. Immediate hazard alerts, including a lightning strike within 10 miles that triggers stop-work and a 30-minute all-clear countdown that resets after every new strike.
+4. A next-day safety briefing at 6 PM local time.
+5. Crew hazard reports with a photo and map pin, shared with the team and retained for future site planning.
+6. A supervisor dashboard that ranks sites by risk.
+7. A 0–10 hazard index from a machine-learning model trained on historical weather and environmental data tied to worker hazards.
+
+The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Use of Auth0, and Best Use of AI/ML. The team should submit to all five tracks if registration permits.
+
+### Scope assumptions to state in the demo and README
+
+- EIA-860M locations are power plant locations, not proof of active construction sites. Display them as representative monitored sites. Confirm with the organizer whether these meet the intended meaning of “job site.”
+- NOAA Storm Events and related historical weather data are proxies for hazard events. They do not represent worker injury outcomes unless the team obtains and validates separate outcome data.
+- If a live lightning feed is unavailable, use a deterministic replay fixture and label it as simulated.
+- Include only hazard feeds the team can source and timestamp. Mark missing, stale, mocked, or unavailable data clearly.
+- Safety thresholds beyond the explicit lightning rule are configurable prototype rules. Do not present them as official employer or regulatory policy.
+
+## 3. Users and workflows
+
+### Crew member
+
+1. Sign in and open the assigned or selected site.
+2. Check current status, active alerts, immediate action, and last data update.
+3. Open an alert to see its trigger, evidence, distance, and countdown.
+4. Acknowledge an alert.
+5. Submit a hazard report with a photo, category, map pin, and optional note.
+
+### Supervisor
+
+1. Sign in and see all monitored sites ranked by risk.
+2. Filter by location, hazard type, or alert status.
+3. Open a site to inspect score factors, observations, freshness, active alerts, and crew reports.
+4. Review crew reports and confirm or reject Gemini’s suggested classification.
+5. Generate or review the next-day briefing and use the evidence links to inspect its inputs.
+
+## 4. MVP scope and priorities
+
+### P0: required end-to-end product
+
+- Import and validate at least 50 EIA-860M coordinates.
+- Display all sites in a map and ranked list.
+- Show a per-site hazard index, factor breakdown, confidence or data completeness, and last-updated time.
+- Show at least one reliable weather and forecast feed. Cache results and expose stale-data states.
+- Implement the lightning stop-work rule and resettable 30-minute countdown.
+- Support crew hazard reports with photo and map pin.
+- Support supervisor review of reports and a risk-ranked dashboard.
+- Train and evaluate a baseline model on historical weather or environmental features joined to hazard-event labels.
+- Enforce crew and supervisor roles with Auth0 on protected backend routes.
+
+### P1: judging-track features
+
+- Gemini-generated, evidence-grounded next-day briefing.
+- Gemini explanation of a hazard score and its changes.
+- Gemini-assisted report classification with human confirmation.
+- Mobile-first crew interface and polished supervisor dashboard.
+- 6 PM local briefing schedule, with a manual generation action for the demo.
+- Public repository README documenting architecture, data, model, evaluation, Gemini safeguards, Auth0 setup, and demo steps.
+
+### P2: only after P0 and P1 work
+
+- Additional live data feeds for wildfire, flood gauges, soil saturation, and other hazards.
+- Push notifications, offline sync, what-if scheduling, or a conversational assistant.
+- Auth0 AI Agent security features, if the basic role-protected Gemini endpoints are stable and the team can show a meaningful use.
+
+## 5. Hazard data and scoring
+
+### Data states
+
+Every observation must carry a source, value, unit when relevant, observation time, valid time, location, and data state. Use these visible states: observed, forecast, crew reported, simulated, stale, unavailable.
+
+### ML model
+
+Train an interpretable baseline to estimate the probability of a weather-related hazard near each site during the next 24 hours. Use historical environmental features and hazard-event labels, such as NOAA Storm Events where appropriate. Engineer a time-based holdout split. Compare against a simple baseline. Report precision, recall, PR-AUC where supported, and calibration such as Brier score when feasible.
+
+Document the spatial and temporal join, labels, features, missing-data handling, model version, metrics, and limitations. Do not claim worker-injury prediction if labels only represent weather events. The model must run locally and must return a documented fallback when inputs or the model artifact are missing.
+
+Cache owns the model component. Rudra owns the final displayed index, which combines Cache’s model output with current deterministic hazard factors and confirmed crew reports. Show factor contributions and data completeness. Missing inputs must not silently count as zero risk.
+
+### Deterministic rules
+
+- Lightning: a qualifying strike within 10 miles creates a stop-work alert. The 30-minute all-clear window starts from the latest strike and resets after each new qualifying strike. Resolve only when the window expires with no new strike.
+- Flooding: use a documented rule based on a warning, gauge threshold, or rainfall plus site context. The brief sets no numeric threshold, so label a chosen threshold as a prototype setting.
+- Heat: show the forecast heat index and use a documented configurable threshold. Do not infer work/rest schedules from the brief.
+- Crew reports: only confirmed reports can contribute to the final score. Gemini suggestions remain pending review.
+
+Every alert must store and display the rule, triggering inputs, trigger time, latest qualifying event, status, and clear-after time.
+
+## 6. Gemini behavior and safeguards
+
+All Gemini calls run server-side. Send only the evidence needed for the task. Validate structured output. Store evidence identifiers with generated text and show evidence in the interface.
+
+### Next-day briefing
+
+Input: forecast observations, site score and factors, active alerts, confirmed crew reports, timestamps, and missing-data flags.
+
+Output fields: `summary`, `risk_level`, `hazards[]`, `recommended_actions[]`, `evidence[]`, `unknowns[]`.
+
+Rules: each material claim must reference supplied evidence. The model must state unknowns and must not declare work safe or clear an alert. On failure, generate a deterministic template briefing from the same data.
+
+### Score explanation
+
+Input: existing model output, final score factors, prior score if available, timestamps, and data-quality flags.
+
+Output fields: `explanation`, `top_factors[]`, `change_since_previous`, `evidence[]`, `unknowns[]`.
+
+Rules: Gemini explains a score that the application already calculated. Gemini cannot change the score or alert state. On failure, show the factor breakdown without generated prose.
+
+### Crew report enrichment
+
+Input: photo, crew-selected category, optional note, pin, and site context.
+
+Output fields: `suggested_category`, `description`, `severity_suggestion`, `confidence`, `visible_evidence[]`, `needs_review`.
+
+Rules: label output as a suggestion. A person confirms the category and severity before the report affects risk. On failure, save the original report without enrichment.
+
+Create a small evaluation set for grounding, schema validity, unknown handling, and unsupported safety claims. Include examples and results in the repository.
+
+## 7. UI/UX requirements
+
+### Crew experience
+
+- Mobile-first site and alert screens.
+- Put site status, current alert, immediate action, and update time at the top.
+- Large, glove-friendly controls, minimum 44 by 44 CSS pixels for primary touch targets.
+- Report hazard flow with photo, category, pin, and optional text.
+- High contrast and large text suitable for bright outdoor use.
+- Use icons and labels in addition to color. Support keyboard access, visible focus, semantic labels, and screen readers.
+
+### Supervisor experience
+
+- Desktop and tablet map plus ranked site list.
+- Show score, trend, active alerts, data freshness, and top factors without opening each site.
+- Filters for region, hazard, and alert state.
+- Site detail with observations, sources, timestamps, reports, and score breakdown.
+- Briefing view with action recommendations, evidence links, and unknowns.
+
+### UX acceptance checks
+
+- A crew member can identify an active alert and its immediate action within 10 seconds.
+- A crew member can submit a report in under 30 seconds without typing a required note.
+- A supervisor can identify the three highest-risk sites from the dashboard.
+- Risk remains understandable without color.
+- Loading, empty, stale, unavailable, and error states are implemented.
+
+## 8. Auth0 roles and permissions
+
+Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. Hiding a button in the frontend is not authorization.
+
+| Action | Crew | Supervisor |
+|---|---:|---:|
+| Read assigned site and alerts | Yes | Yes |
+| Acknowledge alert | Yes | Yes |
+| Submit hazard report | Yes | Yes |
+| Read all sites and risk rankings | No | Yes |
+| Review or confirm reports | No | Yes |
+| Generate organization-wide briefing | No | Yes |
+| Request site explanation | Yes, assigned site | Yes |
+
+Keep secrets in environment variables. Provide one demo account per role. Any development bypass must be explicit, local-only, and disabled by default.
+
+## 9. Architecture and API contract
+
+Suggested stack: React + TypeScript, FastAPI, PostgreSQL, a geospatial map library, scikit-learn, Gemini API, and Auth0. Preserve the existing stack if already established.
+
+### Routes
+
+| Route | Purpose |
+|---|---|
+| `GET /api/sites` | Site list with score, factors, alerts, and freshness. |
+| `GET /api/sites/{id}` | Site details, observations, score, reports. |
+| `GET /api/alerts` | Visible alerts and countdown state. |
+| `POST /api/alerts/{id}/acknowledge` | Record user and acknowledgement time. |
+| `POST /api/reports` | Submit category, photo, coordinates, and optional note. |
+| `GET /api/reports` | List reports, optionally filtered by site. |
+| `POST /api/reports/{id}/review` | Supervisor confirms or rejects a report. |
+| `POST /api/sites/{id}/briefings` | Generate a grounded briefing. |
+| `POST /api/sites/{id}/explanations` | Explain an existing score. |
+
+Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`.
+
+Cache exports:
+
+```text
+predict_site(features) -> {
+  hazard_probabilities,
+  model_component_0_10,
+  factor_contributions,
+  confidence,
+  model_version,
+  data_quality
+}
+```
+
+### Core entities
+
+- `Site`: identity, name, coordinates, location type, source, region.
+- `Observation`: hazard type, value, unit, source, observed and valid times, freshness, simulated flag.
+- `HazardPrediction`: probabilities, model version, created time.
+- `HazardScore`: final score, factor contributions, model version, created time.
+- `Alert`: site, rule, state, trigger time, latest qualifying event, clear-after time.
+- `CrewReport`: site, reporter, category, note, photo reference, coordinates, review status, timestamps.
+- `Acknowledgement`: alert, user, timestamp.
+- `Briefing`: site or region, forecast window, generated text, evidence IDs, created time.
+- `AuditEvent`: actor, action, entity, timestamp.
+
+## 10. Reliability, privacy, and failure states
+
+- Keep weather data cached and show freshness.
+- If Gemini fails, show deterministic text or factor data.
+- If the model fails, show the labeled fallback score.
+- If a feed is stale or unavailable, show that state and reduce confidence. Do not present stale observations as current.
+- Keep lightning alerts and rule evaluation independent from Gemini and model availability.
+- Restrict photo size and file types. Keep photo storage private where supported.
+- Keep credentials out of git. Log alert triggers, acknowledgements, report review, and briefing generation.
+- Do not store more user data than needed for roles and audit records.
+
+## 11. Team ownership and parallel work
+
+See `AGENTS.md` for detailed individual ownership, prompts, path boundaries, contracts, dependencies, and merge routine.
+
+Ownership summary:
+
+- Cache: `ml/`, model training, features, evaluation, and model handoff.
+- Braydin: `backend/app/security/`, `frontend/src/auth/`, Auth0 setup notes.
+- Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
+- Rudra: `backend/app/` except `security/`, data ingestion, database, API contracts, alerts, Gemini endpoints, integration, deployment, root README.
+
+Rudra creates and publishes the shared schemas first. Other members start against fixtures and their own module boundaries. Do not have two people edit the same file. Shared manifest and lockfile changes go through Rudra.
+
+## 12. 36-hour build sequence
+
+| Time | Milestone |
+|---|---|
+| 0–1 hours | Confirm scope, create repository skeleton, freeze API contract, assign file ownership. |
+| 1–8 hours | Parallel build: site/API foundation, model pipeline, Auth0 module, frontend using mocks. |
+| 8–12 hours | Integrate first working site list, role modules, model interface, and screens. Keep a runnable demo on main. |
+| 12–20 hours | Add score pipeline, lightning rule, report flow, supervisor ranking, Gemini endpoints. |
+| 20–27 hours | Connect UX and auth, add report enrichment, briefing, stale/error states. |
+| 27–32 hours | Freeze scope, test roles and end-to-end flows, document model and Gemini evaluations. |
+| 32–36 hours | Seed demo, rehearse, finish README and Devpost material, record fallback demo if useful. |
+
+If the core flow is unstable by hour 19, stop adding data sources and stretch features. Finish site map, lightning alert, report, ranking, briefing, and role checks.
+
+## 13. Track strategy
+
+| Track | Proof to show |
+|---|---|
+| Sperry Tech | 50+ real locations, multi-hazard site view, lightning rule, crew reports, ranking, next-day brief. |
+| Gemini API | Useful, grounded structured briefing and score explanation with evidence and fallbacks. |
+| UI/UX | Fast crew flow, readable field interface, polished supervisor dashboard, accessible controls. |
+| Auth0 | Role-based sign-in and backend authorization demonstrated with two accounts. |
+| AI/ML | Trained historical-data model, documented features, time-based evaluation, baseline comparison, public README. |
+
+## 14. Demo script and acceptance criteria
+
+### Demo, 3–5 minutes
+
+1. Show the Everglades-style site with heat, rain, wet-ground context, and a confirmed wildlife report.
+2. Show 50+ mapped locations and the supervisor’s ranked list.
+3. Replay a lightning strike within 10 miles. Show stop-work, evidence, acknowledgement, and 30-minute timer. Replay another strike and show the timer reset.
+4. Sign in as crew and submit a hazard photo and pin. Show Gemini’s suggested classification, then confirm it as a person.
+5. Sign in as supervisor. Review the report and inspect score factors.
+6. Ask Gemini to explain the score, showing its evidence references and unknowns.
+7. Generate tomorrow’s briefing and show recommended actions linked to evidence.
+8. Point to the public README’s model evaluation, data sources, Auth0 roles, and Gemini safeguards.
+
+### Release acceptance
+
+- At least 50 valid EIA coordinates render in map and ranked list.
+- Every site shows score, factors, timestamp, model version, and data completeness.
+- Lightning alert triggers and timer resets correctly.
+- Crew can submit a photo and pin. Supervisor can review it.
+- Gemini outputs validate against schemas, cite supplied evidence, and expose unknowns.
+- Crew and supervisor access differs at the UI and API boundaries.
+- Model training and evaluation are documented and reproducible from the repository.
+- Core demo works with simulated lightning and fallback behavior when external feeds or Gemini are unavailable.
