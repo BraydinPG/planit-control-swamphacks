@@ -1,5 +1,11 @@
 # T055: confirmed-present reports in persisted site scores
 
+PR #26 integration with main `9b395f0`: preserves the `compute_score(site=...)` regional
+rules and `score_site(observations=...)` refresh-loop input. Feed-created notices now
+record supervisor receipt snapshots so their recipients can use T054 confirmation.
+Integrated backend verification: 487 passed, zero skipped; lint and format (109 files)
+pass. The earlier 409-test checkpoint below predates those main-branch additions.
+
 T055 connects T054's human confirmation to the existing T051 deterministic scorer.
 Only a report with `review_status="confirmed"` and `hazard_present=true` contributes.
 Pending, rejected and confirmed-absent reports, potential notices, Gemini drafts and

@@ -8,6 +8,8 @@ Score = the sum of these factor contributions, capped at 10:
 | Heat index (T049) | 0, or 0.5–2.0 at or above the 103 °F prototype threshold |
 | Flood alert (T049) | Warning 2.0, Watch 1.0, none 0 |
 | Confirmed crew report, hazard present (each) | low 0.5, moderate 1.0, high 1.5 |
+| Hurricane (T049A, P1) | `hurricane_points` (2.0) for a warning or a storm within 50 mi |
+| Earthquake (T049A, P1) | `earthquake_points` (1.5) for M4.0+ within 25 mi |
 
 Risk level bands: below 3 low, below 6 moderate, below 8 high, 8 or more critical.
 
@@ -21,13 +23,18 @@ Missing data:
   `data_state` stale or unavailable, and lowers `data_completeness`.
 - `data_completeness` is the share of expected inputs (heat, flood, lightning) with a
   current reading. Stale and unavailable readings don't count as current.
+- Hurricane and earthquake factors appear only when those P1 feeds have reported, and
+  don't count toward `data_completeness`. NHC storm distance needs `site`; see
+  `app.rules.regional`.
 - `confidence` equals `data_completeness`. The rules have no calibrated confidence.
 """
 
 from datetime import datetime
 
+from app.ingestion.base import SiteLike
 from app.rules.factors import flood_factor, heat_factor
 from app.rules.lightning import feed_is_healthy
+from app.rules.regional import earthquake_factor, hurricane_factor
 from app.rules.settings import RuleSettings, get_rule_settings
 from app.schemas import (
     Alert,
@@ -69,12 +76,21 @@ def compute_score(
     now: datetime,
     previous: HazardScore | None = None,
     settings: RuleSettings | None = None,
+    site: SiteLike | None = None,
 ) -> HazardScore:
     settings = settings or get_rule_settings()
     heat = heat_factor(observations, now, settings)
     flood = flood_factor(observations, settings)
     lightning = lightning_factor(observations, alerts, settings)
     factors = [lightning, heat, flood, *report_factors(reports, settings)]
+    factors += [
+        f
+        for f in (
+            hurricane_factor(site, observations, settings),
+            earthquake_factor(site, observations, settings),
+        )
+        if f
+    ]
 
     expected = (heat, flood, lightning)
     completeness = sum(f.data_state in CURRENT_STATES for f in expected) / len(expected)
@@ -125,7 +141,11 @@ def lightning_factor(
             label="Lightning status unknown (feed stale or unavailable)",
             contribution=0.0,
             source="lightning",
-            data_state=DataState.STALE if readings else DataState.UNAVAILABLE,
+            data_state=(
+                DataState.STALE
+                if any(o.data_state is not DataState.UNAVAILABLE for o in readings)
+                else DataState.UNAVAILABLE
+            ),
             is_prototype=True,
         )
     latest = max(readings, key=lambda o: o.observed_at)

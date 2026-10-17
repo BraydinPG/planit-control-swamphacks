@@ -3,8 +3,11 @@
 Reads the site's recent Observations (freshness applied) and active alerts through the
 site-detail loaders, plus all confirmed-present reports without the UI's display limit,
 then saves a new `HazardScore` row. T055 can join a report-confirmation transaction.
-`GET /api/sites` shows the newest row. The refresh loop that fetches feeds and calls this
-on a schedule is separate work.
+`GET /api/sites` shows the newest row.
+
+The refresh loop (`app.services.refresh`, T049B) passes `observations`: the readings it
+just fetched, which hold each feed's current state. Stored history would also hold older
+"none" rows and expired alerts.
 """
 
 from datetime import UTC, datetime, timedelta
@@ -17,7 +20,7 @@ from app.api.sites import load_active_alerts, load_observations, report_schema
 from app.db import models as db
 from app.rules.score import compute_score
 from app.rules.settings import RuleSettings
-from app.schemas import HazardScore, ReviewStatus
+from app.schemas import HazardScore, Observation, ReviewStatus
 
 
 def score_site(
@@ -25,6 +28,7 @@ def score_site(
     site_id: str,
     now: datetime,
     settings: RuleSettings | None = None,
+    observations: list[Observation] | None = None,
     *,
     commit: bool = True,
 ) -> HazardScore:
@@ -62,12 +66,13 @@ def score_site(
     ).all()
     score = compute_score(
         site_id,
-        load_observations(session, site_id, now),
+        observations if observations is not None else load_observations(session, site_id, now),
         load_active_alerts(session, site_id),
         [report_schema(report) for report in reports],
         now,
         previous,
         settings,
+        site=session.get(db.Site, site_id),
     )
     # Multiple confirmations may share a request timestamp. Keep versions uniquely
     # ordered for existing latest-score reads without changing the canonical API.
