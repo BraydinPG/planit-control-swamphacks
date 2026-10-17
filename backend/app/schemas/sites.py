@@ -7,7 +7,7 @@ from app.schemas.common import FactorContribution, RiskLevel, Schema
 from app.schemas.hazards import HazardNotice
 from app.schemas.observations import Observation
 from app.schemas.orgs import TeamRef
-from app.schemas.outlook import EventOutlook
+from app.schemas.outlook import EventOutlook, EventOutlookCard
 from app.schemas.reports import CrewReport
 from app.schemas.scores import HazardScore
 
@@ -48,4 +48,9 @@ class SiteDetail(SiteSummary):
     event_outlook: EventOutlook | None = Field(
         default=None,
         description="Advisory outlook for a supervisor-confirmed active event. Null when none.",
+    )
+    event_outlooks: list[EventOutlookCard] = Field(
+        default=[],
+        description="T050A: one advisory card per confirmed event at the site, keyed by "
+        "event_id. Never changes the score, alerts, the lightning timer, or work authorization.",
     )

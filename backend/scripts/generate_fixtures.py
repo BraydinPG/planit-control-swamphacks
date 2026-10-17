@@ -22,6 +22,7 @@ from app.schemas import (
     BriefingHazard,
     CrewReport,
     EventOutlook,
+    EventOutlookCard,
     Evidence,
     FactorContribution,
     HazardNotice,
@@ -506,6 +507,36 @@ EVENT_OUTLOOK = EventOutlook(
     ],
 )
 
+# T050A cards. Copied from the outputs Cache's adapter wrote for PR #39
+# (ml/fixtures/event_outlooks/*.response.json): hypothetical replays and archived official
+# products, read as JSON so this script needs no ML package. Not live predictions.
+ML_EXAMPLES = Path(__file__).resolve().parents[2] / "ml" / "fixtures" / "event_outlooks"
+
+
+def example_cards(name: str, presentation: str) -> list[EventOutlookCard]:
+    batch = json.loads((ML_EXAMPLES / name).read_text(encoding="utf-8"))
+    return [
+        EventOutlookCard.model_validate(
+            card
+            | {
+                "site_id": DEMO_SITE,
+                "presentation": presentation,
+                "limitations": [
+                    "Fixture copied from Cache's PR #39 example output; not a live prediction.",
+                    *card["limitations"],
+                ],
+            }
+        )
+        for card in batch["event_outlooks"]
+    ]
+
+
+EVENT_OUTLOOKS = [
+    *example_cards("multiple-events.response.json", "replay"),
+    *example_cards("nhc-helene-issued.response.json", "historical_example"),
+    *example_cards("usgs-aftershock-issued.response.json", "historical_example"),
+]
+
 # ---- sites ----
 
 DEMO_SUMMARY = dict(
@@ -606,6 +637,7 @@ SITE_DETAIL = SiteDetail(
     reports=[REPORT_POLE_PENDING, REPORT_WILDLIFE_CONFIRMED],
     notices=NOTICES,
     event_outlook=EVENT_OUTLOOK,
+    event_outlooks=EVENT_OUTLOOKS,
 )
 
 # ---- briefings: one Gemini-generated, one deterministic fallback ----
