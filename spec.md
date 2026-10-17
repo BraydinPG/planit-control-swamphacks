@@ -69,7 +69,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 - Show a per-site hazard index, factor breakdown, confidence or data completeness, and last-updated time.
 - Ingest the P0 live feeds from section 5: NWS weather and forecast, NWS flood alerts, and the labeled lightning replay fixture. Cache results and expose stale and unavailable states.
 - Implement the lightning stop-work rule and resettable 30-minute countdown.
-- Support crew hazard reports with a photo, coordinates, and a present-or-absent answer.
+- Support crew hazard reports with a photo, a category, a present-or-absent answer, an optional note, and the device's precise location when the crew member allows it (otherwise the site's location, labeled approximate).
 - Support one supervisor per organization, with multiple teams and crew members. Many organizations share one deployment.
 - When a connected source detects a hazard, or a crew member marks a hazard present, notify every team and supervisor inside a Gemini-chosen radius. The notice says “potential {hazard}” and contains no instructions.
 - After any notified supervisor confirms the hazard, have Gemini suggest one concise instruction. Send the text that supervisor accepts or edits to every team inside that radius.
@@ -175,13 +175,17 @@ Schedule: generated automatically at 6 PM in each site's local time zone, once p
 
 Gemini does not explain or interpret the hazard score. The 0–10 score is a deterministic weighted algorithm over current risk factors and confirmed reports. The interface shows its factor breakdown as the explanation: each factor's weighted contribution, source, time, data state, and prototype label. There is no score-explanation route.
 
-### Crew report enrichment
+### Crew report photo analysis (side by side)
 
-Input: photo, crew-selected category, optional note, pin, and site context.
+Crew report: a photo, the category the crew member selects, whether the hazard is present, an optional note, and a location. The form asks the device for its precise location (browser geolocation) when a report is opened, and only with the crew member's permission. If granted, the report carries the device coordinates and their accuracy (`location_source="device"`). If declined or unavailable, it uses the site's location, labeled approximate, and the crew member may move the pin (`location_source="site"` or `"pin"`). Location is never tracked outside a report.
 
-Output fields: `suggested_category`, `description`, `severity_suggestion`, `confidence`, `visible_evidence[]`, `needs_review`.
+Gemini input: the photo, the selected category, the present-or-absent answer, the optional note, and site context. Not the location: a photo cannot verify where it was taken.
 
-Rules: label output as a suggestion. A person confirms the category and severity before the report affects risk. On failure, save the original report without enrichment.
+Output fields: `comparisons[]`, `also_visible[]`, `suggested_category`, `severity_suggestion`, `confidence`, `unknowns[]`, `needs_review`. Each comparison row covers one crew claim (`category`, `hazard_present`, `note`) with `crew_reported`, `photo_shows`, and `agreement`: `consistent`, `inconsistent`, or `cannot_tell`. `also_visible[]` lists hazards in the photo that the crew member did not report.
+
+Supervisor view: the crew member's report on one side and Gemini's reading of the photo on the other, row by row, with agreement in words and icons, never color alone. Beside it: the location source, accuracy, and distance from the site, computed by the backend, not Gemini.
+
+Rules: the analysis is a labeled suggestion. It never changes the report, its review state, or the score, and "inconsistent" never rejects a report by itself; the supervisor confirms the category and severity. On failure, save and show the report without the analysis ("Photo analysis unavailable").
 
 ### Notice radius
 
@@ -260,7 +264,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `GET /api/sites/{id}` | Site details, observations, score, reports. |
 | `GET /api/alerts` | Visible alerts and countdown state. |
 | `POST /api/alerts/{id}/acknowledge` | Record user and acknowledgement time. |
-| `POST /api/reports` | Submit category, photo, coordinates, whether the hazard is present, and an optional note. |
+| `POST /api/reports` | Submit category, photo, coordinates with their source and accuracy, whether the hazard is present, and an optional note. Starts Gemini's side-by-side photo analysis. |
 | `GET /api/reports` | List reports visible to the caller, optionally filtered by site. |
 | `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
