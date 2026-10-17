@@ -1,0 +1,502 @@
+[
+  {
+    "lat": 27.965797,
+    "lon": -82.53282,
+    "id": "eia-59769",
+    "name": "TIA Solar",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 33.4345,
+    "lon": -111.9842,
+    "id": "eia-58708",
+    "name": "Phoenix Airport East Economy Lot",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 55.339722,
+    "lon": -160.4972,
+    "id": "eia-1",
+    "name": "Sand Point",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 33.458665,
+    "lon": -87.35682,
+    "id": "eia-2",
+    "name": "Bankhead Dam",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 34.4425,
+    "lon": -93.0262,
+    "id": "eia-166",
+    "name": "Carpenter",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 33.466477,
+    "lon": -111.7811,
+    "id": "eia-100",
+    "name": "South Consolidated",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 39.134259,
+    "lon": -120.9533,
+    "id": "eia-34",
+    "name": "Rollins",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 37.4594,
+    "lon": -105.8947,
+    "id": "eia-464",
+    "name": "Alamosa",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 41.5826,
+    "lon": -73.4349,
+    "id": "eia-539",
+    "name": "Rocky River (CT)",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 38.885709,
+    "lon": -77.02837,
+    "id": "eia-57788",
+    "name": "US GSA Heating and Transmission",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 39.7302,
+    "lon": -75.5371,
+    "id": "eia-591",
+    "name": "Christiana",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 29.733056,
+    "lon": -81.63278,
+    "id": "eia-136",
+    "name": "Seminole (FL)",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 33.1427,
+    "lon": -81.7625,
+    "id": "eia-649",
+    "name": "Vogtle",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 21.356395,
+    "lon": -158.1289,
+    "id": "eia-765",
+    "name": "Kahe",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 42.069987,
+    "lon": -90.69766,
+    "id": "eia-1067",
+    "name": "Iowa Hydro LLC",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 43.420221,
+    "lon": -112.1019,
+    "id": "eia-790",
+    "name": "Gem State",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.1719,
+    "lon": -88.8339,
+    "id": "eia-204",
+    "name": "Clinton Power Station",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 38.7378,
+    "lon": -85.4206,
+    "id": "eia-983",
+    "name": "Clifty Creek",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 37.9308,
+    "lon": -100.9725,
+    "id": "eia-108",
+    "name": "Holcomb",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 37.8833,
+    "lon": -84.1017,
+    "id": "eia-54",
+    "name": "J K Smith",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 30.4922,
+    "lon": -91.1864,
+    "id": "eia-1391",
+    "name": "Louisiana 1",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 42.610683,
+    "lon": -72.47164,
+    "id": "eia-547",
+    "name": "Northfield Mountain",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 39.182073,
+    "lon": -76.53715,
+    "id": "eia-602",
+    "name": "Brandon Shores",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 44.099461,
+    "lon": -70.22085,
+    "id": "eia-805",
+    "name": "Charles E Monty",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 44.561961,
+    "lon": -83.80451,
+    "id": "eia-1693",
+    "name": "Alcona",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 44.0501,
+    "lon": -94.4178,
+    "id": "eia-30",
+    "name": "Madelia",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.0786,
+    "lon": -93.635,
+    "id": "eia-698",
+    "name": "Trenton North",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 30.34,
+    "lon": -88.4919,
+    "id": "eia-2047",
+    "name": "Chevron Oil",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 47.0539,
+    "lon": -104.74,
+    "id": "eia-2176",
+    "name": "Glendive GT",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 35.0986,
+    "lon": -78.8294,
+    "id": "eia-1016",
+    "name": "Butler-Warner Generation Plant",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 46.8669,
+    "lon": -100.8836,
+    "id": "eia-2790",
+    "name": "R M Heskett",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.854765,
+    "lon": -98.34822,
+    "id": "eia-59",
+    "name": "Platte",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 44.325053,
+    "lon": -72.00098,
+    "id": "eia-2349",
+    "name": "Comerford",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.476525,
+    "lon": -74.35234,
+    "id": "eia-2390",
+    "name": "Sayreville",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 36.8061,
+    "lon": -107.6131,
+    "id": "eia-584",
+    "name": "Navajo Dam",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 36.01551,
+    "lon": -114.738,
+    "id": "eia-154",
+    "name": "Hoover Dam (NV)",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 41.949,
+    "lon": -74.2063,
+    "id": "eia-88",
+    "name": "Ashokan",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.2522,
+    "lon": -80.6486,
+    "id": "eia-2828",
+    "name": "Cardinal",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 36.190278,
+    "lon": -95.2894,
+    "id": "eia-165",
+    "name": "GREC",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 45.2439,
+    "lon": -116.7008,
+    "id": "eia-3013",
+    "name": "Hells Canyon",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.464851,
+    "lon": -80.04376,
+    "id": "eia-3096",
+    "name": "Brunot Island",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 41.8167,
+    "lon": -71.4042,
+    "id": "eia-3236",
+    "name": "Manchester Street",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 33.371506,
+    "lon": -80.11324,
+    "id": "eia-130",
+    "name": "Cross",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 44.087235,
+    "lon": -103.261,
+    "id": "eia-3325",
+    "name": "Ben French",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 35.074087,
+    "lon": -90.14868,
+    "id": "eia-3393",
+    "name": "Allen",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 31.7569,
+    "lon": -106.375,
+    "id": "eia-9",
+    "name": "Copper",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 40.493631,
+    "lon": -111.3125,
+    "id": "eia-159",
+    "name": "Lake Creek Dam",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 36.808229,
+    "lon": -80.93871,
+    "id": "eia-3772",
+    "name": "Buck Hydro",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 44.4917,
+    "lon": -73.20806,
+    "id": "eia-589",
+    "name": "J C McNeil",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  {
+    "lat": 47.079722,
+    "lon": -122.365,
+    "id": "eia-99",
+    "name": "Frederickson",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026 operating generator inventory",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  }
+]

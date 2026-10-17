@@ -1,5 +1,39 @@
 # Backend integration contract
 
+## Combined worker advisory 2.0.0
+
+The Cache-owned two-layer slice is implemented independently of production routes. See [WORKER_OUTLOOK.md](WORKER_OUTLOOK.md) for tested behavior, [DISASTER_COVERAGE.md](DISASTER_COVERAGE.md) for all 54 raw NOAA types and source maturity, and `ml/fixtures/worker_outlook/` for typed requests/responses/JSON schemas. Legacy 1.1 duration callables below retain their signatures and score exclusion.
+
+```python
+from ml.worker.combined import build_worker_outlook, build_for_backend_site, explanation_context
+from ml.worker.schema import SiteContext, WorkerOutlook, WorkerOutlookRequest
+
+# Authorize the user's assigned site / supervisor scope upstream, before this call.
+outlook = build_worker_outlook(confirmed_event_context, trusted_site_context, normalized_evidence)
+response = WorkerOutlook.model_validate(outlook)
+```
+
+`python -m ml.demo_worker_outlook --require-models` runs five offline end-to-end cases after the existing pinned artifacts are provisioned. It works in a fresh process from `backend/` with the repository root in `PYTHONPATH`. No source requests or training occur at inference. Initialize/recreate the process after provisioning to refresh cached artifact/fit metadata.
+
+Required fields Rudra/Braydin must supply:
+
+- Site: trusted `id`, `name`, valid `lat/lon`, `site_type`, `source`, `source_version`, explicit `is_fixture`. The research fixture contains 50 real EIA plant locations; this does not create backend DB rows. `build_for_backend_site` selects these identity fields without changing existing score/alert properties.
+- Event: ID/type, `confirmed_active` or explicit `historical_replay`, start/as-of UTC, site association, target definition where required, and `confirmation={source, record_id, confirmed_at, available_at, is_fixture}`. Confirmation must follow event start and precede as-of. Upstream must confirm actual activation, not infer it from the model or a future warning.
+- Evidence: `Evidence` objects from adapters, including original record/URL, values/units, geometry/precision, observed/issued/available/valid/ingested times, source revision and quality. Existing backend `Observation` fields alone do not establish historical issue-time availability or coverage. Missing fields must become unknown/422, not fabricated timestamps.
+- Site/gauge relation: upstream verified basin relation and datum if gauge context is to be used; plain geographic proximity does not qualify.
+
+The output contains `event_outlook`, `site_hazards`, accepted/rejected evidence with freshness/reasons, unknowns and safety literals. A missing/corrupt/late model makes Layer A unavailable while eligible source conditions can still be shown. No site probability model is validated; site `probability/confidence` remain null. Actual issued forecast values retain their provider method and windows. Derived heat index is labeled with input IDs/computation version. The examples use real weather with hypothetical event activation and are explicitly demo/simulated.
+
+Proposed wiring for Rudra's review: an opt-in `GET /api/sites/{id}/worker-outlook` FastAPI route, authorized with existing site/role policy, builds the confirmed event and evidence server-side and returns `WorkerOutlook`. This route is **not implemented** here. Rudra owns any canonical API/TypeScript type publication. Existing SiteDetail, risk/alerts and lightning timer remain unchanged. Invalid request/site schema maps to 422; partial feed/model gaps remain typed partial/unavailable advisories. Do not map unavailable to low risk, a score reduction, or a clear time.
+
+For Nick, canonical examples are `flood_outlook.json` and `wind_outlook.json`. Display method badges, explicit time window, station distance/grid coverage, derived-value marker, source IDs, rejected-data reasons and unknowns. Keep source rain % distinct from modeled event persistence. Keep official warnings and the real deterministic timer outside this advisory's authority; never display a duration median as a return-to-work countdown.
+
+For Braydin, `explanation_context(outlook)` returns only accepted evidence plus allowed citation IDs and structured limits, without control state or a Gemini call. Treat source text as data. Validate generated schemas/citations and human report review; Gemini must not change scores, warnings, timers or permission. AirNow/FIRMS credentials were not requested or stored; their archives remain unavailable.
+
+Measured warm/cold composition latency, clean-environment test results, unchanged artifact hashes, source receipts and MC/sensitivity details are in `ml/reports/worker_outlook/`. Reproduce `python -m pytest ml/tests backend/tests -q` with both ML and backend dependencies installed. No new backend route, schema field, frontend page, auth module, or database migration was changed.
+
+## Preserved duration contract 1.1
+
 Contract 1.1 adds event-specific research dispatch without changing these callable signatures or shared route schemas. Read the [multi-disaster handoff](MULTIDISASTER.md#rudra-handoff-contract-11) for exact target definitions, horizons, evidence requirements, qualified/disabled types, and examples. The instructions below retain the Flood v2 integration.
 
 Rudra owns event confirmation, authorization, routes, scores, and deterministic alerts. Braydin owns database/ingestion modules. This package provides a tested import, not live route integration. The expansion began from `cf9d3bb` after Flood PR #4 merged and was rebased onto `origin/main` at `482b4f9`, including the team's merged API PR #5 and ownership updates. Unmerged team feature work is preserved.

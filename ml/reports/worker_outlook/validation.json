@@ -1,0 +1,47 @@
+{
+  "phase": "final isolated-environment checks passed",
+  "focused_tests_passed": 59,
+  "baseline_tests_freshly_passed": 176,
+  "adapter_checks": [
+    "NOAA",
+    "NHC",
+    "ISD",
+    "FIRMS",
+    "EIA",
+    "NWS",
+    "COOPS",
+    "USGS_earthquakes",
+    "SWPC",
+    "NDBC",
+    "AirNow"
+  ],
+  "commands": [
+    "python -m pytest ml/tests backend/tests -q --junitxml=ml/.venv/worker_acceptance.xml",
+    "python -m ml.provision --verify-only",
+    "python -m ml.provision_expansion",
+    "python -m ml.demo_worker_outlook --require-models --benchmark --export-examples",
+    "python -m ml.worker_research",
+    "ruff check . (backend/)",
+    "ruff format --check . (backend/)",
+    "ruff check new ML modules --select E4,E7,E9,F",
+    "ruff format --check new ML modules --line-length 100",
+    "npm run lint (frontend/)",
+    "npm run build (frontend/)"
+  ],
+  "tests_passed": 238,
+  "new_worker_tests": 62,
+  "failures": 0,
+  "errors": 0,
+  "isolated_environment": "new Python 3.14.5 virtualenv; pinned ML plus backend requirements",
+  "backend_lint": "passed",
+  "backend_format": "passed",
+  "new_python_lint": "passed (E4,E7,E9,F)",
+  "new_python_format": "passed",
+  "frontend_lint": "passed",
+  "frontend_typecheck_build": "passed (Node v24.22.0)",
+  "artifact_verification": "Existing Flood + eight duration artifacts verified; no refitting or holdout rerun",
+  "fresh_process_backend_directory_demo": "passed",
+  "warnings": [
+    "Existing Starlette/httpx TestClient deprecation"
+  ]
+}

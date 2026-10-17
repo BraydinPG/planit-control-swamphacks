@@ -1,0 +1,170 @@
+[
+  {
+    "case": "real_weather_hypothetical_flood",
+    "site_id": "eia-59769",
+    "event_outlook_status": "supported_research",
+    "accepted_evidence": 27,
+    "hazards": {
+      "coastal_water": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "flood_context": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "heat": {
+        "status": "partial",
+        "condition_count": 12,
+        "probability": null
+      },
+      "rain": {
+        "status": "issued_forecast",
+        "condition_count": 4,
+        "probability": null
+      },
+      "visibility": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "wind": {
+        "status": "partial",
+        "condition_count": 11,
+        "probability": null
+      }
+    },
+    "unknowns": [
+      "no_eligible_site_evidence",
+      "physiological_exposure_and_work_rest_policy_not_modeled",
+      "source_quality_flags"
+    ],
+    "is_demo_or_simulated": true
+  },
+  {
+    "case": "real_weather_hypothetical_wind",
+    "site_id": "eia-58708",
+    "event_outlook_status": "supported_research",
+    "accepted_evidence": 24,
+    "hazards": {
+      "heat": {
+        "status": "partial",
+        "condition_count": 11,
+        "probability": null
+      },
+      "rain": {
+        "status": "issued_forecast",
+        "condition_count": 4,
+        "probability": null
+      },
+      "visibility": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "wind": {
+        "status": "partial",
+        "condition_count": 9,
+        "probability": null
+      }
+    },
+    "unknowns": [
+      "no_eligible_site_evidence",
+      "physiological_exposure_and_work_rest_policy_not_modeled",
+      "source_quality_flags"
+    ],
+    "is_demo_or_simulated": true
+  },
+  {
+    "case": "missing_or_mismatched_site_evidence",
+    "site_id": "eia-59769",
+    "event_outlook_status": "supported_research",
+    "accepted_evidence": 0,
+    "hazards": {
+      "flood_context": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "heat": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "rain": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      }
+    },
+    "unknowns": [
+      "no_eligible_site_evidence",
+      "physiological_exposure_and_work_rest_policy_not_modeled",
+      "unsupported_local_association"
+    ],
+    "is_demo_or_simulated": true
+  },
+  {
+    "case": "compound_tropical_context_without_joint_probability",
+    "site_id": "eia-59769",
+    "event_outlook_status": "unavailable",
+    "accepted_evidence": 28,
+    "hazards": {
+      "coastal_water": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "flood_context": {
+        "status": "official_warning",
+        "condition_count": 1,
+        "probability": null
+      },
+      "heat": {
+        "status": "partial",
+        "condition_count": 12,
+        "probability": null
+      },
+      "rain": {
+        "status": "issued_forecast",
+        "condition_count": 4,
+        "probability": null
+      },
+      "visibility": {
+        "status": "unavailable",
+        "condition_count": 0,
+        "probability": null
+      },
+      "wind": {
+        "status": "partial",
+        "condition_count": 11,
+        "probability": null
+      }
+    },
+    "unknowns": [
+      "no_eligible_site_evidence",
+      "physiological_exposure_and_work_rest_policy_not_modeled",
+      "source_quality_flags"
+    ],
+    "is_demo_or_simulated": true
+  },
+  {
+    "case": "fixture_earthquake_context_unknown_local_shaking",
+    "site_id": "eia-58708",
+    "event_outlook_status": "unavailable",
+    "accepted_evidence": 1,
+    "hazards": {
+      "earthquake": {
+        "status": "partial",
+        "condition_count": 1,
+        "probability": null
+      }
+    },
+    "unknowns": [
+      "local_shaking_and_structural_condition_unknown"
+    ],
+    "is_demo_or_simulated": true
+  }
+]

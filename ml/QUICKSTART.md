@@ -1,5 +1,7 @@
 # ML quickstart
 
+For the combined worker advisory, follow [WORKER_OUTLOOK.md](WORKER_OUTLOOK.md), then run `python -m ml.demo_worker_outlook --require-models` after provisioning. The demo is offline and uses real captured weather with labeled hypothetical event contexts; it does not assert a real active disaster.
+
 Run from the repository root. The preserved **Flood** default is conditional Kaplan-Meier recorded-duration persistence. Five additional research targets and their separate provisioning are documented in [MULTIDISASTER.md](MULTIDISASTER.md). Outputs are marked `production_eligibility=false` and cannot affect alerts, work clearance, or site scores. Weather remains retrospective research.
 
 ## Windows setup and pinned provisioning

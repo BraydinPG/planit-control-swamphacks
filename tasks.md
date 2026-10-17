@@ -69,6 +69,15 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 
 ### Cache: AI/ML
 
+Worker advisory continuation (Cache-owned, explicit user authorization; independent of production integration):
+
+- [x] **TML-W01 | Cache | Verify merged ancestry and shared project memory.** PR #4/#6 merge ancestry verified, new branch from `20af37d`, `PROJECT_CONTEXT.md` created with the AGENTS read-first/update pointer.
+- [x] **TML-W02 | Cache | Census all NOAA types and stage official sources.** 349,030 rows / 54 verbatim types; versioned typed source catalog, per-family reporting groups and limitations, real EIA/NWS/CO-OPS/USGS/NDBC/SWPC snapshots, explicit not-retrieved sources.
+- [x] **TML-W03 | Cache | Build source/time/space gates and Layer B.** Typed provenance, availability/issue checks, geography, units/QC, conservative gauge/track handling, reviewed crew evidence, matched derived heat index, descriptive source forecasts; no learned local probability claim.
+- [x] **TML-W04 | Cache | Compose and demonstrate both layers.** `build_worker_outlook`, schema 2.0.0, real-weather/hypothetical-event Flood and High Wind scenarios, missing/mismatch, compound and quake cases; unchanged scores/alerts/timers.
+- [x] **TML-W05 | Cache | Verify isolated setup, artifact identity and offline research.** Fresh environment full suite, existing artifact hashes/references without refitting, schema examples, offline MC consistency/sensitivity and measured one-worker latency; no new predictive backtest claim.
+- [x] **TML-W06 | Cache | Prepare exact owner handoff.** Canonical request/response JSON, source catalog, runnable demo, integration proposal, display/Gemini limits and remaining feed dependencies documented; production integration remains Rudra/Nick/Braydin-owned.
+
 Multi-disaster continuation (explicitly authorized Cache scope; separate from team feature branches):
 
 - [x] **TML-EXP01 | Cache | Inventory all 15 requested NOAA types.** Done: 349,030 source rows audited with original types, episode/region/year counts, point/invalid/missingness exclusions, and pinned checksums in `ml/COVERAGE.md` and reports.

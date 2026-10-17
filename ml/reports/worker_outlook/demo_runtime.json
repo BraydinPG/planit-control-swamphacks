@@ -1,0 +1,35 @@
+{
+  "status": "DEMO_SCHEMA_AND_INVARIANTS_PASSED",
+  "cases": 5,
+  "runtime": {
+    "real_weather_hypothetical_flood": {
+      "first_ms": 38.04640000453219,
+      "warm_calls": 100,
+      "warm_median_ms": 1.698250009212643
+    },
+    "real_weather_hypothetical_wind": {
+      "first_ms": 12.985699984710664,
+      "warm_calls": 100,
+      "warm_median_ms": 1.4953500067349523
+    },
+    "missing_or_mismatched_site_evidence": {
+      "first_ms": 0.29510000604204834,
+      "warm_calls": 100,
+      "warm_median_ms": 0.21514999389182776
+    },
+    "compound_tropical_context_without_joint_probability": {
+      "first_ms": 1.9936999888159335,
+      "warm_calls": 100,
+      "warm_median_ms": 1.6377000138163567
+    },
+    "fixture_earthquake_context_unknown_local_shaking": {
+      "first_ms": 0.15919998986646533,
+      "warm_calls": 100,
+      "warm_median_ms": 0.1134999911300838
+    }
+  },
+  "source_mode": "real captured agency environmental evidence + labeled hypothetical event contexts; compound warning and earthquake are synthetic fixtures",
+  "network_requests_during_inference": 0,
+  "learned_site_models": 0,
+  "operational_evaluation_eligible": false
+}

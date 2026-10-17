@@ -13,7 +13,9 @@ from ml.provision import file_sha256
 
 OFFICIAL_HOSTS = {"www.ncei.noaa.gov", "www.nhc.noaa.gov", "ftp.nhc.noaa.gov",
                   "services3.arcgis.com", "www.arcgis.com", "www.weather.gov",
-                  "waterservices.usgs.gov", "api.waterdata.usgs.gov", "firms.modaps.eosdis.nasa.gov"}
+                  "waterservices.usgs.gov", "api.waterdata.usgs.gov", "firms.modaps.eosdis.nasa.gov",
+                  "api.weather.gov", "api.tidesandcurrents.noaa.gov", "www.ndbc.noaa.gov",
+                  "earthquake.usgs.gov", "services.swpc.noaa.gov", "www.eia.gov"}
 
 
 def fetch_cached(url: str, cache_dir: Path, *, filename: str | None = None,
