@@ -43,9 +43,23 @@ from app.schemas.reports import (
 )
 from app.schemas.scores import HazardScore, ModelDataQuality, ModelOutput
 from app.schemas.sites import SiteDetail, SiteSummary
+from app.schemas.teams import (
+    Account,
+    JoinCode,
+    JoinRequest,
+    OrganizationTeams,
+    TeamMember,
+    TeamRoster,
+)
 
 __all__ = [
     "ADVISORY_NOTICE",
+    "Account",
+    "JoinCode",
+    "JoinRequest",
+    "OrganizationTeams",
+    "TeamMember",
+    "TeamRoster",
     "AnalysisPoint",
     "AnalysisVerdict",
     "LocationSource",

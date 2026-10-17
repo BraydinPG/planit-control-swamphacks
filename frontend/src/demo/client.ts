@@ -6,13 +6,18 @@ import noticesJSON from '../fixtures/hazard-notices.json'
 import briefingsJSON from '../fixtures/briefings.json'
 import references from './generated/references.json'
 import type {
+  Account,
   Alert,
   Briefing,
   CrewReport,
   HazardNotice,
+  JoinCode,
+  OrganizationTeams,
   ReportCreate,
   ReportReview,
   SiteSummary,
+  TeamMember,
+  TeamRoster,
 } from '../types/api'
 import {
   ApiError,
@@ -98,6 +103,55 @@ export function initialDemo(): DemoSnapshot {
     notices: clone(noticesJSON as HazardNotice[]),
   }
 }
+// Same alphabet as the backend: no 0/O or 1/I/L.
+const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
+function joinCode() {
+  const pick = () =>
+    CODE_ALPHABET[
+      crypto.getRandomValues(new Uint32Array(1))[0] % CODE_ALPHABET.length
+    ]
+  const half = () => Array.from({ length: 4 }, pick).join('')
+  return `${half()}-${half()}`
+}
+function demoRoster(): OrganizationTeams {
+  const person = (
+    id: string,
+    name: string,
+    role: 'crew' | 'supervisor' = 'crew',
+  ): TeamMember => ({
+    user_id: `demo|${id}`,
+    name: `${name} (simulated)`,
+    email: null,
+    role,
+    joined_at: '2026-10-10T14:00:00Z',
+  })
+  const teams = new Map<string, TeamRoster>()
+  for (const site of sitesJSON as SiteSummary[])
+    if (site.assigned_team && !teams.has(site.assigned_team.id))
+      teams.set(site.assigned_team.id, {
+        id: site.assigned_team.id,
+        name: site.assigned_team.name,
+        site_id: site.id,
+        site_name: site.name,
+        members: [],
+        join_codes: [],
+      })
+  const [a, b, c] = [...teams.values()]
+  a.members = [
+    person('crew', 'Demo crew'),
+    person('ana', 'Ana Ruiz'),
+    person('dev', 'Dev Patel'),
+  ]
+  if (b) b.members = [person('kim', 'Kim Lee')]
+  if (c) c.members = []
+  return {
+    organization_id: org,
+    organization_name: 'Sunbelt Utility (simulated)',
+    supervisors: [person('supervisor', 'Demo supervisor', 'supervisor')],
+    teams: [...teams.values()],
+  }
+}
+
 export class DemoClient implements Client {
   mode = 'demo' as const
   capabilities = {
@@ -106,8 +160,11 @@ export class DemoClient implements Client {
     reviewReports: true,
     hazards: true,
     briefings: true,
+    team: true,
   }
   private state: DemoSnapshot
+  // Simulated roster and join codes; kept in memory only, so a reload resets them.
+  private roster = demoRoster()
   private photoURLs = new Map<string, string>()
   private persona: () => Persona
   private storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> | null
@@ -394,6 +451,62 @@ export class DemoClient implements Client {
   async briefings() {
     // Public archived fixture examples, including a template; never generated here.
     return clone(briefingsJSON as Briefing[])
+  }
+  async me(): Promise<Account> {
+    const team = this.roster.teams[0]
+    return this.persona() === 'supervisor'
+      ? {
+          role: 'supervisor',
+          organization_id: org,
+          organization_name: this.roster.organization_name,
+          team_id: null,
+          team_name: null,
+          site_id: null,
+        }
+      : {
+          role: 'crew',
+          organization_id: org,
+          organization_name: this.roster.organization_name,
+          team_id: team.id,
+          team_name: team.name,
+          site_id: team.site_id,
+        }
+  }
+  async team() {
+    this.supervisor()
+    const now = this.now()
+    return clone({
+      ...this.roster,
+      teams: this.roster.teams.map((t) => ({
+        ...t,
+        join_codes: t.join_codes.filter((c) => Date.parse(c.expires_at) > now),
+      })),
+    })
+  }
+  async createJoinCode(teamId: string) {
+    this.supervisor()
+    const team = this.roster.teams.find((t) => t.id === teamId)
+    if (!team) throw new ApiError(404, 'Team not found in your organization')
+    const now = this.now()
+    const code: JoinCode = {
+      code: joinCode(),
+      team_id: teamId,
+      created_at: new Date(now).toISOString(),
+      expires_at: new Date(now + 7 * 24 * 3600 * 1000).toISOString(),
+    }
+    team.join_codes.unshift(code)
+    return clone(code)
+  }
+  async revokeJoinCode(code: string) {
+    this.supervisor()
+    for (const t of this.roster.teams)
+      t.join_codes = t.join_codes.filter((c) => c.code !== code)
+  }
+  async join(): Promise<Account> {
+    throw new ApiError(
+      409,
+      'Simulated demo: preview accounts already belong to a team. Join codes work with a live sign-in.',
+    )
   }
   replay(kind: 'strike' | 'cleared') {
     const a = this.state.alerts.find((a) => a.id === 'alert-ltg-demo')!

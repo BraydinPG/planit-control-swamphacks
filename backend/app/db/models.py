@@ -85,6 +85,10 @@ class Membership(Base):
     organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), nullable=False)
     team_id: Mapped[str | None] = mapped_column(ForeignKey("teams.id"), nullable=True)
     role: Mapped[str] = mapped_column(String, nullable=False)
+    # Profile shown on the supervisor's roster, refreshed from the token on each visit.
+    email: Mapped[str | None] = mapped_column(String, nullable=True)
+    display_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    joined_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     organization: Mapped[Organization] = relationship(back_populates="members")
     team: Mapped[Team | None] = relationship(back_populates="members")
@@ -209,6 +213,20 @@ class CrewReport(Base):
     enrichment: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     notice_id: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class JoinCode(Base):
+    """A supervisor's code that lets a crew account join one team, until it expires."""
+
+    __tablename__ = "join_codes"
+
+    code: Mapped[str] = mapped_column(String, primary_key=True)  # XXXX-XXXX
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), nullable=False)
+    team_id: Mapped[str] = mapped_column(ForeignKey("teams.id"), nullable=False)
+    created_by: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class HazardNotice(Base):

@@ -67,6 +67,58 @@ export interface Team {
   site_id: string | null
 }
 
+// ---- team onboarding and roster ----
+
+/** One person on a roster. Name and email come from their Auth0 sign-in. */
+export interface TeamMember {
+  user_id: string
+  name: string | null
+  email: string | null
+  role: 'crew' | 'supervisor'
+  joined_at: string | null
+}
+
+/** `XXXX-XXXX`: lets a crew account join one team until it expires (7 days) or is revoked. */
+export interface JoinCode {
+  code: string
+  team_id: string
+  created_at: string
+  expires_at: string
+}
+
+export interface TeamRoster {
+  id: string
+  name: string
+  site_id: string | null
+  site_name: string | null
+  members: TeamMember[]
+  /** Active codes only. */
+  join_codes: JoinCode[]
+}
+
+/** GET /api/team: the supervisor's organization, its supervisors, and every team. */
+export interface OrganizationTeams {
+  organization_id: string
+  organization_name: string
+  supervisors: TeamMember[]
+  teams: TeamRoster[]
+}
+
+/** GET /api/me and POST /api/join. Organization fields are null until the account joins. */
+export interface Account {
+  role: 'crew' | 'supervisor'
+  organization_id: string | null
+  organization_name: string | null
+  team_id: string | null
+  team_name: string | null
+  site_id: string | null
+}
+
+/** Body for POST /api/join. Case, spaces and a missing dash are forgiven. */
+export interface JoinRequest {
+  code: string
+}
+
 // ---- observations ----
 
 export type HazardType =

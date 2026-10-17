@@ -1,9 +1,12 @@
 import type {
+  Account,
   Alert,
   Briefing,
   CrewReport,
   HazardNotice,
   HazardConfirmResponse,
+  JoinCode,
+  OrganizationTeams,
   ReportCreate,
   ReportReview,
   SiteDetail,
@@ -21,6 +24,7 @@ export interface Client {
     reviewReports: boolean
     hazards: boolean
     briefings: boolean
+    team: boolean
   }
   now?(): number
   sites(): Promise<SiteSummary[]>
@@ -34,6 +38,14 @@ export interface Client {
   instruct(id: string, instruction: string): Promise<HazardNotice>
   briefing(id: string): Promise<Briefing | null>
   briefings(): Promise<Briefing[]>
+  /** Where the signed-in account belongs; nulls until it joins a team. */
+  me(): Promise<Account>
+  /** Supervisor: the organization's supervisors, teams, members and active join codes. */
+  team(): Promise<OrganizationTeams>
+  createJoinCode(teamId: string): Promise<JoinCode>
+  revokeJoinCode(code: string): Promise<void>
+  /** Crew account with no team joins the team behind a code. */
+  join(code: string): Promise<Account>
 }
 export interface DemoSnapshot {
   version: 1

@@ -34,6 +34,7 @@ import {
 import { AlertCard } from '../components/data/AlertCard'
 import { NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
+import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
 import {
   ScorePanel,
   Factors,
@@ -88,12 +89,16 @@ export function ConnectedPages() {
     'sites',
     useCallback(() => client.sites(), [client]),
   )
+  if (page === 'team' && persona === 'supervisor') return <TeamPage />
   if (!sites.data) return <LoadState error={sites.error} />
   if (!sites.data.length)
-    return (
+    // A live crew account sees no sites until it joins a team with a code.
+    return client.mode === 'live' && persona === 'crew' ? (
+      <JoinTeam />
+    ) : (
       <p role="status" className={`${card} p-5 text-ink-2`}>
-        No authorized sites returned. Ask your administrator to verify your team
-        assignment.
+        No sites for this account yet. Your account isn't linked to an
+        organization; supervisor accounts are linked by an administrator.
       </p>
     )
   const selected = encodedId ? decodeId(encodedId) : sites.data[0].id

@@ -1,3 +1,16 @@
+## Live feeds on, demo site frozen, faster refresh (Braydin) — 2026-10-17
+
+Explicit user decision (Braydin): live data for every real site, one frozen scripted demo site.
+
+- `app/services/refresh.py` (Rudra's):
+  - `refresh_all` skips `location_type="demo_site"` (`DEMO_LOCATION_TYPE`), so live feeds never overwrite the T069 scenario. `app/demo/scenario.py` uses the constant, and its docstring says so.
+  - Each site's readings are written in one `INSERT … ON CONFLICT (id, observed_at) DO UPDATE` (`store_observations`) instead of one `session.merge` per reading. Against Tiger, saving went from ~7 sites/min (a full round of ~40 readings per site took ~35 min to save) to ~0.2 s per site.
+  - `python -m app.services.refresh` now loads `backend/.env` (it failed with "DATABASE_URL is not set").
+- `tests/conftest.py`: tests force `FEED_REFRESH_ENABLED=false` and `BRIEFING_SCHEDULE_ENABLED=false`, so starting the app in a test never reaches live feeds or Tiger. `test_loop_is_off_by_default` checks the code default instead of the developer's `.env`.
+- `tests/test_refresh.py`: the demo site is never refreshed; one upsert stores a batch and keeps the last duplicate.
+
+Measured on a live round: the fetch phase is ~20 min for 256 sites. NWS weather and alerts are ~1 s per site; USGS flood gauges are the slowest, with occasional 503 responses. The NWS contact is set through `NWS_USER_AGENT` in each machine's uncommitted `.env`.
+
 ## Report form and map cleanup (Braydin, for Cache/Rudra UI) — 2026-10-17
 
 Explicit user requests (Braydin):

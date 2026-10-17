@@ -4,8 +4,10 @@ One refresh, for every site:
 
 1. Fetch each feed adapter (`fetch(sites, now)`). Adapters handle freshness through
    `FeedCache`: a failed fetch returns stale readings or an unavailable placeholder.
-2. Store the returned Observations. Writes upsert on the (id, observed_at) key, so a
-   cached reading fetched again updates its row instead of duplicating it.
+2. Store the returned Observations. Each site's readings are written in one upsert on
+   the (id, observed_at) key, so a cached reading fetched again updates its row instead
+   of duplicating it, and a remote database costs one round trip per site, not one per
+   reading.
 3. Run the lightning stop-work rule (T046–T048), send source-detected potential notices
    (T049A), and rescore the site (T051), all from the readings just fetched.
 
@@ -14,6 +16,10 @@ Failure handling:
   per site, so its state reads "unknown", never "no hazard". The other feeds still run.
 - A failure while processing one site rolls back that site's work and moves on.
 - A feed outage can't clear a lightning alert. The rule holds it until a healthy reading.
+
+Demo sites (`location_type="demo_site"`, the T069 seed) are skipped: live feeds never
+overwrite their scripted, simulated scenario, which `python -m app.demo` controls. Every
+other site gets live data.
 
 The background loop starts from the FastAPI lifespan only when `FEED_REFRESH_ENABLED` is
 true (off by default). For a one-shot refresh: `python -m app.services.refresh`.
@@ -27,6 +33,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as postgresql_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 from app.db import models as db
@@ -81,9 +89,17 @@ def default_feeds() -> list[Feed]:
     ]
 
 
+# Sites the feeds never touch: the frozen, scripted demo scenario.
+DEMO_LOCATION_TYPE = "demo_site"
+
+
 def refresh_all(session: Session, now: datetime, feeds: list[Feed] | None = None) -> RefreshResult:
     feeds = default_feeds() if feeds is None else feeds
-    sites = list(session.scalars(select(db.Site).order_by(db.Site.id)))
+    live = db.Site.location_type != DEMO_LOCATION_TYPE
+    sites = list(session.scalars(select(db.Site).where(live).order_by(db.Site.id)))
+    # End the read before fetching (~20 min for every feed and site): an open transaction
+    # holds locks that would stall migrations and every request queued behind them.
+    session.commit()
     result = RefreshResult(sites=len(sites))
 
     by_site: dict[str, list[Observation]] = defaultdict(list)
@@ -96,8 +112,7 @@ def refresh_all(session: Session, now: datetime, feeds: list[Feed] | None = None
         fetched = by_site.get(site.id, [])
         try:
             fetched = [_storable(o, now) for o in fetched]
-            for o in fetched:
-                session.merge(observation_row(o))
+            store_observations(session, fetched)
             session.commit()
             result.observations += len(fetched)
             lightning = apply_lightning_rule(session, site.id, fetched, now)
@@ -134,6 +149,27 @@ def _storable(o: Observation, now: datetime) -> Observation:
     if o.fetched_at is None:
         update["fetched_at"] = now
     return o.model_copy(update=update) if update else o
+
+
+def store_observations(session: Session, observations: list[Observation]) -> None:
+    """Upsert readings in one statement on the (id, observed_at) key."""
+    columns = [c.name for c in db.Observation.__table__.columns]
+    rows: dict[tuple, dict] = {}
+    for o in observations:  # the last copy of a key wins; one statement can't update twice
+        row = observation_row(o)
+        rows[(row.id, row.observed_at)] = {c: getattr(row, c) for c in columns}
+    if not rows:
+        return
+    dialect = session.get_bind().dialect.name
+    insert = postgresql_insert if dialect == "postgresql" else sqlite_insert
+    statement = insert(db.Observation).values(list(rows.values()))
+    keys = ("id", "observed_at")
+    session.execute(
+        statement.on_conflict_do_update(
+            index_elements=list(keys),
+            set_={c: statement.excluded[c] for c in columns if c not in keys},
+        )
+    )
 
 
 def observation_row(o: Observation) -> db.Observation:
@@ -180,7 +216,9 @@ async def run_forever(stop: asyncio.Event) -> None:
 
 def main() -> None:
     from app.db import get_session
+    from app.db.init import load_env_file
 
+    load_env_file()  # like `python -m app.demo`: read backend/.env (DATABASE_URL, feeds)
     logging.basicConfig(level=logging.INFO)
     with get_session() as session:
         print(refresh_all(session, datetime.now(UTC)))

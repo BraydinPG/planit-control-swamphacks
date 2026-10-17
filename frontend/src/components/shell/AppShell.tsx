@@ -5,19 +5,26 @@ import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
 
 export type Workspace = 'crew' | 'supervisor'
 export type ShellPage =
-  'overview' | 'sites' | 'alerts' | 'reports' | 'briefings'
+  'overview' | 'sites' | 'alerts' | 'reports' | 'briefings' | 'team'
 const destinations: { id: ShellPage; title: string; icon: IconName }[] = [
   { id: 'overview', title: 'Overview', icon: 'overview' },
   { id: 'sites', title: 'Worksites', icon: 'sites' },
   { id: 'alerts', title: 'Alerts', icon: 'alerts' },
   { id: 'reports', title: 'Reports', icon: 'reports' },
   { id: 'briefings', title: 'Briefings', icon: 'briefings' },
+  { id: 'team', title: 'Team', icon: 'team' },
 ]
+/** Team management is supervisor-only. */
+const destinationsFor = (workspace: Workspace) =>
+  destinations.filter(
+    (item) => item.id !== 'team' || workspace === 'supervisor',
+  )
 function readRoute(): { workspace: Workspace; page: ShellPage } {
-  const [, workspace, page] = window.location.hash.split('/')
+  const [, raw, page] = window.location.hash.split('/')
+  const workspace: Workspace = raw === 'supervisor' ? 'supervisor' : 'crew'
   return {
-    workspace: workspace === 'supervisor' ? 'supervisor' : 'crew',
-    page: destinations.some((item) => item.id === page)
+    workspace,
+    page: destinationsFor(workspace).some((item) => item.id === page)
       ? (page as ShellPage)
       : 'overview',
   }
@@ -50,6 +57,11 @@ const descriptions: Record<
       'Stored next-day briefings with evidence references and stated unknowns.',
     pending: 'Briefings are not available.',
   },
+  team: {
+    title: 'Team',
+    description: 'Who is on each team, and the join codes that add crew to it.',
+    pending: 'Team management is not available.',
+  },
 }
 
 export function AppShell({
@@ -73,7 +85,8 @@ export function AppShell({
   const heading = useRef<HTMLHeadingElement>(null)
   const context = shellContext(shellMode)
   const isFixture = shellMode === 'fixture'
-  const active = destinations.find((item) => item.id === route.page)!
+  const visible = destinationsFor(route.workspace)
+  const active = visible.find((item) => item.id === route.page) ?? visible[0]
   useEffect(() => {
     const update = () => setRoute(readRoute())
     window.addEventListener('hashchange', update)
@@ -99,9 +112,13 @@ export function AppShell({
     return (
       <nav
         aria-label={mobile ? 'Mobile workspace' : 'Workspace'}
-        className={mobile ? 'grid grid-cols-5 gap-1.5' : 'space-y-1'}
+        className={
+          mobile
+            ? `grid ${visible.length > 5 ? 'grid-cols-6' : 'grid-cols-5'} gap-1.5`
+            : 'space-y-1'
+        }
       >
-        {destinations.map((item) => {
+        {visible.map((item) => {
           const current = route.page === item.id
           return (
             <a
