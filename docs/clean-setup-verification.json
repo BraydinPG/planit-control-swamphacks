@@ -187,7 +187,17 @@
     "real_database_connection": "not attempted",
     "real_auth0_session": "not available/tested",
     "proxy": "localhost:5177/api/sites -> existing configured target 127.0.0.1:8000 returns 401 JSON; existing8000 preserved. Fresh8052 checked separately, not claimed as proxy target.",
-    "api_base": "empty -> same origin /api; cross-origin CORS/deployment not verified"
+    "api_base": "empty -> same origin /api; cross-origin CORS/deployment not verified",
+    "temporary_servers_stopped": [
+      5177,
+      5178,
+      8052
+    ],
+    "preexisting_servers_preserved": {
+      "5173": 22668,
+      "5176": 64004,
+      "8000": 65924
+    }
   },
   "defects_and_fixes": [
     {
@@ -196,7 +206,7 @@
     },
     {
       "problem": "Fixed-source config-check helpers unnecessarily watch accumulated browser output",
-      "fix": "watch:null on those helper servers only; identical small reliability change also appears in unmerged PR34"
+      "fix": "watch:null on those helper servers only; identical small reliability change was preserved from maintainer-merged PR34"
     },
     {
       "problem": "Existing checker verified reload but not a real Vite process restart",
@@ -248,6 +258,17 @@
   "upstream_integration": {
     "checkpoint": "447f5ca",
     "conflicts": "only PROJECT_CONTEXT.md/docs/INTEGRATION_STATUS.md; both histories retained",
-    "backend_ml_dependencies_unchanged": true
+    "backend_ml_dependencies_unchanged": true,
+    "feature_merge_commit": "167ac4b"
+  },
+  "verified_source_files": {
+    "frontend/scripts/check-shell.mjs": {
+      "matches_clean_snapshot": true,
+      "sha256_lf": "8f700be559955dbfa087628f9b8c10051534433008951c78fbc74fe933db8871"
+    },
+    "frontend/vite.config.ts": {
+      "matches_clean_snapshot": true,
+      "sha256_lf": "c70431227a0405ac21a48b838f930806b2c4bf003f738cebe4f7ea082eb2d3e5"
+    }
   }
 }

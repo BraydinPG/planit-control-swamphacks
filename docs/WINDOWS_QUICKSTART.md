@@ -164,7 +164,7 @@ For the freshly built preview use `node scripts/check-shell.mjs http://localhost
 | --- | --- |
 | `npm` missing or unsupported runtime | Install Node 24; reopen PowerShell and verify `node --version`. Use `npm.cmd ci` in `frontend/`. |
 | Execution policy blocks npm/activation | Use `npm.cmd` and the explicit `.venv\Scripts\python.exe` above; do not change policy. |
-| Old design, stale routes or wrong mode | Check the URL/port, terminal working directory and `git log -1`. Vite serves that checkout; a running Python worker keeps imported code until restarted. Rebuild before preview. |
+| Old design, stale routes or wrong mode | Check the URL/port, terminal working directory and `git log -1`. Vite serves that checkout; a Python worker without `--reload` keeps imported code until restarted. Rebuild before preview. |
 | Port already used | `Get-NetTCPConnection -State Listen -LocalPort 5173,5176,8000` identifies PIDs; `Get-Process -Id <PID>` shows start time/name. Stop only a process you own, preferably via its terminal. No bulk Node/Python termination. |
 | Browser state vanished after restart | Keep the exact origin (localhost differs from 127.0.0.1, and ports differ). Avoid private browsing; blocked storage reports memory-only changes. |
 | `EBUSY` watching Edge cookies/profile files | Update to the startup-reliability change: Vite excludes `.shell-check/`; fixed-source checker helpers disable watching. Never delete an active profile or another agent's output. |
