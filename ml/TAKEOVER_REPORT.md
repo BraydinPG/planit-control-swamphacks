@@ -9,7 +9,12 @@ The existing workspace was preserved on `feature/cache-ml`. Initial HEAD was `8d
 - `545d898`: boundary-purged v2 training/evaluation, KM default, typed inference/adapter safeguards, pinned provisioning, and regression tests.
 - `6e371d8`: reproducible handoff and current evaluation/profiling evidence.
 - `a607104`: integrated newly published API schemas/templates through `008ba2a`.
+- `8ad0c73`: aligned the published compatibility schema/mirror with actual excluded advisory ML results; 123 checks pass.
 - Subsequent documentation/evidence commits contain this report, updated guides, current JSON reports, and PR handoff. See `git log` and the final delivery message for the final HEAD/PR.
+
+The feature branch is pushed. Draft PR [#4](https://github.com/BraydinPG/planit-control-swamphacks/pull/4) is open against `main` for Rudra's review; it has not been merged. The working tree and remote feature branch were checked at delivery.
+
+Changed-file groups: training/split/evaluation (`ml/features.py`, `train.py`, `backtest.py`, `evaluate.py`); inference/contracts (`predict.py`, `schemas.py`, `contracts.py`, `backend_adapter.py`, `config.py`); reproducibility (`provision.py`, `setup.ps1`, `requirements-lock.txt`, `model_reference.json`, source adapters, fixtures); offline research/runtime (`benchmark.py`, `monte_carlo.py`, weather modules); focused ML/backend tests; ML guides and current JSON reports; shared scope/task documentation; canonical `scores.py` and its TypeScript quality mirror. Team additions and README/config changes are preserved through merges. The PR Files Changed view provides the complete inventory.
 
 Shared documentation edits resolve conflicts, retain active-event scope, remove a duplicated Cache task, and correct model-failure behavior. After T006 arrived, focused compatibility edits to `backend/app/schemas/scores.py` and its TypeScript quality mirror allow real ML results: null uncalibrated confidence/completeness, empty contribution lists, explicit excluded-score metadata, and a false-only score-inclusion flag. Three backend integration tests validate the actual adapter/legacy payload against published types. Root manifests, lockfiles, route/UI/auth/ingestion implementations, migrations, and secrets were not changed. README/config templates came from team merges.
 
