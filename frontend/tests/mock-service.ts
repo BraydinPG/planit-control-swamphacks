@@ -35,6 +35,12 @@ export function createMockService() {
               region: null,
               observations: [],
               score: null,
+              risk_score: null,
+              risk_level: null,
+              updated_at: null,
+              model_version: 'unscored',
+              data_completeness: 0,
+              top_factors: [],
               event_outlook: null,
             }
       // A deliberately supplied server response, not a frontend score calculation.
@@ -50,6 +56,7 @@ export function createMockService() {
                 ...detailJSON.score,
                 risk_score: 8.25,
                 risk_level: 'critical',
+                model_version: 'mock-server-score',
                 created_at: '2026-10-17T20:00:00Z',
               },
             }

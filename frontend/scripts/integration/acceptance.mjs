@@ -13,6 +13,17 @@ export const REQUIRED_ROUTES = [
   ['/api/briefings', 'get'],
 ]
 
+/** Text sentinel for the existing diagnostic's controlled incomplete-score render.
+ * A warning is necessary, not proof of visual prominence or real role acceptance.
+ */
+export function hasIncompleteEvidenceWarning(markup) {
+  const text = markup.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')
+  return (
+    /\b(incomplete|unknown|unverified|unavailable|withheld)\b/i.test(text) ||
+    /\bno (current )?evidence\b|\bnot scored\b/i.test(text)
+  )
+}
+
 export function origin(value) {
   const url = new URL(value)
   if (

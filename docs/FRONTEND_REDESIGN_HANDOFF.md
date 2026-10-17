@@ -1,5 +1,13 @@
 # Frontend redesign handoff
 
+## Scoring display issue for Claude — 2026-10-17
+
+Visual [PR #32](https://github.com/BraydinPG/planit-control-swamphacks/pull/32) is open at `ac5861c`; no merge by Codex. Its CROSS_SCOPE_CHANGES append does not overlap this branch's new leading entry. The functional changes preserve all modified visual paths.
+
+Main `07a459d` and reviewed `feature/rudra-ui` `ac5861c` both show an incomplete numeric zero as an unqualified low band in ScorePanel. Controlled phone/desktop renders reproduce `0.0 / 10 · low`, completeness0%, with no explicit unknown warning beside the band. The diagnostic now flags this; no production component/page/style file changed by Codex. Preserve the actual backend number, nulls, alerts and Client/hook props. Add prominent incomplete/unknown wording and appropriate RiskBadge/ScoreBar/list/map treatment without independently calculating risk or changing DTOs. Include partial0.67, stale/replay, healthy-zero, null and held-alert cases. Rudra owns any additive evidence-status/ranking contract; see [SITE_SCORING_INTEGRATION.md](SITE_SCORING_INTEGRATION.md).
+
+Functional client change: a single detail DTO whose headline and stored score disagree on value/band/version/completeness/time now rejects with502; scored detail requires its breakdown. Existing error views handle this. All canonical fields/signatures and auth exports remain stable. 648 Python/70 Node, lint/TS/both builds and standard browser regression pass; actual Auth0/Tiger acceptance remains blocked. Claude's visual branch is unmerged at inspection, not silently integrated here.
+
 Current explicit authorization (2026-10-17): **Claude is actively redesigning presentation**; Codex/Cache owns functional API/state/Auth0 consumption/diagnostics/tests in a separate worktree. Nick's attribution remains. See [FUNCTIONAL_INTEGRATION_HANDOFF.md](FUNCTIONAL_INTEGRATION_HANDOFF.md) for exact path ownership, stable callable/hook contracts, verified tests, demo-account clarification and service blockers. Codex has not changed the visual/page/component files in this run.
 
 | Module | Responsibility | Safe visual work |

@@ -1,0 +1,770 @@
+{
+  "checked_at": "2026-10-17T11:37:18.412768+00:00",
+  "objective_status": "blocked_real_services_and_failed_incomplete_score_display",
+  "branch": "feature/cache-scoring-integration",
+  "base_commit": "07a459d6ee0c7bd055b6db7cb285210604966f3c",
+  "merged_scoring_pr": 31,
+  "claude_branch_reviewed": {
+    "name": "feature/rudra-ui",
+    "commit": "ac5861c",
+    "merged_or_edited_by_codex": false,
+    "pr": 32
+  },
+  "actual_readiness": {
+    "checked_at": "2026-10-17T11:37:17.974Z",
+    "status": "failed",
+    "scope": "local real-integration readiness and API acceptance; never task auto-completion",
+    "frontend": {
+      "configuration_source": "explicit_project_root_read_only",
+      "mode": "demo",
+      "configuration": {
+        "VITE_AUTH0_DOMAIN": "missing",
+        "VITE_AUTH0_CLIENT_ID": "missing",
+        "VITE_AUTH0_AUDIENCE": "missing"
+      },
+      "unsafe_public_credential_keys": [],
+      "development_role_configured": false,
+      "api_base": "same_origin_proxy",
+      "note": "Environment inspection does not prove what a previously started server/build loaded; restart after configuration changes"
+    },
+    "backend": {
+      "status": "inspected",
+      "configuration": {
+        "DATABASE_URL": "missing",
+        "AUTH0_DOMAIN": "missing",
+        "AUTH0_AUDIENCE": "missing",
+        "GEMINI_API_KEY": "missing",
+        "GEMINI_MODEL": "missing",
+        "VULTR_OBJECT_STORAGE_ENDPOINT": "missing",
+        "VULTR_OBJECT_STORAGE_ACCESS_KEY": "missing",
+        "VULTR_OBJECT_STORAGE_SECRET_KEY": "missing",
+        "VULTR_OBJECT_STORAGE_BUCKET": "missing"
+      },
+      "auth": {
+        "configured": false,
+        "dev_auth_bypass": false,
+        "domain_matches_spa": false,
+        "audience_matches_spa": false
+      },
+      "routes_in_checkout": {
+        "/api/sites": [
+          "GET"
+        ],
+        "/api/sites/{site_id}": [
+          "GET"
+        ],
+        "/api/alerts": [
+          "GET"
+        ],
+        "/api/alerts/{alert_id}/acknowledge": [
+          "POST"
+        ],
+        "/api/reports/{report_id}/review": [
+          "POST"
+        ],
+        "/api/reports": [
+          "GET",
+          "POST"
+        ],
+        "/api/hazards/{notice_id}/confirm": [
+          "POST"
+        ],
+        "/api/hazards/{notice_id}/instruction": [
+          "POST"
+        ],
+        "/api/sites/{site_id}/briefing": [
+          "GET"
+        ],
+        "/api/briefings": [
+          "GET"
+        ]
+      },
+      "database": {
+        "status": "blocked",
+        "reason": "DATABASE_URL missing or placeholder"
+      },
+      "ingestion": {
+        "background_refresh_enabled": false,
+        "nws_user_agent": "missing",
+        "note": "Settings inspection does not start the refresh loop or fetch feeds"
+      }
+    },
+    "auth0_discovery": {
+      "status": "not_run",
+      "reason": "Auth0 SPA domain not configured"
+    },
+    "network": {
+      "health": {
+        "status": 200,
+        "expected": 200
+      },
+      "openapi": {
+        "status": 200,
+        "available": true
+      },
+      "vite_proxy_unauthenticated": {
+        "status": 401,
+        "expected": 401
+      },
+      "routes": [
+        {
+          "path": "/api/sites",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/sites/{site_id}",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/alerts",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/alerts/{alert_id}/acknowledge",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/reports",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/reports",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/reports/{report_id}/review",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/hazards/{hazard_id}/confirm",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/hazards/{hazard_id}/instruction",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/sites/{site_id}/briefing",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/briefings",
+          "method": "get",
+          "available": true
+        }
+      ],
+      "checkout_routes_missing_from_running": []
+    },
+    "acceptance": {
+      "status": "partial",
+      "evidence_type": "real_http",
+      "live_acceptance_complete": false,
+      "checks": [
+        {
+          "id": "anonymous_sites",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_alerts",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_acknowledgement",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "development_header",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "invalid_token",
+          "status": "blocked",
+          "detail": "Auth service unavailable; token validation not verified"
+        },
+        {
+          "id": "anonymous_reports",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_review",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_confirm",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_instruction",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_site_briefing",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_organization_briefings",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "crew_session",
+          "status": "blocked",
+          "detail": "Matching Auth0 settings, disabled bypass and actual anonymous rejection are required"
+        },
+        {
+          "id": "supervisor_session",
+          "status": "blocked",
+          "detail": "Matching Auth0 settings, disabled bypass and actual anonymous rejection are required"
+        },
+        {
+          "id": "crew_stored_briefings",
+          "status": "blocked",
+          "detail": "Authorized account reads required"
+        },
+        {
+          "id": "supervisor_stored_briefings",
+          "status": "blocked",
+          "detail": "Authorized account reads required"
+        },
+        {
+          "id": "cross_role_scope",
+          "status": "blocked",
+          "detail": "Both real account reads required"
+        },
+        {
+          "id": "acknowledgement_persistence",
+          "status": "not_run",
+          "detail": "Read-only default; requires --acknowledge and a deliberately selected test alert ID in stdin"
+        },
+        {
+          "id": "real_browser_roles",
+          "status": "not_run",
+          "detail": "Existing Auth0 login/logout, both role screens and reload must also be verified in browser; tokens are not a browser-login substitute"
+        }
+      ],
+      "task_checkboxes_changed": []
+    },
+    "canonical_responses": {
+      "status": "not_run",
+      "reason": "No real authorized data available; no fixture validation substituted"
+    },
+    "shared_rendering": {
+      "status": "partial",
+      "method": "Same existing ScorePanel/Factors/Observations components; no snapshot payload/HTML saved",
+      "real_details": 0,
+      "fixture_details": 1,
+      "full_browser": "not_run; real Auth0 browser-role/reload acceptance remains required"
+    },
+    "incomplete_score_display": {
+      "status": "failed",
+      "evidence_type": "controlled_T051A_no_evidence_render",
+      "detail": "ScorePanel renders numeric 0/low with zero completeness and no explicit unknown-evidence warning; Claude presentation handoff required",
+      "live_acceptance_complete": false
+    },
+    "privacy": "No tokens, user IDs, credentials, response bodies or private site names retained",
+    "task_checkboxes_changed": []
+  },
+  "controlled_pipeline": {
+    "method": "controlled_mocktransport_test_identities_in_memory_db",
+    "real_auth0_or_tiger_data_verified": false,
+    "fixture": "backend/tests/test_site_scoring_workflow.py",
+    "stages": [
+      {
+        "stage": "canned_nws_ingested",
+        "index": 2.1,
+        "band": "low",
+        "completeness": 0.67,
+        "previous": null,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 0.0,
+            "state": "unavailable",
+            "source": "lightning"
+          },
+          {
+            "factor": "heat_index",
+            "points": 1.07,
+            "state": "forecast",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "observed",
+            "source": "NWS"
+          }
+        ]
+      },
+      {
+        "stage": "changed_source_observation",
+        "index": 3.0,
+        "band": "moderate",
+        "completeness": 0.67,
+        "previous": 2.1,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 0.0,
+            "state": "unavailable",
+            "source": "lightning"
+          },
+          {
+            "factor": "heat_index",
+            "points": 2.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "observed",
+            "source": "NWS"
+          }
+        ]
+      },
+      {
+        "stage": "pending_report",
+        "index": 3.0,
+        "band": "moderate",
+        "completeness": 0.67,
+        "previous": 2.1,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 0.0,
+            "state": "unavailable",
+            "source": "lightning"
+          },
+          {
+            "factor": "heat_index",
+            "points": 2.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "observed",
+            "source": "NWS"
+          }
+        ]
+      },
+      {
+        "stage": "confirmed_present_report",
+        "index": 4.0,
+        "band": "moderate",
+        "completeness": 0.67,
+        "previous": 3.0,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 0.0,
+            "state": "unavailable",
+            "source": "lightning"
+          },
+          {
+            "factor": "heat_index",
+            "points": 2.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "crew_report",
+            "points": 1.0,
+            "state": "crew_reported",
+            "source": "crew report"
+          }
+        ]
+      },
+      {
+        "stage": "absent_and_rejected_excluded",
+        "index": 4.0,
+        "band": "moderate",
+        "completeness": 0.67,
+        "previous": 3.0,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 0.0,
+            "state": "unavailable",
+            "source": "lightning"
+          },
+          {
+            "factor": "heat_index",
+            "points": 2.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "crew_report",
+            "points": 1.0,
+            "state": "crew_reported",
+            "source": "crew report"
+          }
+        ]
+      },
+      {
+        "stage": "replayed_lightning_trigger",
+        "index": 7.0,
+        "band": "high",
+        "completeness": 0.67,
+        "previous": 4.0,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 3.0,
+            "state": "simulated",
+            "source": "lightning-replay"
+          },
+          {
+            "factor": "heat_index",
+            "points": 2.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "observed",
+            "source": "NWS"
+          },
+          {
+            "factor": "crew_report",
+            "points": 1.0,
+            "state": "crew_reported",
+            "source": "crew report"
+          }
+        ]
+      },
+      {
+        "stage": "failed_feed_held_alert",
+        "index": 7.0,
+        "band": "high",
+        "completeness": 0.0,
+        "previous": 7.0,
+        "factors": [
+          {
+            "factor": "lightning",
+            "points": 3.0,
+            "state": "simulated",
+            "source": "lightning-replay"
+          },
+          {
+            "factor": "heat_index",
+            "points": 2.0,
+            "state": "stale",
+            "source": "NWS"
+          },
+          {
+            "factor": "flood",
+            "points": 1.0,
+            "state": "stale",
+            "source": "NWS"
+          },
+          {
+            "factor": "crew_report",
+            "points": 1.0,
+            "state": "crew_reported",
+            "source": "crew report"
+          }
+        ]
+      }
+    ],
+    "checked": [
+      "adapter JSON normalization",
+      "existing refresh orchestration",
+      "stored and API factor equality",
+      "latest list/detail/crew/supervisor score equality",
+      "current backend ranking keys",
+      "pending vs confirmed-present vs absent/rejected reports",
+      "active lightning held through provider failure"
+    ]
+  },
+  "standard_browser": {
+    "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
+    "checked_at": "2026-10-17T11:28:46.657Z",
+    "url": "http://localhost:5176/",
+    "browser": "Installed headless Edge/Chrome via CDP",
+    "results": [
+      {
+        "viewport": "1440x1000",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "390x844",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "320x740",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+      },
+      {
+        "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+        "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+        "briefings": "read-only archived Gemini/template fixtures with citations",
+        "persistence": "local demo namespace only; no server writes",
+        "keyboard": "skip navigation and Tab to visible focused control passed"
+      },
+      {
+        "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+      },
+      {
+        "reports": "MOCK HTTP ONLY: present/photo and absent/no-photo, 401/403/409/422/503 submission failures, absent review, notice confirmation/draft/edit/send, manual fallback, reload/crew delivery, server score refresh and competing owner all pass",
+        "alerts": "Mock server state and acknowledgement preserved; no ML/React score or alert engine"
+      },
+      {
+        "auth": "mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions",
+        "api": "mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation",
+        "real_auth": "not verified; tenant credentials unavailable"
+      },
+      {
+        "fixture_setting": "false",
+        "cold_start_ms": 2567,
+        "status": "explicit configuration/auth state; no silent samples"
+      },
+      {
+        "fixture_setting": "typo",
+        "cold_start_ms": 3617,
+        "status": "explicit configuration/auth state; no silent samples"
+      }
+    ],
+    "browser_exceptions": [],
+    "backend_api_requests": 0,
+    "screenshots": ".shell-check/*.png (ignored)"
+  },
+  "one_off_controlled_browser": {
+    "evidence_type": "controlled backend MockTransport/test JWT/in-memory DB snapshots -> production HttpClient -> existing mock-auth browser harness",
+    "real_auth0_or_tiger_data_verified": false,
+    "checks": [
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "canned_nws_ingested",
+        "authoritative_index": 2.1,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "changed_source_observation",
+        "authoritative_index": 3,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "pending_report",
+        "authoritative_index": 3,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "confirmed_present_report",
+        "authoritative_index": 4,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "absent_and_rejected_excluded",
+        "authoritative_index": 4,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "replayed_lightning_trigger",
+        "authoritative_index": 7,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "supervisor",
+        "stage": "failed_feed_held_alert",
+        "authoritative_index": 7,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "crew",
+        "stage": "held_alert",
+        "authoritative_index": 7,
+        "rendered": true
+      },
+      {
+        "width": 1440,
+        "role": "crew",
+        "stage": "no_evidence_display",
+        "status": "failed",
+        "score_text": "Site score\n\n0.0 / 10 · low\n\nServer-provided score; never calculated by the frontend. Completeness: 0%. Model: rules-0.2\n\nUpdated: 2026-10-17 18:00:00 UTC"
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "canned_nws_ingested",
+        "authoritative_index": 2.1,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "changed_source_observation",
+        "authoritative_index": 3,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "pending_report",
+        "authoritative_index": 3,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "confirmed_present_report",
+        "authoritative_index": 4,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "absent_and_rejected_excluded",
+        "authoritative_index": 4,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "replayed_lightning_trigger",
+        "authoritative_index": 7,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "supervisor",
+        "stage": "failed_feed_held_alert",
+        "authoritative_index": 7,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "crew",
+        "stage": "held_alert",
+        "authoritative_index": 7,
+        "rendered": true
+      },
+      {
+        "width": 390,
+        "role": "crew",
+        "stage": "no_evidence_display",
+        "status": "failed",
+        "score_text": "Site score\n\n0.0 / 10 · low\n\nServer-provided score; never calculated by the frontend. Completeness: 0%. Model: rules-0.2\n\nUpdated: 2026-10-17 18:00:00 UTC"
+      }
+    ],
+    "browser_exceptions": [],
+    "backend_api_requests": 0,
+    "incomplete_display_handoff_required": true
+  },
+  "tests": {
+    "python": {
+      "command": "python -m pytest backend/tests frontend/tests/test_integration_probe.py -q",
+      "passed": 648,
+      "skipped": 0,
+      "seconds": 11.85,
+      "backend": 638,
+      "probe": 10,
+      "warning": "existing Starlette TestClient/httpx deprecation"
+    },
+    "node": {
+      "command": "node --test tests/*.test.mjs (from frontend)",
+      "passed": 70
+    },
+    "frontend_lint": "passed",
+    "typescript": "passed",
+    "fixture_build": "passed",
+    "api_build": "passed with 531.64kB chunk warning",
+    "ruff": "passed",
+    "changed_python_format": "passed"
+  },
+  "task_checkboxes_changed": [],
+  "live_tasks_completed": [],
+  "live_tasks_pending": [
+    "T063",
+    "T064",
+    "T065",
+    "T066",
+    "T067",
+    "T068"
+  ],
+  "changes": [
+    "reject contradictory metadata in one site-detail response",
+    "correct test-only DTO consistency",
+    "flag missing unknown-evidence warning in existing diagnostic",
+    "one adapter-to-persisted-API-to-confirmation workflow test",
+    "owner checklist and shared coordination docs"
+  ],
+  "not_performed": [
+    "real Auth0 login/token use",
+    "Tiger Data connection or write",
+    "actual provider retrieval",
+    "T069 seed",
+    "production auth bypass",
+    "account creation",
+    "migrations",
+    "deployment",
+    "PR merge",
+    "production/UI/scoring-algorithm/backend-orchestration changes"
+  ],
+  "artifact_note": "One-off helper, full synthetic response snapshots and screenshots remain ignored locally; this record contains redacted status and synthetic scalar evidence only. No JWTs or real identities.",
+  "runtime_provenance": {
+    "primary_checkout_commit": "a3f46d015f640e1d19006eb4e9544d625020f784",
+    "primary_checkout_score_source_version": "rules-0.1",
+    "current_verification_source_version": "rules-0.2",
+    "existing_backend_pid": 65924,
+    "restarted_or_changed_by_codex": false,
+    "loaded_backend_version_verified_via_authenticated_request": false
+  }
+}
