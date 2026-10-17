@@ -4,7 +4,7 @@ This guide tests the existing application, Auth0 provider and FastAPI client. It
 
 ## Current verified boundary
 
-PR #19 merged as `64cf632`. This phase-4 branch incorporates reviewed main `9ba1b7c`, including T052 photo storage and T053 report list/create. Site and alert reads/acknowledgement plus report reads/create are published. Report review, hazard confirmation/instruction and Gemini endpoints remain absent at this checkpoint. Nick now owns T054/T054A/T055 under Rudra's contract review; Braydin owns Auth0, database/seed linkage, Gemini and Vultr provisioning. Read current tasks/ownership before editing.
+PR #19 merged as `64cf632`. This phase-4 branch incorporates reviewed main `4e94c52` (initial phase-4 base `9ba1b7c`), including T052 photo storage and T053 report list/create. Site and alert reads/acknowledgement plus report reads/create are published. Report review, hazard confirmation/instruction and Gemini endpoints remain absent at this checkpoint. Nick now owns T054/T054A/T055 under Rudra's contract review; Braydin owns Auth0, database/seed linkage, Gemini and Vultr provisioning. Read current tasks/ownership before editing.
 
 The frontend enables report creation/listing separately from review. In real mode a present report requires a photo; absent reports do not. The existing multipart client sends canonical fields and lets the server enforce team/organization scope and validate image bytes. Review/instruction/AI actions stay unavailable until their routes exist. No actual report was submitted during this run; real credentials/database are still missing. The frontend offers JPEG/PNG/WebP; the new backend additionally supports HEIC. Private photo retrieval still needs its authorized owner integration.
 
@@ -25,6 +25,8 @@ python -m uvicorn app.main:app --env-file .env --host 127.0.0.1 --port 8000
 The Auth0 settings class reads `.env`; the database connection reads process environment. Running without `--env-file` or equivalent exported variables can therefore leave database configuration unavailable even when a file exists. Do not start with the template's placeholder URL. Health 200 is liveness, not database readiness. This run restarted only its own known local FastAPI process after incorporating main; no other job was stopped.
 
 Start the existing frontend as documented in [INTEGRATION.md](INTEGRATION.md), with Node 24 and `npm ci`. Its Vite `/api` proxy targets FastAPI:8000. No alternative database or identity provider is permitted. Absolute API URLs require owner CORS configuration; this diagnostic deliberately targets loopback application services.
+
+Latest main also publishes the T049B feed-refresh loop, off by default. For local diagnostic acceptance keep FEED_REFRESH_ENABLED=false. After actual database/provider setup, the ingestion owner can deliberately configure NWS_USER_AGENT and the existing refresh settings to collect observations. This inspector never starts that loop or fetches feeds; source timestamps and stale/unavailable labels remain authoritative.
 
 ## One-command redacted readiness
 

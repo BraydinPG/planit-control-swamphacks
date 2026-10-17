@@ -2,8 +2,11 @@
 
 Reads the site's recent Observations (freshness applied), active alerts, and crew reports
 through the same loaders `GET /api/sites/{id}` uses, then saves a new `HazardScore` row.
-`GET /api/sites` shows the newest row. The refresh loop that fetches feeds and calls this
-on a schedule is separate work.
+`GET /api/sites` shows the newest row.
+
+The refresh loop (`app.services.refresh`, T049B) passes `observations`: the readings it
+just fetched, which hold each feed's current state. Stored history would also hold older
+"none" rows and expired alerts.
 """
 
 from datetime import datetime
@@ -15,11 +18,15 @@ from app.api.sites import load_active_alerts, load_observations, load_reports
 from app.db import models as db
 from app.rules.score import compute_score
 from app.rules.settings import RuleSettings
-from app.schemas import HazardScore
+from app.schemas import HazardScore, Observation
 
 
 def score_site(
-    session: Session, site_id: str, now: datetime, settings: RuleSettings | None = None
+    session: Session,
+    site_id: str,
+    now: datetime,
+    settings: RuleSettings | None = None,
+    observations: list[Observation] | None = None,
 ) -> HazardScore:
     previous_row = session.scalars(
         select(db.HazardScore)
@@ -42,12 +49,13 @@ def score_site(
         )
     score = compute_score(
         site_id,
-        load_observations(session, site_id, now),
+        observations if observations is not None else load_observations(session, site_id, now),
         load_active_alerts(session, site_id),
         load_reports(session, site_id),
         now,
         previous,
         settings,
+        site=session.get(db.Site, site_id),
     )
     session.add(
         db.HazardScore(

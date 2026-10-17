@@ -16,6 +16,11 @@ class IngestionSettings(BaseSettings):
     feed_stale_after_minutes: int = 60
     feed_unavailable_after_minutes: int = 360
 
+    # Feed refresh loop (T049B). Off by default so tests and local runs never fetch live
+    # feeds unless asked. The loop waits for each refresh to finish before sleeping.
+    feed_refresh_enabled: bool = False
+    feed_refresh_seconds: float = 300.0
+
     # Braydin's feeds (T045–T045D). Search radii decide which events reach a site's
     # Observations. They are wider than the rule distances and are not rule settings.
     feed_timeout_seconds: float = 10.0

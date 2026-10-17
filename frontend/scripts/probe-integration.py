@@ -138,10 +138,12 @@ def database_probe(url):
 
 def inspect_backend(frontend, check_database=False):
     from app.db.init import load_env_file
+    from app.ingestion.settings import get_ingestion_settings
     from app.security.settings import AuthSettings
 
     load_env_file()
     settings = AuthSettings()
+    feeds = get_ingestion_settings()
     names = (
         "DATABASE_URL",
         "AUTH0_DOMAIN",
@@ -191,6 +193,11 @@ def inspect_backend(frontend, check_database=False):
         "auth": auth,
         "routes_in_checkout": routes,
         "database": database,
+        "ingestion": {
+            "background_refresh_enabled": getattr(feeds, "feed_refresh_enabled", False),
+            "nws_user_agent": present(feeds.nws_user_agent),
+            "note": "Settings inspection does not start the refresh loop or fetch feeds",
+        },
     }
 
 

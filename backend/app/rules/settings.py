@@ -25,6 +25,17 @@ class RuleSettings(BaseSettings):
     flood_warning_points: float = 2.0
     flood_watch_points: float = 1.0
 
+    # Hurricane (T049A): an NWS Hurricane or Tropical Storm Warning for the site, or an NHC
+    # active storm center within this distance. Prototype distance, not official policy.
+    hurricane_storm_distance_miles: float = 50.0
+    hurricane_points: float = 2.0
+
+    # Earthquake (T049A): a USGS event at or above this magnitude within this distance of
+    # the site. Prototype values, not official policy.
+    earthquake_min_magnitude: float = 4.0
+    earthquake_distance_miles: float = 25.0
+    earthquake_points: float = 1.5
+
     # Score weights (T051).
     lightning_stop_work_points: float = 3.0
     report_low_points: float = 0.5
