@@ -531,9 +531,12 @@ function ReportForm({ site }: { site: SiteSummary }) {
         report location before submission.
       </p>
       <label className="block">
-        Photo (optional in demo; server requirements apply in API mode)
+        {client.mode === 'demo'
+          ? 'Photo (optional in demo)'
+          : 'Photo (required when hazard present)'}
         <input
           type="file"
+          required={client.mode === 'live' && presence === 'present'}
           accept="image/jpeg,image/png,image/webp"
           className={control + ' block w-full'}
           onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
@@ -556,7 +559,12 @@ function ReportForm({ site }: { site: SiteSummary }) {
       </label>
       <button
         className={primary}
-        disabled={busy || !presence || !client.capabilities.reports}
+        disabled={
+          busy ||
+          !presence ||
+          !client.capabilities.reports ||
+          (client.mode === 'live' && presence === 'present' && !photo)
+        }
         type="submit"
       >
         {busy

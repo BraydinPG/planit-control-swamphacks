@@ -1,0 +1,383 @@
+{
+  "branch": "feature/cache-live-integration-checks",
+  "base": "9b395f0fb241000df96b1651a483d91628a47873",
+  "parent_pr": {
+    "number": 19,
+    "state": "merged",
+    "merge_commit": "64cf632"
+  },
+  "readiness_exit_code": 2,
+  "readiness": {
+    "checked_at": "2026-10-17T10:20:28.018Z",
+    "status": "blocked",
+    "scope": "local real-integration readiness and API acceptance; never task auto-completion",
+    "frontend": {
+      "mode": "demo",
+      "configuration": {
+        "VITE_AUTH0_DOMAIN": "missing",
+        "VITE_AUTH0_CLIENT_ID": "missing",
+        "VITE_AUTH0_AUDIENCE": "missing"
+      },
+      "unsafe_public_credential_keys": [],
+      "development_role_configured": false,
+      "api_base": "same_origin_proxy",
+      "note": "Environment inspection does not prove what a previously started server/build loaded; restart after configuration changes"
+    },
+    "backend": {
+      "status": "inspected",
+      "configuration": {
+        "DATABASE_URL": "missing",
+        "AUTH0_DOMAIN": "missing",
+        "AUTH0_AUDIENCE": "missing",
+        "GEMINI_API_KEY": "missing",
+        "GEMINI_MODEL": "missing",
+        "VULTR_OBJECT_STORAGE_ENDPOINT": "missing",
+        "VULTR_OBJECT_STORAGE_ACCESS_KEY": "missing",
+        "VULTR_OBJECT_STORAGE_SECRET_KEY": "missing",
+        "VULTR_OBJECT_STORAGE_BUCKET": "missing"
+      },
+      "auth": {
+        "configured": false,
+        "dev_auth_bypass": false,
+        "domain_matches_spa": false,
+        "audience_matches_spa": false
+      },
+      "routes_in_checkout": {
+        "/api/sites": [
+          "GET"
+        ],
+        "/api/sites/{site_id}": [
+          "GET"
+        ],
+        "/api/alerts": [
+          "GET"
+        ],
+        "/api/alerts/{alert_id}/acknowledge": [
+          "POST"
+        ],
+        "/api/reports": [
+          "GET",
+          "POST"
+        ]
+      },
+      "database": {
+        "status": "blocked",
+        "reason": "DATABASE_URL missing or placeholder"
+      },
+      "ingestion": {
+        "background_refresh_enabled": false,
+        "nws_user_agent": "missing",
+        "note": "Settings inspection does not start the refresh loop or fetch feeds"
+      }
+    },
+    "auth0_discovery": {
+      "status": "not_run",
+      "reason": "Auth0 SPA domain not configured"
+    },
+    "network": {
+      "health": {
+        "status": 200,
+        "expected": 200
+      },
+      "openapi": {
+        "status": 200,
+        "available": true
+      },
+      "vite_proxy_unauthenticated": {
+        "status": 401,
+        "expected": 401
+      },
+      "routes": [
+        {
+          "path": "/api/sites",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/sites/{site_id}",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/alerts",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/alerts/{alert_id}/acknowledge",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/reports",
+          "method": "get",
+          "available": true
+        },
+        {
+          "path": "/api/reports",
+          "method": "post",
+          "available": true
+        },
+        {
+          "path": "/api/reports/{report_id}/review",
+          "method": "post",
+          "available": false
+        },
+        {
+          "path": "/api/hazards/{hazard_id}/confirm",
+          "method": "post",
+          "available": false
+        },
+        {
+          "path": "/api/hazards/{hazard_id}/instruction",
+          "method": "post",
+          "available": false
+        },
+        {
+          "path": "/api/sites/{site_id}/briefings",
+          "method": "post",
+          "available": false
+        },
+        {
+          "path": "/api/sites/{site_id}/explanations",
+          "method": "post",
+          "available": false
+        }
+      ],
+      "checkout_routes_missing_from_running": []
+    },
+    "acceptance": {
+      "status": "partial",
+      "evidence_type": "real_http",
+      "live_acceptance_complete": false,
+      "checks": [
+        {
+          "id": "anonymous_sites",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_alerts",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "anonymous_acknowledgement",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "development_header",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "invalid_token",
+          "status": "blocked",
+          "detail": "Auth service unavailable; token validation not verified"
+        },
+        {
+          "id": "anonymous_reports",
+          "status": "passed",
+          "detail": "HTTP 401; expected 401"
+        },
+        {
+          "id": "crew_session",
+          "status": "blocked",
+          "detail": "Matching Auth0 settings, disabled bypass and actual anonymous rejection are required"
+        },
+        {
+          "id": "supervisor_session",
+          "status": "blocked",
+          "detail": "Matching Auth0 settings, disabled bypass and actual anonymous rejection are required"
+        },
+        {
+          "id": "cross_role_scope",
+          "status": "blocked",
+          "detail": "Both real account reads required"
+        },
+        {
+          "id": "acknowledgement_persistence",
+          "status": "not_run",
+          "detail": "Read-only default; requires --acknowledge and a deliberately selected test alert ID in stdin"
+        },
+        {
+          "id": "real_browser_roles",
+          "status": "not_run",
+          "detail": "Existing Auth0 login/logout, both role screens and reload must also be verified in browser; tokens are not a browser-login substitute"
+        }
+      ],
+      "task_checkboxes_changed": []
+    },
+    "canonical_responses": {
+      "status": "not_run",
+      "reason": "No real authorized data available; no fixture validation substituted"
+    },
+    "shared_rendering": {
+      "status": "partial",
+      "method": "Same existing ScorePanel/Factors/Observations components; no snapshot payload/HTML saved",
+      "real_details": 0,
+      "fixture_details": 1,
+      "full_browser": "not_run; real Auth0 browser-role/reload acceptance remains required"
+    },
+    "privacy": "No tokens, user IDs, credentials, response bodies or private site names retained",
+    "task_checkboxes_changed": []
+  },
+  "tests": {
+    "node": {
+      "command": "node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs",
+      "passed": 39,
+      "failed": 0,
+      "mock_scope": "16 orchestration cases explicitly mocked; not live acceptance"
+    },
+    "python": {
+      "command": "python -m pytest frontend/tests/test_integration_probe.py backend/tests -q",
+      "passed": 432,
+      "backend": 425,
+      "probe": 7,
+      "warnings": 1,
+      "warning": "pre-existing Starlette/httpx deprecation",
+      "previous_base_passed": 355,
+      "earlier_compatibility_totals": [
+        355,
+        400
+      ]
+    },
+    "lint": "npm run lint passed",
+    "typescript_build": "npm run build passed",
+    "python_lint_format": "Ruff check/format passed",
+    "probe_after_metadata_addition": {
+      "command": "python -m pytest frontend/tests/test_integration_probe.py -q",
+      "passed": 7
+    }
+  },
+  "browser": {
+    "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
+    "checked_at": "2026-10-17T10:05:07.436Z",
+    "url": "http://localhost:5173/",
+    "browser": "Installed headless Edge/Chrome via CDP",
+    "results": [
+      {
+        "viewport": "1440x1000",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "390x844",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "320x740",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+      },
+      {
+        "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+        "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+        "ai": "prerecorded Gemini and deterministic fallback with citations",
+        "persistence": "local demo namespace only; no server writes",
+        "keyboard": "skip navigation and Tab to visible focused control passed"
+      },
+      {
+        "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+      },
+      {
+        "reports": "T053 creation enabled separately from unavailable review; mocked live present/absent photo requirement passed",
+        "alerts": "published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified"
+      },
+      {
+        "auth": "mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions",
+        "api": "mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation",
+        "real_auth": "not verified; tenant credentials unavailable"
+      },
+      {
+        "fixture_setting": "false",
+        "cold_start_ms": 14853,
+        "status": "explicit configuration/auth state; no silent samples"
+      },
+      {
+        "fixture_setting": "typo",
+        "cold_start_ms": 13279,
+        "status": "explicit configuration/auth state; no silent samples"
+      }
+    ],
+    "browser_exceptions": [],
+    "backend_api_requests": 0,
+    "screenshots": ".shell-check/*.png (ignored)"
+  },
+  "resolved_failures": [
+    {
+      "check": "temporary fixture-off/invalid Vite cold start",
+      "before": "10-second timeout while document was still loading; no browser exceptions",
+      "resolution": "isolated server/diagnostic caches, 30-second content wait, unchanged assertions and network diagnostics",
+      "measured_cold_start_ms": [
+        14853,
+        13279
+      ]
+    }
+  ],
+  "not_verified": [
+    "real Auth0 browser login/roles/expired-token handling",
+    "authorized real site/report payloads",
+    "actual Tiger Data connection/seed/memberships",
+    "real acknowledgement/report/photo persistence",
+    "review/instruction/Gemini endpoints"
+  ],
+  "task_checkboxes_changed": [],
+  "code_boundaries": "No Cache backend/auth internals/canonical type/fixture/ML/deployment/manifest/task edits relative to reviewed main 9b395f0.",
+  "changed_files": [
+    "PROJECT_CONTEXT.md",
+    "docs/CROSS_SCOPE_CHANGES.md",
+    "docs/INTEGRATION_STATUS.md",
+    "docs/phase4-integration-verification.json",
+    "frontend/INTEGRATION.md",
+    "frontend/LIVE_INTEGRATION.md",
+    "frontend/scripts/check-live-integration.mjs",
+    "frontend/scripts/check-shell.mjs",
+    "frontend/scripts/integration/acceptance.mjs",
+    "frontend/scripts/probe-integration.py",
+    "frontend/scripts/run-live-account-check.py",
+    "frontend/src/api/contracts.ts",
+    "frontend/src/api/http-client.ts",
+    "frontend/src/components/data/Interaction.tsx",
+    "frontend/src/demo/client.ts",
+    "frontend/src/pages/ConnectedPages.tsx",
+    "frontend/tests/browser-harness.tsx",
+    "frontend/tests/data.test.mjs",
+    "frontend/tests/integration.test.mjs",
+    "frontend/tests/test_integration_probe.py"
+  ],
+  "boundaries_verified": true,
+  "initial_base": "9ba1b7c",
+  "initial_implementation": "ff35b7b542075c116b7cbac86e8cb6e9e419d5ca",
+  "main_incorporation": "483bcd17fa895db037d6cf936b4f4d3573433579",
+  "publication": {
+    "pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/24",
+    "state": "open",
+    "target": "main",
+    "merged_by_agent": false,
+    "mergeability_at_source": "clean",
+    "mergeability_verified_for_head": "483bcd17fa895db037d6cf936b4f4d3573433579"
+  },
+  "merge_resolution": {
+    "source": "9b395f0fb241000df96b1651a483d91628a47873",
+    "conflict": "PROJECT_CONTEXT.md only",
+    "resolution": "Preserved current phase-4 facts and all Rudra T049A/T049B/T073 source/readiness notes",
+    "local_runtime_controls": {
+      "DEV_AUTH_BYPASS": false,
+      "FEED_REFRESH_ENABLED": false
+    }
+  },
+  "final_remote_audit": {
+    "main": "9b395f0fb241000df96b1651a483d91628a47873",
+    "change": "Inherited reviewed T049A/T049B/T073 with context-only conflict resolutions; no Cache backend/auth/contract edits"
+  },
+  "validated_source_commit": "483bcd17fa895db037d6cf936b4f4d3573433579"
+}

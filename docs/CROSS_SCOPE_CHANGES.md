@@ -1,5 +1,31 @@
 # Cross-scope changes
 
+## Phase 4 integration preparation - 2026-10-17
+
+Cache implements under the user's explicit frontend/ML and phase-4 authorization. Starting checkout was clean at `8af5b9d`, PR #19 initially open, so this work began on a separate stacked branch. #19 merged during execution (`64cf632`), followed by Rudra's T052/T053 publication. Branch `feature/cache-live-integration-checks` fast-forwarded to reviewed main `9ba1b7c` without conflicts or loss of untracked work and now targets main. Nick's new backend T054/T054A/T055 ownership was preserved. No owner backend/auth/contract work was copied or rewritten.
+
+Before: tested demo and prepared live site/alert calls, no reproducible live-readiness/real-account acceptance command. After: redacted diagnostics, bounded read-only database checks, real-token optional existing-client orchestration, canonical DTO/shared component checks, safe independent acknowledgement read-back and precise blocked outcomes. Newly published T053 report list/create is enabled separately from still-disabled review/instruction/AI; real present reports require a photo. No real login, DB connection or write was performed because configuration is unavailable.
+
+Exact scoped paths:
+
+| Files | Reason / contract / owner coordination |
+| --- | --- |
+| `frontend/scripts/check-live-integration.mjs`, `frontend/scripts/integration/acceptance.mjs` | Actual readiness/OpenAPI/proxy/denial checks, optional real role reads using existing HttpClient, source drift, no secret reports or invented live completion. |
+| `frontend/scripts/probe-integration.py`, `frontend/scripts/run-live-account-check.py` | Existing backend settings/schema reuse, explicit read-only remote DB counts and hidden private stdin token bridge; no initialization, alternative database or identity provider. |
+| `frontend/src/api/contracts.ts`, `frontend/src/api/http-client.ts`, `frontend/src/demo/client.ts`, `frontend/src/components/data/Interaction.tsx`, `frontend/src/pages/ConnectedPages.tsx` | Narrow T053 create/list capability versus disabled review; live photo-required semantics match Rudra's published multipart contract. Existing demo, canonical JSON, auth internals and ML behavior preserved. |
+| `frontend/tests/integration.test.mjs`, `frontend/tests/test_integration_probe.py`, `frontend/tests/data.test.mjs`, `frontend/tests/browser-harness.tsx` | 16 new orchestration / 7 probe safety checks plus existing regression tests and updated capabilities; mocks explicitly distinguished from real acceptance. |
+| `frontend/scripts/check-shell.mjs` | Mocked live photo requirement, isolated temporary Vite caches, measured cold-start allowance and network diagnostics; all existing content/accessibility assertions retained. |
+| `frontend/LIVE_INTEGRATION.md`, `frontend/INTEGRATION.md`, `docs/INTEGRATION_STATUS.md`, `docs/phase4-integration-verification.json`, `PROJECT_CONTEXT.md`, `docs/CROSS_SCOPE_CHANGES.md` | Copyable actual setup/check commands, per-task proof/blockers, exact file/test/branch references and current owner handoffs. |
+
+Tests: 39 frontend Node checks; 432 backend/probe Python checks (425+7), lint/TypeScript/build/Ruff and full desktop/phone browser workflows. Actual HTTP: health/OpenAPI 200; five anonymous/development-header denials 401; invalid token 503 with unconfigured Auth0. Redacted checker correctly exits 2 as blocked. No checkbox changed by Cache; T063-T068 remain unchecked. No backend/auth canonical types/fixtures, migrations, manifests/locks, deployment or ML source change relative to the reviewed main base. Exact file list and failed/resolved cold-start check are in phase4 verification JSON.
+
+Owner actions: Braydin supplies Auth0/Tiger Data/account-membership configuration and Gemini/storage provisioning; Rudra reviews the T053 client and coordinates Nick's T054/T054A/T055 routes. Private photo retrieval and full live lifecycle remain unverified. Publication: [PR #24](https://github.com/BraydinPG/planit-control-swamphacks/pull/24), open against main, initial implementation `ff35b7b`. Later reviewed main `4e94c52` added T049A/T049B and `9b395f0` added T073 and conflicted only in PROJECT_CONTEXT; resolved by retaining both current phase-4 facts and Rudra's verified notes, then reran compatibility. No merge of this PR or deployment is authorized.
+
+Final validated source: `483bcd1`; reviewed-main incorporation commits `d93fb3e` and `483bcd1` preserve every owner note. PR #24 was verified open and mergeable at that head; final metadata records the exact source. No task checkbox was changed by Cache.
+
+The records below describe earlier checkpoints; this phase-4 section supersedes their old branch, PR-open and missing-T053 statements.
+
+
 Current delivery update (2026-10-17): PR #16 and the T031 checkpoint PR #17 merged during this run. Delivery is now `feature/cache-frontend-workflows` against main `723a5b8`; T032-T038 implementation `3fbd98f`, reviewed-main incorporation `dc35458`. Rudra's newly merged T048 is connected with an acknowledgement capability; report/hazard/AI routes remain unavailable. The canonical T050 type is inherited directly. Earlier branch/status statements below record their original checkpoints.
 
 Publication: [PR #19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open/ready against main, implementation head `8834867`, with `4a9e44f` T048 integration and clean-export identity. This metadata follow-up records the exact review URL; no merge, reviewer acceptance, deployment or actual authenticated workflow is claimed. Shared-file changes are for Cache's authorized tasks; Rudra/Braydin should use the explicit owner actions in INTEGRATION_STATUS.

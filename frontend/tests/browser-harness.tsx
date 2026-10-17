@@ -5,6 +5,7 @@ import { LiveApplication } from '../src/application/LiveApplication'
 import sitesJSON from '../src/fixtures/sites.json'
 import detailJSON from '../src/fixtures/site-detail.json'
 import alertsJSON from '../src/fixtures/alerts.json'
+import reportsJSON from '../src/fixtures/reports.json'
 import '../src/index.css'
 const root = createRoot(document.getElementById('auth-test')!)
 let role: 'crew' | 'supervisor' | null = 'crew',
@@ -25,6 +26,12 @@ window.fetch = async (input, options) => {
     return new Response('', { status: 401 })
   if (url.pathname === '/api/sites')
     return Response.json(role === 'crew' ? [sitesJSON[0]] : sitesJSON)
+  if (url.pathname === '/api/reports')
+    return Response.json(
+      reportsJSON.filter(
+        (r) => role === 'supervisor' || r.site_id === sitesJSON[0].id,
+      ),
+    )
   if (url.pathname === '/api/alerts')
     return Response.json(
       alerts.filter(

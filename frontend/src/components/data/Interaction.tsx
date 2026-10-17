@@ -23,7 +23,7 @@ export function Action({
   run,
   children,
   disabled = false,
-  capability = 'reports',
+  capability = 'reviewReports',
 }: {
   run: () => Promise<unknown>
   children: ReactNode

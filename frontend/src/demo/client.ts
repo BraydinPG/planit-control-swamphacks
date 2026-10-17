@@ -102,7 +102,13 @@ export function initialDemo(): DemoSnapshot {
 }
 export class DemoClient implements Client {
   mode = 'demo' as const
-  capabilities = { acknowledge: true, reports: true, hazards: true, ai: true }
+  capabilities = {
+    acknowledge: true,
+    reports: true,
+    reviewReports: true,
+    hazards: true,
+    ai: true,
+  }
   private state: DemoSnapshot
   private photoURLs = new Map<string, string>()
   private persona: () => Persona
