@@ -1,5 +1,9 @@
 # Backend integration contract
 
+## Opt-in comprehensive advisory 2.1.0
+
+See [HAZARD_INTEGRATION.md](HAZARD_INTEGRATION.md) for the new `build_comprehensive_outlook`, explicit strict-2.0 conversion, three owner handoffs, 31 offline scenarios, 50 reconciled backend EIA identities, native NWS notices, trusted-report contracts and remaining authentication/feed gaps. [HAZARD_COVERAGE_AUDIT.md](HAZARD_COVERAGE_AUDIT.md) is the 146-hazard sign-off index. Existing callables and schemas below remain 2.0/1.1; no shared production API was changed.
+
 ## Combined worker advisory 2.0.0
 
 The Cache-owned two-layer slice is implemented independently of production routes. See [WORKER_OUTLOOK.md](WORKER_OUTLOOK.md) for tested behavior, [DISASTER_COVERAGE.md](DISASTER_COVERAGE.md) for all 54 raw NOAA types and source maturity, and `ml/fixtures/worker_outlook/` for typed requests/responses/JSON schemas. Legacy 1.1 duration callables below retain their signatures and score exclusion.

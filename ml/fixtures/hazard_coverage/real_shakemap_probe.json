@@ -1,0 +1,72 @@
+{
+  "site": {
+    "lat": 28.0179,
+    "lon": 66.1708,
+    "id": "fixture-shakemap-location",
+    "name": "Hypothetical location at actual source epicenter; not an EIA site",
+    "site_type": "fixture_site",
+    "source": "USGS event coordinates; hypothetical worksite",
+    "source_version": "7a4f0a0504fabbd33b5c389675b14d16eeae4f2827a51d4a4a14d6c301a4d2f6",
+    "is_fixture": true
+  },
+  "signal": {
+    "id": "shakemap:us6000u2y1:fixture-shakemap-location",
+    "hazard_id": "shaking",
+    "method": "issued_model_estimate",
+    "source": "USGS ShakeMap",
+    "origin_url": "https://earthquake.usgs.gov/product/shakemap/us6000u2y1/us/1792214974056/download/grid.xml",
+    "source_version": "7a4f0a0504fabbd33b5c389675b14d16eeae4f2827a51d4a4a14d6c301a4d2f6",
+    "issued_at": "2026-10-17T05:29:21Z",
+    "observed_at": null,
+    "available_at": "2026-10-17T07:04:35.311552Z",
+    "valid_to": null,
+    "footprint": {
+      "kind": "polygon",
+      "point": null,
+      "rings": [
+        [
+          [
+            66.1701,
+            28.0128
+          ],
+          [
+            66.1803,
+            28.0128
+          ],
+          [
+            66.1803,
+            28.0218
+          ],
+          [
+            66.1701,
+            28.0218
+          ],
+          [
+            66.1701,
+            28.0128
+          ]
+        ]
+      ],
+      "precision": "Official source polygon",
+      "site_id": null,
+      "relation": "unspecified",
+      "relation_evidence_id": null
+    },
+    "value": 6.8,
+    "unit": "MMI",
+    "description": "Nearest source ShakeMap grid node within half-cell spacing; modeled shaking estimate, not a sensor reading or equipment/structural damage estimate.",
+    "source_metadata": {
+      "node_lon": 66.1752,
+      "node_lat": 28.0173,
+      "lon_spacing": 0.0102,
+      "lat_spacing": 0.009,
+      "event_id": "us6000u2y1",
+      "map_version": "1",
+      "map_status": "automatic",
+      "uncertainty_grid": "not_retrieved"
+    },
+    "is_fixture": false
+  },
+  "is_actual_worksite": false,
+  "notes": "Real USGS product at a hypothetical Pakistan location; outside all US EIA batch sites"
+}

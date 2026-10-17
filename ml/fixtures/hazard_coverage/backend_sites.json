@@ -1,0 +1,4488 @@
+{
+  "source_receipt": {
+    "url": "https://www.eia.gov/electricity/data/eia860m/xls/august_generator2026.xlsx",
+    "file": "august_generator2026.xlsx",
+    "bytes": 13955142,
+    "sha256": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "retrieved_at_utc": "2026-10-17T05:30:41.806592+00:00",
+    "historical_asof_availability_verified": false
+  },
+  "backend_selector_sha256": "4d3c421f368e2e34daf27ac147877bf2fd5d33890396f655d861d6206aceafc9",
+  "selection": "Actual backend load_plants/select_worksites, then two nearest reference stations and state diversity for 50-site research batch",
+  "database_state_verified": false,
+  "state_association": "EIA sheet state column verified; independent state-boundary GIS not acquired",
+  "records": [
+    {
+      "id": "eia860m-AK-54305",
+      "plant_id": "54305",
+      "state": "AK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 53.858508,
+        "lon": -166.5529,
+        "id": "eia860m-AK-54305",
+        "name": "Westward Seafoods",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AK-57062",
+      "plant_id": "57062",
+      "state": "AK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 63.777058,
+        "lon": -171.7124,
+        "id": "eia860m-AK-57062",
+        "name": "Gambell",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AK-6282",
+      "plant_id": "6282",
+      "state": "AK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 57.864775,
+        "lon": -152.8554,
+        "id": "eia860m-AK-6282",
+        "name": "Port Lions Microgrid",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AK-6566",
+      "plant_id": "6566",
+      "state": "AK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 60.7897,
+        "lon": -161.7878,
+        "id": "eia860m-AK-6566",
+        "name": "Bethel",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AK-7173",
+      "plant_id": "7173",
+      "state": "AK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 71.292,
+        "lon": -156.7786,
+        "id": "eia860m-AK-7173",
+        "name": "Barrow",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AL-13",
+      "plant_id": "13",
+      "state": "AL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.6189,
+        "lon": -86.2548,
+        "id": "eia860m-AL-13",
+        "name": "Jordan Dam",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AL-18",
+      "plant_id": "18",
+      "state": "AL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.9406,
+        "lon": -87.1077,
+        "id": "eia860m-AL-18",
+        "name": "Lewis Smith Dam",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AL-54752",
+      "plant_id": "54752",
+      "state": "AL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 31.9698,
+        "lon": -87.4806,
+        "id": "eia860m-AL-54752",
+        "name": "International Paper Pine Hill Mill",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AL-61924",
+      "plant_id": "61924",
+      "state": "AL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.94974,
+        "lon": -86.86805,
+        "id": "eia860m-AL-61924",
+        "name": "Cumblerland Land Holdings, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AL-68002",
+      "plant_id": "68002",
+      "state": "AL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.377488,
+        "lon": -87.72751,
+        "id": "eia860m-AL-68002",
+        "name": "Foley Solar, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AR-182",
+      "plant_id": "182",
+      "state": "AR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.421507,
+        "lon": -93.84737,
+        "id": "eia860m-AR-182",
+        "name": "Beaver Dam (AR)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AR-6641",
+      "plant_id": "6641",
+      "state": "AR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.678442,
+        "lon": -91.40876,
+        "id": "eia860m-AR-6641",
+        "name": "Independence Steam Electric Station",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AR-69642",
+      "plant_id": "69642",
+      "state": "AR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.04521,
+        "lon": -93.44841,
+        "id": "eia860m-AR-69642",
+        "name": "Arkana Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AR-69695",
+      "plant_id": "69695",
+      "state": "AR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.411873,
+        "lon": -92.10319,
+        "id": "eia860m-AR-69695",
+        "name": "Colonel Charles D. Maynard Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AR-7135",
+      "plant_id": "7135",
+      "state": "AR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.127591,
+        "lon": -92.79027,
+        "id": "eia860m-AR-7135",
+        "name": "Whillock",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AZ-153",
+      "plant_id": "153",
+      "state": "AZ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.936614,
+        "lon": -111.4839,
+        "id": "eia860m-AZ-153",
+        "name": "Glen Canyon Dam",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AZ-6515",
+      "plant_id": "6515",
+      "state": "AZ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 31.363472,
+        "lon": -110.9313,
+        "id": "eia860m-AZ-6515",
+        "name": "Valencia",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AZ-67285",
+      "plant_id": "67285",
+      "state": "AZ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.331667,
+        "lon": -112.8119,
+        "id": "eia860m-AZ-67285",
+        "name": "Sun Streams 3",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AZ-67321",
+      "plant_id": "67321",
+      "state": "AZ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.642434,
+        "lon": -114.4292,
+        "id": "eia860m-AZ-67321",
+        "name": "Yuma Solar + Storage",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-AZ-68414",
+      "plant_id": "68414",
+      "state": "AZ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.580629,
+        "lon": -112.6867,
+        "id": "eia860m-AZ-68414",
+        "name": "Catclaw Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-296",
+      "plant_id": "296",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.985605,
+        "lon": -122.3605,
+        "id": "eia860m-CA-296",
+        "name": "Fall Creek",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-480",
+      "plant_id": "480",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.85895,
+        "lon": -117.6106,
+        "id": "eia860m-CA-480",
+        "name": "Corona",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-54768",
+      "plant_id": "54768",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.4837,
+        "lon": -119.0298,
+        "id": "eia860m-CA-54768",
+        "name": "Live Oak Limited",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-55510",
+      "plant_id": "55510",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.562448,
+        "lon": -116.9439,
+        "id": "eia860m-CA-55510",
+        "name": "Border Hybrid Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-58510",
+      "plant_id": "58510",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.12139,
+        "lon": -121.1412,
+        "id": "eia860m-CA-58510",
+        "name": "Kettleman Solar Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-6479",
+      "plant_id": "6479",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.590183,
+        "lon": -118.4547,
+        "id": "eia860m-CA-6479",
+        "name": "San Francisquito 1",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CA-68016",
+      "plant_id": "68016",
+      "state": "CA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.857193,
+        "lon": -121.4459,
+        "id": "eia860m-CA-68016",
+        "name": "Hollister Wastewater Facility",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CO-57290",
+      "plant_id": "57290",
+      "state": "CO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.9881,
+        "lon": -102.8969,
+        "id": "eia860m-CO-57290",
+        "name": "Northern Colorado Wind LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CO-61472",
+      "plant_id": "61472",
+      "state": "CO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.068132,
+        "lon": -106.0189,
+        "id": "eia860m-CO-61472",
+        "name": "San Luis Solar Garden",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CO-63753",
+      "plant_id": "63753",
+      "state": "CO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.22833,
+        "lon": -104.7747,
+        "id": "eia860m-CO-63753",
+        "name": "Platteville Solar CSG, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CO-65178",
+      "plant_id": "65178",
+      "state": "CO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.727586,
+        "lon": -105.1131,
+        "id": "eia860m-CO-65178",
+        "name": "Mtn. Solar 4 (CSG)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CO-8219",
+      "plant_id": "8219",
+      "state": "CO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.633451,
+        "lon": -104.7058,
+        "id": "eia860m-CO-8219",
+        "name": "Ray D Nixon",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CT-542",
+      "plant_id": "542",
+      "state": "CT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.0289,
+        "lon": -73.5989,
+        "id": "eia860m-CT-542",
+        "name": "Cos Cob",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CT-59701",
+      "plant_id": "59701",
+      "state": "CT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.400008,
+        "lon": -72.08599,
+        "id": "eia860m-CT-59701",
+        "name": "Subase Microgrid Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CT-68966",
+      "plant_id": "68966",
+      "state": "CT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.85,
+        "lon": -72.65,
+        "id": "eia860m-CT-68966",
+        "name": "Windsor Solar One",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CT-69447",
+      "plant_id": "69447",
+      "state": "CT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.034,
+        "lon": -72.5051,
+        "id": "eia860m-CT-69447",
+        "name": "Bilton Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-CT-69673",
+      "plant_id": "69673",
+      "state": "CT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.608806,
+        "lon": -71.98498,
+        "id": "eia860m-CT-69673",
+        "name": "Wyre Wynd Hydroelectric Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DC-62710",
+      "plant_id": "62710",
+      "state": "DC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.874155,
+        "lon": -77.00668,
+        "id": "eia860m-DC-62710",
+        "name": "Nationals",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DC-63917",
+      "plant_id": "63917",
+      "state": "DC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.819244,
+        "lon": -77.01894,
+        "id": "eia860m-DC-63917",
+        "name": "DC Water Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DC-63970",
+      "plant_id": "63970",
+      "state": "DC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.977175,
+        "lon": -77.03141,
+        "id": "eia860m-DC-63970",
+        "name": "7185 13th Pl. NW",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DC-68280",
+      "plant_id": "68280",
+      "state": "DC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.90639,
+        "lon": -76.9514,
+        "id": "eia860m-DC-68280",
+        "name": "NCS Paradise LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DE-59922",
+      "plant_id": "59922",
+      "state": "DE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.781498,
+        "lon": -75.54839,
+        "id": "eia860m-DE-59922",
+        "name": "South Campus Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DE-63846",
+      "plant_id": "63846",
+      "state": "DE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.909956,
+        "lon": -75.58819,
+        "id": "eia860m-DE-63846",
+        "name": "Raceway Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DE-68212",
+      "plant_id": "68212",
+      "state": "DE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.372,
+        "lon": -75.763,
+        "id": "eia860m-DE-68212",
+        "name": "Maryland Line Road Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-DE-69832",
+      "plant_id": "69832",
+      "state": "DE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.46313,
+        "lon": -75.15985,
+        "id": "eia860m-DE-69832",
+        "name": "Chaberton Solar Biggins Creek LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-FL-55415",
+      "plant_id": "55415",
+      "state": "FL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 27.523607,
+        "lon": -81.92395,
+        "id": "eia860m-FL-55415",
+        "name": "Vandolah Power Station",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-FL-56799",
+      "plant_id": "56799",
+      "state": "FL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.159131,
+        "lon": -81.51842,
+        "id": "eia860m-FL-56799",
+        "name": "Greenland Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-FL-59611",
+      "plant_id": "59611",
+      "state": "FL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 28.066389,
+        "lon": -82.0175,
+        "id": "eia860m-FL-59611",
+        "name": "LKL BLBD, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-FL-6584",
+      "plant_id": "6584",
+      "state": "FL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 24.563333,
+        "lon": -81.7342,
+        "id": "eia860m-FL-6584",
+        "name": "Stock Island",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-FL-65879",
+      "plant_id": "65879",
+      "state": "FL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.938167,
+        "lon": -86.24011,
+        "id": "eia860m-FL-65879",
+        "name": "Pecan Tree",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-GA-60586",
+      "plant_id": "60586",
+      "state": "GA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.7368,
+        "lon": -83.6971,
+        "id": "eia860m-GA-60586",
+        "name": "Pleasant Valley Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-GA-64279",
+      "plant_id": "64279",
+      "state": "GA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.688193,
+        "lon": -83.16715,
+        "id": "eia860m-GA-64279",
+        "name": "Lowndes Tycor Farms",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-GA-64585",
+      "plant_id": "64585",
+      "state": "GA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.797582,
+        "lon": -84.69659,
+        "id": "eia860m-GA-64585",
+        "name": "Harris Shiloh",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-GA-752",
+      "plant_id": "752",
+      "state": "GA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 31.847697,
+        "lon": -83.942,
+        "id": "eia860m-GA-752",
+        "name": "Lake Blackshear Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-GA-758",
+      "plant_id": "758",
+      "state": "GA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.959153,
+        "lon": -84.08765,
+        "id": "eia860m-GA-758",
+        "name": "Nottely",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-HI-10413",
+      "plant_id": "10413",
+      "state": "HI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 22.196292,
+        "lon": -159.5561,
+        "id": "eia860m-HI-10413",
+        "name": "Wainiha Hydro",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-HI-56378",
+      "plant_id": "56378",
+      "state": "HI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 18.9742,
+        "lon": -155.6914,
+        "id": "eia860m-HI-56378",
+        "name": "Pakini Nui Wind Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-HI-58651",
+      "plant_id": "58651",
+      "state": "HI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 21.328056,
+        "lon": -158.04,
+        "id": "eia860m-HI-58651",
+        "name": "Kalaeloa Renewable Energy Park",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-HI-58656",
+      "plant_id": "58656",
+      "state": "HI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 21.468889,
+        "lon": -158.0164,
+        "id": "eia860m-HI-58656",
+        "name": "Waihonu South Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-HI-61099",
+      "plant_id": "61099",
+      "state": "HI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 20.7937,
+        "lon": -156.4339,
+        "id": "eia860m-HI-61099",
+        "name": "Kihei Solar Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IA-50932",
+      "plant_id": "50932",
+      "state": "IA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.573415,
+        "lon": -93.55774,
+        "id": "eia860m-IA-50932",
+        "name": "Des Moines Wastewater Reclamation Fac",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IA-56797",
+      "plant_id": "56797",
+      "state": "IA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.4839,
+        "lon": -92.6131,
+        "id": "eia860m-IA-56797",
+        "name": "Pioneer Prairie Wind Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IA-56924",
+      "plant_id": "56924",
+      "state": "IA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.1044,
+        "lon": -93.2722,
+        "id": "eia860m-IA-56924",
+        "name": "FPL Energy Story Wind LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IA-57953",
+      "plant_id": "57953",
+      "state": "IA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.389167,
+        "lon": -91.39417,
+        "id": "eia860m-IA-57953",
+        "name": "Roquette America",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IA-62035",
+      "plant_id": "62035",
+      "state": "IA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.862,
+        "lon": -95.772,
+        "id": "eia860m-IA-62035",
+        "name": "Glaciers Edge Wind Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ID-10014",
+      "plant_id": "10014",
+      "state": "ID",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.528,
+        "lon": -116.0583,
+        "id": "eia860m-ID-10014",
+        "name": "Lucky Peak Power Plant Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ID-54249",
+      "plant_id": "54249",
+      "state": "ID",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 48.959547,
+        "lon": -116.5574,
+        "id": "eia860m-ID-54249",
+        "name": "Smith Falls Hydro Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ID-56317",
+      "plant_id": "56317",
+      "state": "ID",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.099417,
+        "lon": -113.3825,
+        "id": "eia860m-ID-56317",
+        "name": "Raft River Geothermal Power Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ID-56636",
+      "plant_id": "56636",
+      "state": "ID",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.0272,
+        "lon": -115.4656,
+        "id": "eia860m-ID-56636",
+        "name": "Mountain Home",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ID-57761",
+      "plant_id": "57761",
+      "state": "ID",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.738889,
+        "lon": -112.7486,
+        "id": "eia860m-ID-57761",
+        "name": "Power County Wind Park North",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IL-55253",
+      "plant_id": "55253",
+      "state": "IL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.429444,
+        "lon": -87.6187,
+        "id": "eia860m-IL-55253",
+        "name": "Crete Energy Venture LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IL-58377",
+      "plant_id": "58377",
+      "state": "IL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.924722,
+        "lon": -88.99861,
+        "id": "eia860m-IL-58377",
+        "name": "Rochelle Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IL-62022",
+      "plant_id": "62022",
+      "state": "IL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.5788,
+        "lon": -89.57984,
+        "id": "eia860m-IL-62022",
+        "name": "Lincoln Land Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IL-68531",
+      "plant_id": "68531",
+      "state": "IL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.482401,
+        "lon": -89.98954,
+        "id": "eia860m-IL-68531",
+        "name": "Agrimony 1",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IL-69228",
+      "plant_id": "69228",
+      "state": "IL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.090121,
+        "lon": -89.17606,
+        "id": "eia860m-IL-69228",
+        "name": "Mound City Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IL-69916",
+      "plant_id": "69916",
+      "state": "IL",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.83063,
+        "lon": -89.89085,
+        "id": "eia860m-IL-69916",
+        "name": "Brimfield Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IN-57842",
+      "plant_id": "57842",
+      "state": "IN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.53,
+        "lon": -87.4247,
+        "id": "eia860m-IN-57842",
+        "name": "Wabash Valley Power IGCC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IN-6137",
+      "plant_id": "6137",
+      "state": "IN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.9053,
+        "lon": -87.715,
+        "id": "eia860m-IN-6137",
+        "name": "A B Brown",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IN-62485",
+      "plant_id": "62485",
+      "state": "IN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.078126,
+        "lon": -86.89681,
+        "id": "eia860m-IN-62485",
+        "name": "Crawfordsville 3 Solar Park",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IN-63801",
+      "plant_id": "63801",
+      "state": "IN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.7311,
+        "lon": -86.1083,
+        "id": "eia860m-IN-63801",
+        "name": "St. Joseph Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-IN-69079",
+      "plant_id": "69079",
+      "state": "IN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.76585,
+        "lon": -87.15371,
+        "id": "eia860m-IN-69079",
+        "name": "Carpenter Wind Farm LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KS-1271",
+      "plant_id": "1271",
+      "state": "KS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.037344,
+        "lon": -95.61269,
+        "id": "eia860m-KS-1271",
+        "name": "Coffeyville",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KS-1292",
+      "plant_id": "1292",
+      "state": "KS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.080332,
+        "lon": -99.89359,
+        "id": "eia860m-KS-1292",
+        "name": "Jetmore",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KS-1320",
+      "plant_id": "1320",
+      "state": "KS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.904922,
+        "lon": -95.80337,
+        "id": "eia860m-KS-1320",
+        "name": "Sabetha Power Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KS-68694",
+      "plant_id": "68694",
+      "state": "KS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.577342,
+        "lon": -99.32147,
+        "id": "eia860m-KS-68694",
+        "name": "Greensburg Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KS-7930",
+      "plant_id": "7930",
+      "state": "KS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.899722,
+        "lon": -98.83944,
+        "id": "eia860m-KS-7930",
+        "name": "Russell Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KY-65406",
+      "plant_id": "65406",
+      "state": "KY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.216484,
+        "lon": -85.39143,
+        "id": "eia860m-KY-65406",
+        "name": "LGE-KU Solar Share Facility Simpsonville",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KY-66646",
+      "plant_id": "66646",
+      "state": "KY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.765452,
+        "lon": -82.47413,
+        "id": "eia860m-KY-66646",
+        "name": "Martin County Solar Project, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KY-67473",
+      "plant_id": "67473",
+      "state": "KY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.04441,
+        "lon": -84.58391,
+        "id": "eia860m-KY-67473",
+        "name": "RA Jones Roof Mounted Solar System",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KY-67990",
+      "plant_id": "67990",
+      "state": "KY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.29003,
+        "lon": -83.28286,
+        "id": "eia860m-KY-67990",
+        "name": "Bright Mountain Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-KY-68249",
+      "plant_id": "68249",
+      "state": "KY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.661,
+        "lon": -86.534,
+        "id": "eia860m-KY-68249",
+        "name": "SR Horus",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-LA-54927",
+      "plant_id": "54927",
+      "state": "LA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 29.252062,
+        "lon": -89.9721,
+        "id": "eia860m-LA-54927",
+        "name": "Grand Isle Gas Plant / Treating Station",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-LA-55173",
+      "plant_id": "55173",
+      "state": "LA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.428611,
+        "lon": -92.41306,
+        "id": "eia860m-LA-55173",
+        "name": "Acadia Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-LA-58310",
+      "plant_id": "58310",
+      "state": "LA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.148889,
+        "lon": -93.33556,
+        "id": "eia860m-LA-58310",
+        "name": "Lake Charles Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-LA-62391",
+      "plant_id": "62391",
+      "state": "LA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 31.185978,
+        "lon": -92.29309,
+        "id": "eia860m-LA-62391",
+        "name": "Overton Hydroelectric Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-LA-68028",
+      "plant_id": "68028",
+      "state": "LA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.794007,
+        "lon": -90.71392,
+        "id": "eia860m-LA-68028",
+        "name": "Delta Solar Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MA-59390",
+      "plant_id": "59390",
+      "state": "MA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.8475,
+        "lon": -70.89833,
+        "id": "eia860m-MA-59390",
+        "name": "True North",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MA-59780",
+      "plant_id": "59780",
+      "state": "MA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.925352,
+        "lon": -70.64903,
+        "id": "eia860m-MA-59780",
+        "name": "New Bedford (MA) Plymouth",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MA-60613",
+      "plant_id": "60613",
+      "state": "MA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.25609,
+        "lon": -72.06788,
+        "id": "eia860m-MA-60613",
+        "name": "Brookfield Solar 2013 LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MA-63093",
+      "plant_id": "63093",
+      "state": "MA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.047111,
+        "lon": -70.48738,
+        "id": "eia860m-MA-63093",
+        "name": "Vineyard Wind 1",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MA-64213",
+      "plant_id": "64213",
+      "state": "MA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.13,
+        "lon": -71.87,
+        "id": "eia860m-MA-64213",
+        "name": "Auburn Solar Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MA-68875",
+      "plant_id": "68875",
+      "state": "MA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.495028,
+        "lon": -71.05059,
+        "id": "eia860m-MA-68875",
+        "name": "Wakefield MA BESS 1",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MD-1563",
+      "plant_id": "1563",
+      "state": "MD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.994134,
+        "lon": -75.83768,
+        "id": "eia860m-MD-1563",
+        "name": "Crisfield",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MD-59220",
+      "plant_id": "59220",
+      "state": "MD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.719364,
+        "lon": -76.16163,
+        "id": "eia860m-MD-59220",
+        "name": "Wildcat Point Generation Facility",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MD-66770",
+      "plant_id": "66770",
+      "state": "MD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.22355,
+        "lon": -76.48349,
+        "id": "eia860m-MD-66770",
+        "name": "THD Baltimore DC - 5830 Project Tiger",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MD-66819",
+      "plant_id": "66819",
+      "state": "MD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.862089,
+        "lon": -76.91249,
+        "id": "eia860m-MD-66819",
+        "name": "Holly Spring Meadows",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MD-70274",
+      "plant_id": "70274",
+      "state": "MD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.432749,
+        "lon": -79.15397,
+        "id": "eia860m-MD-70274",
+        "name": "Swanton MD Mt Zion Rd CDG A2",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ME-1488",
+      "plant_id": "1488",
+      "state": "ME",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.134572,
+        "lon": -70.20372,
+        "id": "eia860m-ME-1488",
+        "name": "Deer Rips",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ME-50702",
+      "plant_id": "50702",
+      "state": "ME",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.226977,
+        "lon": -70.81089,
+        "id": "eia860m-ME-50702",
+        "name": "Salmon Falls",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ME-58146",
+      "plant_id": "58146",
+      "state": "ME",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 47.358139,
+        "lon": -68.33086,
+        "id": "eia860m-ME-58146",
+        "name": "Twin Rivers Paper Co LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ME-59438",
+      "plant_id": "59438",
+      "state": "ME",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.884444,
+        "lon": -68.66389,
+        "id": "eia860m-ME-59438",
+        "name": "Orono B",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ME-60640",
+      "plant_id": "60640",
+      "state": "ME",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.557725,
+        "lon": -69.67136,
+        "id": "eia860m-ME-60640",
+        "name": "Solar Mule, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MI-61391",
+      "plant_id": "61391",
+      "state": "MI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.792669,
+        "lon": -88.61401,
+        "id": "eia860m-MI-61391",
+        "name": "A.J. Mihm Generating Station",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MI-64097",
+      "plant_id": "64097",
+      "state": "MI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.75,
+        "lon": -85.45,
+        "id": "eia860m-MI-64097",
+        "name": "Electric City Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MI-64461",
+      "plant_id": "64461",
+      "state": "MI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.151133,
+        "lon": -83.69089,
+        "id": "eia860m-MI-64461",
+        "name": "May Shannon Solar, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MI-67103",
+      "plant_id": "67103",
+      "state": "MI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.988483,
+        "lon": -84.52226,
+        "id": "eia860m-MI-67103",
+        "name": "Willford Solar, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MI-68744",
+      "plant_id": "68744",
+      "state": "MI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.3631,
+        "lon": -85.474,
+        "id": "eia860m-MI-68744",
+        "name": "Liberty Solar Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MN-60254",
+      "plant_id": "60254",
+      "state": "MN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.085225,
+        "lon": -93.26271,
+        "id": "eia860m-MN-60254",
+        "name": "Owatonna Energy Station",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MN-62339",
+      "plant_id": "62339",
+      "state": "MN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.468,
+        "lon": -92.872,
+        "id": "eia860m-MN-62339",
+        "name": "USS Kost Trail Solar CSG",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MN-62779",
+      "plant_id": "62779",
+      "state": "MN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.90295,
+        "lon": -94.02864,
+        "id": "eia860m-MN-62779",
+        "name": "Novel Martin Solar One LLC (McLeod) CSG",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MN-64623",
+      "plant_id": "64623",
+      "state": "MN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.513056,
+        "lon": -93.18862,
+        "id": "eia860m-MN-64623",
+        "name": "Freeborn Wind Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MN-65761",
+      "plant_id": "65761",
+      "state": "MN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.423056,
+        "lon": -96.29722,
+        "id": "eia860m-MN-65761",
+        "name": "Buffalo Ridge Wind",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MN-69725",
+      "plant_id": "69725",
+      "state": "MN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 48.916352,
+        "lon": -95.32646,
+        "id": "eia860m-MN-69725",
+        "name": "Warroad Factory",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MO-2168",
+      "plant_id": "2168",
+      "state": "MO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.5522,
+        "lon": -92.6381,
+        "id": "eia860m-MO-2168",
+        "name": "Thomas Hill",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MO-56597",
+      "plant_id": "56597",
+      "state": "MO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.7814,
+        "lon": -90.4156,
+        "id": "eia860m-MO-56597",
+        "name": "Elm Street Substation Generators",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MO-56767",
+      "plant_id": "56767",
+      "state": "MO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.575,
+        "lon": -95.5228,
+        "id": "eia860m-MO-56767",
+        "name": "Farmers City Wind LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MO-65230",
+      "plant_id": "65230",
+      "state": "MO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.956,
+        "lon": -92.243,
+        "id": "eia860m-MO-65230",
+        "name": "Truman Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MO-68286",
+      "plant_id": "68286",
+      "state": "MO",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.207917,
+        "lon": -90.05722,
+        "id": "eia860m-MO-68286",
+        "name": "Kennett Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MS-2047",
+      "plant_id": "2047",
+      "state": "MS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.34,
+        "lon": -88.4919,
+        "id": "eia860m-MS-2047",
+        "name": "Chevron Oil",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MS-68105",
+      "plant_id": "68105",
+      "state": "MS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.048427,
+        "lon": -88.94419,
+        "id": "eia860m-MS-68105",
+        "name": "SR Jasper",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MS-68515",
+      "plant_id": "68515",
+      "state": "MS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.115544,
+        "lon": -90.83077,
+        "id": "eia860m-MS-68515",
+        "name": "Greer Solar Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MS-68516",
+      "plant_id": "68516",
+      "state": "MS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.934776,
+        "lon": -90.33862,
+        "id": "eia860m-MS-68516",
+        "name": "Wildwood Solar Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MS-68876",
+      "plant_id": "68876",
+      "state": "MS",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.693,
+        "lon": -87.549,
+        "id": "eia860m-MS-68876",
+        "name": "Okolona Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MT-2181",
+      "plant_id": "2181",
+      "state": "MT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 47.521331,
+        "lon": -111.2614,
+        "id": "eia860m-MT-2181",
+        "name": "Black Eagle",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MT-54006",
+      "plant_id": "54006",
+      "state": "MT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.12061,
+        "lon": -111.4077,
+        "id": "eia860m-MT-54006",
+        "name": "Broadwater Power Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MT-57995",
+      "plant_id": "57995",
+      "state": "MT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 48.820278,
+        "lon": -112.1033,
+        "id": "eia860m-MT-57995",
+        "name": "NaturEner Rim Rock Energy",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-MT-68315",
+      "plant_id": "68315",
+      "state": "MT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.05029,
+        "lon": -113.0588,
+        "id": "eia860m-MT-68315",
+        "name": "Anthelope Hills Solar Generation BESS",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NC-2707",
+      "plant_id": "2707",
+      "state": "NC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.9833,
+        "lon": -79.8775,
+        "id": "eia860m-NC-2707",
+        "name": "Blewett",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NC-54316",
+      "plant_id": "54316",
+      "state": "NC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.9397,
+        "lon": -77.9905,
+        "id": "eia860m-NC-54316",
+        "name": "Archer Daniels Midland Southport",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NC-58334",
+      "plant_id": "58334",
+      "state": "NC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.350081,
+        "lon": -77.47511,
+        "id": "eia860m-NC-58334",
+        "name": "Lenoir Farm 2",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NC-61275",
+      "plant_id": "61275",
+      "state": "NC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.683,
+        "lon": -78.016,
+        "id": "eia860m-NC-61275",
+        "name": "Wilson Solar Farm 2",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NC-62951",
+      "plant_id": "62951",
+      "state": "NC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.533,
+        "lon": -78.105,
+        "id": "eia860m-NC-62951",
+        "name": "Hawtree Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NC-66720",
+      "plant_id": "66720",
+      "state": "NC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.090512,
+        "lon": -79.23319,
+        "id": "eia860m-NC-66720",
+        "name": "Oakwood Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ND-59200",
+      "plant_id": "59200",
+      "state": "ND",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 48.964722,
+        "lon": -99.61389,
+        "id": "eia860m-ND-59200",
+        "name": "Border Winds Wind Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ND-6030",
+      "plant_id": "6030",
+      "state": "ND",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 47.377743,
+        "lon": -101.1571,
+        "id": "eia860m-ND-6030",
+        "name": "Coal Creek",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ND-69583",
+      "plant_id": "69583",
+      "state": "ND",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.89934,
+        "lon": -96.85955,
+        "id": "eia860m-ND-69583",
+        "name": "Marvin Composites",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-ND-7884",
+      "plant_id": "7884",
+      "state": "ND",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.938611,
+        "lon": -96.83583,
+        "id": "eia860m-ND-7884",
+        "name": "Dakota Magic",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NE-57283",
+      "plant_id": "57283",
+      "state": "NE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.0011,
+        "lon": -95.9289,
+        "id": "eia860m-NE-57283",
+        "name": "Flat Water Wind Farm LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NE-59736",
+      "plant_id": "59736",
+      "state": "NE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.859103,
+        "lon": -100.5924,
+        "id": "eia860m-NE-59736",
+        "name": "Valentine Wind, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NE-68691",
+      "plant_id": "68691",
+      "state": "NE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.656417,
+        "lon": -96.74319,
+        "id": "eia860m-NE-68691",
+        "name": "Centerville (NE)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NE-69009",
+      "plant_id": "69009",
+      "state": "NE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.847718,
+        "lon": -97.4452,
+        "id": "eia860m-NE-69009",
+        "name": "Madison Solar (NE)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NE-70129",
+      "plant_id": "70129",
+      "state": "NE",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.1428,
+        "lon": -102.9782,
+        "id": "eia860m-NE-70129",
+        "name": "Sidney Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NH-10570",
+      "plant_id": "10570",
+      "state": "NH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.786648,
+        "lon": -71.12433,
+        "id": "eia860m-NH-10570",
+        "name": "Errol Hydroelectric Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NH-2355",
+      "plant_id": "2355",
+      "state": "NH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.597849,
+        "lon": -71.71768,
+        "id": "eia860m-NH-2355",
+        "name": "Ayers Island",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NH-54384",
+      "plant_id": "54384",
+      "state": "NH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.1897,
+        "lon": -71.7483,
+        "id": "eia860m-NH-54384",
+        "name": "EHC West Hopkinton",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NH-55006",
+      "plant_id": "55006",
+      "state": "NH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.73227,
+        "lon": -71.52242,
+        "id": "eia860m-NH-55006",
+        "name": "Nashua Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NJ-60769",
+      "plant_id": "60769",
+      "state": "NJ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.976718,
+        "lon": -74.90651,
+        "id": "eia860m-NJ-60769",
+        "name": "Lower Cape May HS",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NJ-63150",
+      "plant_id": "63150",
+      "state": "NJ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.67,
+        "lon": -75.16,
+        "id": "eia860m-NJ-63150",
+        "name": "Pohatcong Solar Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NJ-67243",
+      "plant_id": "67243",
+      "state": "NJ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.989,
+        "lon": -74.173,
+        "id": "eia860m-NJ-67243",
+        "name": "Tom's River (Lowes)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NJ-67851",
+      "plant_id": "67851",
+      "state": "NJ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.2785,
+        "lon": -74.79835,
+        "id": "eia860m-NJ-67851",
+        "name": "Montague Energy Storage",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NJ-70239",
+      "plant_id": "70239",
+      "state": "NJ",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.44345,
+        "lon": -74.37815,
+        "id": "eia860m-NJ-70239",
+        "name": "South River BESS Phase 1",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NM-57338",
+      "plant_id": "57338",
+      "state": "NM",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 31.792778,
+        "lon": -106.6733,
+        "id": "eia860m-NM-57338",
+        "name": "Roadrunner Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NM-58589",
+      "plant_id": "58589",
+      "state": "NM",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.264444,
+        "lon": -106.6678,
+        "id": "eia860m-NM-58589",
+        "name": "Rio Rancho High School",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NM-60301",
+      "plant_id": "60301",
+      "state": "NM",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.921261,
+        "lon": -106.0724,
+        "id": "eia860m-NM-60301",
+        "name": "Holloman Solar Facility",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NM-60317",
+      "plant_id": "60317",
+      "state": "NM",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.734142,
+        "lon": -103.0922,
+        "id": "eia860m-NM-60317",
+        "name": "Grady Wind Energy Center, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NM-69042",
+      "plant_id": "69042",
+      "state": "NM",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.969882,
+        "lon": -105.4369,
+        "id": "eia860m-NM-69042",
+        "name": "Kit Carson Co-Op",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NV-54271",
+      "plant_id": "54271",
+      "state": "NV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.0417,
+        "lon": -115.0117,
+        "id": "eia860m-NV-54271",
+        "name": "Saguaro Power",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NV-54665",
+      "plant_id": "54665",
+      "state": "NV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.395603,
+        "lon": -119.7468,
+        "id": "eia860m-NV-54665",
+        "name": "Steamboat II",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NV-57451",
+      "plant_id": "57451",
+      "state": "NV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.4828,
+        "lon": -116.1511,
+        "id": "eia860m-NV-57451",
+        "name": "Tuscarora Geothermal Power Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NV-63841",
+      "plant_id": "63841",
+      "state": "NV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.092036,
+        "lon": -114.6888,
+        "id": "eia860m-NV-63841",
+        "name": "Arida Solar (Hybrid)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NV-7082",
+      "plant_id": "7082",
+      "state": "NV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.430554,
+        "lon": -114.9024,
+        "id": "eia860m-NV-7082",
+        "name": "Harry Allen",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NY-2694",
+      "plant_id": "2694",
+      "state": "NY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.0038,
+        "lon": -74.7994,
+        "id": "eia860m-NY-2694",
+        "name": "Robert Moses Power Dam",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NY-56940",
+      "plant_id": "56940",
+      "state": "NY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.4122,
+        "lon": -74.4378,
+        "id": "eia860m-NY-56940",
+        "name": "CPV Valley Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NY-6122",
+      "plant_id": "6122",
+      "state": "NY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.2777,
+        "lon": -77.3099,
+        "id": "eia860m-NY-6122",
+        "name": "R E Ginna Nuclear Power Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NY-62029",
+      "plant_id": "62029",
+      "state": "NY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.453307,
+        "lon": -76.59481,
+        "id": "eia860m-NY-62029",
+        "name": "Enfield Community Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NY-65839",
+      "plant_id": "65839",
+      "state": "NY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.970331,
+        "lon": -73.57326,
+        "id": "eia860m-NY-65839",
+        "name": "NY8 - Darby Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-NY-68443",
+      "plant_id": "68443",
+      "state": "NY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.32,
+        "lon": -73.42,
+        "id": "eia860m-NY-68443",
+        "name": "Empire Wind 1",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OH-2933",
+      "plant_id": "2933",
+      "state": "OH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.2836,
+        "lon": -82.2194,
+        "id": "eia860m-OH-2933",
+        "name": "Oberlin (OH)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OH-55736",
+      "plant_id": "55736",
+      "state": "OH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.5731,
+        "lon": -82.7833,
+        "id": "eia860m-OH-55736",
+        "name": "Hanging Rock Energy Facility",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OH-55990",
+      "plant_id": "55990",
+      "state": "OH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.890026,
+        "lon": -80.7612,
+        "id": "eia860m-OH-55990",
+        "name": "Ashtabula",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OH-56420",
+      "plant_id": "56420",
+      "state": "OH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.9294,
+        "lon": -83.012,
+        "id": "eia860m-OH-56420",
+        "name": "Renick Run Pumping Station 03-04",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OH-61330",
+      "plant_id": "61330",
+      "state": "OH",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.793073,
+        "lon": -83.72871,
+        "id": "eia860m-OH-61330",
+        "name": "Hog Creek Wind Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OK-2952",
+      "plant_id": "2952",
+      "state": "OK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.76135,
+        "lon": -95.28732,
+        "id": "eia860m-OK-2952",
+        "name": "Muskogee",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OK-3006",
+      "plant_id": "3006",
+      "state": "OK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.0847,
+        "lon": -98.23,
+        "id": "eia860m-OK-3006",
+        "name": "Anadarko Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OK-59460",
+      "plant_id": "59460",
+      "state": "OK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.984167,
+        "lon": -97.13361,
+        "id": "eia860m-OK-59460",
+        "name": "Kay Wind, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OK-61616",
+      "plant_id": "61616",
+      "state": "OK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.943183,
+        "lon": -97.10861,
+        "id": "eia860m-OK-61616",
+        "name": "Marietta",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OK-70408",
+      "plant_id": "70408",
+      "state": "OK",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.389624,
+        "lon": -97.02781,
+        "id": "eia860m-OK-70408",
+        "name": "Willow Creek Energy Storage",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OR-4214",
+      "plant_id": "4214",
+      "state": "OR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.448977,
+        "lon": -122.1513,
+        "id": "eia860m-OR-4214",
+        "name": "PHP 2",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OR-56227",
+      "plant_id": "56227",
+      "state": "OR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.17894,
+        "lon": -123.172,
+        "id": "eia860m-OR-56227",
+        "name": "Port Westward",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OR-60335",
+      "plant_id": "60335",
+      "state": "OR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.965031,
+        "lon": -117.2581,
+        "id": "eia860m-OR-60335",
+        "name": "Vale Air Solar Center, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OR-61201",
+      "plant_id": "61201",
+      "state": "OR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.022336,
+        "lon": -121.4189,
+        "id": "eia860m-OR-61201",
+        "name": "OR Solar 3, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-OR-68451",
+      "plant_id": "68451",
+      "state": "OR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.055682,
+        "lon": -122.8034,
+        "id": "eia860m-OR-68451",
+        "name": "OR - Solops - SPI 18 - Belvedere",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PA-55074",
+      "plant_id": "55074",
+      "state": "PA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.060172,
+        "lon": -80.02077,
+        "id": "eia860m-PA-55074",
+        "name": "Lakeview Gas Recovery",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PA-56699",
+      "plant_id": "56699",
+      "state": "PA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.0853,
+        "lon": -78.8633,
+        "id": "eia860m-PA-56699",
+        "name": "Forward Windpower LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PA-58685",
+      "plant_id": "58685",
+      "state": "PA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.921111,
+        "lon": -79.28167,
+        "id": "eia860m-PA-58685",
+        "name": "Mahoning Creek Hydroelectric Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PA-64873",
+      "plant_id": "64873",
+      "state": "PA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.495,
+        "lon": -80.233,
+        "id": "eia860m-PA-64873",
+        "name": "Pittsburgh Airport Gas Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PA-6636",
+      "plant_id": "6636",
+      "state": "PA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.720278,
+        "lon": -79.85611,
+        "id": "eia860m-PA-6636",
+        "name": "Lake Lynn Hydro Station",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PR-61082",
+      "plant_id": "61082",
+      "state": "PR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 17.947115,
+        "lon": -66.1499,
+        "id": "eia860m-PR-61082",
+        "name": "AES Puerto Rico",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PR-61112",
+      "plant_id": "61112",
+      "state": "PR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 18.37739,
+        "lon": -65.81755,
+        "id": "eia860m-PR-61112",
+        "name": "El Yunque Filtration Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PR-61273",
+      "plant_id": "61273",
+      "state": "PR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 18.498007,
+        "lon": -67.13052,
+        "id": "eia860m-PR-61273",
+        "name": "USCG Puerto Rico PV",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-PR-66101",
+      "plant_id": "66101",
+      "state": "PR",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 18.179255,
+        "lon": -67.15315,
+        "id": "eia860m-PR-66101",
+        "name": "Mayaguez Medical Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-RI-50177",
+      "plant_id": "50177",
+      "state": "RI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.014467,
+        "lon": -71.5444,
+        "id": "eia860m-RI-50177",
+        "name": "Blackstone/Tupperware",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-RI-52024",
+      "plant_id": "52024",
+      "state": "RI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.8103,
+        "lon": -71.41,
+        "id": "eia860m-RI-52024",
+        "name": "Rhode Island Hospital",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-RI-58035",
+      "plant_id": "58035",
+      "state": "RI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.114722,
+        "lon": -71.52111,
+        "id": "eia860m-RI-58035",
+        "name": "Block Island Wind Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-RI-59295",
+      "plant_id": "59295",
+      "state": "RI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.581667,
+        "lon": -71.48667,
+        "id": "eia860m-RI-59295",
+        "name": "WED NK Green",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-RI-63718",
+      "plant_id": "63718",
+      "state": "RI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.735147,
+        "lon": -71.46304,
+        "id": "eia860m-RI-63718",
+        "name": "ISM Solar Cranston CSG",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SC-3256",
+      "plant_id": "3256",
+      "state": "SC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.5583,
+        "lon": -80.8914,
+        "id": "eia860m-SC-3256",
+        "name": "Dearborn",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SC-3318",
+      "plant_id": "3318",
+      "state": "SC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.208871,
+        "lon": -80.69875,
+        "id": "eia860m-SC-3318",
+        "name": "Hilton Head",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SC-56120",
+      "plant_id": "56120",
+      "state": "SC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 34.181042,
+        "lon": -80.26778,
+        "id": "eia860m-SC-56120",
+        "name": "Lee County Landfill",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SC-61326",
+      "plant_id": "61326",
+      "state": "SC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 33.567,
+        "lon": -80.699,
+        "id": "eia860m-SC-61326",
+        "name": "Cameron Solar II",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SC-7981",
+      "plant_id": "7981",
+      "state": "SC",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.1597,
+        "lon": -81.4306,
+        "id": "eia860m-SC-7981",
+        "name": "Mill Creek (SC)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SD-59655",
+      "plant_id": "59655",
+      "state": "SD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.753333,
+        "lon": -100.275,
+        "id": "eia860m-SD-59655",
+        "name": "Campbell County Wind Farm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SD-68277",
+      "plant_id": "68277",
+      "state": "SD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.340596,
+        "lon": -96.72945,
+        "id": "eia860m-SD-68277",
+        "name": "Brookings Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SD-69102",
+      "plant_id": "69102",
+      "state": "SD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.594752,
+        "lon": -96.62219,
+        "id": "eia860m-SD-69102",
+        "name": "Toronto Power Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-SD-8034",
+      "plant_id": "8034",
+      "state": "SD",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.893333,
+        "lon": -97.35333,
+        "id": "eia860m-SD-8034",
+        "name": "Yankton",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TN-3409",
+      "plant_id": "3409",
+      "state": "TN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.0017,
+        "lon": -85.6218,
+        "id": "eia860m-TN-3409",
+        "name": "Nickajack",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TN-55251",
+      "plant_id": "55251",
+      "state": "TN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.2454,
+        "lon": -88.612,
+        "id": "eia860m-TN-55251",
+        "name": "Gleason Generating Facility",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TN-66687",
+      "plant_id": "66687",
+      "state": "TN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.309415,
+        "lon": -89.86646,
+        "id": "eia860m-TN-66687",
+        "name": "Graceland Solar, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TN-68107",
+      "plant_id": "68107",
+      "state": "TN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 35.720616,
+        "lon": -88.36943,
+        "id": "eia860m-TN-68107",
+        "name": "SR Lexington",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TN-7883",
+      "plant_id": "7883",
+      "state": "TN",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.5748,
+        "lon": -83.0321,
+        "id": "eia860m-TN-7883",
+        "name": "Powell Valley",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TX-3559",
+      "plant_id": "3559",
+      "state": "TX",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 25.9131,
+        "lon": -97.5214,
+        "id": "eia860m-TX-3559",
+        "name": "Silas Ray",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TX-3601",
+      "plant_id": "3601",
+      "state": "TX",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 30.1456,
+        "lon": -97.2708,
+        "id": "eia860m-TX-3601",
+        "name": "Sim Gideon",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TX-56905",
+      "plant_id": "56905",
+      "state": "TX",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.4964,
+        "lon": -101.3917,
+        "id": "eia860m-TX-56905",
+        "name": "Great Plains Windpark LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TX-58000",
+      "plant_id": "58000",
+      "state": "TX",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 29.234722,
+        "lon": -100.2092,
+        "id": "eia860m-TX-58000",
+        "name": "Anacacho Wind Farm, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TX-65696",
+      "plant_id": "65696",
+      "state": "TX",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 32.85583,
+        "lon": -100.9917,
+        "id": "eia860m-TX-65696",
+        "name": "TX13 Endurance Park Storage",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-TX-68587",
+      "plant_id": "68587",
+      "state": "TX",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 31.723088,
+        "lon": -102.5196,
+        "id": "eia860m-TX-68587",
+        "name": "Swift Air Solar II",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-UT-58600",
+      "plant_id": "58600",
+      "state": "UT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 38.023333,
+        "lon": -112.7317,
+        "id": "eia860m-UT-58600",
+        "name": "Buckhorn Solar Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-UT-61853",
+      "plant_id": "61853",
+      "state": "UT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.596605,
+        "lon": -111.4236,
+        "id": "eia860m-UT-61853",
+        "name": "Jordanelle Dam Hydroelectric Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-UT-65380",
+      "plant_id": "65380",
+      "state": "UT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.030051,
+        "lon": -113.5634,
+        "id": "eia860m-UT-65380",
+        "name": "Solomon Generating Facility",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-UT-66267",
+      "plant_id": "66267",
+      "state": "UT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.88605,
+        "lon": -112.1817,
+        "id": "eia860m-UT-66267",
+        "name": "Steel Solar LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-UT-8069",
+      "plant_id": "8069",
+      "state": "UT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.3792,
+        "lon": -111.0781,
+        "id": "eia860m-UT-8069",
+        "name": "Huntington",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VA-56684",
+      "plant_id": "56684",
+      "state": "VA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.3517,
+        "lon": -77.4969,
+        "id": "eia860m-VA-56684",
+        "name": "Chesterfield Landfill Gas",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VA-65930",
+      "plant_id": "65930",
+      "state": "VA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.21157,
+        "lon": -78.08417,
+        "id": "eia860m-VA-65930",
+        "name": "Redbud Run Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VA-66695",
+      "plant_id": "66695",
+      "state": "VA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.961,
+        "lon": -77.792,
+        "id": "eia860m-VA-66695",
+        "name": "Horsepen Branch Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VA-67171",
+      "plant_id": "67171",
+      "state": "VA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.875897,
+        "lon": -78.74187,
+        "id": "eia860m-VA-67171",
+        "name": "Foxhound",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VA-70409",
+      "plant_id": "70409",
+      "state": "VA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 36.167141,
+        "lon": -81.50336,
+        "id": "eia860m-VA-70409",
+        "name": "Hera Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VT-3735",
+      "plant_id": "3735",
+      "state": "VT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.4906,
+        "lon": -73.1703,
+        "id": "eia860m-VT-3735",
+        "name": "Colchester 16",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VT-3750",
+      "plant_id": "3750",
+      "state": "VT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.999274,
+        "lon": -71.53016,
+        "id": "eia860m-VT-3750",
+        "name": "Canaan",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VT-58144",
+      "plant_id": "58144",
+      "state": "VT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.753611,
+        "lon": -73.22611,
+        "id": "eia860m-VT-58144",
+        "name": "SVEP Solar Project Company",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VT-6483",
+      "plant_id": "6483",
+      "state": "VT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.2603,
+        "lon": -72.0592,
+        "id": "eia860m-VT-6483",
+        "name": "Mcindoes",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-VT-69667",
+      "plant_id": "69667",
+      "state": "VT",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.636,
+        "lon": -73.279,
+        "id": "eia860m-VT-69667",
+        "name": "Fair Haven Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WA-3878",
+      "plant_id": "3878",
+      "state": "WA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.974912,
+        "lon": -122.6358,
+        "id": "eia860m-WA-3878",
+        "name": "Yelm",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WA-54476",
+      "plant_id": "54476",
+      "state": "WA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 48.9905,
+        "lon": -122.2733,
+        "id": "eia860m-WA-54476",
+        "name": "Sumas Power Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WA-622",
+      "plant_id": "622",
+      "state": "WA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 47.699167,
+        "lon": -121.7833,
+        "id": "eia860m-WA-622",
+        "name": "South Fork Tolt",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WA-68344",
+      "plant_id": "68344",
+      "state": "WA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.502392,
+        "lon": -117.8263,
+        "id": "eia860m-WA-68344",
+        "name": "Lower Snake Solar Generation BESS",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WA-7605",
+      "plant_id": "7605",
+      "state": "WA",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 45.6497,
+        "lon": -122.7256,
+        "id": "eia860m-WA-7605",
+        "name": "River Road Gen Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WI-3982",
+      "plant_id": "3982",
+      "state": "WI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 46.587222,
+        "lon": -90.9017,
+        "id": "eia860m-WI-3982",
+        "name": "Bay Front",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WI-69313",
+      "plant_id": "69313",
+      "state": "WI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.093352,
+        "lon": -89.56979,
+        "id": "eia860m-WI-69313",
+        "name": "West Middleton BESS",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WI-69486",
+      "plant_id": "69486",
+      "state": "WI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.961373,
+        "lon": -92.44342,
+        "id": "eia860m-WI-69486",
+        "name": "Bright Future",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WI-69501",
+      "plant_id": "69501",
+      "state": "WI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.526689,
+        "lon": -87.99353,
+        "id": "eia860m-WI-69501",
+        "name": "Bristol Woods Solar WI, LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WI-7795",
+      "plant_id": "7795",
+      "state": "WI",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.085437,
+        "lon": -87.7261,
+        "id": "eia860m-WI-7795",
+        "name": "Custer Energy Center",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WV-57595",
+      "plant_id": "57595",
+      "state": "WV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.445,
+        "lon": -79.03,
+        "id": "eia860m-WV-57595",
+        "name": "Pinnacle Wind Force LLC",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WV-63246",
+      "plant_id": "63246",
+      "state": "WV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 37.81577,
+        "lon": -81.16193,
+        "id": "eia860m-WV-63246",
+        "name": "New River Clean Energy",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WV-66870",
+      "plant_id": "66870",
+      "state": "WV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 39.155005,
+        "lon": -79.44334,
+        "id": "eia860m-WV-66870",
+        "name": "Davis Solar (WV)",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WV-69701",
+      "plant_id": "69701",
+      "state": "WV",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 40.52821,
+        "lon": -80.62574,
+        "id": "eia860m-WV-69701",
+        "name": "New Cumberland Hydroelectric Project",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WY-4177",
+      "plant_id": "4177",
+      "state": "WY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 42.467254,
+        "lon": -104.9555,
+        "id": "eia860m-WY-4177",
+        "name": "Glendo",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WY-52127",
+      "plant_id": "52127",
+      "state": "WY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 44.9806,
+        "lon": -108.8428,
+        "id": "eia860m-WY-52127",
+        "name": "Elk Basin Gasoline Plant",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WY-58987",
+      "plant_id": "58987",
+      "state": "WY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.683056,
+        "lon": -107.2,
+        "id": "eia860m-WY-58987",
+        "name": "Chokecherry and Sierra Madre Wind",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WY-67147",
+      "plant_id": "67147",
+      "state": "WY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 41.027211,
+        "lon": -104.776,
+        "id": "eia860m-WY-67147",
+        "name": "South Cheyenne Solar",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    },
+    {
+      "id": "eia860m-WY-674",
+      "plant_id": "674",
+      "state": "WY",
+      "source_period_start": "2026-08-01",
+      "source_available_at": "2026-10-17T05:30:41.806592+00:00",
+      "site": {
+        "lat": 43.219017,
+        "lon": -108.7877,
+        "id": "eia860m-WY-674",
+        "name": "Pilot Butte",
+        "site_type": "representative_monitored_site",
+        "source": "EIA-860M August 2026; backend selection export",
+        "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+        "is_fixture": false
+      }
+    }
+  ],
+  "batch_site_ids": [
+    "eia860m-FL-59611",
+    "eia860m-AZ-68414",
+    "eia860m-AK-54305",
+    "eia860m-AL-13",
+    "eia860m-AR-182",
+    "eia860m-AZ-153",
+    "eia860m-CA-296",
+    "eia860m-CO-57290",
+    "eia860m-CT-542",
+    "eia860m-DC-62710",
+    "eia860m-DE-59922",
+    "eia860m-FL-55415",
+    "eia860m-GA-60586",
+    "eia860m-HI-10413",
+    "eia860m-IA-50932",
+    "eia860m-ID-10014",
+    "eia860m-IL-55253",
+    "eia860m-IN-57842",
+    "eia860m-KS-1271",
+    "eia860m-KY-65406",
+    "eia860m-LA-54927",
+    "eia860m-MA-59390",
+    "eia860m-MD-1563",
+    "eia860m-ME-1488",
+    "eia860m-MI-61391",
+    "eia860m-MN-60254",
+    "eia860m-MO-2168",
+    "eia860m-MS-2047",
+    "eia860m-MT-2181",
+    "eia860m-NC-2707",
+    "eia860m-ND-59200",
+    "eia860m-NE-57283",
+    "eia860m-NH-10570",
+    "eia860m-NJ-60769",
+    "eia860m-NM-57338",
+    "eia860m-NV-54271",
+    "eia860m-NY-2694",
+    "eia860m-OH-2933",
+    "eia860m-OK-2952",
+    "eia860m-OR-4214",
+    "eia860m-PA-55074",
+    "eia860m-PR-61082",
+    "eia860m-RI-50177",
+    "eia860m-SC-3256",
+    "eia860m-SD-59655",
+    "eia860m-TN-3409",
+    "eia860m-TX-3559",
+    "eia860m-UT-58600",
+    "eia860m-VA-56684",
+    "eia860m-VT-3735"
+  ]
+}

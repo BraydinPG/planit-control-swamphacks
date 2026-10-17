@@ -1,0 +1,1892 @@
+{
+  "$defs": {
+    "AlertAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "alert": {
+          "$ref": "#/$defs/OfficialAlert"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "issued_notice",
+            "unmatched",
+            "not_current",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "site_spatial_match": {
+          "title": "Site Spatial Match",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alert",
+        "accepted",
+        "status",
+        "reasons",
+        "site_spatial_match"
+      ],
+      "title": "AlertAssessment",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "observed",
+            "issued_forecast",
+            "official_warning",
+            "retrospective"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "variable": {
+          "title": "Variable",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Value"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "valid_from": {
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "title": "Valid To",
+          "type": "string"
+        },
+        "spatial_match": {
+          "$ref": "#/$defs/SpatialMatch"
+        },
+        "datum": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datum"
+        },
+        "value_basis": {
+          "default": "source_value",
+          "enum": [
+            "source_value",
+            "derived"
+          ],
+          "title": "Value Basis",
+          "type": "string"
+        },
+        "derived_from_evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Derived From Evidence Ids",
+          "type": "array"
+        },
+        "computation_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Computation Version"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "method",
+        "variable",
+        "value",
+        "unit",
+        "valid_from",
+        "valid_to",
+        "spatial_match"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "Confirmation": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "confirmed_at": {
+          "title": "Confirmed At",
+          "type": "string"
+        },
+        "available_at": {
+          "title": "Available At",
+          "type": "string"
+        },
+        "is_fixture": {
+          "default": true,
+          "title": "Is Fixture",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "record_id",
+        "confirmed_at",
+        "available_at"
+      ],
+      "title": "Confirmation",
+      "type": "object"
+    },
+    "ContextAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "signal": {
+          "$ref": "#/$defs/ContextSignal"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "site_spatial_match": {
+          "title": "Site Spatial Match",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signal",
+        "accepted",
+        "reasons",
+        "site_spatial_match"
+      ],
+      "title": "ContextAssessment",
+      "type": "object"
+    },
+    "ContextSignal": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "hazard_id": {
+          "enum": [
+            "shaking",
+            "geomagnetic_storm",
+            "drought",
+            "floodplain",
+            "wildfire"
+          ],
+          "title": "Hazard Id",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "issued_model_estimate",
+            "official_message",
+            "background_context",
+            "mapped_observation"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "origin_url": {
+          "title": "Origin Url",
+          "type": "string"
+        },
+        "source_version": {
+          "title": "Source Version",
+          "type": "string"
+        },
+        "issued_at": {
+          "title": "Issued At",
+          "type": "string"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "available_at": {
+          "title": "Available At",
+          "type": "string"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To"
+        },
+        "footprint": {
+          "$ref": "#/$defs/Footprint"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "enum": [
+            "MMI",
+            "context"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "description": {
+          "maxLength": 600,
+          "title": "Description",
+          "type": "string"
+        },
+        "source_metadata": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "title": "Source Metadata",
+          "type": "object"
+        },
+        "is_fixture": {
+          "default": false,
+          "title": "Is Fixture",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "hazard_id",
+        "method",
+        "source",
+        "origin_url",
+        "source_version",
+        "issued_at",
+        "available_at",
+        "footprint",
+        "unit",
+        "description"
+      ],
+      "title": "ContextSignal",
+      "type": "object"
+    },
+    "EventOutlook": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "supported_research",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Target"
+        },
+        "model_version": {
+          "title": "Model Version",
+          "type": "string"
+        },
+        "data_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Data Version"
+        },
+        "estimator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Estimator"
+        },
+        "ongoing_probability": {
+          "additionalProperties": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "title": "Ongoing Probability",
+          "type": "object"
+        },
+        "remaining_duration_hours": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Remaining Duration Hours",
+          "type": "object"
+        },
+        "trend": {
+          "const": "unknown",
+          "default": "unknown",
+          "title": "Trend",
+          "type": "string"
+        },
+        "fit_cutoff_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fit Cutoff Utc"
+        },
+        "historical_feature_availability_verified": {
+          "const": false,
+          "default": false,
+          "title": "Historical Feature Availability Verified",
+          "type": "boolean"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "target",
+        "model_version",
+        "data_version",
+        "limitations"
+      ],
+      "title": "EventOutlook",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "publisher": {
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "origin_url": {
+          "title": "Origin Url",
+          "type": "string"
+        },
+        "source_record_id": {
+          "minLength": 1,
+          "title": "Source Record Id",
+          "type": "string"
+        },
+        "original_type": {
+          "title": "Original Type",
+          "type": "string"
+        },
+        "hazard": {
+          "enum": [
+            "wind",
+            "heat",
+            "rain",
+            "flood_context",
+            "coastal_water",
+            "waves",
+            "wildfire",
+            "air_quality",
+            "earthquake",
+            "winter",
+            "visibility",
+            "space_weather",
+            "landslide",
+            "tsunami",
+            "volcanic",
+            "infrastructure"
+          ],
+          "title": "Hazard",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "observed",
+            "issued_forecast",
+            "official_warning",
+            "retrospective"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "variable": {
+          "title": "Variable",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "issued_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Issued At"
+        },
+        "available_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Available At"
+        },
+        "valid_from": {
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "title": "Valid To",
+          "type": "string"
+        },
+        "ingested_at": {
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "source_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Version"
+        },
+        "availability_basis": {
+          "enum": [
+            "retrieved_by_pipeline",
+            "issued_archive",
+            "fixture",
+            "unknown"
+          ],
+          "title": "Availability Basis",
+          "type": "string"
+        },
+        "footprint": {
+          "$ref": "#/$defs/Footprint"
+        },
+        "data_state": {
+          "default": "current",
+          "enum": [
+            "current",
+            "stale",
+            "missing",
+            "retrospective"
+          ],
+          "title": "Data State",
+          "type": "string"
+        },
+        "quality_flags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Quality Flags",
+          "type": "array"
+        },
+        "is_fixture": {
+          "default": false,
+          "title": "Is Fixture",
+          "type": "boolean"
+        },
+        "datum": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Datum"
+        },
+        "human_review_status": {
+          "default": "not_applicable",
+          "enum": [
+            "not_applicable",
+            "confirmed",
+            "pending",
+            "rejected"
+          ],
+          "title": "Human Review Status",
+          "type": "string"
+        },
+        "value_basis": {
+          "default": "source_value",
+          "enum": [
+            "source_value",
+            "derived"
+          ],
+          "title": "Value Basis",
+          "type": "string"
+        },
+        "derived_from_evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Derived From Evidence Ids",
+          "type": "array"
+        },
+        "computation_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Computation Version"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "publisher",
+        "origin_url",
+        "source_record_id",
+        "original_type",
+        "hazard",
+        "method",
+        "variable",
+        "unit",
+        "valid_from",
+        "valid_to",
+        "ingested_at",
+        "availability_basis",
+        "footprint"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "EvidenceAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "spatial_match": {
+          "$ref": "#/$defs/SpatialMatch"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "freshness": {
+          "enum": [
+            "current",
+            "issued_valid",
+            "stale",
+            "future",
+            "retrospective",
+            "unknown"
+          ],
+          "title": "Freshness",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence",
+        "accepted",
+        "spatial_match",
+        "reasons",
+        "freshness"
+      ],
+      "title": "EvidenceAssessment",
+      "type": "object"
+    },
+    "Footprint": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "point",
+            "polygon",
+            "regional",
+            "global",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "point": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rings": {
+          "items": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "title": "Rings",
+          "type": "array"
+        },
+        "precision": {
+          "title": "Precision",
+          "type": "string"
+        },
+        "site_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Site Id"
+        },
+        "relation": {
+          "default": "unspecified",
+          "enum": [
+            "unspecified",
+            "verified_gauge_basin"
+          ],
+          "title": "Relation",
+          "type": "string"
+        },
+        "relation_evidence_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Relation Evidence Id"
+        }
+      },
+      "required": [
+        "kind",
+        "precision"
+      ],
+      "title": "Footprint",
+      "type": "object"
+    },
+    "LightningContext": {
+      "additionalProperties": false,
+      "properties": {
+        "record": {
+          "$ref": "#/$defs/LightningRecord"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "distance_miles": {
+          "minimum": 0,
+          "title": "Distance Miles",
+          "type": "number"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "rule_authority": {
+          "const": "Rudra deterministic service; no ML trigger, timer, reset or clearance",
+          "default": "Rudra deterministic service; no ML trigger, timer, reset or clearance",
+          "title": "Rule Authority",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record",
+        "accepted",
+        "distance_miles",
+        "reasons"
+      ],
+      "title": "LightningContext",
+      "type": "object"
+    },
+    "LightningRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "observed_at": {
+          "title": "Observed At",
+          "type": "string"
+        },
+        "available_at": {
+          "title": "Available At",
+          "type": "string"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "source_version": {
+          "minLength": 1,
+          "title": "Source Version",
+          "type": "string"
+        },
+        "is_replay": {
+          "const": true,
+          "default": true,
+          "title": "Is Replay",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "observed_at",
+        "available_at",
+        "lat",
+        "lon",
+        "source_version"
+      ],
+      "title": "LightningRecord",
+      "type": "object"
+    },
+    "OfficialAlert": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "publisher": {
+          "const": "NOAA NWS",
+          "default": "NOAA NWS",
+          "title": "Publisher",
+          "type": "string"
+        },
+        "event": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Event",
+          "type": "string"
+        },
+        "status": {
+          "maxLength": 40,
+          "title": "Status",
+          "type": "string"
+        },
+        "message_type": {
+          "maxLength": 40,
+          "title": "Message Type",
+          "type": "string"
+        },
+        "sent": {
+          "title": "Sent",
+          "type": "string"
+        },
+        "updated": {
+          "title": "Updated",
+          "type": "string"
+        },
+        "effective": {
+          "title": "Effective",
+          "type": "string"
+        },
+        "onset": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Onset"
+        },
+        "expires": {
+          "title": "Expires",
+          "type": "string"
+        },
+        "ends": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ends"
+        },
+        "available_at": {
+          "title": "Available At",
+          "type": "string"
+        },
+        "ingested_at": {
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "source_version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Source Version",
+          "type": "string"
+        },
+        "origin_url": {
+          "const": "https://api.weather.gov/alerts",
+          "default": "https://api.weather.gov/alerts",
+          "title": "Origin Url",
+          "type": "string"
+        },
+        "polygons": {
+          "items": {
+            "$ref": "#/$defs/Footprint"
+          },
+          "maxItems": 30,
+          "title": "Polygons",
+          "type": "array"
+        },
+        "zone_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 1000,
+          "title": "Zone Ids",
+          "type": "array"
+        },
+        "query_site_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Query Site Id"
+        },
+        "query_point": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "query_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Query Url"
+        },
+        "references": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "References",
+          "type": "array"
+        },
+        "severity": {
+          "default": "Unknown",
+          "maxLength": 40,
+          "title": "Severity",
+          "type": "string"
+        },
+        "certainty": {
+          "default": "Unknown",
+          "maxLength": 40,
+          "title": "Certainty",
+          "type": "string"
+        },
+        "urgency": {
+          "default": "Unknown",
+          "maxLength": 40,
+          "title": "Urgency",
+          "type": "string"
+        },
+        "is_fixture": {
+          "default": false,
+          "title": "Is Fixture",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "event",
+        "status",
+        "message_type",
+        "sent",
+        "updated",
+        "effective",
+        "expires",
+        "available_at",
+        "ingested_at",
+        "source_version"
+      ],
+      "title": "OfficialAlert",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "ReportAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "report": {
+          "$ref": "#/$defs/ReviewedReport"
+        },
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "report",
+        "accepted",
+        "reasons"
+      ],
+      "title": "ReportAssessment",
+      "type": "object"
+    },
+    "ReviewedReport": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "site_id": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Site Id",
+          "type": "string"
+        },
+        "hazard_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Hazard Id",
+          "type": "string"
+        },
+        "issuer": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Issuer",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "crew_report",
+            "asset_telemetry",
+            "official_local_notice"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "present",
+            "absent",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "review_status": {
+          "enum": [
+            "pending",
+            "confirmed",
+            "rejected",
+            "ai_suggested"
+          ],
+          "title": "Review Status",
+          "type": "string"
+        },
+        "reviewer_role": {
+          "enum": [
+            "crew",
+            "supervisor",
+            "asset_operator",
+            "none"
+          ],
+          "title": "Reviewer Role",
+          "type": "string"
+        },
+        "reviewed_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewed At"
+        },
+        "observed_at": {
+          "title": "Observed At",
+          "type": "string"
+        },
+        "available_at": {
+          "title": "Available At",
+          "type": "string"
+        },
+        "valid_to": {
+          "title": "Valid To",
+          "type": "string"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "source_version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Source Version",
+          "type": "string"
+        },
+        "is_fixture": {
+          "default": true,
+          "title": "Is Fixture",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "site_id",
+        "hazard_id",
+        "issuer",
+        "kind",
+        "state",
+        "review_status",
+        "reviewer_role",
+        "observed_at",
+        "available_at",
+        "valid_to",
+        "lat",
+        "lon",
+        "source_version"
+      ],
+      "title": "ReviewedReport",
+      "type": "object"
+    },
+    "SiteContext": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "site_type": {
+          "enum": [
+            "representative_monitored_site",
+            "fixture_site"
+          ],
+          "title": "Site Type",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "source_version": {
+          "title": "Source Version",
+          "type": "string"
+        },
+        "is_fixture": {
+          "default": true,
+          "title": "Is Fixture",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "lat",
+        "lon",
+        "id",
+        "name",
+        "site_type",
+        "source",
+        "source_version"
+      ],
+      "title": "SiteContext",
+      "type": "object"
+    },
+    "SiteHazard": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "wind",
+            "heat",
+            "rain",
+            "flood_context",
+            "coastal_water",
+            "waves",
+            "wildfire",
+            "air_quality",
+            "earthquake",
+            "winter",
+            "visibility",
+            "space_weather",
+            "landslide",
+            "tsunami",
+            "volcanic",
+            "infrastructure"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "issued_forecast",
+            "official_warning",
+            "partial",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "probability": {
+          "const": null,
+          "default": null,
+          "title": "Probability",
+          "type": "null"
+        },
+        "confidence": {
+          "const": null,
+          "default": null,
+          "title": "Confidence",
+          "type": "null"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "unknowns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknowns",
+          "type": "array"
+        },
+        "planning_context": {
+          "title": "Planning Context",
+          "type": "string"
+        },
+        "warning_evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warning Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "status",
+        "conditions",
+        "evidence_ids",
+        "unknowns",
+        "planning_context"
+      ],
+      "title": "SiteHazard",
+      "type": "object"
+    },
+    "SourceAvailability": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Provider",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "current",
+            "stale",
+            "unavailable",
+            "fixture_only"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "attempted": {
+          "title": "Attempted",
+          "type": "boolean"
+        },
+        "last_success_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Success At"
+        },
+        "reason": {
+          "maxLength": 300,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "state",
+        "attempted",
+        "reason"
+      ],
+      "title": "SourceAvailability",
+      "type": "object"
+    },
+    "SpatialMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "station_at_location",
+            "nearby_station",
+            "verified_gauge_basin",
+            "polygon_intersects",
+            "county_only_context",
+            "track_center_distance",
+            "epicenter_distance",
+            "global_context",
+            "uncertain",
+            "no_supported_association"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "distance_km": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distance Km"
+        },
+        "distance_miles": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distance Miles"
+        },
+        "limitation": {
+          "title": "Limitation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "limitation"
+      ],
+      "title": "SpatialMatch",
+      "type": "object"
+    },
+    "WorksiteHazard": {
+      "additionalProperties": false,
+      "properties": {
+        "hazard_id": {
+          "title": "Hazard Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "evidence_available",
+            "reported_present",
+            "reported_absent",
+            "partial",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "evidence_status": {
+          "enum": [
+            "accepted",
+            "mixed",
+            "rejected",
+            "not_supplied"
+          ],
+          "title": "Evidence Status",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "observed_or_valid_windows": {
+          "items": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "title": "Observed Or Valid Windows",
+          "type": "array"
+        },
+        "site_spatial_match": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Site Spatial Match",
+          "type": "array"
+        },
+        "methods": {
+          "items": {
+            "enum": [
+              "observed",
+              "issued_forecast",
+              "official_warning",
+              "reported",
+              "issued_model_estimate",
+              "context",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "title": "Methods",
+          "type": "array"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "unknowns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknowns",
+          "type": "array"
+        },
+        "needs_field_verification": {
+          "const": true,
+          "default": true,
+          "title": "Needs Field Verification",
+          "type": "boolean"
+        },
+        "production_eligibility": {
+          "const": false,
+          "default": false,
+          "title": "Production Eligibility",
+          "type": "boolean"
+        },
+        "probability": {
+          "const": null,
+          "default": null,
+          "title": "Probability",
+          "type": "null"
+        },
+        "severity": {
+          "const": null,
+          "default": null,
+          "title": "Severity",
+          "type": "null"
+        },
+        "numerical_evidence": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Numerical Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "hazard_id",
+        "status",
+        "evidence_status",
+        "source_ids",
+        "observed_or_valid_windows",
+        "site_spatial_match",
+        "methods",
+        "description",
+        "unknowns"
+      ],
+      "title": "WorksiteHazard",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": "2.1.0",
+      "default": "2.1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "site": {
+      "$ref": "#/$defs/SiteContext"
+    },
+    "event_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Event Id"
+    },
+    "event_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Event Type"
+    },
+    "confirmation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Confirmation"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "as_of_utc": {
+      "title": "As Of Utc",
+      "type": "string"
+    },
+    "generated_at_utc": {
+      "title": "Generated At Utc",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "supported_research",
+        "partial",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "research_only": {
+      "const": true,
+      "default": true,
+      "title": "Research Only",
+      "type": "boolean"
+    },
+    "operational_evaluation_eligible": {
+      "const": false,
+      "default": false,
+      "title": "Operational Evaluation Eligible",
+      "type": "boolean"
+    },
+    "production_eligibility": {
+      "const": false,
+      "default": false,
+      "title": "Production Eligibility",
+      "type": "boolean"
+    },
+    "is_demo_or_simulated": {
+      "title": "Is Demo Or Simulated",
+      "type": "boolean"
+    },
+    "event_outlook": {
+      "$ref": "#/$defs/EventOutlook"
+    },
+    "site_hazards": {
+      "items": {
+        "$ref": "#/$defs/SiteHazard"
+      },
+      "title": "Site Hazards",
+      "type": "array"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceAssessment"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "unknowns": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unknowns",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "not_work_clearance": {
+      "const": true,
+      "default": true,
+      "title": "Not Work Clearance",
+      "type": "boolean"
+    },
+    "safety_statement": {
+      "const": "Advisory context only. No permission to access, work, or resume work; official warnings and deterministic controls remain authoritative.",
+      "default": "Advisory context only. No permission to access, work, or resume work; official warnings and deterministic controls remain authoritative.",
+      "title": "Safety Statement",
+      "type": "string"
+    },
+    "registry_version": {
+      "const": "1.0.0",
+      "default": "1.0.0",
+      "title": "Registry Version",
+      "type": "string"
+    },
+    "worksite_hazards": {
+      "items": {
+        "$ref": "#/$defs/WorksiteHazard"
+      },
+      "title": "Worksite Hazards",
+      "type": "array"
+    },
+    "official_notices": {
+      "items": {
+        "$ref": "#/$defs/AlertAssessment"
+      },
+      "title": "Official Notices",
+      "type": "array"
+    },
+    "reviewed_reports": {
+      "items": {
+        "$ref": "#/$defs/ReportAssessment"
+      },
+      "title": "Reviewed Reports",
+      "type": "array"
+    },
+    "context_evidence": {
+      "items": {
+        "$ref": "#/$defs/ContextAssessment"
+      },
+      "title": "Context Evidence",
+      "type": "array"
+    },
+    "lightning_replay_context": {
+      "items": {
+        "$ref": "#/$defs/LightningContext"
+      },
+      "title": "Lightning Replay Context",
+      "type": "array"
+    },
+    "source_availability": {
+      "items": {
+        "$ref": "#/$defs/SourceAvailability"
+      },
+      "title": "Source Availability",
+      "type": "array"
+    },
+    "trust_boundary": {
+      "const": "Upstream authentication and verification required; schema validity is not source authenticity.",
+      "default": "Upstream authentication and verification required; schema validity is not source authenticity.",
+      "title": "Trust Boundary",
+      "type": "string"
+    }
+  },
+  "required": [
+    "site",
+    "event_id",
+    "event_type",
+    "confirmation",
+    "as_of_utc",
+    "generated_at_utc",
+    "status",
+    "is_demo_or_simulated",
+    "event_outlook",
+    "site_hazards",
+    "evidence",
+    "unknowns",
+    "limitations",
+    "worksite_hazards",
+    "official_notices",
+    "reviewed_reports",
+    "context_evidence",
+    "lightning_replay_context",
+    "source_availability"
+  ],
+  "title": "ComprehensiveOutlook",
+  "type": "object"
+}
