@@ -1,0 +1,263 @@
+{
+  "status": "PASSED_OFFLINE_RESEARCH_ACCEPTANCE",
+  "contract_version": "2.1.0",
+  "scenarios": 31,
+  "scenarios_passed": 31,
+  "sites": 50,
+  "identity_reconciled_sites": 50,
+  "is_actual_incident": false,
+  "no_network_enforced": true,
+  "new_site_probability_models": 0,
+  "operationally_validated": false,
+  "source_counts": {
+    "nws_alerts": 553,
+    "polygon_notices": 15,
+    "modern_gauge_readings": 5,
+    "swpc_all_messages": 80,
+    "swpc_geomagnetic_messages": 46,
+    "earthquake_catalog_events": 3,
+    "local_weather_sites_requested": 2,
+    "point_alert_sites_requested": 50,
+    "point_alert_sites_retrieved": 50,
+    "point_alert_notice_records": 11
+  },
+  "site_coverage_by_provider": {
+    "NOAA NWS": 2,
+    "NWS site-qualified notices": 10
+  },
+  "verified_site_hazard_ids": [
+    "extreme_cold",
+    "extreme_heat",
+    "fire_weather",
+    "frost_freeze",
+    "heat_index",
+    "heavy_rain",
+    "high_wind",
+    "humidity",
+    "red_flag"
+  ],
+  "offline_tested_hazard_ids": [
+    "aftershock",
+    "air_quality",
+    "arc_flash",
+    "asbestos",
+    "backfeed",
+    "bites_stings",
+    "blocked_egress",
+    "bridge_washout",
+    "carbon_monoxide",
+    "chemical_release",
+    "clearance_restrictions",
+    "coastal_flood",
+    "cold_exposure",
+    "communications",
+    "compound_cyclone",
+    "confined_space",
+    "connectivity",
+    "contaminated_water",
+    "debris",
+    "dehydration",
+    "dispatch_emergency",
+    "downed_lines",
+    "drought",
+    "dust",
+    "earthquake",
+    "electrical_fire",
+    "energized_floodwater",
+    "equipment_damage",
+    "ergonomic",
+    "evacuation",
+    "excavation_collapse",
+    "expansive_soil",
+    "extreme_cold",
+    "extreme_heat",
+    "extreme_tide",
+    "fallen_trees",
+    "falling_loads",
+    "fatigue",
+    "fire_weather",
+    "flash_flood",
+    "flood",
+    "flooded_electrical_equipment",
+    "fog",
+    "frost_freeze",
+    "fuel_gas_leak",
+    "gauge_stage",
+    "geomagnetic_storm",
+    "gps_interference",
+    "ground_fault",
+    "hazardous_dust",
+    "hazmat_incident",
+    "heat_illness",
+    "heat_index",
+    "heavy_rain",
+    "high_wind",
+    "humidity",
+    "ice_storm",
+    "induction",
+    "industrial_smoke",
+    "infectious_exposure",
+    "landslide",
+    "lift_crane",
+    "lightning",
+    "liquefaction",
+    "local_cyclone_wind",
+    "mold",
+    "oxygen_deficiency",
+    "pm25",
+    "pole_tower_instability",
+    "postfire_debris_flow",
+    "power_failure",
+    "quake_tsunami_landslide",
+    "radiological",
+    "red_flag",
+    "restoration_driving",
+    "road_closure",
+    "roof_instability",
+    "saturated_ground",
+    "security",
+    "shaking",
+    "silica",
+    "slips_trips_falls",
+    "slope_instability",
+    "snow",
+    "spills",
+    "step_touch",
+    "storm_surge",
+    "structural_collapse",
+    "thunder",
+    "thunderstorm",
+    "thunderstorm_wind",
+    "tornado",
+    "traffic",
+    "transport_incident",
+    "tropical_cyclone",
+    "tsunami",
+    "urban_fire_transition",
+    "utility_strike",
+    "visibility_impairment",
+    "wildfire",
+    "wildfire_growth",
+    "wildlife",
+    "wind_chill",
+    "wind_loaded_lines",
+    "winter_storm"
+  ],
+  "sites_without_qualified_environmental_evidence": 48,
+  "sites_without_qualified_gauge_transfer": 50,
+  "sites_without_local_shakemap": 50,
+  "sites_without_trusted_live_crew_or_asset_feed": 50,
+  "performance": {
+    "cold_flood_artifact_initialization_ms": 8.395700016990304,
+    "workers": 1,
+    "batch_ms": 699.909499991918,
+    "batch_ms_per_site": 13.99818999983836,
+    "warm_response_validation_mean_ms_30_calls": 1.2352899997495115,
+    "peak_traced_python_allocations_one_call_bytes": 1156720,
+    "traced_memory_is_not_process_RSS": true,
+    "scenario_calls": {
+      "real_local_rain_and_gauge_without_basin_or_datum": {
+        "first_ms": 32.4694000009913,
+        "warm_calls": 30,
+        "warm_median_ms": 5.587750012637116
+      },
+      "real_wind_and_forecast_backend_identity": {
+        "first_ms": 23.51279999129474,
+        "warm_calls": 30,
+        "warm_median_ms": 5.6130500161089
+      },
+      "real_native_nws_notice_hypothetical_activation": {
+        "first_ms": 10.658399987732992
+      },
+      "fixture_verified_basin_and_datum_not_inundation": {
+        "first_ms": 1.2465000036172569
+      },
+      "flash_flood_polygon": {
+        "first_ms": 25.071399984881282
+      },
+      "expired_flash_flood_notice": {
+        "first_ms": 11.745700001483783
+      },
+      "flash_flood_polygon_hole_negative": {
+        "first_ms": 11.73430000199005
+      },
+      "wind_units_and_station_distance": {
+        "first_ms": 1.884699973743409
+      },
+      "heat_matched_inputs": {
+        "first_ms": 1.3938999909441918
+      },
+      "heat_mismatched_inputs": {
+        "first_ms": 1.0874999861698598
+      },
+      "heat_stale_inputs": {
+        "first_ms": 1.0176000068895519
+      },
+      "tropical_wind_rain_coastal_unknown_intensity": {
+        "first_ms": 11.628400010522455
+      },
+      "lightning_restrike_contract_no_timer": {
+        "first_ms": 0.913399999262765
+      },
+      "winter_ice_and_reviewed_road_notice": {
+        "first_ms": 1.3078000047244132
+      },
+      "wildfire_hotspot_perimeter_smoke_fixtures": {
+        "first_ms": 1.4223000034689903
+      },
+      "real_shakemap_hypothetical_non_US_location": {
+        "first_ms": 0.9556000004522502
+      },
+      "quake_us_site_no_local_shaking_and_tsunami_fixture": {
+        "first_ms": 0.7847000088077039
+      },
+      "coastal_datum_not_site_inundation": {
+        "first_ms": 0.9341999830212444
+      },
+      "tornado_hail_thunderstorm_unknown_models": {
+        "first_ms": 1.3458000030368567
+      },
+      "dust_fog_visibility_context": {
+        "first_ms": 0.9504000190645456
+      },
+      "landslide_soft_ground_postfire_unknown": {
+        "first_ms": 0.7679999980609864
+      },
+      "drought_soil_fireweather_context": {
+        "first_ms": 1.3552000164054334
+      },
+      "real_swpc_context_no_outage_prediction": {
+        "first_ms": 3.7031999963801354
+      },
+      "electrical_dangers_unknown_despite_weather": {
+        "first_ms": 56.28729998716153
+      },
+      "reviewed_and_pending_utility_reports": {
+        "first_ms": 1.6619999951217324
+      },
+      "communications_and_access_only_reviewed_reports": {
+        "first_ms": 1.0504000238142908
+      },
+      "compound_overlap_conflicts_disjoint_geography": {
+        "first_ms": 2.4796999932732433
+      },
+      "future_reanalysis_not_operational_feature": {
+        "first_ms": 1.2300999951548874
+      },
+      "forged_future_activation_and_missing_evidence": {
+        "first_ms": 0.7088000129442662
+      },
+      "missing_credentials_and_failed_source_explicit": {
+        "first_ms": 0.8802000083960593
+      }
+    }
+  },
+  "limits": [
+    "50-site source evidence coverage is sparse, not a nationwide ingestion system",
+    "Batch activations are hypothetical replays",
+    "Zone-only alerts are not confirmed local warnings",
+    "State association uses EIA workbook; independent state-boundary polygons not acquired",
+    "No deployed DB/authorization/route integration verified",
+    "No new historical predictive evaluation or artifact refit"
+  ]
+}

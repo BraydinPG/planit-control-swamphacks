@@ -1,0 +1,5743 @@
+{
+  "contract_version": "2.1.0",
+  "site": {
+    "lat": 28.066389,
+    "lon": -82.0175,
+    "id": "eia860m-FL-59611",
+    "name": "LKL BLBD, LLC",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026; backend selection export",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  "event_id": "hypothetical-flood:eia860m-FL-59611",
+  "event_type": "Flood",
+  "confirmation": {
+    "source": "explicit hypothetical activation fixture",
+    "record_id": "fixture-activation-v1",
+    "confirmed_at": "2026-10-17T02:18:48.564672Z",
+    "available_at": "2026-10-17T02:18:48.564672Z",
+    "is_fixture": true
+  },
+  "as_of_utc": "2026-10-17T07:18:48.564672Z",
+  "generated_at_utc": "2026-10-17T07:26:56.362310Z",
+  "status": "partial",
+  "research_only": true,
+  "operational_evaluation_eligible": false,
+  "production_eligibility": false,
+  "is_demo_or_simulated": true,
+  "event_outlook": {
+    "status": "supported_research",
+    "target": "NOAA regional recorded interval persistence",
+    "model_version": "noaa-flood-conditional-km-v2",
+    "data_version": "NOAA-2021-2025-pinned-purged-v2",
+    "estimator": "kaplan_meier",
+    "ongoing_probability": {
+      "6h": 0.7093663911845713,
+      "12h": 0.6049586776859471,
+      "24h": 0.47300275482093423
+    },
+    "remaining_duration_hours": {
+      "p10": 2.0,
+      "median": 22.0,
+      "p90": null,
+      "tail_horizon_hours": 168.0,
+      "max_remaining_hours": 162.0,
+      "tail_beyond_24h": true
+    },
+    "trend": "unknown",
+    "fit_cutoff_utc": "2025-01-01T00:00:00Z",
+    "historical_feature_availability_verified": false,
+    "limitations": [
+      "NOAA event intervals describe regional recorded events, not verified site conditions.",
+      "Historical weather and live site measurements are not included in this trained model.",
+      "Recorded event resolution does not mean site conditions are safe or work may resume."
+    ]
+  },
+  "site_hazards": [
+    {
+      "kind": "flood_context",
+      "status": "unavailable",
+      "conditions": [],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [],
+      "unknowns": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "no_eligible_site_evidence",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "planning_context": "Gauge/warning context does not measure site water depth, energized water, access, or ground bearing strength.",
+      "warning_evidence_ids": []
+    },
+    {
+      "kind": "heat",
+      "status": "partial",
+      "conditions": [
+        {
+          "evidence_id": "411829ddb4a22e2330efeea7",
+          "method": "issued_forecast",
+          "variable": "temperature",
+          "value": 23.333333333333332,
+          "unit": "C",
+          "valid_from": "2026-10-17T07:00:00Z",
+          "valid_to": "2026-10-17T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "275ebd1050fa2c02a9105f57",
+          "method": "issued_forecast",
+          "variable": "relative_humidity",
+          "value": 98.0,
+          "unit": "%",
+          "valid_from": "2026-10-17T07:00:00Z",
+          "valid_to": "2026-10-17T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "5acb77aa5054f6eb729e4300",
+          "method": "issued_forecast",
+          "variable": "temperature",
+          "value": 23.333333333333332,
+          "unit": "C",
+          "valid_from": "2026-10-17T13:00:00Z",
+          "valid_to": "2026-10-17T14:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "ba9ab946c2e8471b526afe57",
+          "method": "issued_forecast",
+          "variable": "relative_humidity",
+          "value": 100.0,
+          "unit": "%",
+          "valid_from": "2026-10-17T13:00:00Z",
+          "valid_to": "2026-10-17T14:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "5baef07229242d4d135f253e",
+          "method": "issued_forecast",
+          "variable": "temperature",
+          "value": 23.88888888888889,
+          "unit": "C",
+          "valid_from": "2026-10-17T19:00:00Z",
+          "valid_to": "2026-10-17T20:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "6b1e7eb677d13672fb1bea72",
+          "method": "issued_forecast",
+          "variable": "relative_humidity",
+          "value": 92.0,
+          "unit": "%",
+          "valid_from": "2026-10-17T19:00:00Z",
+          "valid_to": "2026-10-17T20:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "97735738f587588ffb8cb4dd",
+          "method": "issued_forecast",
+          "variable": "temperature",
+          "value": 17.77777777777778,
+          "unit": "C",
+          "valid_from": "2026-10-18T07:00:00Z",
+          "valid_to": "2026-10-18T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "812a2185f006b183e3275df4",
+          "method": "issued_forecast",
+          "variable": "relative_humidity",
+          "value": 84.0,
+          "unit": "%",
+          "valid_from": "2026-10-18T07:00:00Z",
+          "valid_to": "2026-10-18T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "ac1f4ab0379849e6ccb5d950",
+          "method": "observed",
+          "variable": "temperature",
+          "value": 23.0,
+          "unit": "C",
+          "valid_from": "2026-10-17T06:35:00Z",
+          "valid_to": "2026-10-17T06:35:00Z",
+          "spatial_match": {
+            "kind": "nearby_station",
+            "distance_km": 9.609165713893848,
+            "distance_miles": 5.970858756048332,
+            "limitation": "Station proximity is descriptive; local exposure is unverified."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        }
+      ],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [
+        "411829ddb4a22e2330efeea7",
+        "275ebd1050fa2c02a9105f57",
+        "5acb77aa5054f6eb729e4300",
+        "ba9ab946c2e8471b526afe57",
+        "5baef07229242d4d135f253e",
+        "6b1e7eb677d13672fb1bea72",
+        "97735738f587588ffb8cb4dd",
+        "812a2185f006b183e3275df4",
+        "ac1f4ab0379849e6ccb5d950"
+      ],
+      "unknowns": [
+        "physiological_exposure_and_work_rest_policy_not_modeled",
+        "unsupported_local_association"
+      ],
+      "planning_context": "Temperature and humidity describe ambient conditions; heat index is not personal strain, WBGT, or a work/rest prescription.",
+      "warning_evidence_ids": []
+    },
+    {
+      "kind": "rain",
+      "status": "partial",
+      "conditions": [
+        {
+          "evidence_id": "39b4a9d0d9fc407e5a55ae3a",
+          "method": "issued_forecast",
+          "variable": "rain_probability",
+          "value": 8.0,
+          "unit": "%",
+          "valid_from": "2026-10-17T07:00:00Z",
+          "valid_to": "2026-10-17T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "a78f8cc014ee4795f2ac3c65",
+          "method": "issued_forecast",
+          "variable": "rain_probability",
+          "value": 36.0,
+          "unit": "%",
+          "valid_from": "2026-10-17T13:00:00Z",
+          "valid_to": "2026-10-17T14:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "a5a7f3d9ca9dee6122d6d71f",
+          "method": "issued_forecast",
+          "variable": "rain_probability",
+          "value": 18.0,
+          "unit": "%",
+          "valid_from": "2026-10-17T19:00:00Z",
+          "valid_to": "2026-10-17T20:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "3e9aadcef0696ab49e04c69a",
+          "method": "issued_forecast",
+          "variable": "rain_probability",
+          "value": 0.0,
+          "unit": "%",
+          "valid_from": "2026-10-18T07:00:00Z",
+          "valid_to": "2026-10-18T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        }
+      ],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [
+        "39b4a9d0d9fc407e5a55ae3a",
+        "a78f8cc014ee4795f2ac3c65",
+        "a5a7f3d9ca9dee6122d6d71f",
+        "3e9aadcef0696ab49e04c69a"
+      ],
+      "unknowns": [
+        "unsupported_local_association"
+      ],
+      "planning_context": "Rain amount/probability refers to the stated accumulation or forecast window; it is not a flood-depth probability.",
+      "warning_evidence_ids": []
+    },
+    {
+      "kind": "visibility",
+      "status": "unavailable",
+      "conditions": [],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [],
+      "unknowns": [
+        "no_eligible_site_evidence",
+        "source_quality_flags",
+        "unsupported_local_association"
+      ],
+      "planning_context": "Only supplied authoritative evidence is represented; local consequences are not inferred.",
+      "warning_evidence_ids": []
+    },
+    {
+      "kind": "wind",
+      "status": "partial",
+      "conditions": [
+        {
+          "evidence_id": "f227c19e1fe7d250c86a2e0c",
+          "method": "issued_forecast",
+          "variable": "wind_speed_min",
+          "value": 0.44704,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T07:00:00Z",
+          "valid_to": "2026-10-17T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "8addcca7486e7ca036e67056",
+          "method": "issued_forecast",
+          "variable": "wind_speed_max",
+          "value": 0.44704,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T07:00:00Z",
+          "valid_to": "2026-10-17T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "99e58fa8ba5de85550950a74",
+          "method": "issued_forecast",
+          "variable": "wind_speed_min",
+          "value": 2.2352,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T13:00:00Z",
+          "valid_to": "2026-10-17T14:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "1e8c42513634ef8436473fb0",
+          "method": "issued_forecast",
+          "variable": "wind_speed_max",
+          "value": 2.2352,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T13:00:00Z",
+          "valid_to": "2026-10-17T14:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "beda42ca836753f4c6183978",
+          "method": "issued_forecast",
+          "variable": "wind_speed_min",
+          "value": 5.81152,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T19:00:00Z",
+          "valid_to": "2026-10-17T20:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "cb9ca4be95b95630572ff99b",
+          "method": "issued_forecast",
+          "variable": "wind_speed_max",
+          "value": 5.81152,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T19:00:00Z",
+          "valid_to": "2026-10-17T20:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "c90f2b8d1e834bb2c1a7d244",
+          "method": "issued_forecast",
+          "variable": "wind_speed_min",
+          "value": 6.7056,
+          "unit": "m/s",
+          "valid_from": "2026-10-18T07:00:00Z",
+          "valid_to": "2026-10-18T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "c5c830c80f021063ed6f4804",
+          "method": "issued_forecast",
+          "variable": "wind_speed_max",
+          "value": 6.7056,
+          "unit": "m/s",
+          "valid_from": "2026-10-18T07:00:00Z",
+          "valid_to": "2026-10-18T08:00:00Z",
+          "spatial_match": {
+            "kind": "polygon_intersects",
+            "distance_km": null,
+            "distance_miles": null,
+            "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        },
+        {
+          "evidence_id": "5d98c6624a87dfd82321ad37",
+          "method": "observed",
+          "variable": "wind_speed",
+          "value": 0.0,
+          "unit": "m/s",
+          "valid_from": "2026-10-17T06:35:00Z",
+          "valid_to": "2026-10-17T06:35:00Z",
+          "spatial_match": {
+            "kind": "nearby_station",
+            "distance_km": 9.609165713893848,
+            "distance_miles": 5.970858756048332,
+            "limitation": "Station proximity is descriptive; local exposure is unverified."
+          },
+          "datum": null,
+          "value_basis": "source_value",
+          "derived_from_evidence_ids": [],
+          "computation_version": null
+        }
+      ],
+      "probability": null,
+      "confidence": null,
+      "evidence_ids": [
+        "f227c19e1fe7d250c86a2e0c",
+        "8addcca7486e7ca036e67056",
+        "99e58fa8ba5de85550950a74",
+        "1e8c42513634ef8436473fb0",
+        "beda42ca836753f4c6183978",
+        "cb9ca4be95b95630572ff99b",
+        "c90f2b8d1e834bb2c1a7d244",
+        "c5c830c80f021063ed6f4804",
+        "5d98c6624a87dfd82321ad37"
+      ],
+      "unknowns": [
+        "unsupported_local_association"
+      ],
+      "planning_context": "Wind values describe their stated station or forecast footprint; site gusts and unseen equipment damage remain unverified.",
+      "warning_evidence_ids": []
+    }
+  ],
+  "evidence": [
+    {
+      "evidence": {
+        "evidence_id": "d5efc50adcaa341dfc105944",
+        "publisher": "USGS modern water API",
+        "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+        "source_record_id": "bb8bf6b1-ef0c-49b3-bd41-40786d8c81a8",
+        "original_type": "USGS_modern_continuous:USGS-02303000",
+        "hazard": "flood_context",
+        "method": "observed",
+        "variable": "gauge_height",
+        "value": 35.98,
+        "unit": "ft",
+        "observed_at": "2026-10-16T00:00:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:04:33.127661Z",
+        "valid_from": "2026-10-16T00:00:00Z",
+        "valid_to": "2026-10-16T00:00:00Z",
+        "ingested_at": "2026-10-17T07:04:33.127661Z",
+        "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 28.1502904378706,
+            "lon": -82.2317531842829
+          },
+          "rings": [],
+          "precision": "USGS gauge; basin relation unverified",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "USGS_provisional_or_qualified"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 22.991934091304003,
+        "distance_miles": 14.286525498155772,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "freshness": "stale"
+    },
+    {
+      "evidence": {
+        "evidence_id": "98130149a249471dd9e34921",
+        "publisher": "USGS modern water API",
+        "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+        "source_record_id": "79cc43c3-df92-4050-9332-c4efef594b18",
+        "original_type": "USGS_modern_continuous:USGS-02303000",
+        "hazard": "flood_context",
+        "method": "observed",
+        "variable": "gauge_height",
+        "value": 35.97,
+        "unit": "ft",
+        "observed_at": "2026-10-16T00:15:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:04:33.127661Z",
+        "valid_from": "2026-10-16T00:15:00Z",
+        "valid_to": "2026-10-16T00:15:00Z",
+        "ingested_at": "2026-10-17T07:04:33.127661Z",
+        "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 28.1502904378706,
+            "lon": -82.2317531842829
+          },
+          "rings": [],
+          "precision": "USGS gauge; basin relation unverified",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "USGS_provisional_or_qualified"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 22.991934091304003,
+        "distance_miles": 14.286525498155772,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "freshness": "stale"
+    },
+    {
+      "evidence": {
+        "evidence_id": "247ce1fe34c3b7309dc5269d",
+        "publisher": "USGS modern water API",
+        "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+        "source_record_id": "b6da1bba-cd39-431e-bef7-8bdaf976658f",
+        "original_type": "USGS_modern_continuous:USGS-02303000",
+        "hazard": "flood_context",
+        "method": "observed",
+        "variable": "gauge_height",
+        "value": 35.97,
+        "unit": "ft",
+        "observed_at": "2026-10-16T00:30:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:04:33.127661Z",
+        "valid_from": "2026-10-16T00:30:00Z",
+        "valid_to": "2026-10-16T00:30:00Z",
+        "ingested_at": "2026-10-17T07:04:33.127661Z",
+        "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 28.1502904378706,
+            "lon": -82.2317531842829
+          },
+          "rings": [],
+          "precision": "USGS gauge; basin relation unverified",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "USGS_provisional_or_qualified"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 22.991934091304003,
+        "distance_miles": 14.286525498155772,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "freshness": "stale"
+    },
+    {
+      "evidence": {
+        "evidence_id": "f5600d24b79a5da18ffc06fa",
+        "publisher": "USGS modern water API",
+        "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+        "source_record_id": "f9447b7c-761c-423a-aead-c3235a3682c1",
+        "original_type": "USGS_modern_continuous:USGS-02303000",
+        "hazard": "flood_context",
+        "method": "observed",
+        "variable": "gauge_height",
+        "value": 35.96,
+        "unit": "ft",
+        "observed_at": "2026-10-16T00:45:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:04:33.127661Z",
+        "valid_from": "2026-10-16T00:45:00Z",
+        "valid_to": "2026-10-16T00:45:00Z",
+        "ingested_at": "2026-10-17T07:04:33.127661Z",
+        "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 28.1502904378706,
+            "lon": -82.2317531842829
+          },
+          "rings": [],
+          "precision": "USGS gauge; basin relation unverified",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "USGS_provisional_or_qualified"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 22.991934091304003,
+        "distance_miles": 14.286525498155772,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "freshness": "stale"
+    },
+    {
+      "evidence": {
+        "evidence_id": "d8e90e643246fbb77abdffaa",
+        "publisher": "USGS modern water API",
+        "origin_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items",
+        "source_record_id": "0827888e-ee87-49bb-9446-46641262541d",
+        "original_type": "USGS_modern_continuous:USGS-02303000",
+        "hazard": "flood_context",
+        "method": "observed",
+        "variable": "gauge_height",
+        "value": 35.96,
+        "unit": "ft",
+        "observed_at": "2026-10-16T01:00:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:04:33.127661Z",
+        "valid_from": "2026-10-16T01:00:00Z",
+        "valid_to": "2026-10-16T01:00:00Z",
+        "ingested_at": "2026-10-17T07:04:33.127661Z",
+        "source_version": "760eead10255d8eee0b63bf6b6d206615d55f172d71641722b6331a8c59888af",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 28.1502904378706,
+            "lon": -82.2317531842829
+          },
+          "rings": [],
+          "precision": "USGS gauge; basin relation unverified",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "USGS_provisional_or_qualified"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 22.991934091304003,
+        "distance_miles": 14.286525498155772,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "freshness": "stale"
+    },
+    {
+      "evidence": {
+        "evidence_id": "411829ddb4a22e2330efeea7",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 74.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "275ebd1050fa2c02a9105f57",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 98.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "39b4a9d0d9fc407e5a55ae3a",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 8.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "f227c19e1fe7d250c86a2e0c",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 1.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "8addcca7486e7ca036e67056",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T03:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 1.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "5acb77aa5054f6eb729e4300",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 74.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "ba9ab946c2e8471b526afe57",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 100.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "a78f8cc014ee4795f2ac3c65",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 36.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "99e58fa8ba5de85550950a74",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 5.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "1e8c42513634ef8436473fb0",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T09:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 5.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "5baef07229242d4d135f253e",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 75.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "6b1e7eb677d13672fb1bea72",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 92.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "a5a7f3d9ca9dee6122d6d71f",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 18.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "beda42ca836753f4c6183978",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 13.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "cb9ca4be95b95630572ff99b",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T15:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 13.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "97735738f587588ffb8cb4dd",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 64.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "812a2185f006b183e3275df4",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 84.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "3e9aadcef0696ab49e04c69a",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 0.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "c90f2b8d1e834bb2c1a7d244",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 15.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "c5c830c80f021063ed6f4804",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/TBW/88,104/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T03:00:00-04:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 15.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:00Z",
+        "available_at": "2026-10-17T07:10:00.679995Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:00.679995Z",
+        "source_version": "555ed46c59007bac9cbfb16284431d01935486b7c89eb4411b6ac11d70242087",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -81.9948,
+                28.048
+              ],
+              [
+                -81.9923,
+                28.0707
+              ],
+              [
+                -82.0181,
+                28.0729
+              ],
+              [
+                -82.0206,
+                28.0502
+              ],
+              [
+                -81.9948,
+                28.048
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "polygon_intersects",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "Coverage intersects location; gridded guidance is not an on-site measurement."
+      },
+      "reasons": [],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "ac1f4ab0379849e6ccb5d950",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KLAL/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KLAL/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "observed",
+        "variable": "temperature",
+        "value": 23.0,
+        "unit": "C",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:02.282098Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:02.282098Z",
+        "source_version": "61c5ef6000aafeac15d3a6bc688b95343bed7b41b505356a27e18cd89b9633a0",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 27.98,
+            "lon": -82.02
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 9.609165713893848,
+        "distance_miles": 5.970858756048332,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "5d98c6624a87dfd82321ad37",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KLAL/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KLAL/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "wind_speed",
+        "hazard": "wind",
+        "method": "observed",
+        "variable": "wind_speed",
+        "value": 0.0,
+        "unit": "km/h",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:02.282098Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:02.282098Z",
+        "source_version": "61c5ef6000aafeac15d3a6bc688b95343bed7b41b505356a27e18cd89b9633a0",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 27.98,
+            "lon": -82.02
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": true,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 9.609165713893848,
+        "distance_miles": 5.970858756048332,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "05c2e36e2f218884ed867f89",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KLAL/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KLAL/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "visibility",
+        "hazard": "visibility",
+        "method": "observed",
+        "variable": "visibility",
+        "value": 16090.0,
+        "unit": "m",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:02.282098Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:02.282098Z",
+        "source_version": "61c5ef6000aafeac15d3a6bc688b95343bed7b41b505356a27e18cd89b9633a0",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 27.98,
+            "lon": -82.02
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "NWS_QC:C"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "nearby_station",
+        "distance_km": 9.609165713893848,
+        "distance_miles": 5.970858756048332,
+        "limitation": "Station proximity is descriptive; local exposure is unverified."
+      },
+      "reasons": [
+        "source_quality_flags"
+      ],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "89675bff4bcf9d29488817ee",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 72.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "ce58f4e39eed0628ef1b9909",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 24.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "3035c6dead2639917b62417a",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 0.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "13a9a59282da6c1af6628d75",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 15.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "a82f1800e9a1b4426028eb16",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T00:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 15.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T07:00:00Z",
+        "valid_to": "2026-10-17T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "45991ef93053bfbbd243fbed",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 67.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "7539134e49f2796653718855",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 23.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "d84da55d93d60be1c6fed4bb",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 1.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "8ebb0cd45215577bb4d9ad64",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 25.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "7c1c0dae59266e6e4036fd9b",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T06:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 25.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T13:00:00Z",
+        "valid_to": "2026-10-17T14:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "01c1ddb0d92f2f20dfde8829",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 75.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "9f6fdcf3c8cdfa2e1a553459",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 17.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "72d5fdc4b0583d72b8b1ee41",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 2.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "7e8a1cb2da50e6135adda7fd",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 20.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "a5d5d749ab04a411077f3518",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-17T12:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 20.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-17T19:00:00Z",
+        "valid_to": "2026-10-17T20:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "c55caea132ba0e17b4e73a10",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "temperature",
+        "value": 69.0,
+        "unit": "F",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "b3862803726baab111731ff0",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "issued_forecast",
+        "variable": "relative_humidity",
+        "value": 39.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "589c2ade083e87aa03b0f899",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+        "original_type": "rain_probability",
+        "hazard": "rain",
+        "method": "issued_forecast",
+        "variable": "rain_probability",
+        "value": 22.0,
+        "unit": "%",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "49a112ae764b8e6178a43dac",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_min",
+        "value": 15.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "a0283b4daeb9ccecd446f9dc",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/gridpoints/PSR/137,67/forecast/hourly",
+        "source_record_id": "hourly:2026-10-18T00:00:00-07:00",
+        "original_type": "NWS_hourly_wind_range",
+        "hazard": "wind",
+        "method": "issued_forecast",
+        "variable": "wind_speed_max",
+        "value": 15.0,
+        "unit": "mph",
+        "observed_at": null,
+        "issued_at": "2026-10-17T07:10:04Z",
+        "available_at": "2026-10-17T07:10:04.682222Z",
+        "valid_from": "2026-10-18T07:00:00Z",
+        "valid_to": "2026-10-18T08:00:00Z",
+        "ingested_at": "2026-10-17T07:10:04.682222Z",
+        "source_version": "80025f45717189c264d9760cdec14e6a58f286b6a8cc90b3ebab88c56936999f",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "polygon",
+          "point": null,
+          "rings": [
+            [
+              [
+                -112.6792,
+                33.5814
+              ],
+              [
+                -112.6828,
+                33.6038
+              ],
+              [
+                -112.7096,
+                33.6009
+              ],
+              [
+                -112.706,
+                33.5785
+              ],
+              [
+                -112.6792,
+                33.5814
+              ]
+            ]
+          ],
+          "precision": "NWS hourly forecast grid footprint",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": null,
+        "distance_miles": null,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "issued_valid"
+    },
+    {
+      "evidence": {
+        "evidence_id": "d97c0ffa808d5a3cd275144b",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "temperature",
+        "hazard": "heat",
+        "method": "observed",
+        "variable": "temperature",
+        "value": 24.0,
+        "unit": "C",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:06.233274Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:06.233274Z",
+        "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 33.4,
+            "lon": -112.69
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": 2979.717000339391,
+        "distance_miles": 1851.5103050307396,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "205e32f41e4410490807e134",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "relative_humidity",
+        "hazard": "heat",
+        "method": "observed",
+        "variable": "relative_humidity",
+        "value": 20.514620586595,
+        "unit": "%",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:06.233274Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:06.233274Z",
+        "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 33.4,
+            "lon": -112.69
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": 2979.717000339391,
+        "distance_miles": 1851.5103050307396,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "f7497e9995d61ba61e2f8882",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "heat_index",
+        "hazard": "heat",
+        "method": "observed",
+        "variable": "heat_index",
+        "value": 22.991215093094443,
+        "unit": "C",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:06.233274Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:06.233274Z",
+        "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 33.4,
+            "lon": -112.69
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": 2979.717000339391,
+        "distance_miles": 1851.5103050307396,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "8c4f3487d818e7870fc0876b",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "wind_speed",
+        "hazard": "wind",
+        "method": "observed",
+        "variable": "wind_speed",
+        "value": 24.12,
+        "unit": "km/h",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:06.233274Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:06.233274Z",
+        "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 33.4,
+            "lon": -112.69
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": 2979.717000339391,
+        "distance_miles": 1851.5103050307396,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "unsupported_local_association"
+      ],
+      "freshness": "current"
+    },
+    {
+      "evidence": {
+        "evidence_id": "3edf715c3128ab5310213393",
+        "publisher": "NOAA NWS",
+        "origin_url": "https://api.weather.gov/stations/KBXK/observations/latest",
+        "source_record_id": "https://api.weather.gov/stations/KBXK/observations/2026-10-17T06:35:00+00:00:2026-10-17T06:35:00+00:00",
+        "original_type": "visibility",
+        "hazard": "visibility",
+        "method": "observed",
+        "variable": "visibility",
+        "value": 16090.0,
+        "unit": "m",
+        "observed_at": "2026-10-17T06:35:00Z",
+        "issued_at": null,
+        "available_at": "2026-10-17T07:10:06.233274Z",
+        "valid_from": "2026-10-17T06:35:00Z",
+        "valid_to": "2026-10-17T06:35:00Z",
+        "ingested_at": "2026-10-17T07:10:06.233274Z",
+        "source_version": "43e7200504251b443c5299b49bb754b2aa72e488a31ff969e378645a5eed3870",
+        "availability_basis": "retrieved_by_pipeline",
+        "footprint": {
+          "kind": "point",
+          "point": {
+            "lat": 33.4,
+            "lon": -112.69
+          },
+          "rings": [],
+          "precision": "NWS weather station; not an on-site sensor",
+          "site_id": null,
+          "relation": "unspecified",
+          "relation_evidence_id": null
+        },
+        "data_state": "current",
+        "quality_flags": [
+          "NWS_QC:C"
+        ],
+        "is_fixture": false,
+        "datum": null,
+        "human_review_status": "not_applicable",
+        "value_basis": "source_value",
+        "derived_from_evidence_ids": [],
+        "computation_version": null
+      },
+      "accepted": false,
+      "spatial_match": {
+        "kind": "no_supported_association",
+        "distance_km": 2979.717000339391,
+        "distance_miles": 1851.5103050307396,
+        "limitation": "No supported location association for this evidence."
+      },
+      "reasons": [
+        "source_quality_flags",
+        "unsupported_local_association"
+      ],
+      "freshness": "current"
+    }
+  ],
+  "unknowns": [
+    "gauge_basin_relation_unverified",
+    "missing_vertical_datum",
+    "no_eligible_site_evidence",
+    "physiological_exposure_and_work_rest_policy_not_modeled",
+    "source_quality_flags",
+    "stale_observation",
+    "unsupported_local_association",
+    "worksite_inspection_and_control_authority_remain_upstream"
+  ],
+  "limitations": [
+    "Layer A regional persistence is not a local hazard probability.",
+    "Layer B describes supplied observations and issued products; no site-level probability model is validated.",
+    "No joint hazard probability, injury, access, damage, clearance, or unreported crew hazard is inferred."
+  ],
+  "not_work_clearance": true,
+  "safety_statement": "Advisory context only. No permission to access, work, or resume work; official warnings and deterministic controls remain authoritative.",
+  "registry_version": "1.0.0",
+  "worksite_hazards": [
+    {
+      "hazard_id": "arc_flash",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes arc-flash exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "asbestos",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes asbestos exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "backfeed",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes electrical backfeed at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "bites_stings",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes bites or stings at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "blocked_egress",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes debris-blocked egress at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "bridge_washout",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes washed-out bridge or unstable access at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "carbon_monoxide",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes generator carbon monoxide at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "chemical_release",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes chemical release at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "clearance_restrictions",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes electrical clearance restrictions at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "cold_exposure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes worker cold-exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "communications",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes communications degradation at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "confined_space",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes confined-space atmosphere at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "connectivity",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes connectivity loss at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "contaminated_water",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes contaminated water or sewage at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "debris",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes broken glass and debris at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "dehydration",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes dehydration context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "dispatch_emergency",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes dispatch or emergency access interruption at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "downed_lines",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes energized, downed or low-hanging lines at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "electrical_fire",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes transformer or electrical fire at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "energized_floodwater",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes potentially energized floodwater at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "equipment_damage",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes substation or equipment damage at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "ergonomic",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes environmental ergonomic exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "evacuation",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes official evacuation context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "excavation_collapse",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes unstable excavation or trench at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "extreme_heat",
+      "status": "partial",
+      "evidence_status": "mixed",
+      "source_ids": [
+        "411829ddb4a22e2330efeea7",
+        "5acb77aa5054f6eb729e4300",
+        "5baef07229242d4d135f253e",
+        "97735738f587588ffb8cb4dd",
+        "ac1f4ab0379849e6ccb5d950"
+      ],
+      "observed_or_valid_windows": [
+        {
+          "from": "2026-10-17T07:00:00Z",
+          "to": "2026-10-17T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T13:00:00Z",
+          "to": "2026-10-17T14:00:00Z"
+        },
+        {
+          "from": "2026-10-17T19:00:00Z",
+          "to": "2026-10-17T20:00:00Z"
+        },
+        {
+          "from": "2026-10-18T07:00:00Z",
+          "to": "2026-10-18T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T06:35:00Z",
+          "to": "2026-10-17T06:35:00Z"
+        }
+      ],
+      "site_spatial_match": [
+        "nearby_station",
+        "polygon_intersects"
+      ],
+      "methods": [
+        "issued_forecast",
+        "observed"
+      ],
+      "description": "What verified evidence describes excessive heat and heat waves at this site and time?",
+      "unknowns": [
+        "unsupported_local_association"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fallen_trees",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fallen trees or limbs at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "falling_loads",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes falling loads at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fatigue",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fatigue and extended shifts at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "flood",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes river and areal flooding at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "flooded_electrical_equipment",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes flooded electrical equipment at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fog",
+      "status": "unknown",
+      "evidence_status": "rejected",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fog and poor visibility at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "source_quality_flags",
+        "unsupported_local_association"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "fuel_gas_leak",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes fuel or gas leak at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "gauge_stage",
+      "status": "unknown",
+      "evidence_status": "rejected",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes river stage at this site and time?",
+      "unknowns": [
+        "gauge_basin_relation_unverified",
+        "missing_vertical_datum",
+        "no_verified_site_evidence_presence_unknown",
+        "source_quality_flags",
+        "stale_observation"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "gps_interference",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes gps interference at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "ground_fault",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes ground fault at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "hazardous_dust",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes hazardous dust at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "hazmat_incident",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes hazardous-material emergency at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "heat_illness",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes worker heat-exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "heat_index",
+      "status": "unknown",
+      "evidence_status": "rejected",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes heat index at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "unsupported_local_association"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "heavy_rain",
+      "status": "partial",
+      "evidence_status": "mixed",
+      "source_ids": [
+        "39b4a9d0d9fc407e5a55ae3a",
+        "3e9aadcef0696ab49e04c69a",
+        "a5a7f3d9ca9dee6122d6d71f",
+        "a78f8cc014ee4795f2ac3c65"
+      ],
+      "observed_or_valid_windows": [
+        {
+          "from": "2026-10-17T07:00:00Z",
+          "to": "2026-10-17T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T13:00:00Z",
+          "to": "2026-10-17T14:00:00Z"
+        },
+        {
+          "from": "2026-10-17T19:00:00Z",
+          "to": "2026-10-17T20:00:00Z"
+        },
+        {
+          "from": "2026-10-18T07:00:00Z",
+          "to": "2026-10-18T08:00:00Z"
+        }
+      ],
+      "site_spatial_match": [
+        "polygon_intersects"
+      ],
+      "methods": [
+        "issued_forecast"
+      ],
+      "description": "What verified evidence describes heavy rainfall at this site and time?",
+      "unknowns": [
+        "unsupported_local_association"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "high_wind",
+      "status": "partial",
+      "evidence_status": "mixed",
+      "source_ids": [
+        "1e8c42513634ef8436473fb0",
+        "5d98c6624a87dfd82321ad37",
+        "8addcca7486e7ca036e67056",
+        "99e58fa8ba5de85550950a74",
+        "beda42ca836753f4c6183978",
+        "c5c830c80f021063ed6f4804",
+        "c90f2b8d1e834bb2c1a7d244",
+        "cb9ca4be95b95630572ff99b",
+        "f227c19e1fe7d250c86a2e0c"
+      ],
+      "observed_or_valid_windows": [
+        {
+          "from": "2026-10-17T07:00:00Z",
+          "to": "2026-10-17T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T07:00:00Z",
+          "to": "2026-10-17T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T13:00:00Z",
+          "to": "2026-10-17T14:00:00Z"
+        },
+        {
+          "from": "2026-10-17T13:00:00Z",
+          "to": "2026-10-17T14:00:00Z"
+        },
+        {
+          "from": "2026-10-17T19:00:00Z",
+          "to": "2026-10-17T20:00:00Z"
+        },
+        {
+          "from": "2026-10-17T19:00:00Z",
+          "to": "2026-10-17T20:00:00Z"
+        },
+        {
+          "from": "2026-10-18T07:00:00Z",
+          "to": "2026-10-18T08:00:00Z"
+        },
+        {
+          "from": "2026-10-18T07:00:00Z",
+          "to": "2026-10-18T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T06:35:00Z",
+          "to": "2026-10-17T06:35:00Z"
+        }
+      ],
+      "site_spatial_match": [
+        "nearby_station",
+        "polygon_intersects"
+      ],
+      "methods": [
+        "issued_forecast",
+        "observed"
+      ],
+      "description": "What verified evidence describes high wind and damaging gusts at this site and time?",
+      "unknowns": [
+        "unsupported_local_association"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "humidity",
+      "status": "partial",
+      "evidence_status": "mixed",
+      "source_ids": [
+        "275ebd1050fa2c02a9105f57",
+        "6b1e7eb677d13672fb1bea72",
+        "812a2185f006b183e3275df4",
+        "ba9ab946c2e8471b526afe57"
+      ],
+      "observed_or_valid_windows": [
+        {
+          "from": "2026-10-17T07:00:00Z",
+          "to": "2026-10-17T08:00:00Z"
+        },
+        {
+          "from": "2026-10-17T13:00:00Z",
+          "to": "2026-10-17T14:00:00Z"
+        },
+        {
+          "from": "2026-10-17T19:00:00Z",
+          "to": "2026-10-17T20:00:00Z"
+        },
+        {
+          "from": "2026-10-18T07:00:00Z",
+          "to": "2026-10-18T08:00:00Z"
+        }
+      ],
+      "site_spatial_match": [
+        "polygon_intersects"
+      ],
+      "methods": [
+        "issued_forecast"
+      ],
+      "description": "What verified evidence describes humidity at this site and time?",
+      "unknowns": [
+        "unsupported_local_association"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "induction",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes electrical induction at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "industrial_smoke",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes industrial smoke at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "infectious_exposure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes infectious or biological exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "lift_crane",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes aerial lift or crane exposure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "mold",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes mold exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "oxygen_deficiency",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes oxygen-deficient atmosphere at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "pole_tower_instability",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes unstable poles or towers at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "power_failure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes power failure at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "radiological",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes radiological notice at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "restoration_driving",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes storm-restoration driving at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "road_closure",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes road closure or inaccessible route at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "roof_instability",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes unstable roof at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "saturated_ground",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes saturated or soft ground at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "security",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes security or public safety notice at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "silica",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes silica exposure context at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "slips_trips_falls",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes slips, trips and falls at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "spills",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes spill at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "step_touch",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes step and touch potential at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "structural_collapse",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes structural collapse at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "traffic",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes traffic and moving vehicles at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "transport_incident",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes major transportation incident at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "utility_strike",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes underground utility strike at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "visibility_impairment",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes worker visibility impairment at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "wildlife",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes wildlife encounter at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    },
+    {
+      "hazard_id": "wind_loaded_lines",
+      "status": "unknown",
+      "evidence_status": "not_supplied",
+      "source_ids": [],
+      "observed_or_valid_windows": [],
+      "site_spatial_match": [],
+      "methods": [
+        "unknown"
+      ],
+      "description": "What verified evidence describes wind-loaded lines at this site and time?",
+      "unknowns": [
+        "no_verified_site_evidence_presence_unknown",
+        "qualified_field_or_asset_verification_required_no_remote_inference"
+      ],
+      "needs_field_verification": true,
+      "production_eligibility": false,
+      "probability": null,
+      "severity": null,
+      "numerical_evidence": []
+    }
+  ],
+  "official_notices": [],
+  "reviewed_reports": [],
+  "context_evidence": [],
+  "lightning_replay_context": [],
+  "source_availability": [
+    {
+      "provider": "NOAA NWS point alerts",
+      "state": "current",
+      "attempted": true,
+      "last_success_at": "2026-10-17T07:17:59.495254Z",
+      "reason": "0 notices; 0 parse errors; no absence/safety inference"
+    }
+  ],
+  "trust_boundary": "Upstream authentication and verification required; schema validity is not source authenticity."
+}

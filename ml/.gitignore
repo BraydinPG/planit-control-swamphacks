@@ -24,6 +24,9 @@ reports/multidisaster/*
 reports/worker_outlook/*
 !reports/worker_outlook/*.json
 reports/worker_outlook/demo_outputs.json
+!reports/hazard_coverage/
+reports/hazard_coverage/*
+!reports/hazard_coverage/*.json
 reports/backtest_smoke_metrics.json
 reports/worker_benchmark.json
 __pycache__/
