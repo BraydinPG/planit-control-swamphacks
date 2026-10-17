@@ -49,6 +49,10 @@ preserving all technical settings. No Vultr, tenant, DNS, secret or workflow edi
 No tasks checked off and no real Auth0/Tiger/deployed acceptance claim. PR/commit
 publication reference follows; no automatic merge.
 
+Published [PR51](https://github.com/BraydinPG/planit-control-swamphacks/pull/51),
+**Rebrand PlanIT Control to FORESITE**, open against main; implementation `e4f5555`,
+base `ea6dcfa`. No merge, hosting/tenant update or live acceptance by Cache.
+
 ## Application-wide UI readability (Cache for Rudra) — 2026-10-17 22:23 UTC
 
 Explicit user authorization expands this run to frontend copy, typography and
