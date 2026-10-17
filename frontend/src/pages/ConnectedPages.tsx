@@ -18,6 +18,7 @@ import {
   useClock,
 } from '../application/context'
 import { useReportLocation } from '../application/useReportLocation'
+import type { LocationReason } from '../application/report-location'
 import { StoredBriefings } from '../components/data/StoredBriefings'
 import { sortSites } from '../api/contracts'
 import {
@@ -228,7 +229,10 @@ function SitePage({
               />
             </summary>
             <div className="border-t border-line px-5 pb-2">
-              <Factors factors={site.top_factors} />
+              {/* The full stored breakdown; top_factors is the list's top three only. */}
+              <Factors
+                factors={site.score?.factor_contributions ?? site.top_factors}
+              />
             </div>
           </details>
         </div>
@@ -720,6 +724,10 @@ export function ReportForm({ site }: { site: SiteSummary }) {
   // coordinates (approximate); editing the coordinates makes it a manual pin.
   const location = useReportLocation(site, client.mode)
   const point = location.location
+  // Coordinates stay hidden unless the crew member enters a different spot.
+  const [adjusting, setAdjusting] = useState(false)
+  const showCoordinates =
+    adjusting || location.status === 'pin' || location.status === 'unavailable'
   // The fields show the current location; typed values win only while pinning.
   const [typed, setTyped] = useState<{ lat: string; lon: string } | null>(null)
   const pinning =
@@ -828,22 +836,33 @@ export function ReportForm({ site }: { site: SiteSummary }) {
         </div>
       </fieldset>
       <div>
-        <p className={step} aria-hidden="true">
-          2 · Is it there?
-        </p>
-        <label className={labelText}>
-          Hazard present or absent (required)
-          <select
-            required
-            className={`${field} min-h-14 border-2 text-lg font-bold ${presence === 'present' ? 'border-stop bg-stop text-white' : presence === 'absent' ? 'border-ink' : ''}`}
-            value={presence}
-            onChange={(e) => setPresence(e.target.value)}
-          >
-            <option value="">Choose present or absent</option>
-            <option value="present">Hazard present</option>
-            <option value="absent">Hazard absent</option>
-          </select>
-        </label>
+        <fieldset>
+          <legend className={step}>2 · Is it there? (required)</legend>
+          <div className="grid grid-cols-2 gap-2">
+            {(
+              [
+                ['present', 'Hazard present', presentChoice],
+                ['absent', 'Hazard absent', absentChoice],
+              ] as const
+            ).map(([value, label, look]) => (
+              <label
+                key={value}
+                className={`relative flex min-h-16 cursor-pointer items-center justify-center rounded-xl border-2 border-line px-3 py-2 text-base font-bold text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${look}`}
+              >
+                <input
+                  type="radio"
+                  name="presence"
+                  value={value}
+                  required
+                  checked={presence === value}
+                  onChange={() => setPresence(value)}
+                  className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <p className="mt-2 text-sm text-muted">
           {presence === 'present'
             ? 'Present: a potential-hazard notice with no instructions goes to teams in the radius after submission.'
@@ -891,50 +910,64 @@ export function ReportForm({ site }: { site: SiteSummary }) {
         <legend className={step}>
           <Icon name="pin" className="size-4" />4 · Location
         </legend>
-        <div className="grid gap-3 @lg:grid-cols-2">
-          <label className={labelText}>
-            Latitude
-            <input
-              required
-              type="number"
-              min="-90"
-              max="90"
-              step="any"
-              className={field}
-              value={lat}
-              onChange={(e) => editCoordinates(e.target.value, lon)}
-            />
-          </label>
-          <label className={labelText}>
-            Longitude
-            <input
-              required
-              type="number"
-              min="-180"
-              max="180"
-              step="any"
-              className={field}
-              value={lon}
-              onChange={(e) => editCoordinates(lat, e.target.value)}
-            />
-          </label>
-        </div>
         <p
           role="status"
           aria-live="polite"
-          className="mt-2 flex flex-wrap items-center gap-2 text-sm text-ink-2"
+          className="flex items-start gap-2 rounded-xl bg-surface-2 px-3 py-2.5"
         >
-          <span className="chip border border-line-strong text-ink">
-            {locationChip[location.status]}
-            {point?.source === 'device' &&
-              point.accuracyM !== null &&
-              ` · ±${Math.round(point.accuracyM)} m`}
+          <Icon name="pin" className="mt-0.5 size-4 shrink-0" />
+          <span>
+            <span className="block font-semibold text-ink">
+              {locationChip[location.status]}
+            </span>
+            {locationDetail(location.status, location.reason, point) && (
+              <span className="block text-sm text-ink-2">
+                {locationDetail(location.status, location.reason, point)}
+              </span>
+            )}
           </span>
-          {location.message}
         </p>
+        {!showCoordinates ? (
+          <button
+            type="button"
+            className="mt-2 min-h-11 text-sm font-semibold text-link"
+            onClick={() => setAdjusting(true)}
+          >
+            Enter a different spot
+          </button>
+        ) : (
+          <div className="mt-3 grid gap-3 @lg:grid-cols-2">
+            <label className={labelText}>
+              Latitude
+              <input
+                required
+                type="number"
+                min="-90"
+                max="90"
+                step="any"
+                className={field}
+                value={lat}
+                onChange={(e) => editCoordinates(e.target.value, lon)}
+              />
+            </label>
+            <label className={labelText}>
+              Longitude
+              <input
+                required
+                type="number"
+                min="-180"
+                max="180"
+                step="any"
+                className={field}
+                value={lon}
+                onChange={(e) => editCoordinates(lat, e.target.value)}
+              />
+            </label>
+          </div>
+        )}
         <p className="mt-1 text-xs text-muted">
-          Location is read only for this report and only with your permission.
-          Edit the coordinates to pin a different spot.
+          Your location is used only for this report, and only with your
+          permission.
         </p>
       </fieldset>
       <label className={labelText}>
@@ -982,14 +1015,40 @@ export function ReportForm({ site }: { site: SiteSummary }) {
     </form>
   )
 }
+// Checked states for the present/absent choice (step 2), like the category step.
+const presentChoice =
+  'has-checked:border-stop has-checked:bg-stop has-checked:text-white'
+const absentChoice =
+  'has-checked:border-ink has-checked:bg-ink has-checked:text-bg'
 const locationChip = {
   closed: 'No location',
   locating: 'Finding your location…',
-  device: 'Device location',
-  site: 'Approximate: site',
-  pin: 'Pinned',
-  unavailable: 'Needs a valid location',
+  device: 'Using your current location',
+  site: 'Using the site’s location (approximate)',
+  pin: 'Using the spot you entered',
+  unavailable: 'Enter a valid latitude and longitude',
 } as const
+const fallbackReason: Partial<Record<LocationReason, string>> = {
+  demo: 'Simulated report: device location is not requested.',
+  denied: 'You declined location access.',
+  timeout: 'Your location took too long to arrive.',
+  unsupported: 'This browser can’t share its location.',
+  unavailable: 'Your device location isn’t available.',
+  invalid_device: 'Your device returned an invalid location.',
+}
+/** The short second line under the location status. */
+function locationDetail(
+  status: keyof typeof locationChip,
+  reason: LocationReason | null,
+  point: { accuracyM: number | null } | null,
+) {
+  if (status === 'device' && point?.accuracyM != null)
+    return `Accurate to about ${Math.round(point.accuracyM)} m.`
+  if (status === 'locating')
+    return 'The site’s location is used if this takes too long.'
+  if (status === 'site' && reason) return fallbackReason[reason] ?? null
+  return null
+}
 /** T034A/T053A: where a report's coordinates came from, in words. */
 function locationText(report: CrewReport) {
   const source =

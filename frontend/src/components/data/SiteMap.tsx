@@ -1,10 +1,28 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../../styles/map.css'
 import type { SiteSummary } from '../../types/api'
 import { levelHex, RiskShape } from './Risk'
 import { evidenceOf } from './evidence'
+// The basemap loads by default when online. Offline, or when the tile server can't be
+// reached, the map is hidden and the location list below stays the way to browse sites.
+// `network` is -1 offline, else a count that rises each time the browser reconnects.
+let reconnects = 0
+function subscribe(changed: () => void) {
+  const online = () => {
+    reconnects++
+    changed()
+  }
+  window.addEventListener('online', online)
+  window.addEventListener('offline', changed)
+  return () => {
+    window.removeEventListener('online', online)
+    window.removeEventListener('offline', changed)
+  }
+}
+const network = () => (navigator.onLine ? reconnects : -1)
+
 export function SiteMap({
   sites,
   select,
@@ -13,10 +31,12 @@ export function SiteMap({
   select: (id: string) => void
 }) {
   const container = useRef<HTMLDivElement>(null)
-  const [basemap, setBasemap] = useState(false)
-  const [failed, setFailed] = useState(false)
+  const connection = useSyncExternalStore(subscribe, network, () => 0)
+  // The connection on which the basemap failed; a reconnect tries again.
+  const [failedOn, setFailedOn] = useState<number | null>(null)
+  const hidden = connection < 0 || failedOn === connection
   useEffect(() => {
-    if (!container.current || !sites.length) return
+    if (hidden || !container.current || !sites.length) return
     const map = L.map(container.current, { scrollWheelZoom: false }).fitBounds(
       L.latLngBounds(sites.map((s) => [s.lat, s.lon] as [number, number])).pad(
         0.15,
@@ -58,18 +78,25 @@ export function SiteMap({
         .bindPopup(button)
         .addTo(map)
     })
-    if (basemap)
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    let loaded = false
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    })
+      .on('tileload', () => {
+        loaded = true
       })
-        .on('tileerror', () => setFailed(true))
-        .addTo(map)
+      // One stray tile error is fine; failing before any tile loads means no network.
+      .on('tileerror', () => {
+        if (!loaded) setFailedOn(connection)
+      })
+      .addTo(map)
     return () => {
       map.remove()
     }
-  }, [sites, select, basemap])
+  }, [sites, select, hidden, connection])
+  if (hidden) return null
   return (
     <section
       className="space-y-3 rounded-2xl border border-line bg-surface p-4"
@@ -122,23 +149,6 @@ export function SiteMap({
         Use the equivalent location list below for keyboard access. Points do
         not establish worksite conditions.
       </p>
-      <label className="flex min-h-11 items-center gap-3 text-sm text-ink-2">
-        <input
-          type="checkbox"
-          className="size-5"
-          checked={basemap}
-          onChange={(e) => {
-            setFailed(false)
-            setBasemap(e.target.checked)
-          }}
-        />
-        Load online OpenStreetMap basemap (network required)
-      </label>
-      {failed && (
-        <p role="status" className="text-sm font-semibold text-warn-text">
-          Basemap unavailable. Geographic markers and the list remain available.
-        </p>
-      )}
       <div
         ref={container}
         role="region"

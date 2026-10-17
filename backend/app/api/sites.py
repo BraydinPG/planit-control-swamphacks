@@ -136,11 +136,17 @@ def visible_site_ids(session: Session, user: CurrentUser) -> set[str] | None:
 
 
 def _sort_key(site: SiteSummary) -> tuple:
-    """Assigned first, then scored by risk descending, then unscored, then name."""
+    """Assigned first, then scored by risk descending, then unscored, then name.
+
+    Equal scores rank lower data completeness first. A 0/10 built from no current
+    evidence is unknown, not safer than a 0/10 from fully observed inputs, so it must
+    not sink below it. The frontend's `sortSites` applies the same order.
+    """
     return (
         site.assigned_team is None,
         site.risk_score is None,
         -(site.risk_score or 0),
+        site.data_completeness if site.risk_score is not None else 0,
         site.name,
     )
 
