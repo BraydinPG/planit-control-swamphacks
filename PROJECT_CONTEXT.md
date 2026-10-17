@@ -2,7 +2,7 @@
 
 ## Last verified
 - UTC verification: 2026-10-17 06:42:40; update with each relevant checkpoint.
-- Working branch: `feature/cache-combined-disaster-outlooks`.
+- Working branch: `feature/cache-hazard-coverage` (new comprehensive coverage push).
 - Base: `origin/main` at `7950971`; teammate API/DB/EIA commits preserved by clean rebase.
 - Implementation: `01982f0`, source-catalog follow-up `35273ec`; verification commits may follow.
 - GitHub PR #4: merged 2026-10-17, merge `cf9d3bb`; already an ancestor of main.
@@ -12,7 +12,10 @@
 - Fresh isolated environment: 256 ML/backend tests passed, including 62 new worker checks.
 - Backend lint/format, new Python lint/format, frontend lint/typecheck/build passed.
 - Existing nine duration artifacts/reference predictions verified without refitting.
-- PR #9 is open, ready for Rudra review: https://github.com/BraydinPG/planit-control-swamphacks/pull/9
+- PR #9 merged at `f4ee557` on 2026-10-17T06:49:58Z; API and ancestry reverified.
+- Current push starts from `origin/main` at `f4ee557`; PR #9 branch is preserved.
+- Initial checkpoint: 62 worker tests pass; no long ML jobs or uncommitted work recovered.
+- Main includes Rudra's NWS weather/flood ingestion; Cache additions stay in `ml/`.
 - Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
 
 ## Mission and boundaries
