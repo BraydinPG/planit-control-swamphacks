@@ -1,6 +1,6 @@
 # Frontend redesign handoff
 
-Current implementation owner: Cache (transferred from Nick on 2026-10-17). Nick's earlier contributions and T030 shell remain attributed. Claude may perform a separately authorized visual redesign later. The demo's core workflows are implemented; absent authenticated backend services belong to the owner handoffs in `INTEGRATION_STATUS.md`, not to a visual redesign.
+Current explicit authorization (2026-10-17): **Claude is actively redesigning presentation**; Codex/Cache owns functional API/state/Auth0 consumption/diagnostics/tests in a separate worktree. Nick's attribution remains. See [FUNCTIONAL_INTEGRATION_HANDOFF.md](FUNCTIONAL_INTEGRATION_HANDOFF.md) for exact path ownership, stable callable/hook contracts, verified tests, demo-account clarification and service blockers. Codex has not changed the visual/page/component files in this run.
 
 | Module | Responsibility | Safe visual work |
 | --- | --- | --- |
@@ -26,4 +26,4 @@ Preserve these behaviors:
 - Keep evidence IDs, source/method, issue/observation/availability windows, stale/rejected/unknown states and field-verification requirements readable. Research event persistence is not local hazard or injury probability.
 - Preserve DOM semantics, screen-reader status/error announcements, visible keyboard focus, skip link, non-color state text, >=44px primary targets, and 320px phone layout. Avoid color-only risk labels or hover-only actions.
 
-Rerun `npm run lint`, `npm run build`, the 23 focused Node tests, and `node scripts/check-shell.mjs http://localhost:5173/` after redesign. Compare actual phone and supervisor screenshots. The browser script uses visible labels as behavior assertions; update wording deliberately without weakening checks. Keep all ten destinations navigable, report/review/instruction persistence isolated and map/list identities consistent. Full live integration/accessibility T063-T068 remains separate acceptance.
+Rerun `npm run lint`, `npm run build`, the current 68 focused Node tests, and `node scripts/check-shell.mjs http://localhost:5173/` after redesign. Compare actual phone and supervisor screenshots. The browser script uses visible labels as behavior assertions; update wording deliberately without weakening checks. Keep all ten destinations navigable, report/review/instruction persistence isolated and map/list identities consistent. Full live integration/accessibility T063-T068 remains separate acceptance.

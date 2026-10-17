@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--api-origin", default="http://127.0.0.1:8000")
     parser.add_argument("--frontend-origin", default="http://localhost:5173")
     parser.add_argument("--acknowledge", action="store_true")
+    parser.add_argument("--configuration-root", type=Path)
     args = parser.parse_args()
     if not sys.stdin.isatty():
         raise SystemExit("Use an interactive private terminal. Refusing an echoed token prompt.")
@@ -41,6 +42,8 @@ def main():
         "--check-database",
         "--tokens-stdin",
     ]
+    if args.configuration_root is not None:
+        command.extend(["--configuration-root", str(args.configuration_root.resolve())])
     if args.acknowledge:
         command.append("--acknowledge")
     # subprocess gets only fixed options/paths in argv. No shell, credential env or temp file.

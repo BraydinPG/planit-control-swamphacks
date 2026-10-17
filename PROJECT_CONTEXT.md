@@ -2,13 +2,16 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
-## Functional worktree API checkpoint - 2026-10-17
-- New user authorization splits Codex functionality from Claude's active visual redesign. Separate worktree `C:/Users/cache/planit-control-functional`, branch `feature/cache-functional-acceptance`, from merged PR #29 main `ebd6d92`. No page/component/style/auth/backend change.
-- Site/list/detail and alert/ack responses now validate canonical identities, nested source timestamps, enum/numeric fields and duplicate IDs. Missing values stay null; no derived score or alert state. `Client.acknowledge` now explicitly returns canonical `Alert`; other method arguments are unchanged.
-- Six new read/ack regression tests pass with all existing checks; full working implementation verified 68 Node/521 Python and browser fixture/mock workflows. Diagnostics and complete shared handoff follow in the next focused commit; no live integration task checked off.
-- Cache clarified demo sessions use existing Auth0 test crew/supervisor accounts, not real-person records. No identities or DB rows were created; actual demo authentication/persistence proof still requires approved local settings/session handoff.
+## Current functional / redesign split - 2026-10-17
+- Explicit authorization: Claude owns visual pages/components/styles/responsiveness; Codex/Cache owns API, application state, Auth0 consumption, diagnostics and functional tests. Presentation files remain untouched this run; shared interfaces in `docs/FUNCTIONAL_INTEGRATION_HANDOFF.md`.
+- PR #29 merged as `ebd6d92`. Functional work is isolated on `feature/cache-functional-acceptance` in `C:/Users/cache/planit-control-functional`, based on that main; no unmerged parent. Claude's primary checkout/server is untouched.
+- API site/alert reads and acknowledgements now validate canonical DTOs/IDs/source times without coercing nulls or deriving scores/state. `Client` method signatures stay stable; acknowledgement is typed `Alert`. Diagnostics gate tokens on all published anonymous denials, normalize existing role casing, inspect stored briefings and compare full ack identity/time across fresh clients.
+- Clarification from Cache: use existing Auth0 crew/supervisor test accounts for the demo, not employee/real-user records. No identities, profiles or database rows created. Local approved environment settings/sessions still absent; roles/test-account existence is separate from local readiness.
+- 68 frontend checks, 521 backend/probe (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and desktop/phone browser regression pass. Actual ten anonymous/dev-header denials return401; invalid bearer503 remains blocked; 11 routes match. Evidence: `docs/functional-integration-verification.json`.
+- Functional dev instance: http://localhost:5176/ (same app, explicit fixture mode); primary5173 left alone. No Auth0 callback change. `--configuration-root` lets diagnostics read an approved checkout's existing settings without copying them; no infrastructure change.
+- No T063-T068 checkbox changed. Actual Auth0 demo-role/Tiger Data lifecycle proof and redesigned-UI T068 remain pending; enrichment has no published endpoint to connect. Use LIVE_INTEGRATION and the short handoff before integration.
 
-## Current frontend checkpoint - 2026-10-17
+## Previous T067A / T065 checkpoint (historical)
 - Authorized sequence: Cache T067A, then T065; no backend/auth/database/ML changes in this run.
 - Current branch `feature/cache-report-lifecycle-integration` from reviewed main `dcd9fc5` (PR #28 scoring-history fix; initial base `1eed70e`). Maintainers merged PR #24 (`f3a65a7`) and our verified T067A checkpoint `2e4cfb7` as PR #27 (`1eed70e`) during this run; remaining T065 PR targets main. No PR merges performed by Cache.
 - T067A replaces obsolete generated-score prose and manual generation actions with stored GETs: `/api/sites/{id}/briefing` and `/api/briefings`. Site 404 is a scheduled-generation empty state. Canonical obsolete TS types/fixture removal explicitly authorized; no other API fields changed.
@@ -17,7 +20,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - T065 wired: create/list; absent review; present notice confirmation with validated server response; unsent suggested/manual draft, explicit 1-500-character confirmer send; shared state refresh. Stable notice keys preserve edits during GET refresh; conflicts refresh ownership. No React scoring/recipient selection or automatic send/retry.
 - T065 remains unchecked: full real roles/persistence/delivery is blocked by missing local private configuration/memberships. T063/T064/T066/T067/T068 unchanged. Current checks: 56 Node and 518 backend/probe (511+7), lint/TS/build and clean npm ci/build pass; final browser evidence in docs/t065-verification.json.
 - Actual running/source OpenAPI now match all 11 operations. Ten anonymous/dev-header checks return 401; invalid bearer 503 (Auth0 unavailable). DATABASE_URL/Auth0 SPA/backend/Gemini/storage settings missing locally; no real DB write or authenticated delivery verified. Diagnostic process bypass/feed refresh/briefing schedule stay off.
-- T065 implementation `60ce280`, review [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication; no real acceptance/check-off or merge by Cache.
+- T065 implementation `60ce280`, review [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), now merged as `ebd6d92`; no real acceptance/check-off or merge by Cache.
 - Website: http://localhost:5173/ (explicit demo). Run `cd frontend; npm ci; npm run dev -- --host localhost --port 5173 --strictPort`. Node 24, no ML artifacts needed.
 
 ## Verified upstream / owner boundaries
