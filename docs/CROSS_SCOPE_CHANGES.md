@@ -3,7 +3,8 @@
 Explicit user assignment: reuse existing qualified event models and build a typed
 multi-event preview in `ml/**`; propose API/component inputs without changing
 Rudra's contracts or Claude's UI. Branch `feature/cache-multi-event-outlooks`,
-base main `ca99e64`, no unmerged dependency; Rudra PR #38 remains independent.
+started at main `ca99e64`; reviewed main `a7759c9` incorporated as `7c30618`
+after maintainers merged Rudra PR #38 and the report/map update. No unmerged dependency.
 
 - New ML adapter/schema, bounded official-product parsers, checksummed NHC/USGS
   captures, verified local artifact reuse, 16-case static preview and tests.
@@ -11,13 +12,15 @@ base main `ca99e64`, no unmerged dependency; Rudra PR #38 remains independent.
   this log records ownership. `tasks.md` and all teammate implementation files
   are unchanged. Exact inputs, schemas, examples and acceptance proposals for
   Rudra/Claude are in `ml/EVENT_OUTLOOKS.md` and `ml/fixtures/event_outlooks/`.
-- Final verification: 51 focused checks; complete ML/backend 1,018; 103 frontend
+- Final verification on updated main: 51 focused checks; ML/backend 1,024; 109 frontend
   tests, lint/TypeScript/build pass. Offline browser at1440/390 renders16 cases/18
   cards without external requests/exceptions. Clean tracked-source export with
   existing pinned dependencies degrades honestly without artifacts, then restores
   all six via verified local reuse and matches four canonical responses.
 - PR #39 is open against main (no dependency); implementation `9a77360`, hardening
-  `ef35343`; final evidence: `ml/reports/event_outlooks_verification.json`. No merge.
+  `ef35343`, reviewed-main integration `7c30618`; final evidence:
+  `ml/reports/event_outlooks_verification.json`. No merge into main. The log
+  resolution retains the full incoming owner log; no teammate implementation edit.
 - No authenticated production integration, event activation feed, score/alert
   change or newly validated local probability. T050A remains pending with Rudra;
   source publication/retrieval and hypothetical activation are separately labeled.

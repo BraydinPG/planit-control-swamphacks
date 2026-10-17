@@ -1,7 +1,7 @@
 {
-  "verified_at_utc": "2026-10-17T17:18:21.181056+00:00",
+  "verified_at_utc": "2026-10-17T17:20:12.063471+00:00",
   "branch": "feature/cache-multi-event-outlooks",
-  "base_commit": "ca99e64d353a0fba83e0c512dcb31141060c2370",
+  "base_commit": "a7759c995763b7fc0b3f55f6274c3a5513bb588a",
   "implementation_commit": "ef35343e58127913bd4f5491ec84af95b7becaf6",
   "pr_status": "open",
   "python": "3.14.5",
@@ -17,18 +17,18 @@
     },
     "full_ml_backend": {
       "command": "python -m pytest -c backend/pyproject.toml ml/tests backend/tests -q",
-      "passed": 1018,
+      "passed": 1024,
       "ml_collected": 297,
-      "backend_collected": 721,
-      "seconds": 28.16,
+      "backend_collected": 727,
+      "seconds": 29.94,
       "warnings": [
         "Existing Starlette TestClient/httpx deprecation"
       ]
     },
     "frontend": {
       "command": "node --test tests/*.test.mjs (frontend/)",
-      "passed": 103,
-      "seconds": 56.6077,
+      "passed": 109,
+      "seconds": 5.2720278,
       "live_integration": false
     },
     "python_lint_format": {
@@ -169,7 +169,8 @@
     "browser_exceptions": 0,
     "mode": "local file; offline research/replay; no application integration",
     "html_sha256": "156176509cdcfb6dfd62223b00ef05d13440e5a5e50239bc1715330f1d47b5a8",
-    "html_unchanged_after_final_source_hardening": true
+    "html_unchanged_after_final_source_hardening": true,
+    "html_unchanged_after_main_integration": true
   },
   "clean_source": {
     "models_initially_absent": true,
@@ -371,7 +372,8 @@
     "fresh_dependency_install_this_run": false,
     "environment": "Existing pinned Python 3.14.5 environment; clean Git export has no private configuration, model files or source archives initially",
     "source_commit": "ef35343e58127913bd4f5491ec84af95b7becaf6",
-    "clean_source_path": "C:\\Users\\cache\\AppData\\Local\\Temp\\planit-multi-event-clean-final-p6x9_y6b\\repo"
+    "clean_source_path": "C:\\Users\\cache\\AppData\\Local\\Temp\\planit-multi-event-clean-final-p6x9_y6b\\repo",
+    "runtime_and_fixture_paths_unchanged_after_main_integration": true
   },
   "sources": {
     "helene-015": {
@@ -424,5 +426,9 @@
     "ef35343e58127913bd4f5491ec84af95b7becaf6"
   ],
   "pr_url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/39",
-  "git_diff_check_passed": true
+  "git_diff_check_passed": true,
+  "initial_base_commit": "ca99e64d353a0fba83e0c512dcb31141060c2370",
+  "reviewed_main_merge_commit": "7c30618",
+  "maintainer_merged_pr38": true,
+  "latest_main_teammate_paths_equal": true
 }
