@@ -1,15 +1,17 @@
 # Codex takeover delivery - October 17, 2026
 
-The existing workspace was preserved on `feature/cache-ml`. Initial HEAD was `8db7dac` with 17 uncommitted ML files. Fetch succeeded; team changes through `origin/main` at `5bde676` were integrated without rewriting backend, frontend, auth, database, or ingestion implementations.
+The existing workspace was preserved on `feature/cache-ml`. Initial HEAD was `8db7dac` with 17 uncommitted ML files. Team changes through `origin/main` at `008ba2a` were integrated, including newly published Pydantic schemas, their TypeScript mirror, and environment templates. Backend/frontend/auth/database/ingestion implementations remain intact.
 
 ## Git and scope
 
 - `561439a`: secured the reviewed survival optimization, weather experiment, and tests; fixed the untracked benchmark syntax error.
 - `586ed56`: integrated current team scope, preserving Tiger Data/Vultr, Braydin's ingestion/database ownership, and the authorized conditional-event boundary.
 - `545d898`: boundary-purged v2 training/evaluation, KM default, typed inference/adapter safeguards, pinned provisioning, and regression tests.
+- `6e371d8`: reproducible handoff and current evaluation/profiling evidence.
+- `a607104`: integrated newly published API schemas/templates through `008ba2a`.
 - Subsequent documentation/evidence commits contain this report, updated guides, current JSON reports, and PR handoff. See `git log` and the final delivery message for the final HEAD/PR.
 
-Shared documentation edits are limited to resolving merge conflicts, retaining the authorized active-event contract, removing a duplicated Cache task, and correcting model-failure behavior. Root manifests, lockfiles, teammate source, migrations, and secrets were not changed. README changes came from the team merge.
+Shared documentation edits resolve conflicts, retain active-event scope, remove a duplicated Cache task, and correct model-failure behavior. After T006 arrived, focused compatibility edits to `backend/app/schemas/scores.py` and its TypeScript quality mirror allow real ML results: null uncalibrated confidence/completeness, empty contribution lists, explicit excluded-score metadata, and a false-only score-inclusion flag. Three backend integration tests validate the actual adapter/legacy payload against published types. Root manifests, lockfiles, route/UI/auth/ingestion implementations, migrations, and secrets were not changed. README/config templates came from team merges.
 
 ## Audit, preservation, and processes
 
@@ -65,12 +67,12 @@ Final focused checks:
 
 ```powershell
 .\ml\.venv\takeover_clean_check\Scripts\python.exe -m pytest ml/tests backend/tests -q -c backend/pytest.ini
-# 82 passed: 81 ML + 1 backend health; one upstream Starlette/httpx deprecation warning.
+# 123 passed: 81 ML + 42 backend/schema/mirror/integration; one upstream deprecation warning.
 .\ml\.venv\Scripts\python.exe -m compileall -q ml -x '\.venv'
 git diff origin/main --check
 ```
 
-Additional executed checks: pinned `pip check`, artifact provisioning and `--verify-only`, fresh-environment model regeneration, direct/saved-model inference, backend-working-directory adapter import, `ml.smoke`, `ml.backtest --fast`, full purged backtest, matched cache-only weather comparison, worker benchmark at 1/4/8/12, and 5,000 seeded Monte Carlo draws. No Python lint/type checker is configured. Frontend build/lint were not run: Node/npm are unavailable in this shell and frontend source was not edited.
+Additional executed checks: pinned `pip check`, artifact provisioning and `--verify-only`, fresh-environment model regeneration, direct/saved-model inference, backend-working-directory adapter import, `ml.smoke`, `ml.backtest --fast`, full purged backtest, matched cache-only weather comparison, worker benchmark at 1/4/8/12, and 5,000 seeded Monte Carlo draws. No Python lint/type checker is configured. Frontend build/lint were not run because Node/npm are unavailable; the TypeScript field mirror is verified by Python tests and UI implementation was untouched.
 
 ## Integration and remaining work
 

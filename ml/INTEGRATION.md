@@ -1,6 +1,6 @@
 # Backend integration contract
 
-Rudra owns event confirmation, authorization, routes, scores, and deterministic alerts. Braydin owns database/ingestion modules. The integrated backend exposes only `GET /health`; frontend/auth remain starter/placeholders. This package provides a tested import, not live route integration. Team scope from `origin/main` at `5bde676` is preserved alongside conditional active-event scope.
+Rudra owns event confirmation, authorization, routes, scores, and deterministic alerts. Braydin owns database/ingestion modules. The integrated backend exposes only `GET /health`; canonical Pydantic schemas and their TypeScript mirror are now published, while frontend/auth implementations remain starter/placeholders. This package provides a tested import, not live route integration. Team changes through `origin/main` at `008ba2a` are integrated.
 
 ## Import and lifecycle
 
@@ -38,6 +38,8 @@ A fresh-process test starts in `backend/` with this import path and runs the rea
 ## Context and result
 
 Types are in `ml/contracts.py`; runtime validation is in `ml/schemas.py`.
+
+The published `app.schemas.SiteSummary` is tested through the adapter using `site.model_dump(mode="json")`. `app.schemas.ModelOutput` validates actual inactive/active `predict_site` results. Its confidence and completeness can be null, empty contribution lists are accepted, and `ModelDataQuality.include_model_component_in_site_score` is constrained to false. The TypeScript quality mirror includes those fields; field-drift tests pass. These focused compatibility changes are for Rudra's PR review and do not add an event-outlook field to `SiteDetail` or enable ML scoring.
 
 - Require event ID/type, confirmed-active or historical-replay status, timezone-aware as-of time, and known event start no later than as-of.
 - Require a site ID, region, or valid coordinate pair. Spatial match quality is explicit; coordinates do not establish verified exposure.

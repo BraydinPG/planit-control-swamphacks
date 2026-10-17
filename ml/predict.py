@@ -226,6 +226,10 @@ def predict_site(features: dict[str, Any], *, model: SurvivalModels | None = Non
         "confidence": None,
         "model_version": result["model_version"],
         "data_quality": {
+            "completeness": None,
+            "missing_features": result.get("evidence_quality", {}).get("missing_features", []),
+            "is_fallback": result["status"] != "ok",
+            "notes": result.get("worker_context", {}).get("limitations", []),
             "status": "not_approved_for_score",
             "prediction_scope": PREDICTION_SCOPE,
             "event_type": result.get("event_type"),
