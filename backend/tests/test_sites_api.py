@@ -1,4 +1,8 @@
-"""T041 `GET /api/sites` and T042 `GET /api/sites/{id}` against an in-memory database."""
+"""T041 `GET /api/sites`, T042 `GET /api/sites/{id}`, and T062 access rules, in memory.
+
+The client signs in as a supervisor by default with a test-signed Auth0 token
+(`tests/auth_fakes.py`), so requests take the real token-validation path.
+"""
 
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
@@ -14,6 +18,8 @@ from app.api.deps import get_db, get_now
 from app.db import models as db
 from app.main import app
 from app.schemas import SiteDetail, SiteSummary
+from tests import auth_fakes
+from tests.auth_fakes import crew, supervisor
 
 NOW = datetime(2026, 10, 17, 18, 0, tzinfo=UTC)
 SOURCE = "EIA-860M August 2026 (representative power plant location)"
@@ -69,6 +75,32 @@ def seed(session: Session) -> None:
         [
             db.Team(id="team-a", organization_id="org-1", name="Line Crew A", site_id="site-a"),
             db.Team(id="team-b", organization_id="org-1", name="Crew B", site_id="site-b"),
+            db.Team(id="team-c", organization_id="org-1", name="Crew C (no site)"),
+        ]
+    )
+    session.flush()
+    session.add_all(
+        [
+            db.Membership(
+                id="m-crew-a",
+                user_id="auth0|crew-a",
+                organization_id="org-1",
+                team_id="team-a",
+                role="crew",
+            ),
+            db.Membership(
+                id="m-crew-c",
+                user_id="auth0|crew-c",
+                organization_id="org-1",
+                team_id="team-c",
+                role="crew",
+            ),
+            db.Membership(
+                id="m-sup",
+                user_id="auth0|supervisor-1",
+                organization_id="org-1",
+                role="supervisor",
+            ),
         ]
     )
     session.add_all(
@@ -235,8 +267,9 @@ def client() -> Iterator[TestClient]:
 
     app.dependency_overrides[get_db] = override_db
     app.dependency_overrides[get_now] = lambda: NOW
+    auth_fakes.install(app)
     try:
-        yield TestClient(app)
+        yield TestClient(app, headers=supervisor())
     finally:
         app.dependency_overrides.clear()
         engine.dispose()
@@ -348,6 +381,70 @@ def test_unscored_detail_has_no_score(client: TestClient) -> None:
 def test_missing_database_url_returns_503(monkeypatch) -> None:
     monkeypatch.delenv("DATABASE_URL", raising=False)
     app.dependency_overrides.clear()
-    response = TestClient(app).get("/api/sites")
+    auth_fakes.install(app)
+    try:
+        response = TestClient(app).get("/api/sites", headers=supervisor())
+    finally:
+        app.dependency_overrides.clear()
     assert response.status_code == 503
     assert response.json() == {"detail": "Database is not configured"}
+
+
+# ---- T062: access rules ----
+
+
+def test_sites_require_a_token(client: TestClient) -> None:
+    unauthenticated = {"Authorization": ""}
+    assert client.get("/api/sites", headers=unauthenticated).status_code == 401
+    assert client.get("/api/sites/site-a", headers=unauthenticated).status_code == 401
+
+
+@pytest.mark.parametrize(
+    "bad_token",
+    [
+        "not-a-jwt",
+        auth_fakes.token(["supervisor"], key=auth_fakes.OTHER_KEY),
+        auth_fakes.token(["supervisor"], expires_in=timedelta(minutes=-5)),
+        auth_fakes.token(["supervisor"], aud="https://some-other-api"),
+    ],
+    ids=["malformed", "wrong-key", "expired", "audience"],
+)
+def test_invalid_tokens_are_401(client: TestClient, bad_token: str) -> None:
+    headers = auth_fakes.bearer(bad_token)
+    assert client.get("/api/sites", headers=headers).status_code == 401
+    assert client.get("/api/sites/site-a", headers=headers).status_code == 401
+
+
+def test_token_without_a_planit_role_is_403(client: TestClient) -> None:
+    headers = auth_fakes.bearer(auth_fakes.token(["admin"]))
+    assert client.get("/api/sites", headers=headers).status_code == 403
+
+
+def test_supervisor_sees_every_site_and_any_detail(client: TestClient) -> None:
+    ids = {s["id"] for s in client.get("/api/sites", headers=supervisor()).json()}
+    assert ids == {"site-a", "site-b", "site-c", "site-d"}
+    assert client.get("/api/sites/site-d", headers=supervisor()).status_code == 200
+
+
+def test_crew_sees_only_their_teams_site(client: TestClient) -> None:
+    sites = client.get("/api/sites", headers=crew("auth0|crew-a")).json()
+    assert [s["id"] for s in sites] == ["site-a"]
+    assert client.get("/api/sites/site-a", headers=crew("auth0|crew-a")).status_code == 200
+
+
+def test_crew_cannot_read_other_sites(client: TestClient) -> None:
+    response = client.get("/api/sites/site-b", headers=crew("auth0|crew-a"))
+    assert response.status_code == 403
+    # Same answer for a site that does not exist, so crew cannot probe site ids.
+    missing = client.get("/api/sites/does-not-exist", headers=crew("auth0|crew-a"))
+    assert missing.status_code == 403
+
+
+def test_crew_without_an_assigned_site_sees_none(client: TestClient) -> None:
+    assert client.get("/api/sites", headers=crew("auth0|crew-c")).json() == []
+    assert client.get("/api/sites", headers=crew("auth0|not-a-member")).json() == []
+    assert client.get("/api/sites/site-a", headers=crew("auth0|not-a-member")).status_code == 403
+
+
+def test_health_stays_public() -> None:
+    assert TestClient(app).get("/health").status_code == 200

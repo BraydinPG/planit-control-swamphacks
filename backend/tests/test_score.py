@@ -25,6 +25,7 @@ from app.schemas import (
     RiskLevel,
 )
 from app.services.scoring import score_site
+from tests import auth_fakes
 from tests.nws_fakes import NOW
 
 SETTINGS = RuleSettings(_env_file=None)
@@ -272,8 +273,9 @@ def test_stored_score_is_returned_by_sites_api(session_factory) -> None:
 
     app.dependency_overrides[get_db] = override
     app.dependency_overrides[get_now] = lambda: NOW
+    auth_fakes.install(app)
     try:
-        client = TestClient(app)
+        client = TestClient(app, headers=auth_fakes.supervisor())
         [summary] = client.get("/api/sites").json()
         detail = client.get(f"/api/sites/{SITE}").json()
     finally:

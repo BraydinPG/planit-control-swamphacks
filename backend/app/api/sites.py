@@ -2,7 +2,11 @@
 
 Read-only views over Braydin's Tiger Data models. A site without a computed score
 returns null `risk_score`, `risk_level`, and `updated_at` ("not scored yet"), never
-zero risk. Auth0 role checks are added when Braydin's security dependencies land (T062).
+zero risk.
+
+Access (T062, spec.md section 8): every request needs a valid Auth0 token. A supervisor
+(`read:all_sites`) sees every site. Crew (`read:assigned_sites`) see only the site assigned
+to their team, through their `memberships` row; with no membership they see none.
 """
 
 from datetime import UTC, datetime, timedelta
@@ -30,6 +34,7 @@ from app.schemas import (
     SiteSummary,
     TeamRef,
 )
+from app.security import AuthenticatedUser, CurrentUser, membership_for, roles
 
 router = APIRouter(prefix="/api/sites", tags=["sites"])
 
@@ -45,8 +50,12 @@ Now = Annotated[datetime, Depends(get_now)]
 
 
 @router.get("", response_model=list[SiteSummary])
-def list_sites(session: DbSession) -> list[SiteSummary]:
-    sites = session.scalars(select(db.Site).options(selectinload(db.Site.assigned_team))).all()
+def list_sites(user: AuthenticatedUser, session: DbSession) -> list[SiteSummary]:
+    query = select(db.Site).options(selectinload(db.Site.assigned_team))
+    visible = _visible_site_ids(session, user)
+    if visible is not None:
+        query = query.where(db.Site.id.in_(visible))
+    sites = session.scalars(query).all()
     scores = _latest_scores(session)
     alert_counts = dict(
         session.execute(
@@ -60,7 +69,10 @@ def list_sites(session: DbSession) -> list[SiteSummary]:
 
 
 @router.get("/{site_id}", response_model=SiteDetail)
-def get_site(site_id: str, session: DbSession, now: Now) -> SiteDetail:
+def get_site(site_id: str, user: AuthenticatedUser, session: DbSession, now: Now) -> SiteDetail:
+    visible = _visible_site_ids(session, user)
+    if visible is not None and site_id not in visible:
+        raise HTTPException(status_code=403, detail="This site is not assigned to your team")
     site = session.scalar(
         select(db.Site).where(db.Site.id == site_id).options(selectinload(db.Site.assigned_team))
     )
@@ -79,6 +91,17 @@ def get_site(site_id: str, session: DbSession, now: Now) -> SiteDetail:
         reports=load_reports(session, site_id),
         notices=_notices(session, site),
     )
+
+
+def _visible_site_ids(session: Session, user: CurrentUser) -> set[str] | None:
+    """Sites the caller may read: None means every site."""
+    if user.can(roles.READ_ALL_SITES):
+        return None
+    if not user.can(roles.READ_ASSIGNED_SITES):
+        raise HTTPException(status_code=403, detail="Missing permission: read:assigned_sites")
+    membership = membership_for(session, user)
+    team = membership.team if membership else None
+    return {team.site_id} if team and team.site_id else set()
 
 
 def _sort_key(site: SiteSummary) -> tuple:
