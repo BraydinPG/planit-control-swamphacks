@@ -15,7 +15,7 @@ const server = await createServer({
   cacheDir: '.shell-check/integration-unit-cache',
   logLevel: 'silent',
   configFile: false,
-  server: { middlewareMode: true, hmr: false },
+  server: { middlewareMode: true, hmr: false, watch: null },
   appType: 'custom',
 })
 after(() => server.close())

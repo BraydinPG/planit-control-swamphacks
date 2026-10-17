@@ -8,6 +8,7 @@ import type {
 } from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { ApiError } from '../../api/contracts'
+import { formatTimestamp } from '../../presentation/display'
 import { Icon } from '../shell/Icon'
 import {
   Action,
@@ -51,6 +52,11 @@ export function TeamPage() {
           Supervisor{org.supervisors.length === 1 ? '' : 's'}:{' '}
           {org.supervisors.map(display).join(', ') || 'none linked'}
         </p>
+        {client.mode === 'demo' && (
+          <p className="mt-2 text-sm text-sim">
+            Simulated roster. Team and join-code changes reset on reload.
+          </p>
+        )}
       </section>
       {org.teams.map((team) => (
         <TeamCard key={team.id} team={team} free={free} />
@@ -239,7 +245,7 @@ function ManageTeam({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           </button>
         </div>
         {team.members.length > 0 && (
-          <p className="text-xs text-muted">
+          <p className="text-sm text-muted">
             A team can be removed once nobody is on it.
           </p>
         )}
@@ -294,15 +300,17 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           {team.members.map((m) => (
             <li
               key={m.user_id}
-              className="flex items-center justify-between gap-3 py-2.5"
+              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
             >
               <div className="min-w-0">
-                <p className="truncate font-semibold">{display(m)}</p>
+                <p className="font-semibold [overflow-wrap:anywhere]">
+                  {display(m)}
+                </p>
                 {m.name && m.email && (
                   <p className="truncate text-sm text-ink-2">{m.email}</p>
                 )}
               </div>
-              <span className="shrink-0 text-xs text-muted">
+              <span className="shrink-0 text-sm text-muted">
                 {m.joined_at ? `Joined ${day(m.joined_at)}` : 'Added by admin'}
               </span>
             </li>
@@ -318,8 +326,8 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="kicker">Join codes</p>
-            <p className="text-xs text-muted">
-              A code adds a new crew account to this team for 7 days.
+            <p className="text-sm text-muted">
+              Share with your crew. Each code expires after 7 days.
             </p>
           </div>
           <Action capability="team" run={() => client.createJoinCode(team.id)}>
@@ -346,10 +354,12 @@ function CodeRow({ code }: { code: JoinCode }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-surface-2 px-3 py-2">
       <div>
-        <p className="font-mono text-xl font-bold tracking-[0.15em]">
+        <p className="break-all font-mono text-xl font-bold tracking-[0.1em]">
           {code.code}
         </p>
-        <p className="text-xs text-muted">Expires {day(code.expires_at)}</p>
+        <p className="text-sm text-muted">
+          Expires {formatTimestamp(code.expires_at)}
+        </p>
       </div>
       <div className="flex flex-wrap items-start gap-2">
         <button
@@ -367,7 +377,7 @@ function CodeRow({ code }: { code: JoinCode }) {
           {copied ? 'Copied' : 'Copy'}
         </button>
         <Action capability="team" run={() => client.revokeJoinCode(code.code)}>
-          Revoke
+          Revoke code
         </Action>
       </div>
     </div>

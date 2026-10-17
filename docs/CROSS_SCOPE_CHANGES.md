@@ -1,3 +1,34 @@
+## Application-wide UI readability (Cache for Rudra) — 2026-10-17 22:23 UTC
+
+Explicit user authorization expands this run to frontend copy, typography and
+presentation across Crew and Supervisor. Initial base `5045790`, branch
+`feature/cache-ui-readability-polish`, existing isolated functional checkout.
+No edits to another checkout or another owner's running server.
+
+- `frontend/src/presentation/display.ts`, new `components/data/Details.tsx`:
+  controlled display labels, local timezone formatting, unit notation and native
+  accessible disclosures. Identifiers/contracts and authored prose stay intact.
+- `App.tsx`, `application/LiveApplication.tsx`, `components/shell/AppShell.tsx`,
+  `index.css`, `pages/{ConnectedPages,WorkspaceOverview}.tsx`: shorter navigation,
+  consistent capitalization, readable layout, demo details, clearer reporting,
+  location/error states and a link to all active alerts on Crew overview.
+- `components/data/{Status,EventOutlooks,AlertCard,NoticeCard,Duration,Advisory,
+  ReportAnalysis,StoredBriefings,SpeciesPanel,TeamRoster,SupervisorOverview,
+  attention,Interaction,SiteMap}`: summaries before evidence; visible alert and
+  approved instruction authority; original crew/Gemini/supervisor prose retained.
+  “Watch window” replaces countdown wording that suggested automatic clearance.
+- Existing frontend tests/browser runner updated for intentional copy; new
+  `tests/display.test.mjs` verifies formatting, disclosure and safety wording.
+  Integration unit Vite watcher disabled to avoid scanning browser profiles.
+- No scoring, ML, alert rule/timer, permission, API/schema, database, Gemini-prompt
+  or private-configuration edits. No fixture regeneration or task check-off.
+
+Checkpoint checks: 164 frontend tests; lint, TypeScript/production build; 85
+backend fixture/outlook/score/lightning tests; Edge demo/mock browser checks at
+1440/390/320. Final upstream integration and recheck follow in this branch.
+Rudra reviews the UI; backend-authored wording questions and screen audit are in
+`docs/UI_READABILITY.md`. T063–T068 live acceptance remains separate.
+
 ## Canonical demo scores and prediction failure handling (Cache) — 2026-10-17
 
 Explicit user authorization: fix the obsolete fixture score and both reproduced

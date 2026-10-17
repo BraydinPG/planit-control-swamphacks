@@ -3,11 +3,12 @@ import type {
   AnalysisPoint,
   AnalysisVerdict,
   CrewReport,
-  ReportCategory,
 } from '../../types/api'
 import { useApplication, useClock } from '../../application/context'
 import { Icon } from '../shell/Icon'
 import { RiskShape } from './Risk'
+import { displayLabel, reportCategories } from '../../presentation/display'
+import { Details } from './Details'
 
 /**
  * T036A: Gemini's analysis of a crew report, shown beside the report. A suggestion for the
@@ -20,18 +21,11 @@ const verdicts: Record<
   supports: { text: 'Supports the report', shape: null },
   contradicts: { text: 'Contradicts the report', shape: 'warn' },
   inconclusive: {
-    text: "Inconclusive: the data can't confirm or rule it out",
+    text: 'Inconclusive · hazard not confirmed or ruled out',
     shape: 'nodata',
   },
 }
-const categoryNames: Record<ReportCategory, string> = {
-  broken_pole_downed_line: 'Broken pole / downed line',
-  on_site_fire: 'On-site fire',
-  access_mat_deterioration: 'Access mat deterioration',
-  wildlife: 'Wildlife',
-  flooding: 'Flooding',
-  other: 'Other',
-}
+const categoryNames = reportCategories
 const unavailableReasons: Record<string, string> = {
   missing_config: 'Gemini is not configured on this server',
   timeout: 'Gemini did not answer in time',
@@ -70,7 +64,7 @@ export function ReportAnalysis({ report }: { report: CrewReport }) {
           {analyzing
             ? 'Analyzing the photo and site data… this takes a few seconds.'
             : client.mode === 'demo'
-              ? 'Simulated report: Gemini analyzes reports on the live backend only.'
+              ? 'Simulated report. No new photo analysis is generated in demo mode.'
               : 'No analysis recorded for this report.'}
         </p>
       ) : analysis.status === 'unavailable' ? (
@@ -85,44 +79,46 @@ export function ReportAnalysis({ report }: { report: CrewReport }) {
         <>
           <Verdict verdict={analysis.verdict ?? 'inconclusive'} />
           {analysis.summary && <p className="text-ink">{analysis.summary}</p>}
-          <Points
-            title="Backs up the report"
-            points={analysis.supporting}
-            labels={labels}
-          />
-          <Points
-            title="Points against the report"
-            points={analysis.contradicting}
-            labels={labels}
-          />
-          {analysis.also_visible.length > 0 && (
-            <List
-              title="Also visible in the photo"
-              items={analysis.also_visible}
-            />
-          )}
-          <p className="text-ink-2">
-            Suggested category:{' '}
-            <strong className="text-ink">
-              {analysis.suggested_category
-                ? categoryNames[analysis.suggested_category]
-                : 'none'}
-            </strong>{' '}
-            · severity:{' '}
-            <strong className="text-ink">
-              {analysis.severity_suggestion ?? 'none'}
-            </strong>
-            {analysis.confidence !== null &&
-              ` · confidence ${Math.round(analysis.confidence * 100)}%`}
-          </p>
           {analysis.unknowns.length > 0 && (
-            <List title="Could not tell" items={analysis.unknowns} />
+            <List title="Still unknown" items={analysis.unknowns} />
           )}
+          <Details title="Analysis evidence and suggestions">
+            <Points
+              title="Backs up the report"
+              points={analysis.supporting}
+              labels={labels}
+            />
+            <Points
+              title="Points against the report"
+              points={analysis.contradicting}
+              labels={labels}
+            />
+            {analysis.also_visible.length > 0 && (
+              <List
+                title="Also visible in the photo"
+                items={analysis.also_visible}
+              />
+            )}
+            <p className="text-ink-2">
+              Suggested category:{' '}
+              <strong className="text-ink">
+                {analysis.suggested_category
+                  ? categoryNames[analysis.suggested_category]
+                  : 'None'}
+              </strong>{' '}
+              · severity:{' '}
+              <strong className="text-ink">
+                {displayLabel(analysis.severity_suggestion, 'None')}
+              </strong>
+              {analysis.confidence !== null &&
+                ` · confidence ${Math.round(analysis.confidence * 100)}%`}
+            </p>
+          </Details>
         </>
       )}
-      <p className="text-xs text-muted">
-        The supervisor makes the final call. This analysis never changes the
-        report, its review, or the score.
+      <p className="text-sm text-muted">
+        Supervisor review required. Analysis does not change the report or
+        score.
       </p>
     </aside>
   )

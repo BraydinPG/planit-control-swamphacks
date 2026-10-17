@@ -6,6 +6,7 @@ import { DemoClient } from './demo/client'
 import { useRoute } from './application/context'
 import { ConnectedPages, DemoClock } from './pages/ConnectedPages'
 import { control } from './components/data/Interaction'
+import { Details } from './components/data/Details'
 import { LiveApplication } from './application/LiveApplication'
 import { ApplicationProvider } from './application/Provider'
 import type { Persona } from './api/contracts'
@@ -33,7 +34,7 @@ function DemoApplication() {
       <AppShell
         workspaceOverride={persona}
         badge="Simulated demo"
-        message="Local demo changes only; no sign-in or backend writes. Workspaces are previews, never authorization."
+        message="Practice only. Changes stay in this browser; no live sign-in or backend writes."
         controls={
           <div
             className="flex flex-wrap gap-2"
@@ -80,9 +81,15 @@ function DemoApplication() {
         }
       >
         {resetError && <p role="alert">{resetError}</p>}
-        <p className="mb-3 text-xs text-slate-600">
-          <DemoClock /> | All activations and mutations simulated.
-        </p>
+        <div className="mb-3">
+          <Details title="Demo time and details">
+            <DemoClock />
+            <p>
+              All events and changes are simulated. Reset demo restores the
+              saved examples and preserves sign-in sessions.
+            </p>
+          </Details>
+        </div>
         <ConnectedPages />
       </AppShell>
     </ApplicationProvider>
@@ -92,11 +99,13 @@ export default function App() {
   if (shellMode === 'invalid')
     return (
       <main className="p-6">
-        <h1>Fixture configuration is invalid.</h1>
+        <h1 className="text-2xl font-bold">The app could not start</h1>
         <p>
-          No site data loaded. Use VITE_USE_FIXTURES=true or false; no data is
-          substituted.
+          Demo mode is not configured correctly. No worksite data has loaded.
         </p>
+        <Details title="Configuration details">
+          Set VITE_USE_FIXTURES to true or false, then restart the frontend.
+        </Details>
       </main>
     )
   return shellMode === 'fixture' ? (

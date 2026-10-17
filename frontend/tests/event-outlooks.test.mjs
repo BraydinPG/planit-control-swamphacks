@@ -38,7 +38,7 @@ test('each event renders as its own card, keyed by event id', () => {
   assert.match(out, /Research duration estimate/)
   assert.match(out, /Issued NHC forecast/)
   assert.match(out, /Issued USGS aftershock forecast/)
-  assert.match(out, /Historical example, not a current prediction/)
+  assert.match(out, /Archived agency forecast, not a current prediction/)
   assert.match(out, /Simulated replay/)
   assert.match(out, /Advisory only. Does not change the score/)
 })
@@ -170,16 +170,16 @@ test('duration, storm and aftershock cards show their own uncertainty and times'
     detail.event_outlooks.map((c) => [c.event_type, c]),
   )
   const flood = text(render([byType.Flood]))
-  assert.match(flood, /Likely range 1 h to not identified/)
-  assert.match(flood, /Still ongoing in 6 h 54%/)
-  assert.match(flood, /Not a time when work can resume/)
+  assert.match(flood, /Lower range estimate: 1 hour\. Upper estimate unknown/)
+  assert.match(flood, /Still ongoing in 6 hours 54%/)
+  assert.match(flood, /not a time to resume work/)
   const storm = text(render([byType['Hurricane (Typhoon)']]))
   assert.match(storm, /HELENE/)
-  assert.match(storm, /not wind at this site/)
-  assert.match(storm, /archive capture/)
+  assert.match(storm, /local wind and event end time are unknown/)
+  assert.match(storm, /Archive capture/)
   const quake = text(render([byType.Earthquake]))
-  assert.match(quake, /Mainshock M7\.1/)
-  assert.match(quake, /not at this site/)
+  assert.match(quake, /Magnitude 7\.1 mainshock/)
+  assert.match(quake, /not this worksite/)
 })
 
 test('unavailable is a visible reason, never a probability', () => {
@@ -193,7 +193,7 @@ test('unavailable is a visible reason, never a probability', () => {
 })
 
 test('no confirmed event says so without implying safety', () => {
-  assert.match(text(render([])), /This does not mean the site is safe/)
+  assert.match(text(render([])), /Conditions remain unknown/)
 })
 
 test('a malformed card does not break the site page; a missing field means none', () => {

@@ -20,7 +20,7 @@ test('all source states have explicit text, independent of color', () => {
   for (const [state, label] of Object.entries({
     observed: 'Observed',
     forecast: 'Forecast',
-    crew_reported: 'Crew reported',
+    crew_reported: 'Crew report',
     simulated: 'Simulated',
     stale: 'Stale',
     unavailable: 'Unavailable',
@@ -41,7 +41,7 @@ test('null score and unavailable timestamp never become safe/zero', () => {
     render(ScorePanel, { site, demo: false }),
     /0.0 \/ 10|low risk/,
   )
-  assert.match(render(Timestamp, { value: null }), /Timestamp unavailable/)
+  assert.match(render(Timestamp, { value: null }), /Time unavailable/)
 })
 test('legacy model-onset score component is withheld without mutating fixture', () => {
   const site = {

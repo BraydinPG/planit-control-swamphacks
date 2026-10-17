@@ -2,6 +2,12 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Frontend readability checkpoint - 2026-10-17
+- Explicit Cache authorization: application-wide copy, typography and progressive disclosure; Rudra retains frontend maintenance. Branch `feature/cache-ui-readability-polish`, initial base `5045790` (merged PR44/45), isolated functional checkout. No teammate checkout/server changes.
+- Short labels and local times use `frontend/src/presentation/display.ts`; original evidence, model/provenance and diagnostics stay accessible in native disclosures. Alerts and original supervisor instructions remain primary. All six outlooks, **6.1/10 rules-0.2**, demo/history/unknown distinctions remain intact.
+- Checkpoint: 164 frontend tests, lint/TypeScript/build and 85 focused backend fixture/outlook/score/lightning checks pass; existing Edge demo/mock suite passes at 1440/390/320. See `docs/UI_READABILITY.md` and `docs/CROSS_SCOPE_CHANGES.md`. No task checkboxes or real-service acceptance claims.
+- New upstream team organization-renaming and recorded species wording are being incorporated before final publication; final verification/PR details will follow this checkpoint.
+
 ## Access mat report category - 2026-10-17
 - User-authorized addition: `access_mat_deterioration` / "Access mat deterioration" across the canonical report enum, TypeScript mirror, form/review labels, validators, demo client, notice labels and Gemini analysis. Existing string DB columns need no migration. Potential notices use the existing review/instruction workflow and a labeled prototype 1-mile fallback radius.
 - The optional note can preserve the crew's A-D stage and section description. User clarification: individual mat IDs are impractical and no approved rubric is available. T034B therefore tracks section-based reporting, structured crew judgment and evidence-linked Gemini observations for supervisor review; automated letter grading is deferred. Gemini is prompted to describe visible damage and unknowns without claiming structural capacity or replacing the crew assessment.
