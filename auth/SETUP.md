@@ -57,7 +57,7 @@ Then, on the API:
 | `review:reports` | Review reports that no hazard is present (own organization) | | ✓ |
 | `confirm:hazards` | Confirm a potential hazard from a received notice | | ✓ |
 | `send:instructions` | Edit and send the instruction for a confirmed hazard | | ✓ |
-| `read:org_briefings` | Read the latest briefings for every team site (own organization) | | ✓ |
+| `read:org_briefings` | Read the latest briefings for every team site (own organization) | ✓ | ✓ |
 
 These match `backend/app/security/roles.py` and the role policy in `spec.md` section 8. If you change one, change both.
 
@@ -65,10 +65,10 @@ These match `backend/app/security/roles.py` and the role policy in `spec.md` sec
 
 **User Management → Roles → Create Role**, twice:
 
-- `crew`: description "Field crew". Under **Permissions → Add Permissions**, choose PlanIT Control API and add the three crew permissions.
+- `crew`: description "Field crew". Under **Permissions → Add Permissions**, choose PlanIT Control API and add the four crew permissions.
 - `supervisor`: description "Supervisor". Add all eight permissions.
 
-Role names must be exactly `crew` and `supervisor`.
+Name the roles `crew` and `supervisor`. Capitalization does not matter (`Supervisor` works); the spelling does.
 
 ## 4. Create the single-page application
 
@@ -152,7 +152,7 @@ The demo needs one account per role (`spec.md` section 8). Create them in the da
 
 1. `cd frontend && npm run dev`, then open http://localhost:5173/auth-check.html.
 2. Click **Sign in** and use the crew account. The page should show **Role: Crew**. The crew guard shows its content, and the supervisor guard shows "Not available for your role".
-3. Click **Get access token**. It should report an access token with 3 permissions.
+3. Click **Get access token**. It should report an access token with 4 permissions.
 4. Sign out, sign in as the supervisor, and confirm **Role: Supervisor** and 8 permissions.
 
 The backend tests (`backend/tests/test_security.py`) cover missing, invalid, expired, and valid tokens, and crew being refused supervisor actions, without a tenant.

@@ -336,11 +336,21 @@ def client(factory) -> Iterator[TestClient]:
         app.dependency_overrides.clear()
 
 
-def test_crew_reads_only_their_sites_briefing(client: TestClient) -> None:
+def test_crew_reads_their_organizations_briefings_only(client: TestClient) -> None:
     me = crew("auth0|crew-ny")
     assert client.get("/api/sites/site-ny/briefing", headers=me).json()["site_id"] == "site-ny"
     assert client.get("/api/sites/site-la/briefing", headers=me).status_code == 403
-    assert client.get("/api/briefings", headers=me).status_code == 403
+    assert [b["site_id"] for b in client.get("/api/briefings", headers=me).json()] == ["site-ny"]
+
+
+def test_without_read_org_briefings_crew_reads_only_their_site(client: TestClient) -> None:
+    from app.security import roles
+
+    limited = auth_fakes.bearer(
+        auth_fakes.token(["crew"], [roles.READ_ASSIGNED_SITES], sub="auth0|crew-ny")
+    )
+    assert client.get("/api/sites/site-ny/briefing", headers=limited).status_code == 200
+    assert client.get("/api/briefings", headers=limited).status_code == 403
 
 
 def test_supervisor_reads_their_organizations_briefings_only(client: TestClient) -> None:

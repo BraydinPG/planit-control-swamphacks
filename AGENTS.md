@@ -295,7 +295,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
 | Confirm a potential hazard from a received notice | No | Any notified supervisor |
 | Edit and send the instruction for that hazard | No | The confirming supervisor |
-| Read organization-wide briefings | No | Own organization only |
+| Read organization-wide briefings | Own organization only | Own organization only |
 
 The backend is the authority for permissions. Frontend guards improve UX but do not replace API checks.
 

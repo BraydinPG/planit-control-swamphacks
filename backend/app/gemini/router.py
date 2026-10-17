@@ -1,9 +1,9 @@
 """Briefing routes (T058A). Briefings are read here; only the 6 PM schedule creates them.
 
-- `GET /api/sites/{site_id}/briefing`: the site's latest briefing. Crew: their team's site.
-  Supervisor: team sites in their own organization.
-- `GET /api/briefings`: supervisor (`read:org_briefings`) only; the latest briefing for
-  every team site in their organization.
+- `GET /api/sites/{site_id}/briefing`: the site's latest briefing for team sites in the
+  caller's organization (with `read:org_briefings`), otherwise only their team's site.
+- `GET /api/briefings`: anyone with `read:org_briefings` (crew and supervisors); the latest
+  briefing for every team site in their organization.
 """
 
 from typing import Annotated
@@ -27,7 +27,7 @@ from app.security import (
 router = APIRouter(tags=["briefings"])
 
 NO_BRIEFING = "No briefing yet. Briefings are generated at 6 PM site-local time."
-OrgSupervisor = Annotated[CurrentUser, Depends(require_permission(roles.READ_ORG_BRIEFINGS))]
+OrgReader = Annotated[CurrentUser, Depends(require_permission(roles.READ_ORG_BRIEFINGS))]
 
 
 @router.get("/api/sites/{site_id}/briefing", response_model=Briefing)
@@ -41,7 +41,7 @@ def site_briefing(site_id: str, user: AuthenticatedUser, session: DbSession) -> 
 
 
 @router.get("/api/briefings", response_model=list[Briefing])
-def organization_briefings(user: OrgSupervisor, session: DbSession) -> list[Briefing]:
+def organization_briefings(user: OrgReader, session: DbSession) -> list[Briefing]:
     site_ids = _organization_site_ids(session, user)
     return [to_schema(row) for row in _latest(session, sorted(site_ids))]
 

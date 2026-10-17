@@ -242,7 +242,7 @@ Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. H
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
 | Confirm a potential hazard from a received notice | No | Any notified supervisor |
 | Edit and send the instruction for that hazard | No | The confirming supervisor |
-| Read organization-wide briefings | No | Own organization only |
+| Read organization-wide briefings | Own organization only | Own organization only |
 
 Keep secrets in environment variables. Provide one demo account per role. Any development bypass must be explicit, local-only, and disabled by default.
 
@@ -266,7 +266,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
 | `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
 | `GET /api/sites/{id}/briefing` | The site's latest stored next-day briefing. Same site access as `GET /api/sites/{id}`. |
-| `GET /api/briefings` | Supervisor: the latest briefing for every team site in their organization. |
+| `GET /api/briefings` | The latest briefing for every team site in the caller's organization (crew and supervisors). |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.
 
