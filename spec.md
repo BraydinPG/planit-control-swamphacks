@@ -33,6 +33,8 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 - A crew report stores coordinates and whether the hazard is present. The crew screen does not include a map snippet. The supervisor screen keeps the full map. A detected or crew-marked hazard sends a “potential {hazard}” notice with no instructions. Instructions go out only after a notified supervisor confirms the hazard and accepts or edits Gemini’s suggestion.
 - NOAA Storm Events and related historical weather data are proxies for hazard events. They do not represent worker injury outcomes unless the team obtains and validates separate outcome data.
 - If a live lightning feed is unavailable, use a deterministic replay fixture and label it as simulated.
+- Live hazard data comes from public NWS, NHC, and USGS feeds, plus the lightning replay fixture. Section 5 lists each source. Every reading shows its source and data state. Hurricanes and earthquakes are regional events near a site, not on-site observations.
+- On-site hazards that no feed can detect, such as a broken electrical pole, a downed line, or a fire on site, come only from in-person crew reports.
 - Include only hazard feeds the team can source and timestamp. Mark missing, stale, mocked, or unavailable data clearly.
 - Safety thresholds beyond the explicit lightning rule are configurable prototype rules. Do not present them as official employer or regulatory policy.
 
@@ -65,7 +67,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 - Import and validate at least 50 EIA-860M coordinates.
 - Display all sites in a map and a location list. Show the assigned team, and place locations that have a team above locations that do not.
 - Show a per-site hazard index, factor breakdown, confidence or data completeness, and last-updated time.
-- Show at least one reliable weather and forecast feed. Cache results and expose stale-data states.
+- Ingest the P0 live feeds from section 5: NWS weather and forecast, NWS flood alerts, and the labeled lightning replay fixture. Cache results and expose stale and unavailable states.
 - Implement the lightning stop-work rule and resettable 30-minute countdown.
 - Support crew hazard reports with a photo, coordinates, and a present-or-absent answer.
 - Support one supervisor per organization, with multiple teams and crew members. Many organizations share one deployment.
@@ -82,11 +84,12 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 - Gemini-assisted report classification with human confirmation.
 - Mobile-first crew interface and polished supervisor dashboard.
 - 6 PM local briefing schedule, with a manual generation action for the demo.
+- P1 live feeds from section 5: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
 - Public repository README documenting architecture, data, model, evaluation, Gemini safeguards, Auth0 setup, and demo steps.
 
 ### P2: only after P0 and P1 work
 
-- Additional live data feeds for wildfire, flood gauges, soil saturation, and other hazards.
+- Additional live data feeds for wildfire, soil saturation, and other hazards.
 - Push notifications, offline sync, what-if scheduling, or a conversational assistant.
 - Auth0 AI Agent security features, if the basic role-protected Gemini endpoints are stable and the team can show a meaningful use.
 
@@ -95,6 +98,23 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 ### Data states
 
 Every observation must carry a source, value, unit when relevant, observation time, valid time, location, and data state. Use these visible states: observed, forecast, crew reported, simulated, stale, unavailable.
+
+### Live data sources
+
+Braydin's ingestion adapters in `backend/app/ingestion/` fetch these feeds and normalize them into `Observation` records. Confirm access, rate limits, and terms for each source before building it.
+
+| Hazard | Source | Tier | Data state | When unavailable |
+|---|---|---|---|---|
+| Weather and forecast, including heat index inputs | NWS API (`api.weather.gov`): point lookup, hourly forecast, latest station observation. No key, but send a `User-Agent`. | P0 | observed, forecast | Keep the last reading and mark it stale, then unavailable |
+| Flooding | NWS active alerts for the site point: Flood Warning, Flash Flood Warning, Flood Watch | P0 | observed | Mark unavailable. Never treat a missing alert as no flood risk. |
+| Lightning | Deterministic replay fixture | P0 | simulated | Fixture is always available |
+| Lightning, live | NOAA GOES GLM lightning data on AWS Open Data, best effort | P1 | observed | Fall back to the replay fixture and label it simulated |
+| Hurricanes | NHC active storms (`CurrentStorms.json`) plus NWS Hurricane and Tropical Storm Warning and Watch alerts | P1 | observed, forecast | Mark unavailable |
+| Earthquakes | USGS earthquake GeoJSON summary feed, for example the past-hour feed | P1 | observed | Mark unavailable |
+| Flood gauges | USGS Water Services instantaneous gauge readings | P1 | observed | Fall back to NWS flood alerts and mark gauges unavailable |
+| Broken electrical pole, downed line, on-site fire, wildlife, other on-site hazards | No feed. In-person crew reports only. | P0, through the report flow | crew reported | Not applicable |
+
+For each feed, cache the last successful result with its fetch time. Mark it stale after a configurable age and unavailable when no successful result exists. Never present a stale reading as current. A feed outage never clears or resolves an alert.
 
 ### ML model
 
@@ -109,6 +129,9 @@ Cache owns the model component. Rudra owns the final displayed index, which comb
 - Lightning: a qualifying strike within 10 miles creates a stop-work alert. The 30-minute all-clear window starts from the latest strike and resets after each new qualifying strike. Resolve only when the window expires with no new strike.
 - Flooding: use a documented rule based on a warning, gauge threshold, or rainfall plus site context. The brief sets no numeric threshold, so label a chosen threshold as a prototype setting.
 - Heat: show the forecast heat index and use a documented configurable threshold. Do not infer work/rest schedules from the brief.
+- Hurricane (prototype): an active NWS Hurricane or Tropical Storm Warning covering the site, or an NHC active storm within a configurable distance, creates a potential-hazard notice and a score factor. Label the distance as a prototype setting.
+- Earthquake (prototype): a USGS event at or above a configurable magnitude within a configurable distance of the site creates a potential-hazard notice and a score factor. Label both settings as prototype values, not official policy.
+- Crew-reported only: no feed detects a broken electrical pole, a downed line, a fire on site, or similar on-site hazards. These enter the system only when an in-person crew member submits a report marked present.
 - Crew reports: only a confirmed report that the hazard is present can contribute to the final score. A report that the hazard is absent does not raise the score and does not send a potential-hazard notice. A potential notice does not change the score.
 - Potential-hazard notice: a connected source detection or a crew member marking a hazard present notifies every team and every supervisor assigned to a location inside the radius. The notice text is “potential {hazard}” and includes no instructions. The radius comes from Gemini. Accept only a positive radius of 50 miles or less. If Gemini is unresponsive or returns an invalid radius, use that category’s default radius below and label it as a default. The lightning stop-work rule remains a separate 10-mile deterministic rule.
 
@@ -119,6 +142,10 @@ Cache owns the model component. Rudra owns the final displayed index, which comb
 | Heat | 15 miles |
 | Wildlife | 1 mile |
 | Wildfire | 10 miles |
+| Hurricane | 50 miles |
+| Earthquake | 25 miles |
+| Broken electrical pole or downed line | 1 mile |
+| On-site fire | 1 mile |
 | Any other category | 1 mile |
 
 These defaults are prototype notice distances, except lightning, which matches the required stop-work distance. Do not present the other defaults as official policy.
@@ -179,7 +206,7 @@ Create a small evaluation set for grounding, schema validity, unknown handling, 
 - Mobile-first site and alert screens.
 - Put site status, current alert, immediate action, and update time at the top.
 - Large, glove-friendly controls, minimum 44 by 44 CSS pixels for primary touch targets.
-- Report hazard flow with photo, category, coordinates, a required present-or-absent choice, and optional text.
+- Report hazard flow with photo, category, coordinates, a required present-or-absent choice, and optional text. Categories include broken electrical pole or downed line, on-site fire, wildlife, flooding, and other. These on-site hazards have no automated feed, so the crew report is how they enter the system.
 - High contrast and large text suitable for bright outdoor use.
 - Use icons and labels in addition to color. Support keyboard access, visible focus, semantic labels, and screen readers.
 
@@ -220,7 +247,7 @@ Keep secrets in environment variables. Provide one demo account per role. Any de
 
 ## 9. Architecture and API contract
 
-Required stack: React + TypeScript with Vite and Tailwind CSS for the frontend, FastAPI for every backend route, Tiger Data for the application database, Vultr for application hosting and photo object storage, a geospatial map library, scikit-learn, Gemini API, and Auth0. Auth0, Tiger Data, and Vultr are sponsors for tracks. Style the UI with Tailwind utility classes. Do not add a second CSS framework. The Vite app is the UI only. Implement API routes, Auth0 token checks, Gemini calls, scoring, alerts, and data ingestion in FastAPI under `backend/app/`. Do not implement those routes in Next.js, Express, Flask, or another server.
+Required stack: React + TypeScript with Vite and Tailwind CSS for the frontend, FastAPI for every backend route, Tiger Data for the application database, Vultr for application hosting and photo object storage, a geospatial map library, scikit-learn, Gemini API, and Auth0. Auth0, Tiger Data, and Vultr are sponsors for tracks. Style the UI with Tailwind utility classes. Do not add a second CSS framework. The Vite app is the UI only. Implement API routes, Auth0 token checks, Gemini calls, scoring, alerts, and data ingestion in FastAPI under `backend/app/`. Live-feed adapters live in `backend/app/ingestion/`. Do not implement those routes in Next.js, Express, Flask, or another server.
 
 Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL and `sslmode=require`. Store sites, reports, scores, alerts, and observations there. Convert time-ordered `Observation`, `Alert`, and `AuditEvent` tables to hypertables. Keep `Organization`, `Team`, `Site`, `CrewReport`, `HazardNotice`, `Acknowledgement`, `Briefing`, `HazardPrediction`, and `HazardScore` as regular tables. One deployment serves many organizations. A supervisor belongs to one organization and manages all of its teams. A crew member belongs to one team. Auth0 is the only identity provider. Deploy the FastAPI app and the frontend on Vultr. Store crew photos in Vultr Object Storage, with a private local directory allowed for development. Do not add a second database, identity provider, or application host.
 
@@ -260,7 +287,7 @@ predict_site(features) -> {
 - `Organization`: identity and name. Many organizations share the deployment.
 - `Team`: organization, name, and the one location it is assigned to. A team has many crew members. A location lists at most one assigned team.
 - `Site`: identity, name, coordinates, location type, source, region.
-- `Observation`: hazard type, value, unit, source, observed and valid times, freshness, simulated flag.
+- `Observation`: hazard type, value, unit, source, observed and valid times, freshness, simulated flag. Hazard types include `weather`, `forecast`, `flood_alert`, `flood_gauge`, `lightning_strike`, `hurricane`, and `earthquake`.
 - `HazardPrediction`: probabilities, model version, created time.
 - `HazardScore`: final score, factor contributions, model version, created time.
 - `Alert`: site, rule, state, trigger time, latest qualifying event, clear-after time.
@@ -275,7 +302,8 @@ predict_site(features) -> {
 - Keep weather data cached and show freshness.
 - If Gemini fails, show deterministic text or factor data.
 - If the model fails, show the labeled fallback score.
-- If a feed is stale or unavailable, show that state and reduce confidence. Do not present stale observations as current.
+- If a feed is stale or unavailable, show that state and reduce confidence. Do not present stale observations as current. Track freshness per feed, so one failed feed does not mark the others stale.
+- A feed outage never clears an alert or lowers a score to zero risk.
 - Keep lightning alerts and rule evaluation independent from Gemini and model availability.
 - Restrict photo size and file types. Keep photo storage private. Use Vultr Object Storage outside local development.
 - Keep credentials out of git. Log alert triggers, acknowledgements, report review, and briefing generation.
@@ -288,9 +316,9 @@ See `AGENTS.md` for detailed individual ownership, prompts, path boundaries, con
 Ownership summary:
 
 - Cache: `ml/`, model training, features, evaluation, and model handoff.
-- Braydin: `backend/app/security/`, `backend/app/db/`, database migrations, `frontend/src/auth/`, Auth0 setup notes.
+- Braydin: `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/`, database migrations, EIA-860M site import, live data feeds, `frontend/src/auth/`, Auth0 setup notes.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
-- Rudra: `backend/app/` except `security/` and `db/`, data ingestion, API contracts, alerts, Gemini endpoints, integration, deployment, root README. Rudra imports Braydin’s database session and does not edit migrations.
+- Rudra: `backend/app/` except `security/`, `db/`, and `ingestion/`, API contracts, deterministic alert rules, scoring, Gemini endpoints, integration, deployment, root README. Rudra imports Braydin’s database session and ingestion adapters, and does not edit migrations or feed adapters.
 
 Rudra creates and publishes the shared schemas first. Other members start against fixtures and their own module boundaries. Do not have two people edit the same file. Shared manifest and lockfile changes go through Rudra.
 
@@ -312,7 +340,7 @@ If the core flow is unstable by hour 19, stop adding data sources and stretch fe
 
 | Track | Proof to show |
 |---|---|
-| Sperry Tech | 50+ real locations, multi-hazard site view, lightning rule, crew reports, ranking, next-day brief. |
+| Sperry Tech | 50+ real locations, multi-hazard site view with live weather, flood, lightning, hurricane, and earthquake data, lightning rule, crew reports, ranking, next-day brief. |
 | Gemini API | Useful, grounded structured briefing and score explanation with evidence and fallbacks. |
 | UI/UX | Fast crew flow, readable field interface, polished supervisor dashboard, accessible controls. |
 | Auth0 (sponsor track) | Role-based sign-in and backend authorization demonstrated with two accounts. |

@@ -59,6 +59,21 @@ predict_site(features) -> {
 
 Cache returns the model component. Rudra computes the final site score and alert state.
 
+### Ingestion interface
+
+Braydin publishes one adapter per live feed in `backend/app/ingestion/<feed>.py`. Feeds and sources are listed in `spec.md` section 5, "Live data sources."
+
+```text
+fetch(sites, now) -> list[Observation]
+  # each Observation: source, hazard_type, value, unit, lat, lon,
+  #                   observed_at, valid_at, data_state
+
+lightning.submit_strike(lat, lon, time, simulated) -> Observation
+  # used by the replay fixture and by tests
+```
+
+`hazard_type` is one of `weather`, `forecast`, `flood_alert`, `flood_gauge`, `lightning_strike`, `hurricane`, or `earthquake`. `data_state` is one of `observed`, `forecast`, `simulated`, `stale`, or `unavailable`. Rudra's alert rules and scoring read only these Observations and never call a feed directly. Broken electrical poles, downed lines, on-site fires, and other on-site hazards have no adapter. They arrive only through crew reports.
+
 ### Backend routes
 
 - `GET /api/sites`
@@ -104,15 +119,15 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 - Add a transparent fallback when the model artifact or required features are missing.
 - Provide `ml/EVALUATION.md` with data provenance, features, metrics, limitations, and run instructions.
 
-**Can start immediately:** Yes. Use mock feature rows until Rudra’s site ingestion is ready.
+**Can start immediately:** Yes. Use mock feature rows until Braydin’s site ingestion is ready.
 
-**Integration dependency:** Rudra imports the function and combines its output with live deterministic factors. Do not implement the final risk score or lightning alert logic.
+**Integration dependency:** Rudra imports the function and combines its output with live deterministic factors. Do not implement the final risk score or lightning alert logic. Live feeds supply deterministic factors, not model training labels. The model scope stays as described above.
 
-### Braydin: Auth0, access control, and Tiger Data setup
+### Braydin: Auth0, access control, Tiger Data setup, and data ingestion
 
-**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, database migrations, `frontend/src/auth/**`, `auth/SETUP.md`.
+**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, database migrations, `frontend/src/auth/**`, `auth/SETUP.md`.
 
-**Do not edit:** Nick’s pages/components/styles, Rudra’s route files, shared manifests, lockfiles, root README.
+**Do not edit:** Nick’s pages/components/styles, Rudra’s route, alert-rule, and scoring files, shared manifests, lockfiles, root README.
 
 **Tasks:**
 
@@ -126,11 +141,16 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 - Configure the Tiger Data connection from `DATABASE_URL`, with `sslmode=require` for Tiger Cloud.
 - Define the database models, including `Organization`, `Team`, and `HazardNotice`, and publish a session other routes can import.
 - Create migrations, enable TimescaleDB, and convert `Observation`, `Alert`, and `AuditEvent` into hypertables.
-- Add a runnable seed command. Leave site and observation contents for Rudra to fill.
+- Add a runnable seed command. Leave demo scenario contents for Rudra to fill.
+- Import and validate 50 or more EIA-860M locations. Label these as representative power plant locations.
+- Build the P0 live feeds: NWS weather and forecast, NWS flood alerts, and the labeled lightning replay fixture. Normalize each into `Observation` records through the ingestion interface.
+- Build the P1 live feeds when P0 is stable: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
+- Cache each feed's last successful result, track freshness per feed, and mark stale and unavailable states. A failed refresh must never appear current. Keep each adapter replaceable.
+- Do not implement alert rules or scores. Rudra's rules read your Observations.
 
-**Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module after Rudra publishes the API schemas.
+**Can start immediately:** Yes. Create the Auth0 module and setup instructions independently. Start the Tiger Data module and ingestion adapters after Rudra publishes the API schemas. Adapters can return fixture Observations until the database is ready.
 
-**Integration dependency:** Nick imports frontend exports. Rudra imports the Auth0 dependencies and the database session, then attaches both to routes. Send import examples as soon as each interface is stable.
+**Integration dependency:** Nick imports frontend exports. Rudra imports the Auth0 dependencies, the database session, and the ingestion adapters, then attaches them to routes and rules. Send import examples as soon as each interface is stable.
 
 ### Nick: frontend and UI/UX
 
@@ -143,7 +163,8 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 - Build mobile-first crew screens and desktop/tablet supervisor screens.
 - Include crew home, alert detail and timer, hazard report with a present-or-absent choice, supervisor full map, the location list with each assigned team, site detail, briefing, and Gemini explanation views. Locations with a team appear above locations without one.
 - Use mock JSON that follows the shared contract. Add a fixture switch so the interface works before backend integration.
-- Show data freshness, source, simulated/stale/unavailable status, score factors, and evidence references.
+- Show data freshness, source, simulated/stale/unavailable status, score factors, and evidence references. Show source and state separately for each feed: weather, forecast, flood, lightning, hurricane, and earthquake.
+- Include report categories for broken electrical pole or downed line, on-site fire, wildlife, flooding, and other. These hazards come only from crew reports.
 - Style screens with Tailwind utility classes. Do not add a second CSS framework.
 - Use high contrast, large text, labeled icons, minimum 44 by 44 CSS pixel primary touch targets, and no color-only risk communication.
 - Include keyboard navigation, visible focus, semantic labels, loading/error/empty states, and screen-reader support.
@@ -153,20 +174,20 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 
 **Integration dependency:** Replace fixture calls with Rudra’s API client and import Braydin’s auth exports when available. Keep all auth code inside Braydin’s paths.
 
-### Rudra: backend, data, Gemini, and integration
+### Rudra: backend, alert rules, scoring, Gemini, and integration
 
-**Owned paths:** `backend/app/**` except `backend/app/security/**` and `backend/app/db/**`, shared API types, data ingestion, root `README.md`, deployment files, shared configuration and manifests.
+**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, and `backend/app/ingestion/**`, shared API types, root `README.md`, deployment files, shared configuration and manifests.
 
-**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, database migrations, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
+**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, database migrations, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
 
 **Tasks:**
 
-- First publish the shared API and model contracts. Provide fixture JSON for Nick.
-- Import and validate 50 or more EIA-860M locations. Label these as representative power plant locations.
-- Add one dependable weather/forecast feed with caching and freshness labels. Keep the data adapter replaceable.
+- First publish the shared API and model contracts, including the ingestion interface. Provide fixture JSON for Nick.
+- Import Braydin’s ingestion adapters. Do not fetch live feeds in route or rule files.
 - Import Braydin’s Tiger Data session and models into FastAPI routes from the shared contract. Do not add those routes in another framework. Do not edit migrations or hypertables.
 - Implement lightning stop-work within 10 miles and a resettable 30-minute all-clear. Provide a labeled replay fixture if live lightning access is unreliable.
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
+- Implement the prototype hurricane and earthquake rules from `spec.md` using Braydin's Observations. Each creates a potential-hazard notice and a score factor. Label distance and magnitude settings as prototype values.
 - Integrate Cache’s `predict_site()` output and compute the final score from model output, current factors, and confirmed reports.
 - Implement crew reports, photo handling in Vultr Object Storage, review state, acknowledgements, and audit events. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
 - Ask Gemini for the notice radius. Validate the result. If Gemini is unresponsive or the radius is invalid, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate.
@@ -179,7 +200,7 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 
 **Can start immediately:** Yes. Start with contract, app skeleton, seed fixtures, site endpoints, and deterministic alert logic.
 
-**Integration dependencies:** Cache supplies the model function. Braydin supplies token/role dependencies. Nick supplies the frontend. Use temporary stubs until each module arrives.
+**Integration dependencies:** Cache supplies the model function. Braydin supplies token/role dependencies, the database session, and the ingestion adapters. Nick supplies the frontend. Use temporary stubs until each module arrives.
 
 ## Role and permission policy
 
@@ -201,7 +222,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 ## Integration and merge schedule
 
 1. **Kickoff, hour 0–1:** Rudra creates the skeleton and publishes contracts. Each person confirms path ownership and creates a branch.
-2. **Parallel build, hours 1–8:** Cache works in `ml/`, Braydin in auth paths, Nick in frontend paths, Rudra in backend/data paths. Use fixtures and stubs.
+2. **Parallel build, hours 1–8:** Cache works in `ml/`, Braydin in auth, database, and ingestion paths, Nick in frontend paths, Rudra in backend route, rule, and scoring paths. Use fixtures and stubs.
 3. **First integration, hours 8–12:** Merge API contract and seed data, then Cache interface, Braydin modules, then Nick screens. Keep `main` runnable.
 4. **Feature integration, hours 12–27:** Connect model, Auth0, API, and UI. Each owner keeps edits inside their paths. Resolve interface questions in the contract before editing code.
 5. **Freeze, hours 27–32:** Stop adding features. Test role boundaries, lightning reset, report review, Gemini fallback, model fallback, and stale data.
@@ -222,6 +243,8 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 - 50+ validated site points appear in both map and ranked list.
 - Site risk includes model output, deterministic factors, confirmed reports, freshness, and explainable contributions.
 - Lightning within 10 miles triggers stop-work, and a new strike resets the 30-minute countdown.
+- Each live feed (weather, forecast, flood, lightning, and when built, hurricane and earthquake) shows its source, timestamp, and stale or unavailable state.
+- Crew can report a broken electrical pole, downed line, or on-site fire. These hazards come only from crew reports.
 - Crew can acknowledge alerts and submit a photo report that says whether a hazard is present.
 - A detected hazard or a crew member marking a hazard present sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius.
 - Any notified supervisor can confirm it. Teams inside that radius then receive the instruction that supervisor accepted or edited.

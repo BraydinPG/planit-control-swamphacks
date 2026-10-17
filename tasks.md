@@ -17,9 +17,9 @@ Aim for 15–60 minutes per task. Split larger tasks before coding. Follow path 
 
 ## Owners
 
-- Rudra: backend, site data, API contracts, alerts, Gemini endpoints, integration, deployment, README.
+- Rudra: backend routes, API contracts, alert rules, scoring, Gemini endpoints, integration, deployment, README.
 - Cache: `ml/`, model training, features, prediction, evaluation.
-- Braydin: `backend/app/security/`, `backend/app/db/**`, database migrations, `frontend/src/auth/`, `auth/SETUP.md`.
+- Braydin: `backend/app/security/`, `backend/app/db/**`, `backend/app/ingestion/**`, database migrations, EIA-860M site import, live data feeds, `frontend/src/auth/`, `auth/SETUP.md`.
 - Nick: `frontend/src/pages/`, `frontend/src/components/`, `frontend/src/styles/`, `frontend/src/api/`.
 
 ## Shared contracts
@@ -65,7 +65,7 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 - [ ] **T010 | Braydin | Configure the Tiger Data connection.** Read `DATABASE_URL` from the environment and require `sslmode=require` for Tiger Cloud. Needs T004 and T006. Done when the backend starts with documented settings.
 - [ ] **T011 | Braydin | Define database models.** Add Organization, Team, Site, Observation, Alert, HazardPrediction, HazardScore, CrewReport, HazardNotice, Acknowledgement, Briefing, and AuditEvent. A crew member belongs to one team. A team is assigned to one location. A supervisor belongs to one organization. Needs T006. Done when models import successfully.
 - [ ] **T012 | Braydin | Add database initialization.** Create migrations or a schema setup command on Tiger Data. Enable TimescaleDB and convert `Observation`, `Alert`, and `AuditEvent` into hypertables. Needs T011. Done when a clean database initializes from scratch.
-- [ ] **T013 | Braydin | Add a seed command.** Provide one runnable command. Leave site and observation contents for Rudra. Needs T012. Done when the command runs against a clean database.
+- [ ] **T013 | Braydin | Add a seed command.** Provide one runnable command. Leave demo scenario contents for Rudra. Needs T012. Done when the command runs against a clean database.
 
 ### Cache: AI/ML
 
@@ -95,7 +95,7 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 - [ ] **T031 | Nick | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
 - [ ] **T032 | Nick | Build crew home screen.** Show site, status, alert, immediate action, update time, and a “potential {hazard}” notice with no instructions. After a supervisor sends an instruction, show that text. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
 - [ ] **T033 | Nick | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.
-- [ ] **T034 | Nick | Build hazard report form.** Add photo, category, coordinates, a required present-or-absent choice, optional note, and confirmation. Needs T030. Done when submission does not require typed text.
+- [ ] **T034 | Nick | Build hazard report form.** Add photo, category (including broken electrical pole or downed line, on-site fire, wildlife, flooding, and other), coordinates, a required present-or-absent choice, optional note, and confirmation. Needs T030. Done when submission does not require typed text.
 - [ ] **T035 | Nick | Build supervisor location list.** Show the full map and every location with its assigned team, alerts, scores, and top factors. Place locations that have a team above locations that do not. Needs T030 and T031. Done when an occupied location appears above an empty one and the team name is visible.
 - [ ] **T036 | Nick | Build site detail and report review.** Show observations, timestamps, source, reports, and review status. Needs T031 and T035. Done when a supervisor can review a fixture report.
 - [ ] **T037 | Nick | Build briefing and explanation panels.** Show recommendations, evidence, unknowns, and fallback state. Needs T007 and T031. Done when generated and fallback text look distinct.
@@ -103,17 +103,23 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 
 ## Phase 2: Real sites, data, scores, and alerts
 
-- [ ] **T039 | Rudra | Inspect EIA-860M data.** Record source date, fields, and import mapping. Needs T013. Done when coordinate fields are verified.
-- [ ] **T040 | Rudra | Import 50+ sites.** Validate IDs, coordinates, and duplicates. Label locations as representative power plants, not verified construction sites. Needs T039 and T012. Done when 50 valid locations are in the database.
+- [ ] **T039 | Braydin | Inspect EIA-860M data.** Record source date, fields, and import mapping. Needs T013. Done when coordinate fields are verified.
+- [ ] **T040 | Braydin | Import 50+ sites.** Validate IDs, coordinates, and duplicates. Label locations as representative power plants, not verified construction sites. Needs T039 and T012. Done when 50 valid locations are in the database.
 - [ ] **T041 | Rudra | Implement `GET /api/sites`.** Return every location with its assigned team, matching T006. Sort locations with a team first, then by risk. Needs T040 and T006. Done when response validates.
 - [ ] **T042 | Rudra | Implement `GET /api/sites/{id}`.** Return observations, score factors, reports, and freshness. Needs T041. Done when valid IDs return detail and unknown IDs return 404.
-- [ ] **T043 | Rudra | Add one weather/forecast feed.** Normalize results into Observation records. Needs T012. Done when one site receives timestamped readings.
-- [ ] **T044 | Rudra | Add caching and stale state.** Preserve last successful readings and mark old data stale. Needs T043. Done when failed refreshes cannot appear current.
-- [ ] **T045 | Rudra | Define lightning event input and replay fixture.** Normalize strike location and time. Needs T012. Done when tests can submit a strike without a live feed.
+- [ ] **T043 | Braydin | Add the NWS weather and forecast feed (P0).** Use `api.weather.gov` point lookup, hourly forecast, and latest station observation in `backend/app/ingestion/`. Send a `User-Agent`. Normalize results into Observation records through the ingestion interface in `AGENTS.md`. Needs T012. Done when one site receives timestamped observed and forecast readings.
+- [ ] **T043A | Braydin | Add the NWS flood alerts feed (P0).** Fetch active Flood Warning, Flash Flood Warning, and Flood Watch alerts for each site point. Normalize them into `flood_alert` Observations. Needs T043. Done when a fixture alert produces an Observation and a failed fetch is marked unavailable, not "no flood."
+- [ ] **T044 | Braydin | Add caching and stale state for every feed.** Preserve each feed's last successful readings, track freshness per feed, and mark stale and unavailable states. Needs T043. Done when failed refreshes cannot appear current and one failed feed does not mark the others stale.
+- [ ] **T045 | Braydin | Define lightning event input and replay fixture (P0).** Normalize strike location and time. Expose `submit_strike()` from the ingestion interface. Label replayed strikes simulated. Needs T012. Done when tests can submit a strike without a live feed.
+- [ ] **T045A | Braydin | Add a live lightning feed (P1, best effort).** Try NOAA GOES GLM lightning data on AWS Open Data. Fall back to the replay fixture and label it simulated. Needs T045 and T044. Done when live strikes arrive as Observations, or the fallback is documented and labeled.
+- [ ] **T045B | Braydin | Add the hurricane feed (P1).** Use NHC active storms (`CurrentStorms.json`) and NWS Hurricane and Tropical Storm Warning and Watch alerts. Normalize them into `hurricane` Observations. Needs T044. Done when a fixture storm produces an Observation with source and time, and a failed fetch is marked unavailable.
+- [ ] **T045C | Braydin | Add the earthquake feed (P1).** Use the USGS earthquake GeoJSON summary feed. Normalize magnitude, location, and time into `earthquake` Observations. Needs T044. Done when a fixture event produces an Observation and a failed fetch is marked unavailable.
+- [ ] **T045D | Braydin | Add the USGS flood gauge feed (P1).** Use USGS Water Services instantaneous readings for gauges near sites. Normalize them into `flood_gauge` Observations. Needs T044. Done when a fixture gauge reading produces an Observation and NWS flood alerts remain the fallback.
 - [ ] **T046 | Rudra | Implement the 10-mile trigger.** Create stop-work alert for qualifying strikes. Needs T045. Done when tests cover inside, outside, and boundary distance.
 - [ ] **T047 | Rudra | Implement 30-minute resettable timer.** Base clear time on latest qualifying strike. Needs T046. Done when a second strike resets the timer and 30 strike-free minutes clear it.
 - [ ] **T048 | Rudra | Implement alert listing and acknowledgement.** Persist alert status, user, and acknowledgement time. Needs T046, T047, and T027. Done when state persists across requests.
-- [ ] **T049 | Rudra | Add prototype heat and flood factors.** Use available data and document configurable thresholds. Needs T043 and T044. Done when factors include source, time, and prototype label.
+- [ ] **T049 | Rudra | Add prototype heat and flood factors.** Use Braydin's weather, forecast, and flood Observations and document configurable thresholds. Needs T043, T043A, and T044. Done when factors include source, time, and prototype label.
+- [ ] **T049A | Rudra | Add prototype hurricane and earthquake rules (P1).** A hurricane warning covering the site or an NHC storm within a configurable distance, and a USGS event at or above a configurable magnitude within a configurable distance, each create a potential-hazard notice and a score factor. Use the default radii in `spec.md`. Needs T045B, T045C, and T053. Done when fixture Observations inside and outside the settings produce the expected notices and factors, and every setting is labeled prototype.
 - [ ] **T050 | Rudra | Connect Cache’s model.** Import `predict_site()` behind a backend adapter. Needs T022. Done when site data includes model version, confidence, and data quality.
 - [ ] **T051 | Rudra | Calculate final 0–10 score.** Combine model output, current factors, and confirmed reports. Document weights and missing-data handling. Needs T049 and T050. Done when response includes factor contributions and tests pass.
 
@@ -147,7 +153,7 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 - [ ] **T070 | All | Test clean setup.** Follow repo instructions from a clean checkout. Needs T009–T068. Done when another teammate can start frontend and backend without undocumented steps.
 - [ ] **T071 | Cache | Verify model reproducibility.** Run training and evaluation or document fixture fallback. Needs T021–T023. Done when results match the documentation.
 - [ ] **T072 | Braydin | Verify role boundaries.** Test UI guards and direct API requests. Needs T062 and T066. Done when prohibited crew requests fail server-side.
-- [ ] **T073 | Rudra | Test alert timing and feed failures.** Cover trigger, reset, expiry, and unavailable feed. Needs T046–T048. Done when tests pass and UI labels replay/unavailable states.
+- [ ] **T073 | Rudra + Braydin | Test alert timing and feed failures.** Cover trigger, reset, expiry, and an unavailable state for each built feed (weather, forecast, flood, lightning, hurricane, earthquake). Confirm a feed outage never clears an alert. Needs T046–T048 and T044. Done when tests pass and UI labels replay/unavailable states.
 - [ ] **T074 | All | Test AI and model failures.** Test missing Gemini key, timeout, invalid output, missing evidence, and model fallback. Needs T023 and T061. Done when fallbacks work and AI cannot clear alerts or alter scores.
 - [ ] **T075 | All | Rehearse the 3–5 minute demo.** Use the sequence in `spec.md` without manual database edits. Needs T069–T074. Done when the team completes the flow and logs blockers.
 - [ ] **T076 | Rudra | Freeze features and fix critical defects.** Fix acceptance failures and demo-breaking bugs only. Needs T075. Done when main runs and no P0 defect remains.
@@ -175,7 +181,8 @@ T001–T008: kickoff, repo, contracts
   ├── T024–T029: Auth0 lane
   └── T030–T038: frontend lane
                 ↓
-T039–T062: sites, data, scoring, alerts, reports, Gemini, permissions
+T039–T045D: sites and live feeds (Braydin, backend/app/ingestion/)
+T046–T062: alerts, rules, scoring, reports, Gemini, permissions (Rudra; reads Braydin's Observations)
                 ↓
 T063–T068: frontend integration
                 ↓
