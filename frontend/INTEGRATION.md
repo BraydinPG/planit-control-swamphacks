@@ -1,6 +1,6 @@
 # Frontend run and integration guide
 
-Current clean setup: [Windows PowerShell quick start](../docs/WINDOWS_QUICKSTART.md) and [verified results](../docs/clean-setup-verification.json). This independently tests main `681582b` without unmerged PR #34 geolocation code. Use explicit demo mode, `npm.cmd`, the backend venv Python, and rebuild before preview. T070 remains pending; these are credential-free demo/test checks, not live-service acceptance.
+Current clean setup: [Windows PowerShell quick start](../docs/WINDOWS_QUICKSTART.md) and [verified results](../docs/clean-setup-verification.json). This began at main `681582b`; maintainer-merged PR #34/main `a7e2e72` is now incorporated and verified, preserving its location logic. Use explicit demo mode, `npm.cmd`, the backend venv Python, and rebuild before preview. T070 remains pending; these are credential-free demo/test checks, not live-service acceptance.
 
 Current split: Codex/Cache owns functionality; Claude is actively redesigning pages/components/styles. See docs/FUNCTIONAL_INTEGRATION_HANDOFF.md before changing shared interfaces. Nick's earlier attribution is preserved. T030's layout/navigation is retained. This is one React/Vite/Tailwind application using one shared client interface; no API server or authentication implementation was added.
 
@@ -80,7 +80,7 @@ node --test tests/*.test.mjs
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Build includes TypeScript. The main `681582b` clean-setup checkpoint passes 71 Node tests; unmerged PR #34's 19 location tests are separate. Mock transports are not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+Build includes TypeScript. The initial `681582b` clean-setup checkpoint passes 71 Node tests; final checks after incorporating main `a7e2e72` pass 90, including the 19 location tests. Mock transports are not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
 
 Add `--restart-check` to the browser command to pause after the demo lifecycle. Restart only your own Vite server at the same origin in its terminal, then press Enter in the checker. It verifies exact demo state and rendered report, confirmation, instruction, navigation and briefing after restart; it never kills a server. The prompt times out after five minutes. Use alternative ports only for the explicitly simulated demo, not new Auth0 callback origins.
 

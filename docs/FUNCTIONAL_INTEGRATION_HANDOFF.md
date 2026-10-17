@@ -1,5 +1,11 @@
 # Codex / Claude integration handoff
 
+## T034A location controller — 2026-10-17
+
+Fresh functional branch `feature/cache-report-device-location` from main `681582b` (PR #33 merged). Cache adds `application/report-location.ts` and `useReportLocation.ts`, focused Node tests and a test-only browser harness using the existing shell runner. No page/component/style/App/auth/client/DTO/backend edit. `useReportLocation(reportOpen ? site : null, client.mode)` returns immediate coordinates/source/accuracy/status/message plus `setPin(lat,lon)`; site fallback is approximate, late fixes cannot overwrite a manual pin, and close clears state. Demo requests no real GPS and the logic writes no storage or network. Existing Client/hooks stay compatible.
+
+**Claude:** consume this interface only after Rudra/Braydin publish T053A. Exact field/edit/loading/submission instructions and privacy requirements: [REPORT_LOCATION_INTEGRATION.md](REPORT_LOCATION_INTEGRATION.md). **Rudra:** canonical source/accuracy/returned distance, route, TS mirror, fixtures and contract tests. **Braydin:** idempotent migration/persistence; exclude GPS from T060 photo analysis. Current ReportForm and transport remain unchanged; T034A/T053A stay unchecked. 90 Node,105 focused backend,linter/TS,both builds and synthetic hook/existing browser lifecycle pass; no actual GPS/Auth0/Tiger acceptance. Claude retains all visual ownership and no UI coordination edit is assumed.
+
 ## Current scoring verification — 2026-10-17
 
 PR #31 merged `07a459d`; functional branch `feature/cache-scoring-integration` is based on that main with no unmerged parent. Maintainers subsequently merged visual PR #32 as `176cf36`; feature-branch merge `3b8dfe2` incorporates it without any manual visual edit, with every visual file equal to main. Primary checkout remains untouched. Current full checklist/evidence: [SITE_SCORING_INTEGRATION.md](SITE_SCORING_INTEGRATION.md). This run changes API validation, diagnostic/tests and shared docs; one backend **test** joins existing adapters/refresh/persistence/API/report paths. No backend production, auth, schema, fixture, ML or presentation changes.

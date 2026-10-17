@@ -1,15 +1,17 @@
 {
   "scope": "T070 clean setup preparation; not full application/live-service acceptance",
-  "checked_at_utc": "2026-10-17T12:59:42.388178+00:00",
+  "checked_at_utc": "2026-10-17T13:04:05.024224+00:00",
   "branch": "feature/cache-clean-setup",
-  "base_commit": "681582be17315444f5ed9785c15f0fb37e8c09eb",
   "pr34": {
     "status_at_start": "open",
     "head": "8869e1695b788b1d3d13a8d27ac33a9cafbff857",
-    "dependency": "none; independent main-based change, no geolocation implementation copied"
+    "dependency": "none; incorporated reviewed merged main, preserving incoming location implementation",
+    "status_at_final_verification": "merged by maintainers",
+    "merge_commit": "a7e2e720d11612a829bba467b1cb938ce05c6801",
+    "merged_at_utc": "2026-10-17T12:52:20Z"
   },
   "clean_source": {
-    "method": "git archive of tracked main files, then the two final owned script/config edits applied",
+    "method": "tracked main681582b archive; after clean installs, reviewed main a7e2e72 source and the same two owned script/config edits applied; ignored dependencies/configuration were never copied",
     "copied_node_modules": false,
     "copied_venv": false,
     "copied_private_env": false,
@@ -28,8 +30,9 @@
   "checks": {
     "frontend_tests": {
       "command": "node --test tests/*.test.mjs",
-      "passed": 71,
-      "failed": 0
+      "passed": 90,
+      "failed": 0,
+      "initial_passed": 71
     },
     "backend_tests": {
       "command": "backend/.venv/Scripts/python.exe -m pytest -q -rs (cwd backend)",
@@ -54,7 +57,7 @@
     "backend_ruff_format": "117 files already formatted",
     "browser_dev": {
       "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
-      "checked_at": "2026-10-17T12:57:48.211Z",
+      "checked_at": "2026-10-17T13:03:32.058Z",
       "url": "http://localhost:5177/",
       "browser": "Installed headless Edge/Chrome via CDP",
       "results": [
@@ -77,6 +80,10 @@
           "nav_targets": ">=44px"
         },
         {
+          "existing_report_no_note_no_gps_ms": 41,
+          "scope": "Automated existing simulated form only; T034A form/metadata acceptance remains blocked by T053A"
+        },
+        {
           "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
         },
         {
@@ -93,6 +100,9 @@
           "restart": "Operator restarted the same-origin demo server; exact demo state/report, supervisor confirmation, approved crew instruction, navigation and stored briefing survived. Browser-local simulation only; photos are memory-only."
         },
         {
+          "report_location_hook": "Synthetic StrictMode live/demo, granted/denied/unavailable/timeout/unsupported, pin/late fix, site switch and close pass. No form/backend acceptance or real GPS."
+        },
+        {
           "reports": "MOCK HTTP ONLY: present/photo and absent/no-photo, 401/403/409/422/503 submission failures, absent review, notice confirmation/draft/edit/send, manual fallback, reload/crew delivery, server score refresh and competing owner all pass",
           "alerts": "Mock server state and acknowledgement preserved; no ML/React score or alert engine"
         },
@@ -103,12 +113,12 @@
         },
         {
           "fixture_setting": "false",
-          "cold_start_ms": 1014,
+          "cold_start_ms": 1235,
           "status": "explicit configuration/auth state; no silent samples"
         },
         {
           "fixture_setting": "typo",
-          "cold_start_ms": 1039,
+          "cold_start_ms": 1130,
           "status": "explicit configuration/auth state; no silent samples"
         }
       ],
@@ -118,7 +128,7 @@
     },
     "browser_production": {
       "task": "Clean production-bundle demo acceptance (not real login/persistence)",
-      "checked_at": "2026-10-17T12:58:20.615Z",
+      "checked_at": "2026-10-17T13:03:30.781Z",
       "url": "http://localhost:5178/",
       "browser": "Installed headless Edge/Chrome via CDP",
       "results": [
@@ -139,6 +149,10 @@
           "primary_action_visible": true,
           "overflow": false,
           "nav_targets": ">=44px"
+        },
+        {
+          "existing_report_no_note_no_gps_ms": 29,
+          "scope": "Automated existing simulated form only; T034A form/metadata acceptance remains blocked by T053A"
         },
         {
           "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
@@ -228,5 +242,12 @@
     "production_ui_auth_backend_ml_contract_changes": false,
     "server_policy": "existing5173/5176/8000 preserved; only run-owned5177/5178/8052 used/restarted",
     "root_readme": "unchanged; Rudra can link the quick-start in T077"
+  },
+  "initial_base_commit": "681582be17315444f5ed9785c15f0fb37e8c09eb",
+  "validated_main_commit": "a7e2e720d11612a829bba467b1cb938ce05c6801",
+  "upstream_integration": {
+    "checkpoint": "447f5ca",
+    "conflicts": "only PROJECT_CONTEXT.md/docs/INTEGRATION_STATUS.md; both histories retained",
+    "backend_ml_dependencies_unchanged": true
   }
 }

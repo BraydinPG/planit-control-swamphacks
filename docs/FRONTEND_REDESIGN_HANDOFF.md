@@ -1,5 +1,9 @@
 # Frontend redesign handoff
 
+## T034A interface ready, form integration pending — 2026-10-17
+
+Cache's fresh `feature/cache-report-device-location` branch (main `681582b`, PR #33 merged) adds only functional logic/tests/docs. `ConnectedPages.tsx`, components/styles/App and existing report transport are untouched. New `useReportLocation(reportOpen ? site : null, client.mode)` supplies coordinates/source/accuracy/status/message and `setPin`. [REPORT_LOCATION_INTEGRATION.md](REPORT_LOCATION_INTEGRATION.md) gives exact wiring, manual draft handling and privacy requirements. **T053A is absent**; wait for Rudra/Braydin's published metadata/returned distance before submitting device points. Keep approximate site fallback visible, never wait on GPS, preserve optional note/live present-hazard photo rule and do not persist private GPS in DemoClient. T034A stays unchecked until actual form/persistence acceptance. Synthetic StrictMode hook and existing browser/report regression pass;90 Node/105 focused backend,lint/TS,both builds pass. No visual changes are requested beyond this focused future form integration.
+
 ## Scoring display issue for Claude — 2026-10-17
 
 Maintainers merged visual [PR #32](https://github.com/BraydinPG/planit-control-swamphacks/pull/32) as `176cf36` during publication. Codex integrated that main into its feature branch as `3b8dfe2`, with all visual paths byte-for-byte equal to main and both shared-log entries preserved. No manual visual edits or Codex merge into main. Repeated70 Node/lint/TS/both builds and standard desktop/phone browser checks pass on the integrated redesign; the zero-evidence warning still fails.
