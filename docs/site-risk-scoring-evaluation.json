@@ -1,0 +1,1440 @@
+{
+  "method": "synthetic fixed-time deterministic rule checks; no real-world accuracy claim",
+  "as_of": "2026-10-17T18:00:00+00:00",
+  "model_version": "rules-0.2",
+  "settings": {
+    "heat_index_threshold_f": 103.0,
+    "heat_index_extreme_f": 125.0,
+    "heat_min_points": 0.5,
+    "heat_max_points": 2.0,
+    "heat_window_hours": 12,
+    "flood_warning_points": 2.0,
+    "flood_watch_points": 1.0,
+    "hurricane_storm_distance_miles": 50.0,
+    "hurricane_points": 2.0,
+    "earthquake_min_magnitude": 4.0,
+    "earthquake_distance_miles": 25.0,
+    "earthquake_points": 1.5,
+    "lightning_stop_work_points": 3.0,
+    "report_low_points": 0.5,
+    "report_moderate_points": 1.0,
+    "report_high_points": 1.5,
+    "report_category_max_points": 3.0
+  },
+  "freshness_minutes": {
+    "stale": 60,
+    "unavailable": 360
+  },
+  "passed": 35,
+  "scenarios": [
+    {
+      "id": "no_evidence",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 0.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": null
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": null
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": null
+        }
+      ]
+    },
+    {
+      "id": "partial_heat_only",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 0.33,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": null
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": null
+        }
+      ]
+    },
+    {
+      "id": "healthy_supported_inputs",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "all_built_scored_feeds_healthy",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "hurricane",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:hurricane:No active NHC storms"
+        },
+        {
+          "factor": "earthquake",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:earthquake:No earthquakes in search window"
+        }
+      ]
+    },
+    {
+      "id": "heat_threshold",
+      "score": 0.5,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.5,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "heat_elevated",
+      "score": 1.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.98,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "heat_extreme",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "eligible_forecast_not_double_counted",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 2.0,
+          "state": "forecast",
+          "evidence_id": "synthetic:forecast:Temperature"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "flood_watch",
+      "score": 1.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 1.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:Flood Watch"
+        }
+      ]
+    },
+    {
+      "id": "flood_warning",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:Flood Warning"
+        }
+      ]
+    },
+    {
+      "id": "strongest_flood_once",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:Flood Warning"
+        }
+      ]
+    },
+    {
+      "id": "active_lightning",
+      "score": 3.0,
+      "band": "moderate",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 3.0,
+          "state": "observed",
+          "evidence_id": "synthetic-alert"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "held_lightning_feed_failure",
+      "score": 3.0,
+      "band": "moderate",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 3.0,
+          "state": "observed",
+          "evidence_id": "synthetic-alert"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "hurricane_near",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "hurricane",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:hurricane:Synthetic NHC storm"
+        }
+      ]
+    },
+    {
+      "id": "hurricane_warning",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "hurricane",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:hurricane:Synthetic site warning"
+        }
+      ]
+    },
+    {
+      "id": "hurricane_distant",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "hurricane",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:hurricane:Synthetic NHC storm"
+        }
+      ]
+    },
+    {
+      "id": "duplicate_storm_and_warning",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "hurricane",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:hurricane:Synthetic NHC storm"
+        }
+      ]
+    },
+    {
+      "id": "earthquake_near",
+      "score": 1.5,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "earthquake",
+          "points": 1.5,
+          "state": "observed",
+          "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
+        }
+      ]
+    },
+    {
+      "id": "earthquake_below_magnitude",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "earthquake",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
+        }
+      ]
+    },
+    {
+      "id": "earthquake_distant",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "earthquake",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
+        }
+      ]
+    },
+    {
+      "id": "duplicate_quake",
+      "score": 1.5,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "earthquake",
+          "points": 1.5,
+          "state": "observed",
+          "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
+        }
+      ]
+    },
+    {
+      "id": "confirmed_report",
+      "score": 1.5,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "synthetic-report"
+        }
+      ]
+    },
+    {
+      "id": "duplicate_report_id",
+      "score": 1.5,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "synthetic-report"
+        }
+      ]
+    },
+    {
+      "id": "shared_notice",
+      "score": 1.5,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "r1"
+        },
+        {
+          "factor": "crew_report",
+          "points": 0.0,
+          "state": "crew_reported",
+          "evidence_id": "r2"
+        }
+      ]
+    },
+    {
+      "id": "category_cap_retains_independent_reports",
+      "score": 3.0,
+      "band": "moderate",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "r0"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "r1"
+        },
+        {
+          "factor": "crew_report",
+          "points": 0.0,
+          "state": "crew_reported",
+          "evidence_id": "r2"
+        },
+        {
+          "factor": "crew_report",
+          "points": 0.0,
+          "state": "crew_reported",
+          "evidence_id": "r3"
+        },
+        {
+          "factor": "crew_report",
+          "points": 0.0,
+          "state": "crew_reported",
+          "evidence_id": "r4"
+        },
+        {
+          "factor": "crew_report",
+          "points": 0.0,
+          "state": "crew_reported",
+          "evidence_id": "r5"
+        }
+      ]
+    },
+    {
+      "id": "independent_categories",
+      "score": 4.5,
+      "band": "moderate",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "r1"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "r2"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "r3"
+        }
+      ]
+    },
+    {
+      "id": "excluded_report_states",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "stale_heat_retained",
+      "score": 1.0,
+      "band": "low",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.98,
+          "state": "stale",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "stale_flood_retained",
+      "score": 2.0,
+      "band": "low",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 2.0,
+          "state": "stale",
+          "evidence_id": "synthetic:flood_alert:Flood Warning"
+        }
+      ]
+    },
+    {
+      "id": "unavailable_flood",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "replay_not_live_coverage",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "simulated",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "expired_flood",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": "synthetic:flood_alert:Flood Warning"
+        }
+      ]
+    },
+    {
+      "id": "future_observation",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 0.67,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "unavailable",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "raw_gauge_and_rain_excluded",
+      "score": 0.0,
+      "band": "low",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 0.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ]
+    },
+    {
+      "id": "compound_saturated",
+      "score": 10.0,
+      "band": "critical",
+      "completeness": 1.0,
+      "contributions": [
+        {
+          "factor": "lightning",
+          "points": 3.0,
+          "state": "observed",
+          "evidence_id": "synthetic-alert"
+        },
+        {
+          "factor": "heat_index",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:flood_alert:Flood Warning"
+        },
+        {
+          "factor": "crew_report",
+          "points": 1.5,
+          "state": "crew_reported",
+          "evidence_id": "synthetic-report"
+        },
+        {
+          "factor": "hurricane",
+          "points": 2.0,
+          "state": "observed",
+          "evidence_id": "synthetic:hurricane:Synthetic NHC storm"
+        },
+        {
+          "factor": "earthquake",
+          "points": 1.5,
+          "state": "observed",
+          "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
+        }
+      ]
+    }
+  ],
+  "equal_coverage_reference_comparisons": [
+    {
+      "site_id": "eia860m-AK-54305",
+      "name": "Westward Seafoods",
+      "context": "synthetic scenarios at reference coordinates; no actual incident",
+      "healthy_index": 0.0,
+      "lightning_plus_report_index": 4.5,
+      "completeness": 1.0
+    },
+    {
+      "site_id": "eia860m-AK-57062",
+      "name": "Gambell",
+      "context": "synthetic scenarios at reference coordinates; no actual incident",
+      "healthy_index": 0.0,
+      "lightning_plus_report_index": 4.5,
+      "completeness": 1.0
+    }
+  ],
+  "existing_demo_fixture": {
+    "path": "frontend/src/fixtures/site-detail.json",
+    "archived_illustrative_score": 7.6,
+    "recomputed_index": 5.0,
+    "note": "Archived illustrative display fixtures are unchanged; not rules-0.2 live scores."
+  },
+  "canonical_examples": {
+    "no_evidence": {
+      "site_id": "synthetic-scoring-site",
+      "risk_score": 0.0,
+      "risk_level": "low",
+      "factor_contributions": [
+        {
+          "factor": "lightning",
+          "label": "Lightning status unknown (feed stale or unavailable)",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "lightning",
+          "observed_at": null,
+          "data_state": "unavailable",
+          "is_prototype": true,
+          "evidence_id": null
+        },
+        {
+          "factor": "heat_index",
+          "label": "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair)",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "NWS",
+          "observed_at": null,
+          "data_state": "unavailable",
+          "is_prototype": true,
+          "evidence_id": null
+        },
+        {
+          "factor": "flood",
+          "label": "Flood alerts unknown (NWS feed unavailable)",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "NWS",
+          "observed_at": null,
+          "data_state": "unavailable",
+          "is_prototype": true,
+          "evidence_id": null
+        }
+      ],
+      "model_version": "rules-0.2",
+      "model_is_fallback": false,
+      "confidence": 0.0,
+      "data_completeness": 0.0,
+      "previous_score": null,
+      "created_at": "2026-10-17T18:00:00Z"
+    },
+    "healthy_supported_inputs": {
+      "site_id": "synthetic-scoring-site",
+      "risk_score": 0.0,
+      "risk_level": "low",
+      "factor_contributions": [
+        {
+          "factor": "lightning",
+          "label": "No active lightning stop-work alert (not clearance)",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "GOES GLM",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:lightning_strike:No live flashes in feed window"
+        },
+        {
+          "factor": "heat_index",
+          "label": "Heat index 90 °F (observed), below prototype threshold 103 °F",
+          "contribution": 0.0,
+          "value": 90.0,
+          "unit": "°F",
+          "source": "NWS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "label": "No active NWS flood alerts",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "NWS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ],
+      "model_version": "rules-0.2",
+      "model_is_fallback": false,
+      "confidence": 1.0,
+      "data_completeness": 1.0,
+      "previous_score": null,
+      "created_at": "2026-10-17T18:00:00Z"
+    },
+    "held_lightning_feed_failure": {
+      "site_id": "synthetic-scoring-site",
+      "risk_score": 3.0,
+      "risk_level": "moderate",
+      "factor_contributions": [
+        {
+          "factor": "lightning",
+          "label": "Lightning stop-work active, latest qualifying strike 4.2 mi; feed coverage unknown",
+          "contribution": 3.0,
+          "value": 4.2,
+          "unit": "mi",
+          "source": "deterministic lightning alert",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic-alert"
+        },
+        {
+          "factor": "heat_index",
+          "label": "Heat index 90 °F (observed), below prototype threshold 103 °F",
+          "contribution": 0.0,
+          "value": 90.0,
+          "unit": "°F",
+          "source": "NWS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "label": "No active NWS flood alerts",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "NWS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:flood_alert:No active NWS flood alerts"
+        }
+      ],
+      "model_version": "rules-0.2",
+      "model_is_fallback": false,
+      "confidence": 0.67,
+      "data_completeness": 0.67,
+      "previous_score": null,
+      "created_at": "2026-10-17T18:00:00Z"
+    },
+    "compound_saturated": {
+      "site_id": "synthetic-scoring-site",
+      "risk_score": 10.0,
+      "risk_level": "critical",
+      "factor_contributions": [
+        {
+          "factor": "lightning",
+          "label": "Lightning stop-work active, latest qualifying strike 4.2 mi",
+          "contribution": 3.0,
+          "value": 4.2,
+          "unit": "mi",
+          "source": "deterministic lightning alert",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic-alert"
+        },
+        {
+          "factor": "heat_index",
+          "label": "Heat index 125 °F (observed), above prototype threshold 103 °F",
+          "contribution": 2.0,
+          "value": 125.0,
+          "unit": "°F",
+          "source": "NWS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:weather:Heat index"
+        },
+        {
+          "factor": "flood",
+          "label": "Flood Warning in effect (prototype weight)",
+          "contribution": 2.0,
+          "value": "Flood Warning",
+          "unit": null,
+          "source": "NWS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:flood_alert:Flood Warning"
+        },
+        {
+          "factor": "crew_report",
+          "label": "Confirmed crew report: broken pole downed line",
+          "contribution": 1.5,
+          "value": "high",
+          "unit": null,
+          "source": "crew report",
+          "observed_at": "2026-10-17T17:50:00Z",
+          "data_state": "crew_reported",
+          "is_prototype": true,
+          "evidence_id": "synthetic-report"
+        },
+        {
+          "factor": "hurricane",
+          "label": "Synthetic NHC storm 0 mi from site (prototype 50 mi rule)",
+          "contribution": 2.0,
+          "value": 0.0,
+          "unit": "mi",
+          "source": "NHC",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:hurricane:Synthetic NHC storm"
+        },
+        {
+          "factor": "earthquake",
+          "label": "M4.5 earthquake 0 mi from site (prototype M4+ within 25 mi rule)",
+          "contribution": 1.5,
+          "value": 4.5,
+          "unit": "mw",
+          "source": "USGS",
+          "observed_at": "2026-10-17T17:55:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
+        }
+      ],
+      "model_version": "rules-0.2",
+      "model_is_fallback": false,
+      "confidence": 1.0,
+      "data_completeness": 1.0,
+      "previous_score": null,
+      "created_at": "2026-10-17T18:00:00Z"
+    },
+    "existing_demo_detail_recomputed": {
+      "site_id": "site-demo-everglades",
+      "risk_score": 5.0,
+      "risk_level": "moderate",
+      "factor_contributions": [
+        {
+          "factor": "lightning",
+          "label": "Lightning stop-work active, latest qualifying strike 4.2 mi; feed coverage unknown [simulated; not live coverage]",
+          "contribution": 3.0,
+          "value": 4.2,
+          "unit": "mi",
+          "source": "lightning-replay",
+          "observed_at": "2026-10-17T17:57:00Z",
+          "data_state": "simulated",
+          "is_prototype": true,
+          "evidence_id": "alert-ltg-demo"
+        },
+        {
+          "factor": "heat_index",
+          "label": "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair)",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "NWS",
+          "observed_at": null,
+          "data_state": "unavailable",
+          "is_prototype": true,
+          "evidence_id": null
+        },
+        {
+          "factor": "flood",
+          "label": "Flood Watch in effect (prototype weight)",
+          "contribution": 1.0,
+          "value": "Flood Watch",
+          "unit": null,
+          "source": "NWS",
+          "observed_at": "2026-10-17T16:30:00Z",
+          "data_state": "observed",
+          "is_prototype": true,
+          "evidence_id": "obs-flood-1"
+        },
+        {
+          "factor": "crew_report",
+          "label": "Confirmed crew report: wildlife",
+          "contribution": 1.0,
+          "value": "moderate",
+          "unit": null,
+          "source": "crew report",
+          "observed_at": "2026-10-17T15:50:00Z",
+          "data_state": "crew_reported",
+          "is_prototype": true,
+          "evidence_id": "report-wildlife-1"
+        },
+        {
+          "factor": "hurricane",
+          "label": "Hurricane status unknown (feed unavailable); Hurricane feed unavailable",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "NHC",
+          "observed_at": null,
+          "data_state": "unavailable",
+          "is_prototype": true,
+          "evidence_id": "obs-hur-1"
+        },
+        {
+          "factor": "earthquake",
+          "label": "No qualifying earthquakes (last successful fetch 3 h ago) [stale; not live coverage]",
+          "contribution": 0.0,
+          "value": null,
+          "unit": null,
+          "source": "USGS",
+          "observed_at": "2026-10-17T15:00:00Z",
+          "data_state": "stale",
+          "is_prototype": true,
+          "evidence_id": "obs-eq-1"
+        }
+      ],
+      "model_version": "rules-0.2",
+      "model_is_fallback": false,
+      "confidence": 0.33,
+      "data_completeness": 0.33,
+      "previous_score": null,
+      "created_at": "2026-10-17T18:00:00Z"
+    }
+  }
+}

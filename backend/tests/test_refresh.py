@@ -258,6 +258,7 @@ def test_history_rescore_ignores_expired_alerts_and_old_fetches(session) -> None
                 source="NWS",
                 key=f"{value}:{now.isoformat()}",
                 fetched_at=now,
+                label=value or "No active NWS flood alerts",
             )
         ]
 

@@ -36,7 +36,7 @@ def obs(hazard_type, label, value, state=DataState.OBSERVED, **extra) -> Observa
     return Observation(
         id=f"{hazard_type}:{label}:{value}",
         site_id=SITE,
-        source="NWS",
+        source=extra.pop("source", "NWS"),
         hazard_type=hazard_type,
         value=value,
         label=label,
@@ -49,7 +49,7 @@ def obs(hazard_type, label, value, state=DataState.OBSERVED, **extra) -> Observa
 
 
 def heat(value=110.0, state=DataState.OBSERVED):
-    return obs(HazardType.WEATHER, HEAT_INDEX, value, state)
+    return obs(HazardType.WEATHER, HEAT_INDEX, value, state, unit="°F")
 
 
 def flood(value=None, state=DataState.OBSERVED):
@@ -57,7 +57,14 @@ def flood(value=None, state=DataState.OBSERVED):
 
 
 def no_lightning(state=DataState.SIMULATED):
-    return obs(HazardType.LIGHTNING_STRIKE, "No replayed strikes", None, state, simulated=True)
+    return obs(
+        HazardType.LIGHTNING_STRIKE,
+        "No strikes",
+        None,
+        state,
+        source="lightning-replay" if state == DataState.SIMULATED else "GOES GLM",
+        simulated=state == DataState.SIMULATED,
+    )
 
 
 def lightning_alert(state="active") -> Alert:
@@ -121,7 +128,7 @@ def test_score_sums_factors_with_contributions() -> None:
 
 
 def test_score_is_capped_at_10() -> None:
-    reports = [report(severity="high") for _ in range(10)]
+    reports = [report(severity="high").model_copy(update={"id": f"report-{i}"}) for i in range(10)]
     result = score(
         [heat(125.0), flood("Flood Warning"), no_lightning()], [lightning_alert()], reports
     )
@@ -147,7 +154,7 @@ def test_cleared_lightning_alert_adds_nothing() -> None:
 
 
 def test_all_inputs_current_gives_full_completeness() -> None:
-    result = score([heat(90.0), flood(), no_lightning()])
+    result = score([heat(90.0), flood(), no_lightning(DataState.OBSERVED)])
     assert result.data_completeness == 1.0
     assert result.confidence == 1.0
     assert result.risk_score == 0.0
@@ -284,7 +291,7 @@ def test_stored_score_is_returned_by_sites_api(session_factory) -> None:
     assert summary["risk_score"] == second.risk_score == 5.0
     assert summary["risk_level"] == "moderate"
     assert summary["model_version"] == MODEL_VERSION
-    assert summary["data_completeness"] == 1.0
+    assert summary["data_completeness"] == 0.67  # replay is not live coverage
     assert [f["factor"] for f in summary["top_factors"]] == ["lightning", "flood", "heat_index"]
     contributions = detail["score"]["factor_contributions"]
     assert {f["factor"] for f in contributions} == {"lightning", "heat_index", "flood"}
