@@ -100,6 +100,21 @@ confirm the wording and set `reviewed_by` before the guidance is treated as revi
 guidance never covers handling, capture, or relocation, and it is not legal advice or a
 substitute for employer site procedures.
 
+### Wildlife section (frontend)
+
+All listed animals appear in one **Wildlife** list. Each pane shows Protection status, Habitat
+(range basis, IPaC critical habitat flag, and any matching critical habitat boundary from the
+map service), and Encounter guidance. Plants stay in **Listed plants**. The order comes from
+sourced fields only (`frontend/src/components/data/wildlife.ts`):
+
+1. **Direct crew hazard** (red pane and label): the cited encounter source describes a worker
+hazard (alligator, crocodile, panther, bats).
+2. **Affects work at this site**: critical habitat at or within about 3 km of the site, or cited
+guidance that requires crews to act (manatee, Eastern indigo snake).
+3. **Listed for the area**: nothing on record that changes the work.
+
+Protection status alone never raises the rank. Red is always paired with the text label.
+
 ## Limitations
 
 - Federal ESA status only. State status (Florida FWC) is not supplied and is listed as unknown.

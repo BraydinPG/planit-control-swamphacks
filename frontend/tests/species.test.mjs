@@ -13,8 +13,11 @@ const server = await createServer({
 after(() => server.close())
 const { HttpClient } = await server.ssrLoadModule('/src/api/http-client.ts')
 const { DemoClient } = await server.ssrLoadModule('/src/demo/client.ts')
-const { SpeciesPanel, SpeciesCard } = await server.ssrLoadModule(
+const { SpeciesPanel, WildlifePane } = await server.ssrLoadModule(
   '/src/components/data/SpeciesPanel.tsx',
+)
+const { arrangeWildlife, relevanceOf } = await server.ssrLoadModule(
+  '/src/components/data/wildlife.ts',
 )
 const read = async (name) =>
   JSON.parse(
@@ -107,34 +110,97 @@ test('panel always shows the caveat, source, date, and match labels', () => {
   assert.match(text, /Regional context, not a sighting/)
   assert.match(text, /USFWS IPaC Location API/)
   assert.match(text, /Recorded demo snapshot/)
-  assert.match(text, /Known regional range\/habitat · not a sighting/)
+  assert.match(text, /Known regional range\/habitat, not a sighting/)
   assert.match(text, /Crew wildlife reports at this site/)
   assert.match(text, /Confirmed by supervisor review/)
   assert.match(text, /What this does not tell you/)
   assert.match(text, /water moccasin/)
 })
 
-test('protection and encounter render independently, unknown never reads as harmless', () => {
+test('protection, habitat and encounter render independently; unknown never reads as harmless', () => {
   const byName = (name) => fixture.species.find((s) => s.common_name === name)
-  const indigo = html(
-    React.createElement(SpeciesCard, {
-      species: byName('Eastern indigo snake'),
-    }),
-  )
+  const pane = (species) =>
+    html(
+      React.createElement(WildlifePane, {
+        row: { species, habitat: [], ...relevanceOf(species, []) },
+        habitatState: 'observed',
+      }),
+    )
+  const indigo = pane(byName('Eastern indigo snake'))
+  assert.match(indigo, /Protection status.*Habitat.*Encounter guidance/s)
   assert.match(indigo, /Threatened/)
   assert.match(indigo, /does not describe a worker hazard/)
   assert.match(indigo, /pending safety-lead review/)
 
-  const manatee = byName('West Indian Manatee')
-  assert.equal(manatee.encounter, null)
-  const text = panel(fixture)
-  assert.match(text, /Encounter guidance: not reviewed/)
+  const manatee = pane(byName('West Indian Manatee'))
+  assert.match(manatee, /does not mean the species is harmless/)
 
   const statusless = structuredClone(byName('American alligator'))
   statusless.protection.status = null
-  const gator = html(React.createElement(SpeciesCard, { species: statusless }))
+  const gator = pane(statusless)
   assert.match(gator, /Protection status unknown/)
   assert.match(gator, /Keep your distance/)
+})
+
+test('wildlife is one list ranked by relevance to the job site', () => {
+  const { animals, plants, otherHabitat } = arrangeWildlife(fixture)
+  const names = animals.map((r) => r.species.common_name)
+  assert.ok(animals.every((r) => !/plant/i.test(r.species.group ?? '')))
+  assert.ok(plants.length > 0)
+  const order = { crew_hazard: 0, work_impact: 1, background: 2 }
+  const ranks = animals.map((r) => order[r.relevance])
+  assert.deepEqual(
+    ranks,
+    [...ranks].sort((a, b) => a - b),
+  )
+  for (const name of [
+    'American alligator',
+    'American crocodile',
+    'Florida panther',
+    'Florida bonneted bat',
+  ])
+    assert.equal(animals[names.indexOf(name)].relevance, 'crew_hazard', name)
+  const manatee = animals[names.indexOf('West Indian Manatee')]
+  assert.equal(manatee.relevance, 'work_impact')
+  assert.equal(manatee.habitat[0].status, 'Proposed')
+  assert.equal(
+    animals[names.indexOf('Eastern indigo snake')].relevance,
+    'work_impact',
+  )
+  assert.equal(
+    animals[names.indexOf('Everglade snail kite')].relevance,
+    'background',
+  )
+  // The manatee's boundary lives in its pane, not a separate habitat list.
+  assert.equal(otherHabitat.length, 0)
+})
+
+test('only direct crew hazards are highlighted red, with a text label', () => {
+  const text = panel(fixture)
+  assert.match(text, /Wildlife \(\d+\)/)
+  assert.doesNotMatch(
+    text,
+    /Species with encounter guidance|Other listed animals/,
+  )
+  const panes = [
+    ...text.matchAll(
+      /<article[^>]*data-relevance="(\w+)"[^>]*class="([^"]*)"/g,
+    ),
+  ]
+  assert.ok(panes.length > 0)
+  for (const [, relevance, cls] of panes)
+    assert.equal(
+      cls.includes('border-stop'),
+      relevance === 'crew_hazard',
+      relevance,
+    )
+  assert.match(text, /Direct crew hazard/)
+  assert.ok(
+    text.indexOf('American alligator') < text.indexOf('West Indian Manatee'),
+  )
+  assert.ok(
+    text.indexOf('West Indian Manatee') < text.indexOf('Everglade snail kite'),
+  )
 })
 
 test('unavailable lookups never read as "no species"', () => {
@@ -163,7 +229,7 @@ test('demo shows recorded Gemini wording, labeled and still sourced', () => {
 
 test('critical habitat lists status, citation and date', () => {
   const text = panel(fixture)
-  assert.match(text, /West Indian Manatee · Proposed critical habitat/)
+  assert.match(text, /Proposed critical habitat within about 3 km/)
   assert.match(text, /Federal Register 89FR78134 78198/)
   assert.match(text, /2024-09-24/)
 })

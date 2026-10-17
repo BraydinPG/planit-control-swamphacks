@@ -285,16 +285,23 @@ function SitePage({
               </Empty>
             )}
           </section>
-          <section className="space-y-3">
-            <SectionHead kicker="Crew reports" title="Reports at this site" />
-            {site.reports.length ? (
-              site.reports.map((r) => <ReportCard key={r.id} report={r} />)
-            ) : (
-              <Empty>No reports supplied.</Empty>
-            )}
-          </section>
         </div>
       </div>
+      {/* Full width so reports sit side by side on wide screens. */}
+      <section className="space-y-3">
+        <SectionHead kicker="Crew reports" title="Reports at this site" />
+        {site.reports.length ? (
+          <ul className="grid items-start gap-4 @3xl:grid-cols-2 @7xl:grid-cols-3">
+            {site.reports.map((r) => (
+              <li key={r.id} className="min-w-0">
+                <ReportCard report={r} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Empty>No reports supplied.</Empty>
+        )}
+      </section>
       {!compact && <EventOutlooks cards={site.event_outlooks ?? []} />}
       {/* Read-only regional context for team sites; never feeds score or alerts. */}
       {site.assigned_team && <SpeciesSection site={site} />}
