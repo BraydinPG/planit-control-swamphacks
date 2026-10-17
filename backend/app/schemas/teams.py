@@ -64,3 +64,17 @@ class JoinRequest(Schema):
     """Body for `POST /api/join`. Case, spaces, and a missing dash are forgiven."""
 
     code: str = Field(min_length=8, max_length=20)
+
+
+class TeamCreate(Schema):
+    """Body for `POST /api/teams`: a supervisor adds a team to their organization."""
+
+    name: str = Field(min_length=1, max_length=80)
+    site_id: str | None = Field(default=None, description="A site with no team yet.")
+
+
+class TeamUpdate(Schema):
+    """Body for `PATCH /api/teams/{id}`. Send `site_id: null` to unassign the site."""
+
+    name: str | None = Field(default=None, min_length=1, max_length=80)
+    site_id: str | None = None

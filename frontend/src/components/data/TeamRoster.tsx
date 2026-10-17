@@ -1,5 +1,11 @@
 import { useCallback, useState, type FormEvent } from 'react'
-import type { Account, JoinCode, TeamMember, TeamRoster } from '../../types/api'
+import type {
+  Account,
+  JoinCode,
+  SiteSummary,
+  TeamMember,
+  TeamRoster,
+} from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { ApiError } from '../../api/contracts'
 import { Icon } from '../shell/Icon'
@@ -26,10 +32,13 @@ export function TeamPage() {
   const { client } = useApplication()
   const result = useResource(
     'team',
-    useCallback(() => client.team(), [client]),
+    useCallback(() => Promise.all([client.team(), client.sites()]), [client]),
   )
   if (!result.data) return <LoadState error={result.error} />
-  const org = result.data
+  const [org, sites] = result.data
+  // A site has at most one team, so new or moved teams pick from sites without one.
+  const taken = new Set(org.teams.map((t) => t.site_id))
+  const free = sites.filter((s) => !s.assigned_team && !taken.has(s.id))
   return (
     <div className="pc-enter space-y-5">
       <section className={`${card} p-5`}>
@@ -44,18 +53,207 @@ export function TeamPage() {
         </p>
       </section>
       {org.teams.map((team) => (
-        <TeamCard key={team.id} team={team} />
+        <TeamCard key={team.id} team={team} free={free} />
       ))}
       {!org.teams.length && (
         <p className="rounded-2xl border border-dashed border-line-strong p-4 text-sm text-ink-2">
           No teams in this organization yet.
         </p>
       )}
+      <AddTeam free={free} />
     </div>
   )
 }
 
-function TeamCard({ team }: { team: TeamRoster }) {
+/** Run a team change and show the backend's own explanation when it refuses. */
+function useTeamChange() {
+  const { refresh } = useApplication()
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+  async function run(change: () => Promise<unknown>) {
+    if (busy) return false
+    setBusy(true)
+    setMessage('')
+    try {
+      await change()
+      refresh()
+      return true
+    } catch (e) {
+      setMessage(
+        e instanceof ApiError && e.detail
+          ? e.detail
+          : e instanceof Error
+            ? e.message
+            : 'Team changes are unavailable',
+      )
+      return false
+    } finally {
+      setBusy(false)
+    }
+  }
+  return { busy, message, run }
+}
+
+function SitePicker({
+  value,
+  onChange,
+  free,
+  current,
+}: {
+  value: string
+  onChange: (id: string) => void
+  free: SiteSummary[]
+  current?: { id: string; name: string } | null
+}) {
+  return (
+    <label className={labelText}>
+      Site
+      <select
+        className={field}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="">No site yet</option>
+        {current && (
+          <option value={current.id}>{current.name} (current)</option>
+        )}
+        {free.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.name}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+function AddTeam({ free }: { free: SiteSummary[] }) {
+  const { client } = useApplication()
+  const [name, setName] = useState('')
+  const [site, setSite] = useState('')
+  const change = useTeamChange()
+  return (
+    <form
+      aria-label="Add a team"
+      className={`${card} space-y-3 p-5`}
+      onSubmit={async (event: FormEvent) => {
+        event.preventDefault()
+        const done = await change.run(() =>
+          client.createTeam({ name, site_id: site || null }),
+        )
+        if (done) {
+          setName('')
+          setSite('')
+        }
+      }}
+    >
+      <p className="kicker">Add a team</p>
+      <div className="grid gap-3 @lg:grid-cols-2">
+        <label className={labelText}>
+          Team name
+          <input
+            className={field}
+            value={name}
+            maxLength={80}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </label>
+        <SitePicker value={site} onChange={setSite} free={free} />
+      </div>
+      <button
+        type="submit"
+        className={primary}
+        disabled={change.busy || !name.trim()}
+      >
+        <Icon name="team" className="size-4" />
+        Add team
+      </button>
+      {change.message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {change.message}
+        </p>
+      )}
+    </form>
+  )
+}
+
+function ManageTeam({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
+  const { client } = useApplication()
+  const [name, setName] = useState(team.name)
+  const [site, setSite] = useState(team.site_id ?? '')
+  const change = useTeamChange()
+  const current = team.site_id
+    ? { id: team.site_id, name: team.site_name ?? team.site_id }
+    : null
+  return (
+    <details className="border-t border-line pt-3">
+      <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-link">
+        Manage team
+      </summary>
+      <div className="mt-2 space-y-3">
+        <div className="grid gap-3 @lg:grid-cols-2">
+          <label className={labelText}>
+            Team name
+            <input
+              className={field}
+              value={name}
+              maxLength={80}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </label>
+          <SitePicker
+            value={site}
+            onChange={setSite}
+            free={free}
+            current={current}
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className={primary}
+            disabled={
+              change.busy ||
+              !name.trim() ||
+              (name.trim() === team.name && site === (team.site_id ?? ''))
+            }
+            onClick={() =>
+              change.run(() =>
+                client.updateTeam(team.id, {
+                  name: name.trim(),
+                  site_id: site || null,
+                }),
+              )
+            }
+          >
+            Save changes
+          </button>
+          <button
+            type="button"
+            className={control}
+            disabled={change.busy || team.members.length > 0}
+            onClick={() => change.run(() => client.deleteTeam(team.id))}
+          >
+            Remove team
+          </button>
+        </div>
+        {team.members.length > 0 && (
+          <p className="text-xs text-muted">
+            A team can be removed once nobody is on it.
+          </p>
+        )}
+        {change.message && (
+          <p role="alert" className="text-sm font-semibold text-stop-text">
+            {change.message}
+          </p>
+        )}
+      </div>
+    </details>
+  )
+}
+
+function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
   const { client } = useApplication()
   return (
     <section
@@ -133,6 +331,11 @@ function TeamCard({ team }: { team: TeamRoster }) {
           <CodeRow key={code.code} code={code} />
         ))}
       </div>
+      <ManageTeam
+        key={`${team.name}:${team.site_id}`}
+        team={team}
+        free={free}
+      />
     </section>
   )
 }

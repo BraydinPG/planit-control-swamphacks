@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { Alert } from '../../types/api'
 import { countdown } from '../../api/contracts'
 import { useApplication, useClock } from '../../application/context'
@@ -105,11 +106,13 @@ export function AlertCard({
     now = useClock()
   const style = look(alert),
     left = remaining(alert, now)
-  const title =
-    alert.rule === 'lightning_stop_work' && alert.state === 'active'
-      ? 'Stop-work alert active'
-      : `${alert.rule.replaceAll('_', ' ')} — ${alert.state}`
-  const source = `${client.mode === 'demo' ? 'Simulated alert payload. ' : ''}Status from ${client.mode === 'demo' ? 'replay fixture' : 'backend'}`
+  const name =
+    alert.rule === 'lightning_stop_work'
+      ? 'Stop-work'
+      : alert.rule.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase())
+  const title = `${name} alert${alert.state === 'active' ? ' active' : ' cleared'}`
+  const simulated = alert.simulated || client.mode === 'demo'
+  const acks = alert.acknowledgements.length
   return (
     <section
       aria-label={`Alert ${alert.id}`}
@@ -167,7 +170,8 @@ export function AlertCard({
           />
         )}
         <p className="text-sm text-ink-2">
-          {source}: <strong className="text-ink">{alert.state}</strong>
+          Status: <strong className="text-ink">{alert.state}</strong>
+          {simulated ? ' · Simulated replay' : ''}
           {alert.is_prototype_rule ? ' · Prototype rule' : ''}
         </p>
         <p className="text-sm text-muted">
@@ -180,33 +184,40 @@ export function AlertCard({
           {countdown(alert, now)}
         </p>
         <p className="text-xs leading-relaxed text-muted">
-          Countdown is a display estimate. A zero countdown never clears an
-          alert or authorizes work. Follow the authoritative alert and employer
-          procedures.
+          A countdown reaching zero never clears the alert or authorizes work;
+          only the system clears it.
         </p>
         {detail && (
           <div className="space-y-4">
             <dl className="divide-y divide-line border-y border-line text-sm">
-              {[
-                ['Trigger', <Timestamp key="t" value={alert.triggered_at} />],
+              {(
                 [
-                  'Supplied distance',
-                  `${alert.distance_miles ?? 'unknown'} mi`,
-                ],
-                ['Window end', <Timestamp key="w" value={alert.clear_after} />],
-                [
-                  'Rule',
-                  alert.is_prototype_rule
-                    ? 'Prototype rule, not employer policy'
-                    : 'Stop for any strike within 10 mi. Clear after 30 minutes without one.',
-                ],
-                [
-                  'Source',
-                  alert.simulated
-                    ? 'Simulated replay, not a live feed'
-                    : 'Server evidence',
-                ],
-              ].map(([k, v], i) => (
+                  [
+                    'Triggered',
+                    <Timestamp key="t" value={alert.triggered_at} />,
+                  ],
+                  alert.distance_miles !== null && [
+                    'Distance',
+                    `${alert.distance_miles} mi`,
+                  ],
+                  alert.clear_after && [
+                    'All-clear after',
+                    <Timestamp key="w" value={alert.clear_after} />,
+                  ],
+                  [
+                    'Rule',
+                    alert.is_prototype_rule
+                      ? 'Prototype rule, not employer policy'
+                      : 'Stop for any strike within 10 mi. Clear after 30 minutes without one.',
+                  ],
+                  [
+                    'Source',
+                    simulated
+                      ? 'Simulated replay, not a live feed'
+                      : 'Live feed',
+                  ],
+                ].filter(Boolean) as [string, ReactNode][]
+              ).map(([k, v], i) => (
                 <div
                   key={i}
                   className="flex flex-wrap justify-between gap-x-4 gap-y-1 py-2.5"
@@ -226,18 +237,20 @@ export function AlertCard({
                       key={e.id}
                       className="break-words rounded-lg bg-surface-2 px-3 py-2"
                     >
-                      <span className="font-mono text-xs text-muted">
-                        {e.id}
+                      {e.label} ·{' '}
+                      <span className="text-muted">
+                        <Timestamp value={e.observed_at} />
                       </span>
-                      : {e.label} · <Timestamp value={e.observed_at} />
                     </li>
                   ))}
                 </ul>
               </div>
             )}
             <p className="text-sm">
-              {alert.acknowledgements.length} acknowledgement(s). Acknowledging
-              does not clear the alert.
+              {acks
+                ? `${acks} acknowledgement${acks === 1 ? '' : 's'} so far.`
+                : 'No acknowledgements yet.'}{' '}
+              Acknowledging does not clear the alert.
             </p>
             <Action
               capability="acknowledge"

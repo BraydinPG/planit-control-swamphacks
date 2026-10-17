@@ -7,6 +7,7 @@ import type {
   HazardConfirmResponse,
   JoinCode,
   OrganizationTeams,
+  TeamRoster,
 } from '../types/api'
 
 export const record = (v: unknown): v is Record<string, unknown> =>
@@ -30,6 +31,7 @@ export const evidence = (v: unknown) =>
         'score_factor',
         'model_output',
         'notice',
+        'event_start', // T050A: when a confirmed event began
       ].includes(String(e.kind)) &&
       (e.observed_at === null || date(e.observed_at)),
   )
@@ -69,6 +71,27 @@ export function validateJoinCode(v: unknown): JoinCode {
     throw new ApiError(502, 'Invalid join code response')
   return v as unknown as JoinCode
 }
+export function validateTeamRoster(v: unknown): TeamRoster {
+  if (
+    !record(v) ||
+    !text(v.id) ||
+    !text(v.name) ||
+    !nullable(v.site_id) ||
+    !nullable(v.site_name) ||
+    !Array.isArray(v.members) ||
+    !v.members.every(member) ||
+    !Array.isArray(v.join_codes) ||
+    !v.join_codes.every((c) => {
+      try {
+        return Boolean(validateJoinCode(c))
+      } catch {
+        return false
+      }
+    })
+  )
+    throw new ApiError(502, 'Invalid team response')
+  return v as unknown as TeamRoster
+}
 const member = (v: unknown) =>
   record(v) &&
   text(v.user_id) &&
@@ -84,24 +107,13 @@ export function validateTeams(v: unknown): OrganizationTeams {
     !Array.isArray(v.supervisors) ||
     !v.supervisors.every(member) ||
     !Array.isArray(v.teams) ||
-    !v.teams.every(
-      (t) =>
-        record(t) &&
-        text(t.id) &&
-        text(t.name) &&
-        nullable(t.site_id) &&
-        nullable(t.site_name) &&
-        Array.isArray(t.members) &&
-        t.members.every(member) &&
-        Array.isArray(t.join_codes) &&
-        t.join_codes.every((c) => {
-          try {
-            return Boolean(validateJoinCode(c))
-          } catch {
-            return false
-          }
-        }),
-    )
+    !v.teams.every((t) => {
+      try {
+        return Boolean(validateTeamRoster(t))
+      } catch {
+        return false
+      }
+    })
   )
     throw new ApiError(502, 'Invalid team response')
   return v as unknown as OrganizationTeams

@@ -267,10 +267,10 @@ try {
     })
   }
   await click('Inspect alert and acknowledge')
-  await loaded('acknowledgement(s)')
+  await loaded('Acknowledging does not clear the alert')
   await click('Record simulated acknowledgement')
   await loaded('Action recorded.')
-  await reload('acknowledgement(s)')
+  await reload('Acknowledging does not clear the alert')
   assert(
     await evaluate(
       "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).alerts[0].acknowledgements.some(a=>a.user_id==='demo-crew')",
@@ -327,7 +327,9 @@ try {
   )
   await reload(reportId)
   await click('Supervisor')
-  await loaded('55 sample/reference')
+  await loaded('Needs your attention')
+  // The supervisor Overview lists what needs a decision; the map and list are on Worksites.
+  await hash('/supervisor/sites', '55 locations')
   await until(
     () =>
       evaluate(
@@ -368,7 +370,7 @@ try {
     "document.querySelector('.leaflet-popup-content button').click()",
   )
   await loaded('Potential notices and approved instructions')
-  await hash('/supervisor/overview', '55 sample/reference')
+  await hash('/supervisor/sites', '55 locations')
   await until(
     () =>
       evaluate(
@@ -493,9 +495,13 @@ try {
             : page === 'reports'
               ? 'Is it there?'
               : page === 'alerts'
-                ? 'acknowledgement(s)'
+                ? 'Acknowledging does not clear the alert'
                 : persona === 'supervisor'
-                  ? '55 sample/reference'
+                  ? page === 'overview'
+                    ? 'Needs your attention'
+                    : page === 'team'
+                      ? 'Join codes'
+                      : '55 locations'
                   : page === 'sites'
                     ? 'Score factors and source evidence'
                     : 'Inspect alert and acknowledge',
@@ -828,7 +834,7 @@ try {
         'Mock server state and acknowledgement preserved; no ML/React score or alert engine',
     })
     await evaluate("window.harness.mount('supervisor')")
-    await hash('/supervisor/overview', '5 backend-authorized locations')
+    await hash('/supervisor/sites', '5 locations')
     await until(
       () =>
         evaluate(
