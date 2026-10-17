@@ -46,7 +46,13 @@
   "production_eligibility": false,
   "original_flood_reference_verified": true,
   "acceptance_tests": {
-    "passed": 145,
+    "passed": 176,
     "command": "python -m pytest ml/tests backend/tests -q"
-  }
+  },
+  "integrated_main": "482b4f9",
+  "backend_lint": "ruff check .: passed",
+  "backend_format": "ruff format --check .: passed",
+  "frontend_lint": "npm run lint: passed",
+  "frontend_build": "npm run build: passed",
+  "frontend_check_runtime": "Node v24.22.0 portable; no tracked manifest or lockfile changes"
 }

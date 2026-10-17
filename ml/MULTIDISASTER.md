@@ -1,6 +1,6 @@
 # Multi-disaster research extension
 
-The Flood v2 model, cutoff purge, KM default, artifacts, reference probabilities, and score exclusion are preserved. PR #4 was merged before this branch was created from `origin/main` (`cf9d3bb`). This extension adds separate targets and a fail-closed registry; it does not train an onset classifier or change deterministic alerts.
+The Flood v2 model, cutoff purge, KM default, artifacts, reference probabilities, and score exclusion are preserved. PR #4 was merged before this branch began at `cf9d3bb`; the completed branch was rebased onto merged team work at `origin/main` (`482b4f9`). This extension adds separate targets and a fail-closed registry; it does not train an onset classifier or change deterministic alerts.
 
 Five additional duration targets passed the predeclared research checks: **Flash Flood, High Wind, Heavy Rain, Winter Storm, and Heat Index Exceedance**. These checks establish limited retrospective evidence, not operational validation. No model is production eligible or eligible for operational evaluation. Strong Wind, Ice Storm, and Heavy Snow trained but failed checks and are unavailable at inference. Hurricane wind-change is a separate offline retrospective experiment. Thunderstorm lifetime, wildfire containment, geographic growth, and worksite severity remain unsupported.
 
@@ -43,6 +43,7 @@ From the repository root, use the pinned environment in [QUICKSTART.md](QUICKSTA
 ```powershell
 ./ml/setup.ps1 -ProvisionModel
 $MlPython = ".\ml\.venv\Scripts\python.exe"
+& $MlPython -m pip install -r backend/requirements-dev.txt
 & $MlPython -m ml.provision_expansion --download
 & $MlPython -m ml.expansion_checks
 & $MlPython -m pytest ml/tests backend/tests -q
