@@ -9,54 +9,54 @@
       "name": "Line Crew A",
       "organization_id": "org-sunbelt"
     },
-    "risk_score": 7.6,
+    "risk_score": 6.1,
     "risk_level": "high",
-    "updated_at": "2026-10-17T17:57:00Z",
+    "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 2,
     "top_factors": [
       {
         "factor": "lightning",
-        "label": "Lightning stop-work active (simulated replay)",
+        "label": "Lightning stop-work active, latest qualifying strike 4.2 mi; feed coverage unknown [simulated; not live coverage]",
         "contribution": 3.0,
         "value": 4.2,
         "unit": "mi",
         "source": "lightning-replay",
         "observed_at": "2026-10-17T17:57:00Z",
         "data_state": "simulated",
-        "is_prototype": false,
-        "evidence_id": "obs-ltg-2"
-      },
-      {
-        "factor": "model",
-        "label": "Model: 24 h weather-hazard likelihood",
-        "contribution": 1.6,
-        "value": 0.41,
-        "unit": null,
-        "source": "model baseline-0.1",
-        "observed_at": "2026-10-17T17:30:00Z",
-        "data_state": "observed",
-        "is_prototype": false,
-        "evidence_id": "model-1"
+        "is_prototype": true,
+        "evidence_id": "alert-ltg-demo"
       },
       {
         "factor": "heat_index",
-        "label": "Forecast heat index above prototype threshold (103 °F)",
-        "contribution": 1.5,
-        "value": 108.0,
+        "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
+        "contribution": 1.11,
+        "value": 112.0,
         "unit": "°F",
         "source": "NWS",
-        "observed_at": "2026-10-17T17:00:00Z",
-        "data_state": "forecast",
+        "observed_at": "2026-10-17T17:40:00Z",
+        "data_state": "simulated",
         "is_prototype": true,
-        "evidence_id": "obs-fc-1"
+        "evidence_id": "obs-wx-3"
+      },
+      {
+        "factor": "flood",
+        "label": "Flood Watch in effect (prototype weight) [simulated; not live coverage]",
+        "contribution": 1.0,
+        "value": "Flood Watch",
+        "unit": null,
+        "source": "NWS",
+        "observed_at": "2026-10-17T16:30:00Z",
+        "data_state": "simulated",
+        "is_prototype": true,
+        "evidence_id": "obs-flood-1"
       }
     ],
-    "data_completeness": 0.71,
-    "model_version": "baseline-0.1"
+    "data_completeness": 0.0,
+    "model_version": "rules-0.2"
   },
   {
     "id": "site-fixture-b",
-    "name": "Fixture Site B (representative power plant)",
+    "name": "Fixture Site B (simulated; feeds unavailable)",
     "lat": 26.1,
     "lon": -81.2,
     "assigned_team": {
@@ -64,30 +64,54 @@
       "name": "Substation Crew B",
       "organization_id": "org-sunbelt"
     },
-    "risk_score": 5.4,
-    "risk_level": "moderate",
-    "updated_at": "2026-10-17T17:30:00Z",
+    "risk_score": 0.0,
+    "risk_level": "low",
+    "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 0,
     "top_factors": [
       {
-        "factor": "model",
-        "label": "Model unavailable: labeled fallback component",
-        "contribution": 2.5,
+        "factor": "lightning",
+        "label": "Lightning status unknown (feed stale or unavailable)",
+        "contribution": 0.0,
         "value": null,
         "unit": null,
-        "source": "model fallback",
-        "observed_at": "2026-10-17T17:30:00Z",
+        "source": "lightning",
+        "observed_at": null,
         "data_state": "unavailable",
-        "is_prototype": false,
+        "is_prototype": true,
+        "evidence_id": null
+      },
+      {
+        "factor": "heat_index",
+        "label": "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "NWS",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
+      },
+      {
+        "factor": "flood",
+        "label": "Flood alerts unknown (NWS feed unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "NWS",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
         "evidence_id": null
       }
     ],
-    "data_completeness": 0.4,
-    "model_version": "fallback-0"
+    "data_completeness": 0.0,
+    "model_version": "rules-0.2"
   },
   {
     "id": "site-fixture-c",
-    "name": "Fixture Site C (representative power plant)",
+    "name": "Fixture Site C (simulated; stale weather)",
     "lat": 27.95,
     "lon": -82.46,
     "assigned_team": {
@@ -95,66 +119,151 @@
       "name": "Vegetation Crew C",
       "organization_id": "org-sunbelt"
     },
-    "risk_score": 2.3,
+    "risk_score": 0.0,
     "risk_level": "low",
-    "updated_at": "2026-10-17T14:00:00Z",
+    "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 0,
     "top_factors": [
       {
+        "factor": "lightning",
+        "label": "Lightning status unknown (feed stale or unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "lightning",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
+      },
+      {
         "factor": "heat_index",
-        "label": "Heat index (stale: last NWS update 4 h ago)",
-        "contribution": 0.8,
+        "label": "Heat index 99 °F (observed), below prototype threshold 103 °F (simulated replay inputs) [stale; not live coverage]",
+        "contribution": 0.0,
         "value": 99.0,
         "unit": "°F",
         "source": "NWS",
         "observed_at": "2026-10-17T14:00:00Z",
         "data_state": "stale",
         "is_prototype": true,
+        "evidence_id": "obs-stale-c"
+      },
+      {
+        "factor": "flood",
+        "label": "Flood alerts unknown (NWS feed unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "NWS",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
         "evidence_id": null
       }
     ],
-    "data_completeness": 0.55,
-    "model_version": "baseline-0.1"
+    "data_completeness": 0.0,
+    "model_version": "rules-0.2"
   },
   {
     "id": "site-fixture-d",
-    "name": "Fixture Site D (representative power plant, no team)",
+    "name": "Fixture Site D (simulated; no team)",
     "lat": 28.54,
     "lon": -81.38,
     "assigned_team": null,
-    "risk_score": 6.1,
-    "risk_level": "high",
-    "updated_at": "2026-10-17T17:40:00Z",
+    "risk_score": 1.1,
+    "risk_level": "low",
+    "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 0,
     "top_factors": [
       {
         "factor": "heat_index",
-        "label": "Forecast heat index above prototype threshold (103 °F)",
-        "contribution": 1.5,
-        "value": 108.0,
+        "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
+        "contribution": 1.11,
+        "value": 112.0,
         "unit": "°F",
         "source": "NWS",
-        "observed_at": "2026-10-17T17:00:00Z",
-        "data_state": "forecast",
+        "observed_at": "2026-10-17T17:40:00Z",
+        "data_state": "simulated",
         "is_prototype": true,
-        "evidence_id": "obs-fc-1"
+        "evidence_id": "obs-heat-d"
+      },
+      {
+        "factor": "lightning",
+        "label": "Lightning status unknown (feed stale or unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "lightning",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
+      },
+      {
+        "factor": "flood",
+        "label": "Flood alerts unknown (NWS feed unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "NWS",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
       }
     ],
-    "data_completeness": 0.85,
-    "model_version": "baseline-0.1"
+    "data_completeness": 0.0,
+    "model_version": "rules-0.2"
   },
   {
     "id": "site-fixture-e",
-    "name": "Fixture Site E (representative power plant, no team, feeds unavailable)",
+    "name": "Fixture Site E (simulated; feeds unavailable)",
     "lat": 30.33,
     "lon": -81.66,
     "assigned_team": null,
-    "risk_score": 3.0,
-    "risk_level": "moderate",
-    "updated_at": "2026-10-17T11:20:00Z",
+    "risk_score": 0.0,
+    "risk_level": "low",
+    "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 0,
-    "top_factors": [],
+    "top_factors": [
+      {
+        "factor": "lightning",
+        "label": "Lightning status unknown (feed stale or unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "lightning",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
+      },
+      {
+        "factor": "heat_index",
+        "label": "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "NWS",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
+      },
+      {
+        "factor": "flood",
+        "label": "Flood alerts unknown (NWS feed unavailable)",
+        "contribution": 0.0,
+        "value": null,
+        "unit": null,
+        "source": "NWS",
+        "observed_at": null,
+        "data_state": "unavailable",
+        "is_prototype": true,
+        "evidence_id": null
+      }
+    ],
     "data_completeness": 0.0,
-    "model_version": "fallback-0"
+    "model_version": "rules-0.2"
   }
 ]

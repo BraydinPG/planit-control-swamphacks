@@ -47,9 +47,8 @@ test('demo accepts access mat deterioration and preserves the crew assessment', 
 test('unapproved fixture model scores cannot determine demonstration ranking', async () => {
   const client = new DemoClient(() => 'supervisor', storage())
   const rows = await client.sites()
-  const legacy = rows.find((s) =>
-    s.top_factors.some((f) => f.factor === 'model'),
-  )
+  // Keep the legacy guard covered without putting obsolete ML terms in canonical fixtures.
+  const legacy = { ...rows[0], top_factors: [{ factor: 'model' }] }
   const eligible = {
     ...legacy,
     id: 'eligible',
@@ -59,6 +58,36 @@ test('unapproved fixture model scores cannot determine demonstration ranking', a
   }
   assert.equal(sortSites([legacy, eligible], true)[0].id, 'eligible')
   assert.notEqual(legacy.risk_score, null)
+})
+
+test('reset replaces a saved legacy score with approved fixtures and preserves Auth0 storage', async () => {
+  const saved = storage()
+  const client = new DemoClient(() => 'supervisor', saved)
+  client.reset()
+  const old = JSON.parse(saved.getItem(DEMO_KEY))
+  const obsolete = { factor: 'model', contribution: 1.6 }
+  old.sites.find((s) => s.id === assigned).top_factors = [obsolete]
+  old.details[assigned].top_factors = [obsolete]
+  old.details[assigned].model_version = 'baseline-0.1'
+  old.details[assigned].risk_score = 7.6
+  saved.setItem(DEMO_KEY, JSON.stringify(old))
+  saved.setItem('@@auth0spajs@@test-session', 'synthetic-session-sentinel')
+  const restored = new DemoClient(() => 'supervisor', saved)
+  assert.equal((await restored.site(assigned)).model_version, 'baseline-0.1')
+  restored.reset()
+  const detail = await new DemoClient(() => 'supervisor', saved).site(assigned)
+  const row = (await restored.sites()).find((s) => s.id === assigned)
+  assert.equal(detail.risk_score, 6.1)
+  assert.equal(row.risk_score, detail.risk_score)
+  assert.equal(detail.score.risk_score, detail.risk_score)
+  assert.equal(detail.model_version, 'rules-0.2')
+  assert.equal(detail.data_completeness, 0)
+  assert(!detail.score.factor_contributions.some((f) => f.factor === 'model'))
+  assert.equal(detail.event_outlooks.length, 6)
+  assert.equal(
+    saved.getItem('@@auth0spajs@@test-session'),
+    'synthetic-session-sentinel',
+  )
 })
 
 test('unavailable demo storage reports memory-only changes without claiming persistence', async () => {

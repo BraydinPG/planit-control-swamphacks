@@ -251,7 +251,33 @@ class EventOutlooksService:
                 _unavailable(site, e, now, "prediction_failed", f"{type(exc).__name__}")
                 for e in inputs
             ]
-        return [_card(site, item, presentation) for item in raw]
+        # Conversion into the canonical API schema is also part of the failure
+        # boundary. Never let one malformed/missing/duplicate result break its
+        # siblings or silently remove an event from the site response.
+        rows: dict[str, list[dict[str, Any]]] = {}
+        if isinstance(raw, list):
+            for item in raw:
+                if isinstance(item, dict) and isinstance(item.get("event_id"), str):
+                    rows.setdefault(item["event_id"], []).append(item)
+        cards = []
+        for event in inputs:
+            try:
+                matches = rows.get(event["event_id"], [])
+                if len(matches) != 1:
+                    raise ValueError("Expected exactly one result for this event")
+                cards.append(_card(site, matches[0], presentation))
+            except Exception as exc:  # malformed optional advisory must not break the route
+                logger.warning("Event outlook conversion failed: %s", type(exc).__name__)
+                cards.append(
+                    _unavailable(
+                        site,
+                        event,
+                        now,
+                        "invalid_prediction_output",
+                        "The prediction output could not be validated.",
+                    )
+                )
+        return cards
 
     def _examples(self, site: SiteLike) -> list[EventOutlookCard]:
         """PR #39's archived NHC/USGS products, evaluated at this site as labeled examples."""
