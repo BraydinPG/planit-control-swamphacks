@@ -148,6 +148,8 @@ Adapter rules:
 - `POST /api/reports`
 - `GET /api/reports`
 - `POST /api/reports/{id}/review`
+- `POST /api/hazards/{id}/confirm`
+- `POST /api/hazards/{id}/instruction`
 - `POST /api/sites/{id}/briefings`
 - `POST /api/sites/{id}/explanations`
 
