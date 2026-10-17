@@ -1,17 +1,20 @@
 {
-  "checked_at": "2026-10-17T11:37:18.412768+00:00",
+  "checked_at": "2026-10-17T11:42:52.757379+00:00",
   "objective_status": "blocked_real_services_and_failed_incomplete_score_display",
   "branch": "feature/cache-scoring-integration",
-  "base_commit": "07a459d6ee0c7bd055b6db7cb285210604966f3c",
+  "base_commit": "176cf36df329df8d37f8e888a93a531cd508eab4",
   "merged_scoring_pr": 31,
   "claude_branch_reviewed": {
     "name": "feature/rudra-ui",
-    "commit": "ac5861c",
-    "merged_or_edited_by_codex": false,
-    "pr": 32
+    "first_inspected_commit": "ac5861c",
+    "pr": 32,
+    "merged_into_main_by_maintainer": true,
+    "merged_commit": "176cf36df329df8d37f8e888a93a531cd508eab4",
+    "manual_visual_edits_by_codex": false,
+    "visual_paths_identical_to_main": true
   },
   "actual_readiness": {
-    "checked_at": "2026-10-17T11:37:17.974Z",
+    "checked_at": "2026-10-17T11:41:09.524Z",
     "status": "failed",
     "scope": "local real-integration readiness and API acceptance; never task auto-completion",
     "frontend": {
@@ -514,7 +517,7 @@
   },
   "standard_browser": {
     "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
-    "checked_at": "2026-10-17T11:28:46.657Z",
+    "checked_at": "2026-10-17T11:41:02.582Z",
     "url": "http://localhost:5176/",
     "browser": "Installed headless Edge/Chrome via CDP",
     "results": [
@@ -560,12 +563,12 @@
       },
       {
         "fixture_setting": "false",
-        "cold_start_ms": 2567,
+        "cold_start_ms": 5035,
         "status": "explicit configuration/auth state; no silent samples"
       },
       {
         "fixture_setting": "typo",
-        "cold_start_ms": 3617,
+        "cold_start_ms": 4546,
         "status": "explicit configuration/auth state; no silent samples"
       }
     ],
@@ -638,7 +641,7 @@
         "role": "crew",
         "stage": "no_evidence_display",
         "status": "failed",
-        "score_text": "Site score\n\n0.0 / 10 · low\n\nServer-provided score; never calculated by the frontend. Completeness: 0%. Model: rules-0.2\n\nUpdated: 2026-10-17 18:00:00 UTC"
+        "score_text": "SITE SCORE\nLow\n\n0.0\n/ 10 · low\n\nServer-provided score; never calculated by the frontend. Completeness: 0%. Model: rules-0.2\n\nUpdated: 2026-10-17 18:00:00 UTC"
       },
       {
         "width": 390,
@@ -701,7 +704,7 @@
         "role": "crew",
         "stage": "no_evidence_display",
         "status": "failed",
-        "score_text": "Site score\n\n0.0 / 10 · low\n\nServer-provided score; never calculated by the frontend. Completeness: 0%. Model: rules-0.2\n\nUpdated: 2026-10-17 18:00:00 UTC"
+        "score_text": "SITE SCORE\nLow\n\n0.0\n/ 10 · low\n\nServer-provided score; never calculated by the frontend. Completeness: 0%. Model: rules-0.2\n\nUpdated: 2026-10-17 18:00:00 UTC"
       }
     ],
     "browser_exceptions": [],
@@ -725,9 +728,21 @@
     "frontend_lint": "passed",
     "typescript": "passed",
     "fixture_build": "passed",
-    "api_build": "passed with 531.64kB chunk warning",
+    "api_build": "passed after upstream redesign; 553.81kB chunk warning",
     "ruff": "passed",
-    "changed_python_format": "passed"
+    "changed_python_format": "passed",
+    "frontend_repeated_after_main_redesign": {
+      "node_passed": 70,
+      "lint": "passed",
+      "typescript": "passed",
+      "fixture_build": "passed",
+      "api_build": "passed",
+      "browser_widths": [
+        1440,
+        390,
+        320
+      ]
+    }
   },
   "task_checkboxes_changed": [],
   "live_tasks_completed": [],
@@ -756,7 +771,7 @@
     "migrations",
     "deployment",
     "PR merge",
-    "production/UI/scoring-algorithm/backend-orchestration changes"
+    "manual changes to presentation files, scoring algorithm or backend orchestration"
   ],
   "artifact_note": "One-off helper, full synthetic response snapshots and screenshots remain ignored locally; this record contains redacted status and synthetic scalar evidence only. No JWTs or real identities.",
   "runtime_provenance": {
@@ -774,5 +789,7 @@
     "state_at_publication": "open",
     "base": "main",
     "merged_by_codex": false
-  }
+  },
+  "initial_base_commit": "07a459d6ee0c7bd055b6db7cb285210604966f3c",
+  "integrated_main_merge": "3b8dfe2b9bade92e8544e23e1a7dff7263aa0e9d"
 }

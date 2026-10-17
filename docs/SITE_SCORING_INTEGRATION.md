@@ -2,10 +2,11 @@
 
 **The authenticated Tiger Data milestone is blocked, not complete.** T051A merged
 in PR #31 (`07a459d`). This verification uses `feature/cache-scoring-integration`
-from that main in the separate functional worktree. Claude's unmerged redesign is
-on `feature/rudra-ui` ([PR #32](https://github.com/BraydinPG/planit-control-swamphacks/pull/32),
-`ac5861c` when inspected); no presentation files were edited. Its shared-log change
-appends at the file end; this branch prepends a separate entry to avoid overlap.
+initially from that main in the separate functional worktree. Maintainers then merged
+Claude's [PR #32](https://github.com/BraydinPG/planit-control-swamphacks/pull/32)
+as `176cf36`. This branch incorporates that main as `3b8dfe2`; every presentation
+file remains byte-for-byte equal to main. No manual visual edits or merge into main
+by Codex. The shared-log entries merged cleanly without overwriting either owner.
 T063–T068 remain unchecked. Implementation `b7d1293`; [PR #33](https://github.com/BraydinPG/planit-control-swamphacks/pull/33) is open against main at publication; no Codex merge. Machine evidence: [verification JSON](site-scoring-integration-verification.json).
 
 ## What was exercised
@@ -118,8 +119,8 @@ node scripts/check-shell.mjs http://localhost:5176/
 ```
 
 `npm.cmd` avoids PowerShell's blocked npm.ps1 without changing execution policy.
-`$env:VITE_USE_FIXTURES='false'; npm.cmd run build` also passes; its 531.64kB chunk
-warning remains. Do not copy private values into VITE settings. Commands assume
+`$env:VITE_USE_FIXTURES='false'; npm.cmd run build` also passes; its 553.81kB chunk
+warning remains after incorporating the redesign (the earlier build was 531.64kB). Do not copy private values into VITE settings. Commands assume
 the existing Vite process; this run did not restart Claude's server.
 
 Final verification: **648 Python tests (638 backend +10 probe)**, **70 Node tests**,
@@ -165,4 +166,7 @@ these checks does not complete T063–T068.
    outcomes. No guessed route, bypass, unattended seed or automatic confirmation.
 
 Only after those actual checks pass should each task's own criterion be evaluated.
-T068 additionally waits for the merged redesigned UI and live accessibility checks.
+The merged redesign passes the repeated mock/demo/browser checks; T068 still needs
+the live workflows and their accessibility acceptance. The functional Vite5176
+instance is a development preview, not a newly approved Auth0 callback. Use an
+owner-approved origin (normally5173) for real login, or have Braydin configure it.

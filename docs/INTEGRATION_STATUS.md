@@ -8,7 +8,7 @@ Controlled complete backend path passes: canned NWS JSON -> actual adapters/cach
 
 Actual local readiness remains blocked: Auth0 SPA/backend and DATABASE_URL missing, DB membership/contents unknown, refresh off/NWS user-agent missing, T069 source seed still empty. Health/OpenAPI200, all11 operations, ten anonymous/dev-header401 denials and proxy401 verified; invalid bearer503 is not real signature-validation proof. No real login, source collection, DB connection or authenticated mutation performed. Current runner exits1 for its newly detected **incomplete-score display failure**, in addition to configuration blockers: ScorePanel shows0/low at0% without an explicit warning next to it. Claude/Rudra handoffs are actionable; no UI/contract changes forced.
 
-Checks: **648 Python (638+10)**, **70 Node**, Ruff, lint/TS, fixture and API builds pass; API chunk531.64kB warning retained. Existing Edge demo/mock checks pass1440/390/320, no exceptions. T063–T068 stay unchecked; tasks.md unchanged. This improves independent verification, not live integration completion.
+Checks: **648 Python (638+10)**, **70 Node**, Ruff, lint/TS, fixture and API builds pass; API chunk553.81kB warning retained after incorporating maintainer-merged PR #32/main176cf36 as feature merge3b8dfe2; repeated frontend/browser checks pass and visual paths exactly equal main. Existing Edge demo/mock checks pass1440/390/320, no exceptions. T063–T068 stay unchecked; tasks.md unchanged. This improves independent verification, not live integration completion.
 
 ## Previous functional checkpoint (historical)
 
@@ -20,7 +20,7 @@ Current functional changes: canonical site/alert/nested evidence validation, typ
 
 Current checks: **68 Node**, **521 backend/probe** (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and existing browser demo/mock workflows at 1440/390/320 pass. Actual ten anonymous/development-header denials return401; invalid token503 remains unverified; all11 source/running routes match, no drift. No authenticated demo mutation performed; readiness exits2. API-mode build has a chunk-size warning (531kB); no visual/composition refactor attempted. Exact evidence: functional-integration-verification.json. Historical T065 evidence remains in t065-verification.json.
 
-T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and Claude's integrated redesign. No task checkbox changed in this run.
+T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and live accessibility on the now-integrated redesign. No task checkbox changed in this run.
 
 Review: [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), source checkpoints `b7c8dc4` / `11806fa`, open against main at publication.
 
