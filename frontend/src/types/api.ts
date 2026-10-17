@@ -116,6 +116,18 @@ export interface Account {
   site_id: string | null
 }
 
+/** Body for POST /api/teams: a supervisor adds a team, optionally at a site with no team. */
+export interface TeamCreate {
+  name: string
+  site_id?: string | null
+}
+
+/** Body for PATCH /api/teams/{id}. Send `site_id: null` to unassign the site. */
+export interface TeamUpdate {
+  name?: string | null
+  site_id?: string | null
+}
+
 /** Body for POST /api/join. Case, spaces and a missing dash are forgiven. */
 export interface JoinRequest {
   code: string

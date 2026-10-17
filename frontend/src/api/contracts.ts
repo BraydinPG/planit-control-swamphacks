@@ -7,6 +7,9 @@ import type {
   HazardConfirmResponse,
   JoinCode,
   OrganizationTeams,
+  TeamCreate,
+  TeamRoster,
+  TeamUpdate,
   ReportCreate,
   ReportReview,
   SiteDetail,
@@ -49,6 +52,10 @@ export interface Client {
   revokeJoinCode(code: string): Promise<void>
   /** Crew account with no team joins the team behind a code. */
   join(code: string): Promise<Account>
+  /** Supervisor: add, rename or move (site), and remove teams in their organization. */
+  createTeam(input: TeamCreate): Promise<TeamRoster>
+  updateTeam(id: string, input: TeamUpdate): Promise<TeamRoster>
+  deleteTeam(id: string): Promise<void>
 }
 export interface DemoSnapshot {
   version: 1

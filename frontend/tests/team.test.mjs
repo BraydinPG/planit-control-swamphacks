@@ -24,6 +24,9 @@ const { JoinTeam } = await server.ssrLoadModule(
   '/src/components/data/TeamRoster.tsx',
 )
 
+const { attentionItems, highestRisk } = await server.ssrLoadModule(
+  '/src/components/data/attention.ts',
+)
 const text = (html) => html.replace(/<[^>]+>/g, '').replaceAll('&#x27;', "'")
 const storage = () => {
   const map = new Map()
@@ -195,4 +198,192 @@ test('a crew account with no team sees the join form', async () => {
   )
   // The first render waits for /api/me; the form itself is covered in the browser check.
   assert(text(html).includes('Loading'))
+})
+
+// ---- supervisor Overview: what needs attention, and the highest risk ----
+
+const site = (id, extra = {}) => ({
+  id,
+  name: `Site ${id}`,
+  lat: 0,
+  lon: 0,
+  risk_score: null,
+  risk_level: null,
+  updated_at: null,
+  assigned_team: null,
+  active_alerts: 0,
+  top_factors: [],
+  data_completeness: 1,
+  model_version: 'rules-0.2',
+  ...extra,
+})
+
+test('the Overview lists active alerts, notices to confirm, then absent reports to review', () => {
+  const sites = [site('a'), site('b')]
+  const items = attentionItems(
+    sites,
+    [
+      {
+        id: 'al-1',
+        site_id: 'a',
+        rule: 'lightning_stop_work',
+        state: 'active',
+      },
+      { id: 'al-2', site_id: 'a', rule: 'flood', state: 'cleared' },
+    ],
+    [
+      {
+        id: 'r-1',
+        site_id: 'b',
+        category: 'on_site_fire',
+        hazard_present: false,
+        review_status: 'pending',
+      },
+      {
+        id: 'r-2',
+        site_id: 'b',
+        category: 'wildlife',
+        hazard_present: true,
+        review_status: 'pending',
+      },
+      {
+        id: 'r-3',
+        site_id: 'b',
+        category: 'flooding',
+        hazard_present: false,
+        review_status: 'confirmed',
+      },
+    ],
+    [
+      {
+        notice: { id: 'n-1', hazard_label: 'downed line', radius_miles: 1 },
+        site: sites[1],
+      },
+    ],
+  )
+  assert.deepEqual(
+    items.map((i) => [i.title, i.detail]),
+    [
+      ['Lightning stop-work alert', 'Site a'],
+      ['Potential downed line', 'Site b · within 1 mi'],
+      ['Report: no on-site fire', 'Site b'],
+    ],
+  )
+  assert.equal(items[0].href, '#/supervisor/alerts/al-1')
+})
+
+test('highest risk ignores unscored and no-evidence sites', () => {
+  const sites = [
+    site('low', { risk_score: 2, risk_level: 'low' }),
+    site('high', { risk_score: 7.1, risk_level: 'high' }),
+    site('none', { risk_score: 0, risk_level: 'low', data_completeness: 0 }),
+    site('unscored'),
+    site('mid', { risk_score: 4.5, risk_level: 'moderate' }),
+    site('next', { risk_score: 3, risk_level: 'moderate' }),
+  ]
+  assert.deepEqual(
+    highestRisk(sites).map((s) => s.id),
+    ['high', 'mid', 'next'],
+  )
+})
+
+test('every backend evidence kind is accepted, including event_start (T050A)', async () => {
+  const { readFileSync } = await import('node:fs')
+  const { validateNotice } = await server.ssrLoadModule('/src/api/validate.ts')
+  const python = readFileSync(
+    new URL('../../backend/app/schemas/common.py', import.meta.url),
+    'utf8',
+  )
+  const kinds = [
+    ...python
+      .split('class EvidenceKind')[1]
+      .split('class ')[0]
+      .matchAll(/= "([a-z_]+)"/g),
+  ].map((m) => m[1])
+  assert(kinds.includes('event_start'))
+  const notice = {
+    id: 'n-1',
+    hazard_label: 'flooding',
+    source: 'feed',
+    source_ref: 'nws-1',
+    lat: 25,
+    lon: -80,
+    radius_miles: 5,
+    radius_source: 'default',
+    status: 'confirmed',
+    created_at: '2026-10-17T16:00:00Z',
+    confirmed_by: 'auth0|s',
+    confirmed_at: '2026-10-17T16:10:00Z',
+    suggested_instruction: null,
+    instruction: null,
+    instruction_sent_at: null,
+    evidence: kinds.map((kind, i) => ({
+      id: `e-${i}`,
+      kind,
+      label: kind,
+      observed_at: null,
+    })),
+  }
+  assert.equal(validateNotice(notice).id, 'n-1')
+})
+
+test('demo supervisors add, rename, move and remove teams; one team per site', async () => {
+  const demo = new DemoClient(() => 'supervisor', storage())
+  const sites = await demo.sites()
+  const free = sites.find((s) => !s.assigned_team)
+  const taken = sites.find((s) => s.assigned_team)
+  const added = await demo.createTeam({
+    name: ' Night Crew ',
+    site_id: free.id,
+  })
+  assert.equal(added.name, 'Night Crew')
+  assert.equal(added.site_name, free.name)
+  await assert.rejects(
+    () => demo.createTeam({ name: 'Dup', site_id: taken.id }),
+    (e) => e.reason === 'site_taken',
+  )
+  const moved = await demo.updateTeam(added.id, {
+    name: 'Nights',
+    site_id: null,
+  })
+  assert.deepEqual([moved.name, moved.site_id], ['Nights', null])
+  const crewTeam = (await demo.team()).teams.find((t) => t.members.length)
+  await assert.rejects(
+    () => demo.deleteTeam(crewTeam.id),
+    (e) => e.reason === 'has_members',
+  )
+  await demo.deleteTeam(added.id)
+  assert(!(await demo.team()).teams.some((t) => t.id === added.id))
+})
+
+test('the live client sends team changes to the team routes', async () => {
+  const calls = []
+  const roster = {
+    id: 'team:1',
+    name: 'Nights',
+    site_id: null,
+    site_name: null,
+    members: [],
+    join_codes: [],
+  }
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(
+        `${options.method} ${new URL(url).pathname} ${options.body ?? ''}`,
+      )
+      return options.method === 'DELETE'
+        ? new Response(null, { status: 204 })
+        : Response.json(roster)
+    },
+  )
+  await api.createTeam({ name: 'Nights', site_id: null })
+  await api.updateTeam('team:1', { site_id: null })
+  await api.deleteTeam('team:1')
+  assert.deepEqual(calls, [
+    'POST /api/teams {"name":"Nights","site_id":null}',
+    'PATCH /api/teams/team%3A1 {"site_id":null}',
+    'DELETE /api/teams/team%3A1 ',
+  ])
 })

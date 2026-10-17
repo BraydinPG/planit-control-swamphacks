@@ -11,10 +11,16 @@ import {
   validateReport,
   validateNotice,
   validateConfirmation,
+  validateTeamRoster,
   validateSpeciesContext,
   validateTeams,
 } from './validate'
-import type { ReportCreate, ReportReview } from '../types/api'
+import type {
+  ReportCreate,
+  ReportReview,
+  TeamCreate,
+  TeamUpdate,
+} from '../types/api'
 import { ApiError, type Client } from './contracts'
 
 export class HttpClient implements Client {
@@ -320,6 +326,23 @@ export class HttpClient implements Client {
       method: 'POST',
       body: JSON.stringify({ code }),
     }).then(validateAccount)
+  }
+  createTeam(input: TeamCreate) {
+    return this.request<unknown>('/api/teams', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }).then(validateTeamRoster)
+  }
+  updateTeam(id: string, input: TeamUpdate) {
+    return this.request<unknown>(`/api/teams/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    }).then(validateTeamRoster)
+  }
+  async deleteTeam(id: string) {
+    await this.request(`/api/teams/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    })
   }
 }
 
