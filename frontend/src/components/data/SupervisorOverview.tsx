@@ -89,7 +89,7 @@ export function SupervisorOverview({ sites }: { sites: SiteSummary[] }) {
               <li key={item.key}>
                 <a
                   href={item.href}
-                  className="flex min-h-14 items-center gap-3 px-4 py-3 hover:bg-surface-2/60"
+                  className="flex min-h-14 items-center gap-3 px-4 py-3 hover:bg-hover"
                 >
                   <RiskShape kind={item.shape} className="size-5" />
                   <span className="min-w-0 flex-1">
@@ -139,7 +139,7 @@ export function SupervisorOverview({ sites }: { sites: SiteSummary[] }) {
               <li key={s.id}>
                 <a
                   href={`#/supervisor/sites/${encodeURIComponent(s.id)}`}
-                  className={`${card} pc-press flex h-full flex-col gap-2 p-4 hover:bg-surface-2/60`}
+                  className={`${card} pc-press flex h-full flex-col gap-2 p-4 hover:bg-hover`}
                 >
                   <span className="font-bold text-ink">{s.name}</span>
                   <span className="text-sm text-ink-2">
@@ -188,7 +188,7 @@ function Tile({
   return (
     <a
       href={href}
-      className={`${card} pc-press flex items-start gap-3 p-4 hover:bg-surface-2/60`}
+      className={`${card} pc-press flex items-start gap-3 p-4 hover:bg-hover`}
     >
       <RiskShape kind={shape} className="mt-1.5 size-4" />
       <span className="leading-tight">
