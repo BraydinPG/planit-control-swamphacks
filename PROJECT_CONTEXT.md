@@ -12,7 +12,8 @@
 - Fresh isolated environment: 256 ML/backend tests passed, including 62 new worker checks.
 - Backend lint/format, new Python lint/format, frontend lint/typecheck/build passed.
 - Existing nine duration artifacts/reference predictions verified without refitting.
-- New PR is pending publication at this checkpoint; do not merge into main.
+- PR #9 is open, ready for Rudra review: https://github.com/BraydinPG/planit-control-swamphacks/pull/9
+- Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
 
 ## Mission and boundaries
 - Layer A: conditional evolution of an already confirmed event, never event onset.
@@ -149,5 +150,6 @@ python -m pytest ml/tests backend/tests -q
 - 2026-10-17: PR #4/#6 ancestry verified; branch from merged main, no duplicate merge.
 - 2026-10-17: preserve existing duration fits; prioritize evidence-only site conditions.
 - 2026-10-17: all-category census and two-layer research slice verified; site ML not forced.
+- 2026-10-17: 256 checks passed on base `7950971`; feature pushed and PR #9 opened for review.
 - Update this file in the same commit as model/contract/source/handoff/test changes.
 - Reconcile teammate edits; keep deep details in ML docs, not a transcript here.

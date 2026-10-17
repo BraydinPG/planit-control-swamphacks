@@ -45,6 +45,7 @@
   "base_main_commit": "7950971",
   "rebase_note": "Main added 14 database and four EIA checks; all 256 tests pass after preserving teammate DB/EIA work. Frontend unchanged by rebase.",
   "verified_at_utc": "2026-10-17T06:42:40Z",
+  "review_pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/9",
   "test_duration_seconds": 14.14,
   "warnings": [
     "Existing Starlette/httpx TestClient deprecation"
