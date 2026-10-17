@@ -110,13 +110,17 @@ export function AppShell({
               aria-current={current ? 'page' : undefined}
               className={
                 mobile
-                  ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-[11px] font-bold leading-tight ${current ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-surface-2'}`
-                  : `flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-surface-2 font-bold text-ink shadow-[inset_3px_0_0_var(--pc-ink)]' : 'font-medium text-ink-2 hover:bg-surface-2 hover:text-ink'}`
+                  ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-[11px] leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
+                  : `flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
               }
             >
               <Icon
                 name={item.icon}
-                className={mobile ? 'size-6 shrink-0' : 'size-5 shrink-0'}
+                className={
+                  mobile
+                    ? 'size-6 shrink-0'
+                    : `size-5 shrink-0 ${current ? 'text-accent' : 'text-accent/80'}`
+                }
               />
               <span className={mobile ? 'max-w-full' : 'min-w-0 truncate'}>
                 {label(item)}
@@ -144,7 +148,7 @@ export function AppShell({
         Skip to content
       </a>
       {!crew && (
-        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-nav px-4 py-6 lg:flex">
+        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-[#ececf0]/90 px-4 py-6 backdrop-blur-xl lg:flex">
           <a
             href={`#/${route.workspace}/overview`}
             aria-label="PlanIT Control overview"
@@ -175,7 +179,7 @@ export function AppShell({
         </aside>
       )}
       <header
-        className={`sticky top-0 z-20 border-b border-line bg-nav/95 px-4 backdrop-blur ${crew ? '' : 'sm:px-6 lg:px-10'}`}
+        className={`sticky top-0 z-20 border-b border-line bg-nav/80 px-4 backdrop-blur-xl backdrop-saturate-150 ${crew ? '' : 'sm:px-6 lg:px-10'}`}
       >
         <div
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
@@ -196,7 +200,7 @@ export function AppShell({
             </p>
           </div>
           <span
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
+            className={`inline-flex shrink-0 items-center gap-1.5 chip border ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
           >
             <span
               className={`size-1.5 rounded-full ${authenticated ? 'bg-ok' : 'bg-sim'}`}
@@ -229,7 +233,7 @@ export function AppShell({
                 <div
                   role="group"
                   aria-label="Preview workspace, not an authorization role"
-                  className="flex rounded-xl border border-line bg-surface p-1"
+                  className="flex rounded-[10px] bg-[#e3e3e8] p-0.5"
                 >
                   {(['crew', 'supervisor'] as const).map((workspace) => (
                     <button
@@ -239,7 +243,7 @@ export function AppShell({
                       onClick={() => {
                         window.location.hash = `/${workspace}/overview`
                       }}
-                      className={`min-h-11 rounded-lg px-4 text-sm font-semibold capitalize transition-colors ${route.workspace === workspace ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-surface-2'}`}
+                      className={`min-h-11 rounded-lg px-4 text-sm font-semibold capitalize transition-colors ${route.workspace === workspace ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(0,0,0,0.12)]' : 'text-ink-2 hover:text-ink'}`}
                     >
                       {workspace}
                     </button>
@@ -258,7 +262,7 @@ export function AppShell({
           <h1
             ref={heading}
             tabIndex={-1}
-            className="text-2xl font-bold tracking-tight outline-none @2xl:text-4xl"
+            className="text-[28px] leading-tight font-bold tracking-tight outline-none @2xl:text-[34px]"
           >
             {route.page === 'overview'
               ? 'Field overview'
@@ -294,7 +298,7 @@ export function AppShell({
               </p>
               <a
                 href={`#/${route.workspace}/overview`}
-                className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-ink px-5 text-sm font-semibold text-bg"
+                className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-accent px-5 text-sm font-semibold text-white"
               >
                 Back to overview <Icon name="arrow" className="size-4" />
               </a>
@@ -308,7 +312,7 @@ export function AppShell({
         </footer>
       </main>
       <div
-        className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-nav px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] ${crew ? '' : 'lg:hidden'}`}
+        className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-nav/85 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-xl backdrop-saturate-150 ${crew ? '' : 'lg:hidden'}`}
       >
         <div className={`mx-auto ${column}`}>{navigation(true)}</div>
       </div>

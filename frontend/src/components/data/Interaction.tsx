@@ -5,22 +5,20 @@ import { ApiError, type Client } from '../../api/contracts'
 const base =
   'pc-press inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'
 /** Secondary button / link. */
-export const control =
-  base + ' border border-line-strong bg-surface text-ink hover:bg-surface-2'
+export const control = base + ' bg-[#e5e5ea] text-ink hover:bg-[#dcdce1]'
 /** Primary action: inverse of the theme (bone on dark, ink on light). */
-export const primary =
-  base + ' border border-ink bg-ink text-bg hover:opacity-90'
+export const primary = base + ' bg-accent text-white hover:bg-[#0077ed]'
 /** Large field action for gloved use (acknowledge, report). */
 // Important modifiers so these win over the base size when concatenated.
 export const big =
   ' min-h-[72px]! w-full rounded-2xl! px-6! text-lg! font-bold!'
 /** Text inputs, selects and textareas. */
 export const field =
-  'mt-1.5 block min-h-11 w-full rounded-xl border border-line-strong bg-surface px-3 py-2 text-base text-ink placeholder:text-faint'
+  'mt-1.5 block min-h-11 w-full rounded-xl border border-line bg-surface px-3 py-2 text-base text-ink placeholder:text-faint'
 /** Form label text. */
-export const labelText = 'block text-sm font-semibold text-ink-2'
+export const labelText = 'block text-sm font-medium text-ink-2'
 /** Card surface used across pages. */
-export const card = 'rounded-2xl border border-line bg-surface'
+export const card = 'rounded-2xl bg-surface'
 
 export function LoadState({ error }: { error: string | null }) {
   const { refresh } = useApplication()
