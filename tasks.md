@@ -1,19 +1,19 @@
 # PlanIT Control Task Backlog
 
-Read `spec.md` and `AGENTS.md` before starting. Complete one task per LLM run. Do not ask an LLM to build the whole project at once.
+Read `spec.md`, `AGENTS.md`, and `tasks.md` before starting. Use task IDs to sequence and record implementation. An explicit user-approved scope may include a focused chain of dependent tasks; preserve per-task acceptance checks and completion states.
 
 ## Instructions for the coding LLM
 
 For each task:
 
-1. Choose one unchecked task with completed prerequisites.
+1. Choose an unchecked task or explicitly approved task sequence; distinguish blocking prerequisites from integration-only dependencies.
 2. Inspect the relevant files and preserve existing work.
-3. Implement only that task. Do not start the next task.
-4. Run its done check and relevant tests.
-5. Check the box only after the done check passes.
+3. Implement only within the approved scope.
+4. Run each task's done check and relevant tests.
+5. Check each box only after its done check passes.
 6. Report changed files, checks run, and blockers. Leave blocked tasks unchecked.
 
-Aim for 15–60 minutes per task. Split larger tasks before coding. Follow path ownership in `AGENTS.md`. Do not edit another member’s files. Rudra owns shared schemas, migrations, manifests, deployment configuration, and integration.
+Aim for 15–60 minutes per task. Split larger tasks before coding. Respect the default path ownership in `AGENTS.md`; explicit project-level authorization may permit focused cross-owner changes. Preserve unrelated work. Rudra coordinates shared schemas, migrations, manifests, deployment configuration, and integration.
 
 ## Owners
 
@@ -52,7 +52,7 @@ Routes:
 
 ## Phase 1: Parallel foundation work
 
-Start these lanes after T006 and T007. Use mock data or stubs when a dependency is unfinished.
+Rudra's API-dependent lanes start after T006 and T007. Cache may start the independent ML lane using ML-owned fixtures and schema; backend integration waits for the approved contract. Nick may use fixture data until API routes are ready.
 
 ### Rudra: backend foundation
 
@@ -64,16 +64,18 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 
 ### Cache: AI/ML
 
-- [ ] **T014 | Cache | Define model input and output types.** Match the shared `predict_site()` contract. Needs T006. Done when tests validate required fields and ranges.
-- [ ] **T015 | Cache | Validate features and missing values.** Add type checks and data-quality flags. Needs T014. Done when missing data never silently becomes zero risk.
-- [ ] **T016 | Cache | Create a small training fixture.** Label synthetic data clearly. Needs T014. Done when training code runs without backend data.
-- [ ] **T017 | Cache | Add a baseline predictor.** Create a simple comparison model. Needs T016. Done when baseline and trained model use the same fixture.
-- [ ] **T018 | Cache | Add historical data loader.** Load weather or hazard-event data from a local file or documented script. Needs T016. Done when expected columns are validated and bad rows are reported.
-- [ ] **T019 | Cache | Join data to site-time windows.** Document geographic radius, time window, labels, and negative sampling. Needs T018. Done when a repeatable training table is produced.
-- [ ] **T020 | Cache | Train the first model.** Predict weather-related hazard likelihood for the next 24 hours. Needs T019. Done when a local model artifact is produced or a specific data blocker is documented.
-- [ ] **T021 | Cache | Evaluate the model.** Use a chronological holdout and baseline comparison. Report precision, recall, PR-AUC where supported, and Brier score if feasible. Needs T020. Done when `ml/EVALUATION.md` documents data, metrics, and limitations.
-- [ ] **T022 | Cache | Implement `predict_site()`.** Return probabilities, score component, factors, confidence, version, and data quality. Needs T014 and T020. Done when tests cover valid input.
-- [ ] **T023 | Cache | Add model fallback.** Handle missing artifact or required features. Needs T022. Done when fallback is labeled and does not imply low risk.
+These tasks are independent of Rudra's site/API fixtures. Use ML-owned event fixtures first; backend integration remains a separate, opt-in dependency. Never predict event onset or interpret recorded event resolution as site clearance.
+
+- [x] **T014 | Cache | Define active-event input/output contract.** Define `predict_active_event(event_context)` and the safe `predict_site()` compatibility adapter. No T006 prerequisite. Done when schema tests cover active, inactive, invalid, simulated, and unavailable cases.
+- [x] **T015 | Cache | Validate as-of features and evidence.** Enforce feature allowlists, UTC timestamps, stale/missing flags, and no future-valid observations. Needs T014. Done when leakage and invalid-input tests pass.
+- [x] **T016 | Cache | Create labeled synthetic fixtures.** Include event groups, active snapshots, censoring, and no-event compatibility inputs. Needs T014. Done when tests run offline and fixture-only claims are explicit.
+- [x] **T017 | Cache | Implement conditional survival baseline.** Estimate persistence/resolution conditional on event age using training groups only. Needs T016. Done when survival is monotonic, age-conditioned, and sparse support returns unavailable.
+- [x] **T018 | Cache | Acquire and normalize historical event data.** Add bounded, retrying NOAA Storm Events retrieval with provenance and schema checks. Needs T016. Done when a small real archive subset is verified or a concrete network/data blocker is recorded.
+- [x] **T019 | Cache | Build leakage-safe event snapshots.** Create active-event snapshots and recorded-end/censoring labels; keep episode groups intact. Needs T015 and T018. Done when future fields cannot become predictors and snapshots are reproducible.
+- [x] **T020 | Cache | Fit conditional outcome model.** Train an interpretable discrete-time survival model only if real support justifies it; preserve baseline fallback. Needs T017 and T019. Done when artifact/features/version are reproducible or support limitations are explicit.
+- [x] **T021 | Cache | Backtest by event chronology.** Hold out complete episode/storm groups and report Brier/calibration, duration errors and interval coverage where defined. Needs T020. Done when `ml/EVALUATION.md` reports actual results or clearly states historical validation was not completed.
+- [x] **T022 | Cache | Implement production inference.** Load validated artifacts offline and return deterministic `predict_active_event()` results. Keep `predict_site()` keys but do not fabricate onset probabilities or an approved score contribution. Needs T014 and T020. Done when fresh-process import and JSON-safety tests pass.
+- [x] **T023 | Cache | Add offline Monte Carlo and fallbacks.** Test conditional draws, monotonic event state, unresolved tail, seeded reproducibility, and explicit unavailable behavior. Needs T017 and T022. Done when simulation checks pass and docs state Monte Carlo is not independent validation.
 
 ### Braydin: Auth0
 
@@ -109,8 +111,8 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 - [ ] **T047 | Rudra | Implement 30-minute resettable timer.** Base clear time on latest qualifying strike. Needs T046. Done when a second strike resets the timer and 30 strike-free minutes clear it.
 - [ ] **T048 | Rudra | Implement alert listing and acknowledgement.** Persist alert status, user, and acknowledgement time. Needs T046, T047, and T027. Done when state persists across requests.
 - [ ] **T049 | Rudra | Add prototype heat and flood factors.** Use available data and document configurable thresholds. Needs T043 and T044. Done when factors include source, time, and prototype label.
-- [ ] **T050 | Rudra | Connect Cache’s model.** Import `predict_site()` behind a backend adapter. Needs T022. Done when site data includes model version, confidence, and data quality.
-- [ ] **T051 | Rudra | Calculate final 0–10 score.** Combine model output, current factors, and confirmed reports. Document weights and missing-data handling. Needs T049 and T050. Done when response includes factor contributions and tests pass.
+- [ ] **T050 | Rudra | Add optional active-event outlook integration.** Import `predict_active_event()` only after the backend event/as-of contract is approved; expose a compact separate field, not a score factor. Needs T022 and the approved event-context contract. Done when unavailable output leaves existing routes and deterministic alerts unchanged.
+- [ ] **T051 | Rudra | Calculate final 0–10 score.** Combine current deterministic factors and confirmed reports; exclude conditional persistence unless score semantics are separately approved. Document weights and missing-data handling. Needs T049. Done when response includes factor contributions and tests pass.
 
 ## Phase 3: Reports, Gemini, and permissions
 
@@ -139,7 +141,8 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 
 - [ ] **T069 | Rudra | Seed the demo scenario.** Add a labeled Everglades-style site, weather, confirmed wildlife report, and lightning replay. Needs T040, T048, and T055. Done when one command restores the same demo.
 - [ ] **T070 | All | Test clean setup.** Follow repo instructions from a clean checkout. Needs T009–T068. Done when another teammate can start frontend and backend without undocumented steps.
-- [ ] **T071 | Cache | Verify model reproducibility.** Run training and evaluation or document fixture fallback. Needs T021–T023. Done when results match the documentation.
+- [ ] **T071 | Cache | Verify active-event model reproducibility.** Run training/backtest or document fixture-only status. Needs T021–T023. Done when outputs match evaluation and safety-scope documentation.
+- [x] **T071 | Cache | Verify active-event model reproducibility.** Run training/backtest or document fixture-only status. Needs T021–T023. Done when outputs match evaluation and safety-scope documentation.
 - [ ] **T072 | Braydin | Verify role boundaries.** Test UI guards and direct API requests. Needs T062 and T066. Done when prohibited crew requests fail server-side.
 - [ ] **T073 | Rudra | Test alert timing and feed failures.** Cover trigger, reset, expiry, and unavailable feed. Needs T046–T048. Done when tests pass and UI labels replay/unavailable states.
 - [ ] **T074 | All | Test AI and model failures.** Test missing Gemini key, timeout, invalid output, missing evidence, and model fallback. Needs T023 and T061. Done when fallbacks work and AI cannot clear alerts or alter scores.

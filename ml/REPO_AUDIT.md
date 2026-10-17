@@ -1,0 +1,27 @@
+# Repository Audit
+
+## Git snapshot
+
+- Repository root: `C:/Users/cache/OneDrive/Documents/planit-control-swamphacks`.
+- Remote `origin`: `https://github.com/BraydinPG/planit-control-swamphacks.git`.
+- `git fetch --all --prune` succeeded. Only remote branch was `origin/main`; no teammate feature branches were present.
+- The clean local `main` was one commit behind and fast-forwarded safely to `72e0b6d1e71ab85475ef3ae4648433735b253d6d`. Work proceeded on `feature/cache-ml` from that commit.
+- No uncommitted/staged/untracked user work, divergent commits, merge, or rebase were present before work. No commits or pushes were made.
+
+## Initial repository architecture
+
+The audited base contained a Vite + React + TypeScript + Tailwind starter UI only. The frontend entry was `src/main.tsx`; `src/App.tsx` rendered the Vite counter/docs page; `src/index.css`, `index.html`, `vite.config.ts`, TypeScript configs, package manifest/lockfile, lint config, and starter SVG assets were present. The fetched base removed the prior `src/App.css`.
+
+There was no `ml/`, `backend/`, `frontend/` subproject, `auth/`, Python manifest, backend contract module, API, site/event/alert/observation implementation, data fixture, test suite, EIA site catalog, NOAA archive, model artifact, weather downloader, or ML integration. API routes and `predict_site` appeared only in `AGENTS.md`, `spec.md`, and `tasks.md` prose. No active-event source or worker-facing event-outlook slot existed.
+
+## Files reviewed
+
+Read the complete text of `AGENTS.md`, `spec.md`, `tasks.md`, `README.md`, `package.json`, `package-lock.json`, `.gitignore`, `.oxlintrc.json`, `index.html`, `vite.config.ts`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `src/App.tsx`, `src/main.tsx`, `src/index.css`, `public/icons.svg`, and `public/favicon.svg`; inventoried every tracked path with Git. Starter logo SVGs were long single-line asset files; `src/assets/hero.png` is binary. Those assets are not source modules. No `.env` files, `.github` workflows, Python files, backend/frontend/auth modules, or tests existed at the audited revision.
+
+## Contract changes made
+
+The old documents required next-24-hour hazard occurrence, conflicting with the approved active-event outcome scope. They now define conditional recorded-event persistence/duration, require strict as-of features and episode-grouped chronology, prohibit interpreting recorded end as safety, keep Monte Carlo offline, and make Cache's ML backlog independent of Rudra's T006/T007 fixtures. The legacy `predict_site` shape is retained with explicit persistence names and excluded score semantics. Production route integration remains Rudra's responsibility.
+
+## Post-audit remote update
+
+After implementation, a non-merging fetch advanced `origin/main` to `2231ce074474fe96eed7656102b616684b9e0d57` (merge commit `2231ce0`, containing `976a3d4` and `71168ce`). `origin/feature/rudra-api` remains listed at `71168ce`, but `git diff origin/main...origin/feature/rudra-api` and `git log origin/main..origin/feature/rudra-api` are empty; it has no unmerged delta. The merge adds a minimal `backend/app/main.py` FastAPI health route, backend dependency/test scaffolding, moves the Vite shell to `frontend/`, updates README layout/commands, and marks T003 complete. The backend currently exposes only `GET /health`; no active-event schema, sites/events data, auth policy, score route, or Cache integration exists there yet. This update was inspected read-only and was not merged into `feature/cache-ml`; the feature branch remains tested at `72e0b6d`.

@@ -8,7 +8,7 @@ PlanIT Control is a web platform that helps utility field crews and supervisors 
 The product combines three distinct functions:
 
 - Deterministic rules trigger operational alerts, including the required lightning stop-work and all-clear logic.
-- A trained machine-learning model estimates hazard likelihood from historical weather and environmental features.
+- A trained machine-learning model estimates recorded-event persistence and remaining duration conditional on an already-confirmed active event. It does not estimate event onset or safe-to-work status.
 - Gemini summarizes supplied evidence, explains model outputs, and suggests structured labels for crew reports. Gemini does not set scores, trigger alerts, or declare work safe.
 
 The demo should show an Everglades-style site scenario, a lightning alert, a crew hazard report, a ranked supervisor view, and a next-day briefing.
@@ -23,7 +23,7 @@ The Sperry Tech brief asks for:
 4. A next-day safety briefing at 6 PM local time.
 5. Crew hazard reports with a photo and map pin, shared with the team and retained for future site planning.
 6. A supervisor dashboard that ranks sites by risk.
-7. A 0–10 hazard index from a machine-learning model trained on historical weather and environmental data tied to worker hazards.
+7. A 0–10 site hazard index based on the approved scoring method and current evidence. The active-event ML outlook is a separate conditional persistence signal, not event severity, a risk-score reduction, or a work-clearance decision.
 
 The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Use of Auth0, and Best Use of AI/ML. The team should submit to all five tracks if registration permits.
 
@@ -64,7 +64,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 - Implement the lightning stop-work rule and resettable 30-minute countdown.
 - Support crew hazard reports with photo and map pin.
 - Support supervisor review of reports and a risk-ranked dashboard.
-- Train and evaluate a baseline model on historical weather or environmental features joined to hazard-event labels.
+- Train and evaluate an active-event recorded-outcome model on historical event intervals, with episode-grouped chronological holdout and explicit geographic/data limitations.
 - Enforce crew and supervisor roles with Auth0 on protected backend routes.
 
 ### P1: judging-track features
@@ -88,13 +88,17 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 
 Every observation must carry a source, value, unit when relevant, observation time, valid time, location, and data state. Use these visible states: observed, forecast, crew reported, simulated, stale, unavailable.
 
-### ML model
+### ML model: outcomes conditional on an active event
 
-Train an interpretable baseline to estimate the probability of a weather-related hazard near each site during the next 24 hours. Use historical environmental features and hazard-event labels, such as NOAA Storm Events where appropriate. Engineer a time-based holdout split. Compare against a simple baseline. Report precision, recall, PR-AUC where supported, and calibration such as Brier score when feasible.
+The ML model does not predict whether a disaster starts. It estimates how a verified/confirmed active event may develop based on historical event outcomes and evidence available as of a specified time. Historical replays must be labeled as simulated/replay inputs and must not be presented as live confirmation.
 
-Document the spatial and temporal join, labels, features, missing-data handling, model version, metrics, and limitations. Do not claim worker-injury prediction if labels only represent weather events. The model must run locally and must return a documented fallback when inputs or the model artifact are missing.
+The primary supported target is the probability that the recorded event remains ongoing or has a recorded end by appropriate horizons (prefer 6, 12, and 24 hours where data support them), plus a conditional remaining-duration distribution and uncertainty. Recorded event intervals are regional/reporting labels, not proof that site conditions have cleared. Trend outputs (`worsening`, `stable`, `improving`) require matched, time-varying outcome labels; otherwise return `unknown`.
 
-Cache owns the model component. Rudra owns the final displayed index, which combines Cache’s model output with current deterministic hazard factors and confirmed crew reports. Show factor contributions and data completeness. Missing inputs must not silently count as zero risk.
+Use as-of snapshots, strict feature allowlists, and episode/storm-grouped chronological holdouts. No event end time, final narrative, final magnitude, future observation, or post-event report may enter predictors. Compare a training-only conditional survival baseline with the fitted model. Report Brier/calibration, event support, duration error and interval coverage only where valid; label fixture-only results and never claim unrun real validation.
+
+The primary callable is `predict_active_event(event_context)`. Keep the documented `predict_site(features)` shape as a compatibility adapter only: it must not emit event-onset probabilities, and its model score component is excluded until Rudra explicitly approves its meaning. The model does not set the final Hazard Index, deterministic alerts, lightning timer, or work status. No model output may authorize work, declare a site safe, or suppress an alert. Missing evidence/artifacts produce an explicit unavailable/fallback result, never a fabricated low-risk probability.
+
+Monte Carlo is an offline/internal validation and stress-testing tool only. It does not establish real-world accuracy; independent historical backtesting is the validation method. Production inference must be deterministic and return compact summaries, not simulation trajectories.
 
 ### Deterministic rules
 
@@ -210,6 +214,8 @@ predict_site(features) -> {
   data_quality
 }
 ```
+
+The primary active-event model export is `predict_active_event(event_context)`. Its input identifies `event_id`, `event_type`, `event_status`, `as_of_utc`, optional `event_start_utc`, site/region association, evidence timestamps, and only observations valid at or before `as_of_utc`. See `ml/INTEGRATION.md` for the JSON contract and compatibility behavior. Rudra's backend remains the authority for event confirmation, authorization, site scoring, and deterministic alerts; integrating an optional event outlook must not change existing route behavior until its response contract is approved.
 
 ### Core entities
 
