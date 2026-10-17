@@ -25,6 +25,9 @@ Follow the file ownership rules in `AGENTS.md`. If a task conflicts with the spe
 
 Rudra owns the canonical API and schema definitions. All agents use these names unless Rudra publishes a versioned change.
 
+- Canonical schemas: Pydantic models in `backend/app/schemas/`. Import them with `from app.schemas import SiteSummary, Observation, ...`.
+- TypeScript mirror: `frontend/src/types/api.ts`, owned by Rudra. Nick imports types from it and does not edit it. `backend/tests/test_ts_mirror.py` fails if field names drift between the two.
+
 ### Site summary
 
 ```json
