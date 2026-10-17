@@ -18,7 +18,7 @@
 - No credentials, source caches, downloads, refits or operational validation needed for the offline run.
 - Browser rendering inspected in Edge; generated HTML has no scripts, network assets or API.
 - T087 checkbox updated with implementation after its done check; other task states preserved.
-- Implementation commit/PR: this T087 checkpoint (resolve by `git log --grep=T087`); PR pending publication.
+- Implementation commit: `555ce0a856608c263fb2a69c7ff684e3db25b926`; PR #14 open/ready: https://github.com/BraydinPG/planit-control-swamphacks/pull/14 (not merged).
 - Handoffs: `ml/WORKER_PREVIEW.md` and `ml/HAZARD_INTEGRATION.md`; T050/T063/application acceptance stay open.
 
 ## Mission and boundaries
@@ -178,4 +178,4 @@ python -m pytest ml/tests backend/tests -q
 - Update this file in the same commit as model/contract/source/handoff/test changes.
 - Reconcile teammate edits; keep deep details in ML docs, not a transcript here.
 
-- 2026-10-17 08:20:44 UTC: T087 changes `tasks.md` (one new Cache task/check-off) and this index for accurate coordination; code/tests/docs stay in `ml/`. Rudra, Nick and Braydin should read WORKER_PREVIEW. Evidence and candidate export identity: `ml/preview_verification.json`; exact checkpoint via T087 commit/PR.
+- 2026-10-17 08:20:44 UTC: T087 changes `tasks.md` (one new Cache task/check-off) and this index for accurate coordination; code/tests/docs stay in `ml/`. Rudra, Nick and Braydin should read WORKER_PREVIEW. Evidence and candidate export identity: `ml/preview_verification.json`; implementation `555ce0a`, PR #14 (open for Rudra review).

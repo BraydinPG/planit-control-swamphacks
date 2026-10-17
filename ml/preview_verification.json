@@ -52,5 +52,14 @@
     "Replay only; not production integration",
     "Local hazard/severity probabilities null; manual hazards unknown",
     "No T050/T063/T070 or full-app completion claim"
-  ]
+  ],
+  "implementation_commit": "555ce0a856608c263fb2a69c7ff684e3db25b926",
+  "review_pr": {
+    "number": 14,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/14",
+    "state": "open",
+    "draft": false,
+    "base": "main",
+    "merged": false
+  }
 }
