@@ -180,7 +180,7 @@ Keep secrets in environment variables. Provide one demo account per role. Any de
 
 ## 9. Architecture and API contract
 
-Suggested stack: React + TypeScript, FastAPI, PostgreSQL, a geospatial map library, scikit-learn, Gemini API, and Auth0. Preserve the existing stack if already established.
+Required stack: React + TypeScript with Vite and Tailwind CSS for the frontend, FastAPI for every backend route, PostgreSQL, a geospatial map library, scikit-learn, Gemini API, and Auth0. Style the UI with Tailwind utility classes. Do not add a second CSS framework. The Vite app is the UI only. Implement API routes, Auth0 token checks, Gemini calls, scoring, alerts, and data ingestion in FastAPI under `backend/app/`. Do not implement those routes in Next.js, Express, Flask, or another server.
 
 ### Routes
 

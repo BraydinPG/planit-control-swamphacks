@@ -41,9 +41,9 @@ Routes:
 
 ## Phase 0: Kickoff and shared setup
 
-- [ ] **T001 | Rudra | Confirm the stack.** Inspect the repo and preserve existing choices. If empty, use the stack in `spec.md`. Done when all members agree on the stack and run commands.
+- [ ] **T001 | Rudra | Confirm the stack.** Use React + TypeScript with Vite and Tailwind CSS for the UI, and FastAPI for every API route, as required in `spec.md`. Done when all members agree on that stack and run commands.
 - [ ] **T002 | All | Read the project docs.** Read `spec.md` and `AGENTS.md`. Done when each person confirms owned paths and project scope.
-- [ ] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, backend, model, auth, and test folders. Done when a placeholder frontend and backend health route run locally.
+- [ ] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, FastAPI backend, model, auth, and test folders. Done when a placeholder Vite frontend and a FastAPI `GET /health` route run locally.
 - [ ] **T004 | Rudra | Add `.env.example`.** List required variable names and descriptions, with no secrets. Done when a new member can identify required configuration.
 - [ ] **T005 | Rudra | Add quality commands.** Document existing formatter, linter, and test commands. Done when each command runs locally.
 - [ ] **T006 | Rudra | Publish API schemas.** Define site, observation, alert, score, report, briefing, and explanation types. Done when Nick can build without guessing field names.
@@ -56,7 +56,7 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 
 ### Rudra: backend foundation
 
-- [ ] **T009 | Rudra | Add API health route.** Implement `GET /health`. Needs T003. Done when local startup and the health check pass.
+- [ ] **T009 | Rudra | Add API health route.** Implement FastAPI `GET /health` in `backend/app/`. Needs T003. Done when local startup and the health check pass.
 - [ ] **T010 | Rudra | Configure database connection.** Read settings from environment variables. Needs T004. Done when the backend starts with documented local settings.
 - [ ] **T011 | Rudra | Define database models.** Add Site, Observation, Alert, HazardPrediction, HazardScore, CrewReport, Acknowledgement, Briefing, and AuditEvent. Needs T006. Done when models import successfully.
 - [ ] **T012 | Rudra | Add database initialization.** Create migrations or a schema setup command. Needs T011. Done when a clean database initializes from scratch.
@@ -86,7 +86,7 @@ Start these lanes after T006 and T007. Use mock data or stubs when a dependency 
 
 ### Nick: frontend and UI/UX
 
-- [ ] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Needs T003 and T007. Done when app renders on phone and desktop sizes.
+- [ ] **T030 | Nick | Create responsive app shell.** Add navigation and fixture mode. Style it with Tailwind utility classes. Needs T003 and T007. Done when app renders on phone and desktop sizes.
 - [ ] **T031 | Nick | Create score and status components.** Show risk score, factors, freshness, and source. Needs T006 and T007. Done when observed, stale, simulated, and unavailable states are distinct without color alone.
 - [ ] **T032 | Nick | Build crew home screen.** Show site, status, alert, immediate action, and update time. Needs T030 and T031. Done when the main action appears without scrolling on a phone.
 - [ ] **T033 | Nick | Build alert detail.** Show trigger, evidence, distance, acknowledgement, and countdown. Needs T032. Done when fixtures show active, reset, and cleared states.

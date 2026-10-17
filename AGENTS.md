@@ -11,7 +11,7 @@ Follow the file ownership rules in `AGENTS.md`. If a task conflicts with the spe
 
 ## Project-wide rules
 
-1. Preserve the existing stack and repository conventions. If the repository is empty, use React + TypeScript, FastAPI, PostgreSQL, Auth0, Gemini API, and scikit-learn.
+1. Use React + TypeScript with Vite and Tailwind CSS for the frontend, and FastAPI for every backend route. PostgreSQL, Auth0, Gemini API, and scikit-learn complete the stack. Style UI with Tailwind utility classes. Do not add a second CSS framework. The existing Vite app does not replace the API. Do not implement routes in Next.js, Express, Flask, or another server. Preserve other repository conventions.
 2. Work only in your assigned paths. Do not edit another owner’s files. Ask the owner for a change or submit a focused integration request.
 3. Do not edit root `package.json`, lockfiles, shared environment templates, database migrations, or API contracts unless you own them or Rudra approves the change.
 4. Begin with fixtures and stable interfaces. Do not wait for another agent’s implementation to finish before building your independent module.
@@ -70,7 +70,7 @@ Cache returns the model component. Rudra computes the final site score and alert
 - `POST /api/sites/{id}/briefings`
 - `POST /api/sites/{id}/explanations`
 
-Nick uses these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
+These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Nick uses these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
 
 ### Auth module interface
 
@@ -139,6 +139,7 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 - Include crew home, alert detail and timer, hazard report, supervisor map/ranking, site detail, briefing, and Gemini explanation views.
 - Use mock JSON that follows the shared contract. Add a fixture switch so the interface works before backend integration.
 - Show data freshness, source, simulated/stale/unavailable status, score factors, and evidence references.
+- Style screens with Tailwind utility classes. Do not add a second CSS framework.
 - Use high contrast, large text, labeled icons, minimum 44 by 44 CSS pixel primary touch targets, and no color-only risk communication.
 - Include keyboard navigation, visible focus, semantic labels, loading/error/empty states, and screen-reader support.
 - Keep report text optional and core actions quick for gloved field use.
@@ -158,7 +159,7 @@ Braydin publishes FastAPI dependencies from `backend/app/security/`. Rudra impor
 - First publish the shared API and model contracts. Provide fixture JSON for Nick.
 - Import and validate 50 or more EIA-860M locations. Label these as representative power plant locations.
 - Add one dependable weather/forecast feed with caching and freshness labels. Keep the data adapter replaceable.
-- Implement DB entities and API routes from the shared contract.
+- Implement DB entities and FastAPI routes from the shared contract. Do not add those routes in another framework.
 - Implement lightning stop-work within 10 miles and a resettable 30-minute all-clear. Provide a labeled replay fixture if live lightning access is unreliable.
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
 - Integrate Cache’s `predict_site()` output and compute the final score from model output, current factors, and confirmed reports.
