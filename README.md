@@ -9,7 +9,9 @@ React + TypeScript UI, built with Vite and Tailwind CSS. API routes, auth checks
 | Path | Contents | Owner |
 |---|---|---|
 | `frontend/` | Vite + React + TypeScript + Tailwind UI | Nick (`src/pages`, `src/components`, `src/styles`, `src/api`), Braydin (`src/auth`) |
-| `backend/app/` | FastAPI app and every API route | Rudra (except `backend/app/security/` and `backend/app/db/`, owned by Braydin) |
+| `frontend/src/types/api.ts` | TypeScript mirror of the API schemas | Rudra |
+| `backend/app/` | FastAPI app and every API route | Rudra (except `backend/app/security/`, `backend/app/db/`, and `backend/app/ingestion/`, owned by Braydin) |
+| `backend/app/schemas/` | Canonical Pydantic API schemas | Rudra |
 | `backend/tests/` | Backend tests | Rudra |
 | `ml/` | Model training, prediction, evaluation | Cache |
 | `auth/` | Auth0 setup notes | Braydin |

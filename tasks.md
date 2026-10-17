@@ -48,7 +48,7 @@ Routes:
 - [x] **T003 | Rudra | Create the minimal repo skeleton.** Add frontend, FastAPI backend, model, auth, and test folders. Done when a placeholder Vite frontend and a FastAPI `GET /health` route run locally.
 - [x] **T004 | Rudra | Add `.env.example`.** List Tiger Data, Auth0, Gemini, and Vultr Object Storage variable names and descriptions, with no secrets. Done when a new member can identify required configuration.
 - [ ] **T005 | Rudra | Add quality commands.** Document existing formatter, linter, and test commands. Done when each command runs locally.
-- [ ] **T006 | Rudra | Publish API schemas.** Define organization, team, site, observation, alert, score, report, hazard notice, briefing, and explanation types. A site includes its assigned team. A report includes whether the hazard is present. A hazard notice includes the radius and keeps the instruction empty until a supervisor sends it. Done when Nick can build without guessing field names.
+- [x] **T006 | Rudra | Publish API schemas.** Define organization, team, site, observation, alert, score, report, hazard notice, briefing, and explanation types. A site includes its assigned team. A report includes whether the hazard is present. A hazard notice includes the radius and keeps the instruction empty until a supervisor sends it. Done when Nick can build without guessing field names.
 - [ ] **T007 | Rudra | Add API fixtures.** Create sample JSON matching T006, including stale, simulated, and unavailable states. Done when fixtures validate against the schemas.
 - [ ] **T008 | All | Create separate branches.** Use `feature/rudra-api`, `feature/cache-ml`, `feature/braydin-auth0`, and `feature/nick-ui`. Done when each member confirms their branch.
 
