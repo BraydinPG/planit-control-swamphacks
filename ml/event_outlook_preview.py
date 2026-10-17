@@ -231,7 +231,7 @@ def generate(output: Path, *, require_models=False):
     )
     (output / "index.html").write_text(
         document(
-            "PlanIT Control — multi-event outlook preview", nav + "".join(sections)
+            "FORESITE — multi-event outlook preview", nav + "".join(sections)
         ),
         encoding="utf-8",
     )

@@ -44,7 +44,7 @@ export function RequireRole({ role, children, fallback }: RequireRoleProps) {
     return (
       <AccessPanel title="No role assigned">
         <p>
-          You are signed in, but your account has no PlanIT Control role. Ask the project admin
+          You are signed in, but your account has no FORESITE role. Ask the project admin
           to assign Crew or Supervisor, then sign in again.
         </p>
         <ActionButton onClick={() => void auth.logout()}>Sign out</ActionButton>

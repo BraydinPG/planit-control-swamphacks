@@ -62,7 +62,7 @@ STATE_UNKNOWN = (
     "State protection status (for example Florida FWC listings) is not supplied by IPaC."
 )
 VINTAGE_UNKNOWN = (
-    "IPaC gives no date for its range data. The date shown is when PlanIT Control retrieved it."
+    "IPaC gives no date for its range data. The date shown is when FORESITE retrieved it."
 )
 RETRY_AFTER = timedelta(minutes=5)
 

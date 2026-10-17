@@ -1,4 +1,4 @@
-"""Canonical PlanIT Control API schemas, owned by Rudra.
+"""Canonical FORESITE API schemas, owned by Rudra.
 
 The TypeScript mirror is frontend/src/types/api.ts.
 """

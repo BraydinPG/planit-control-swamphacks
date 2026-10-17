@@ -1281,33 +1281,41 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const [siteId, setSiteId] = useState(choices[0].id)
   const site = choices.find((s) => s.id === siteId) ?? choices[0]
   return (
-    <div className="pc-enter grid gap-6 @3xl:grid-cols-12 @3xl:items-start">
-      <div className="space-y-4 @3xl:col-span-7">
-        <label className={labelText}>
-          Report location
-          <select
-            aria-label="Report location"
-            className={field}
-            value={site.id}
-            onChange={(e) => setSiteId(e.target.value)}
-          >
-            {choices.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" className={control} onClick={refresh}>
-          <Icon name="refresh" className="size-4" />
-          Refresh reports
-        </button>
+    // Controls and the queue heading share row 1, so the form card and the
+    // first report card start on the same line in row 2.
+    <div className="pc-enter grid gap-4 @3xl:grid-cols-12 @3xl:items-start">
+      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-1 @3xl:self-end">
+        <div className="flex flex-wrap items-end gap-3">
+          <label className={`${labelText} min-w-0 flex-1`}>
+            Report location
+            <select
+              aria-label="Report location"
+              className={field}
+              value={site.id}
+              onChange={(e) => setSiteId(e.target.value)}
+            >
+              {choices.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className={control} onClick={refresh}>
+            <Icon name="refresh" className="size-4" />
+            Refresh reports
+          </button>
+        </div>
+      </div>
+      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-2">
         <ReportForm key={site.id} site={site} />
       </div>
-      <div className="@3xl:col-span-5">
+      <div className="mt-4 @3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-1 @3xl:mt-0 @3xl:self-center">
+        <SectionHead kicker="Review queue" title="Reports and review" />
+      </div>
+      <div className="@3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-2">
         {result.data ? (
           <section className="space-y-3" aria-label="Submitted reports">
-            <SectionHead kicker="Review queue" title="Reports and review" />
             {result.data
               .filter((r) => sites.some((s) => s.id === r.site_id))
               .map((r) => (

@@ -1,4 +1,4 @@
-# PlanIT Control: shared project context
+# FORESITE: shared project context
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
@@ -9,6 +9,13 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Verification: **923 backend tests**, Ruff lint and 153-file format pass, external sockets rejected during final tests (Windows internal loopback allowed). Local `--check-only`: DATABASE_URL and NWS_USER_AGENT missing; FEED_REFRESH_ENABLED=false. No live DB connection/write, server launch/restart, scheduler or task checkbox change.
 - Braydin: review provider policies, genuine MA/NY error details and legacy USGS slowdown/2027-02-22 retirement; approved modern API credentials/migration remain needed. Rudra: review serial persistence, coverage versus fully processed metrics, cancellation and existing alert/score calls. One owner-approved live one-shot round remains the acceptance gate. Exact commands, boundaries and file-by-file cross-owner handoff are in the guide and [change log](docs/CROSS_SCOPE_CHANGES.md).
 - Published [PR50](https://github.com/BraydinPG/planit-control-swamphacks/pull/50), **Optimize Feed Refresh Performance and Reliability**, open against main; verified implementation `ffff712`, main integration `e0120fb`, handoff `68ca740`. No automatic merge or live job enablement.
+## FORESITE rebrand review - 2026-10-17
+- Official display name **FORESITE**; branch `feature/cache-foresite-rebrand` from current main `ea6dcfa`, independent of open PR50. Explicit user authorization covers application-wide branding and documentation. Prior branches/worktrees/configuration are preserved.
+- Shared shell, app-owned sign-in messages, exact browser tab, metadata/favicon title, API descriptions/errors, species note and ML preview labels updated. Existing symbol/design retained. Canonical fixture regeneration changes only one species note; six outlooks, 6.1/10 rules-0.2, alerts/report/photo/team behavior remain intact.
+- **168 frontend / 881 backend / 297 ML tests pass**; frontend lint/TypeScript/live and demo builds, backend Ruff/147-file format, desktop/phone Edge development and built-demo checks pass at 1440/390/320. Browser checks include all eleven destinations and no legacy display branding, exceptions or real backend calls. ML previews: 16 cases and 150 outputs/50 sites.
+- [Branding/deployment handoff](docs/REBRANDING.md) classifies legacy identifiers/history: Auth0 audiences/claims/IDs, storage/package/repository names, provider IDs and asset path remain. No task checkbox, runtime configuration, schema fields, scoring/ML behavior, Gemini/photo storage or infrastructure change. Local environment fingerprints unchanged; no other server stopped.
+- Deployment owner: normal frontend/backend release picks up display changes. Braydin must separately inspect/update hosted Auth0 login display branding if its legacy SPA name is shown; no tenant changes or real-role acceptance in this run. Demo remains http://localhost:5177/; do not replace another owner's 5173/8000 servers.
+- Published [PR51](https://github.com/BraydinPG/planit-control-swamphacks/pull/51), **Rebrand PlanIT Control to FORESITE**, open against main; verified implementation `e4f5555`, base `ea6dcfa`. No automatic merge or deployment.
 
 ## Frontend readability review - 2026-10-17
 - Explicit Cache authorization: application-wide copy, typography and progressive disclosure; Rudra retains frontend maintenance. Branch `feature/cache-ui-readability-polish`, initial base `5045790` (merged PR44/45), isolated functional checkout. No teammate checkout/server changes.

@@ -507,7 +507,7 @@ def generate(
         '<a href="response.schema.json">Response schema</a></p>'
     )
     (output / "index.html").write_text(
-        document("PlanIT worker-outlook developer preview", body), encoding="utf-8"
+        document("FORESITE worker-outlook developer preview", body), encoding="utf-8"
     )
     (output / "preview.txt").write_text(
         BANNER + "\n" + LIMIT + "\n\n" + "\n\n".join(summaries) + "\n", encoding="utf-8"

@@ -1,4 +1,4 @@
-"""Shared building blocks for the PlanIT Control API contract."""
+"""Shared building blocks for the FORESITE API contract."""
 
 from datetime import datetime
 from enum import StrEnum

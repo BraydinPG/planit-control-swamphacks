@@ -1,4 +1,4 @@
-/** PlanIT Control roles. They match backend/app/security/roles.py and auth/SETUP.md. */
+/** FORESITE roles. They match backend/app/security/roles.py and auth/SETUP.md. */
 export type Role = 'crew' | 'supervisor'
 
 export const ROLES: readonly Role[] = ['crew', 'supervisor']

@@ -221,7 +221,7 @@ or site hazard probability was independently validated in this change.
 No new Monte Carlo run, historical retraining or holdout study was performed.
 Existing seeded MC checks concern conditional distribution arithmetic/sensitivity;
 they do not establish predictive accuracy. Official provider forecasts are evidence
-with their own scope, not newly validated PlanIT models.
+with their own scope, not newly validated FORESITE models.
 
 Verification commands and actual outcomes for this branch are recorded in
 `reports/event_outlooks_verification.json`. Focused unit tests exercise admission,
