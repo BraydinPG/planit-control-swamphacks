@@ -31,6 +31,8 @@ export const evidence = (v: unknown) =>
         'score_factor',
         'model_output',
         'notice',
+        // Trusted start of a confirmed event, written server-side (T050A).
+        'event_start',
       ].includes(String(e.kind)) &&
       (e.observed_at === null || date(e.observed_at)),
   )
