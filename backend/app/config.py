@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     gemini_api_key: SecretStr | None = None
     gemini_model: str | None = None
     gemini_timeout_seconds: float = 10.0
+    # Gemini 3 models think before answering; "low" keeps calls to a few seconds.
+    # Leave empty for models without thinking levels.
+    gemini_thinking_level: str | None = "low"
 
 
 @lru_cache

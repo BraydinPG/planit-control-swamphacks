@@ -17,6 +17,7 @@ from pydantic import BaseModel
 from app.schemas import (
     Acknowledgement,
     Alert,
+    AnalysisPoint,
     Briefing,
     BriefingHazard,
     CrewReport,
@@ -310,6 +311,12 @@ REPORT_WILDLIFE_CONFIRMED = CrewReport(
     reviewed_at=ago(130),
     confirmed_category="wildlife",
     confirmed_severity="moderate",
+    enrichment=ReportEnrichment(
+        status="unavailable",
+        unavailable_reason="timeout",
+        generated_by="fallback",
+        analyzed_at=ago(140),
+    ),
     notice_id="notice-wildlife-1",
     created_at=ago(140),
 )
@@ -325,14 +332,44 @@ REPORT_POLE_PENDING = CrewReport(
     photo_url="/fixtures/photos/pole.jpg",
     lat=25.758,
     lon=-80.494,
+    location_source="device",
+    location_accuracy_m=12.0,
+    site_distance_miles=0.21,
     review_status="pending",
     enrichment=ReportEnrichment(
+        status="complete",
+        verdict="supports",
+        summary="The photo shows a leaning wooden pole with a sagging conductor, which "
+        "matches the reported downed line.",
+        supporting=[
+            AnalysisPoint(
+                statement="The pole leans about 30 degrees and a conductor hangs below "
+                "normal height.",
+                evidence_ids=["photo", "crew:category"],
+            )
+        ],
+        also_visible=["Standing water near the base of the pole"],
         suggested_category="broken_pole_downed_line",
-        description="Leaning wooden pole with a conductor sagging toward the ground.",
         severity_suggestion="high",
         confidence=0.78,
-        visible_evidence=["pole leaning about 30 degrees", "conductor below normal height"],
+        unknowns=["Whether the conductor is energized cannot be seen in a photo."],
+        evidence=[
+            Evidence(
+                id="crew:category",
+                kind="report",
+                label="Crew member's category: broken electrical pole or downed line",
+                observed_at=ago(6),
+            ),
+            Evidence(
+                id="crew:hazard_present",
+                kind="report",
+                label="Crew member marked the hazard present",
+                observed_at=ago(6),
+            ),
+            Evidence(id="photo", kind="report", label="Crew member's photo", observed_at=ago(6)),
+        ],
         generated_by="gemini",
+        analyzed_at=ago(6),
     ),
     notice_id="notice-pole-1",
     created_at=ago(6),
@@ -349,7 +386,45 @@ REPORT_FIRE_ABSENT = CrewReport(
     photo_url=None,
     lat=26.10,
     lon=-81.20,
+    location_source="site",
+    site_distance_miles=0.0,
     review_status="pending",
+    enrichment=ReportEnrichment(
+        status="complete",
+        verdict="inconclusive",
+        summary="There is no photo, and the site data neither confirms nor rules out a fire "
+        "on site.",
+        suggested_category="on_site_fire",
+        severity_suggestion="low",
+        confidence=0.35,
+        unknowns=[
+            "No photo was read; this analysis uses the report and site data.",
+            "No feed detects on-site fires.",
+        ],
+        evidence=[
+            Evidence(
+                id="crew:category",
+                kind="report",
+                label="Crew member's category: on-site fire",
+                observed_at=ago(25),
+            ),
+            Evidence(
+                id="crew:hazard_present",
+                kind="report",
+                label="Crew member marked the hazard absent",
+                observed_at=ago(25),
+            ),
+            Evidence(
+                id="crew:note",
+                kind="report",
+                label="Crew member's note: Smoke was from a neighbor's controlled burn. "
+                "No fire on site.",
+                observed_at=ago(25),
+            ),
+        ],
+        generated_by="gemini",
+        analyzed_at=ago(25),
+    ),
     created_at=ago(25),
 )
 REPORTS = [REPORT_POLE_PENDING, REPORT_FIRE_ABSENT, REPORT_WILDLIFE_CONFIRMED]

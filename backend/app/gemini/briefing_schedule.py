@@ -28,6 +28,7 @@ from app.gemini.briefings import ForecastSource, briefing_id, generate_site_brie
 from app.gemini.client import GeminiClient, get_gemini_client
 from app.ingestion.nws import NwsClient
 from app.ingestion.settings import get_ingestion_settings
+from app.outlook import EventOutlookService, get_event_outlook_service
 from app.schemas import Briefing, DataState, HazardType
 
 logger = logging.getLogger(__name__)
@@ -98,6 +99,7 @@ def run_due_briefings(
     gemini: GeminiClient,
     forecasts: ForecastSource,
     lookup: PointLookup | None,
+    outlooks: EventOutlookService | None = None,
 ) -> list[Briefing]:
     """Generate every briefing that is due. One failing site never blocks the others."""
     generated: list[Briefing] = []
@@ -119,7 +121,9 @@ def run_due_briefings(
             workday, _, _ = next_workday(now, tz)
             if session.get(db.Briefing, briefing_id(site.id, workday)) is not None:
                 continue
-            generated.append(generate_site_briefing(session, site, tz, now, gemini, forecasts))
+            generated.append(
+                generate_site_briefing(session, site, tz, now, gemini, forecasts, outlooks)
+            )
         except Exception:
             session.rollback()
             logger.exception("Briefing for %s failed; it will be retried", site.id)
@@ -153,12 +157,14 @@ class BriefingScheduler:
         forecasts: ForecastSource,
         lookup: PointLookup | None,
         interval_seconds: float = 60.0,
+        outlooks: EventOutlookService | None = None,
     ) -> None:
         self.session_factory = session_factory
         self.gemini = gemini
         self.forecasts = forecasts
         self.lookup = lookup
         self.interval_seconds = interval_seconds
+        self.outlooks = outlooks
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._run, name="briefing-schedule", daemon=True)
 
@@ -173,7 +179,12 @@ class BriefingScheduler:
         session = self.session_factory()
         try:
             return run_due_briefings(
-                session, now or datetime.now(UTC), self.gemini, self.forecasts, self.lookup
+                session,
+                now or datetime.now(UTC),
+                self.gemini,
+                self.forecasts,
+                self.lookup,
+                self.outlooks,
             )
         finally:
             session.close()
@@ -207,6 +218,7 @@ def start_briefing_scheduler() -> BriefingScheduler | None:
         nws_forecast_source(settings.briefing_forecast_hours),
         nws.point,
         settings.briefing_check_seconds,
+        get_event_outlook_service(),
     ).start()
 
 

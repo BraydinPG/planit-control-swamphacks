@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_db, get_now
 from app.db import models as db
+from app.ingestion import SiteLike
 from app.ingestion.settings import get_ingestion_settings
 from app.outlook import EventOutlookService, event_context_from_notice, get_event_outlook_service
 from app.schemas import (
@@ -90,7 +91,7 @@ def get_site(
     score = _latest_scores(session, site_id).get(site_id)
     alerts = load_active_alerts(session, site_id)
     summary = _summary(site, score, len(alerts))
-    notices = _notices(session, site, viewer=user)
+    notices = load_notices(session, site, viewer=user)
     return SiteDetail(
         **summary.model_dump(),
         location_type=site.location_type,
@@ -101,19 +102,20 @@ def get_site(
         alerts=alerts,
         reports=load_reports(session, site_id, viewer=user),
         notices=notices,
-        event_outlook=_event_outlook(outlooks, summary, notices, now),
+        event_outlook=event_outlook_for(outlooks, summary, notices, now),
     )
 
 
-def _event_outlook(
+def event_outlook_for(
     outlooks: EventOutlookService,
-    site: SiteSummary,
+    site: SiteLike,
     notices: list[HazardNotice],
     now: datetime,
 ) -> EventOutlook | None:
     """T050 advisory for the newest confirmed flood notice covering the site, else None.
 
-    Computed after the score and alerts and never fed back into them.
+    Computed after the score and alerts and never fed back into them. The briefings and
+    instruction suggestions (T058B) reuse it.
     """
     for notice in sorted(notices, key=lambda n: n.confirmed_at or n.created_at, reverse=True):
         context = event_context_from_notice(notice, site, now)
@@ -321,13 +323,16 @@ def report_schema(r: db.CrewReport) -> CrewReport:
         reviewed_at=_aware(r.reviewed_at) if r.reviewed_at else None,
         confirmed_category=r.confirmed_category,
         confirmed_severity=r.confirmed_severity,
+        location_source=r.location_source,
+        location_accuracy_m=r.location_accuracy_m,
+        site_distance_miles=r.site_distance_miles,
         enrichment=r.enrichment,
         notice_id=r.notice_id,
         created_at=_aware(r.created_at),
     )
 
 
-def _notices(
+def load_notices(
     session: Session, site: db.Site, *, viewer: CurrentUser | None = None
 ) -> list[HazardNotice]:
     """Notices whose radius covers the site. Notices store coordinates, not a site ID."""

@@ -30,7 +30,10 @@ from app.schemas.observations import HazardType, Observation
 from app.schemas.orgs import Organization, Team, TeamRef
 from app.schemas.outlook import ADVISORY_NOTICE, EventOutlook
 from app.schemas.reports import (
+    AnalysisPoint,
+    AnalysisVerdict,
     CrewReport,
+    LocationSource,
     ReportCategory,
     ReportCreate,
     ReportEnrichment,
@@ -43,6 +46,9 @@ from app.schemas.sites import SiteDetail, SiteSummary
 
 __all__ = [
     "ADVISORY_NOTICE",
+    "AnalysisPoint",
+    "AnalysisVerdict",
+    "LocationSource",
     "Acknowledgement",
     "Alert",
     "AlertRule",

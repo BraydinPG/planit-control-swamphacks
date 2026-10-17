@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 
 from app import gemini
 from app.db import models as db
+from app.gemini.outlooks import notice_outlook
+from app.outlook import EventOutlookService
 from app.schemas import GeneratedBy, NoticeStatus
 from app.security import CurrentUser
 from app.services.alerts import audit
@@ -15,17 +17,26 @@ from app.services.reports import notice_recipients
 
 
 def draft_instruction(
-    session: Session, notice: db.HazardNotice, client: gemini.GeminiClient, now: datetime
+    session: Session,
+    notice: db.HazardNotice,
+    client: gemini.GeminiClient,
+    now: datetime,
+    outlooks: EventOutlookService | None = None,
 ) -> GeneratedBy | None:
-    """Called only after confirmation has committed; failure never undoes confirmation."""
+    """Called only after confirmation has committed; failure never undoes confirmation.
+
+    With `outlooks`, a confirmed event's expected duration is offered to the draft (T058B).
+    """
     if notice.status != NoticeStatus.CONFIRMED or not notice.confirmed_by:
         return None
+    outlook = notice_outlook(session, notice, now, outlooks) if outlooks else None
     result = gemini.suggest_confirmed_instruction(
         hazard_label=notice.hazard_label,
         radius_miles=notice.radius_miles,
         source=notice.source,
         evidence=notice.evidence or [],
         client=client,
+        outlook=outlook,
     )
     if not result.ok:
         return None

@@ -6,7 +6,7 @@ fallback. The API key stays on the server and is never logged or returned.
 """
 
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Generic, TypeVar
@@ -19,8 +19,20 @@ logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=BaseModel)
 
-# (prompt, schema) -> raw JSON text. Injectable so tests never touch the network.
-Transport = Callable[[str, type[BaseModel]], str]
+# The Gemini API rejects a request deadline shorter than 10 seconds (400 INVALID_ARGUMENT).
+MIN_TIMEOUT_SECONDS = 10.0
+
+# (prompt, schema) -> raw JSON text, or (prompt, schema, images) when a call sends photos.
+# Injectable so tests never touch the network.
+Transport = Callable[..., str]
+
+
+@dataclass(frozen=True)
+class Image:
+    """A photo sent with a prompt, e.g. a crew report photo."""
+
+    data: bytes
+    mime_type: str
 
 
 class Unavailable(StrEnum):
@@ -47,30 +59,53 @@ class GeminiClient:
         model: str | None,
         timeout_seconds: float,
         transport: Transport | None = None,
+        thinking_level: str | None = None,
     ) -> None:
         self._api_key = api_key
         self._model = model
         self._timeout_seconds = timeout_seconds
         self._transport = transport
+        self._thinking_level = thinking_level
 
     @classmethod
     def from_settings(cls, settings: Settings) -> "GeminiClient":
         key = settings.gemini_api_key.get_secret_value() if settings.gemini_api_key else None
-        return cls(key, settings.gemini_model, settings.gemini_timeout_seconds)
+        return cls(
+            key,
+            settings.gemini_model,
+            settings.gemini_timeout_seconds,
+            thinking_level=settings.gemini_thinking_level or None,
+        )
 
     @property
     def configured(self) -> bool:
         return bool(self._api_key and self._model)
 
-    def generate_structured(self, prompt: str, schema: type[T]) -> GeminiResult[T]:
+    def with_timeout(self, seconds: float) -> "GeminiClient":
+        """The same client with a shorter timeout, for calls a person is waiting on."""
+        timeout = min(self._timeout_seconds, seconds)
+        return GeminiClient(
+            self._api_key, self._model, timeout, self._transport, self._thinking_level
+        )
+
+    def generate_structured(
+        self, prompt: str, schema: type[T], images: Sequence[Image] = ()
+    ) -> GeminiResult[T]:
         """Ask Gemini for JSON matching `schema` and validate it before returning."""
         if not self.configured:
             return GeminiResult(unavailable=Unavailable.MISSING_CONFIG)
         try:
-            raw = (self._transport or self._call_gemini)(prompt, schema)
+            if self._transport is None:
+                raw = self._call_gemini(prompt, schema, images)
+            elif images:
+                raw = self._transport(prompt, schema, images)
+            else:
+                raw = self._transport(prompt, schema)
         except Exception as exc:
             reason = Unavailable.TIMEOUT if _is_timeout(exc) else Unavailable.ERROR
-            logger.warning("Gemini call failed: %s (%s)", reason, type(exc).__name__)
+            # The API's status (e.g. 429 RESOURCE_EXHAUSTED) helps diagnose; never the key.
+            status = " ".join(str(getattr(exc, a, "")) for a in ("code", "status")).strip()
+            logger.warning("Gemini call failed: %s (%s %s)", reason, type(exc).__name__, status)
             return GeminiResult(unavailable=reason)
         try:
             return GeminiResult(value=schema.model_validate_json(raw))
@@ -78,20 +113,30 @@ class GeminiClient:
             logger.warning("Gemini output failed %s validation", schema.__name__)
             return GeminiResult(unavailable=Unavailable.INVALID_OUTPUT)
 
-    def _call_gemini(self, prompt: str, schema: type[BaseModel]) -> str:
+    def _call_gemini(self, prompt: str, schema: type[BaseModel], images: Sequence[Image]) -> str:
         from google import genai
         from google.genai import types
 
         client = genai.Client(
             api_key=self._api_key,
-            http_options=types.HttpOptions(timeout=int(self._timeout_seconds * 1000)),
+            http_options=types.HttpOptions(
+                timeout=int(max(self._timeout_seconds, MIN_TIMEOUT_SECONDS) * 1000)
+            ),
         )
         response = client.models.generate_content(
             model=self._model,
-            contents=prompt,
+            contents=[
+                *(types.Part.from_bytes(data=i.data, mime_type=i.mime_type) for i in images),
+                prompt,
+            ],
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_json_schema=schema.model_json_schema(),
+                thinking_config=(
+                    types.ThinkingConfig(thinking_level=self._thinking_level)
+                    if self._thinking_level
+                    else None
+                ),
             ),
         )
         return response.text or ""

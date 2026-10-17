@@ -1,3 +1,26 @@
+## Gemini calls, report analysis, and report location (Braydin) — 2026-10-17
+
+Explicit user authorization (Braydin): finish the Gemini tasks end to end, including focused edits in Rudra's and Cache's files, with this log for review. T057, T058B, T053A, and T060 are done; T061 waits on a live run.
+
+Rudra's files:
+- `app/schemas/reports.py` and `app/schemas/__init__.py`: new `LocationSource`, `AnalysisVerdict`, `AnalysisPoint`. `ReportEnrichment` is replaced by the supports/contradicts analysis (`status`, `verdict`, `summary`, `supporting`, `contradicting`, `also_visible`, `suggested_category`, `severity_suggestion`, `confidence`, `unknowns`, `evidence`, `unavailable_reason`, `needs_review`, `generated_by`, `analyzed_at`). `CrewReport` gains `location_source`, `location_accuracy_m`, `site_distance_miles`; `ReportCreate` gains `location_source` (default `site`) and `location_accuracy_m` (device only).
+- `app/api/reports.py`: new form fields, a background task for `run_report_analysis`, and `include_context=False` on the 422 detail. Without it, a model-validator error crashed the response instead of returning 422.
+- `app/services/reports.py`: `create_report` takes keyword-only `location_source`/`location_accuracy_m` and stores the site distance. Positional callers are unchanged.
+- `app/api/sites.py`: `_notices` → `load_notices`, `_event_outlook` → `event_outlook_for` (public, reused by briefings and instructions); `report_schema` returns the location fields.
+- `app/api/hazards.py`, `app/services/instructions.py`: the confirm route passes the outlook service, and `draft_instruction` offers the expected duration to the suggestion.
+- `app/outlook/context.py`, `app/outlook/service.py`: site annotations widened from `SiteSummary` to `SiteLike` (id, lat, lon). No behavior change.
+- `app/config.py` and `.env.example`: `GEMINI_THINKING_LEVEL` (default `low`); recommended model `gemini-3.5-flash-lite` (the free tier allows `gemini-3.8-flash` only 20 requests a day), timeout 20.
+- `frontend/src/types/api.ts`, `scripts/generate_fixtures.py`, regenerated `reports.json`/`site-detail.json`: the mirror of the above; fixtures cover supports, inconclusive, and unavailable analyses.
+
+Cache's files:
+- `frontend/src/api/validate.ts`: validates the new analysis and location fields (it would otherwise reject every live report).
+- `frontend/src/pages/ConnectedPages.tsx`: the old suggestion block now shows the verdict in words and "Photo analysis unavailable". T036A builds the full side panel.
+- `frontend/src/demo/client.ts`, `frontend/tests/mock-service.ts`: report objects carry the location fields.
+
+New shared test file: `backend/tests/conftest.py` blanks `GEMINI_API_KEY`, so no test can reach the real API from a developer's `.env`.
+
+Checks: 694 backend tests (2 optional ML skips), Ruff and format clean; 95 frontend tests, oxlint, `tsc -b`, and build clean. Live: radius and instruction verified on `gemini-3.8-flash` until its 20-a-day free quota ran out (429); then all 16 text cases of `scripts/gemini_eval.py` answered and passed on `gemini-3.5-flash-lite`.
+
 ## Clean setup / T070 preparation — 2026-10-17 13:03 UTC
 
 Explicit user scope: audit and reproduce frontend/backend startup without changing Claude's visuals or owner infrastructure. Separate `feature/cache-clean-setup` from main `681582be17315444f5ed9785c15f0fb37e8c09eb`; PR #34 was open at `8869e16` at startup and was not rewritten. No unmerged parent dependency or geolocation implementation copied. Identical `watch:null` helper change exists in both PRs; preserve it once when merging.

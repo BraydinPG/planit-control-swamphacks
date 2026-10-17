@@ -9,7 +9,12 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react'
-import type { CrewReport, ReportCategory, SiteSummary } from '../types/api'
+import type {
+  AnalysisVerdict,
+  CrewReport,
+  ReportCategory,
+  SiteSummary,
+} from '../types/api'
 import {
   useApplication,
   useResource,
@@ -683,6 +688,12 @@ function AlertsPage({ id }: { id: string | null }) {
     </div>
   )
 }
+// T060 verdict in words, never color alone. Cache's T036A builds the full side panel.
+const verdictText: Record<AnalysisVerdict, string> = {
+  supports: 'Supports the report',
+  contradicts: 'Contradicts the report',
+  inconclusive: "Inconclusive: the data can't confirm or rule it out",
+}
 const categories: Record<ReportCategory, string> = {
   broken_pole_downed_line: 'Broken pole / downed line',
   on_site_fire: 'On-site fire',
@@ -1014,14 +1025,25 @@ function ReportCard({ report }: { report: CrewReport }) {
         <div className="rounded-xl border border-dotted border-sim p-3 text-sm">
           <strong className="inline-flex items-center gap-1.5 text-sim">
             <Icon name="spark" className="size-4" />
-            AI suggestion, needs human review
+            AI analysis, needs human review
           </strong>
-          <p className="mt-1 text-ink">{report.enrichment.description}</p>
-          <p className="mt-1 text-ink-2">
-            {report.enrichment.suggested_category};{' '}
-            {report.enrichment.severity_suggestion}; not confirmed by this
-            suggestion.
-          </p>
+          {report.enrichment.status === 'complete' ? (
+            <>
+              <p className="mt-1 font-semibold text-ink">
+                {verdictText[report.enrichment.verdict ?? 'inconclusive']}
+              </p>
+              <p className="mt-1 text-ink">{report.enrichment.summary}</p>
+              <p className="mt-1 text-ink-2">
+                Suggested: {report.enrichment.suggested_category ?? 'none'};{' '}
+                {report.enrichment.severity_suggestion ?? 'no severity'}. Not
+                confirmed by this analysis.
+              </p>
+            </>
+          ) : (
+            <p className="mt-1 text-ink-2">
+              Photo analysis unavailable. The report stands on its own.
+            </p>
+          )}
         </div>
       )}
       {persona === 'supervisor' &&
