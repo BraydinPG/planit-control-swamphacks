@@ -216,6 +216,12 @@ try {
     await evaluate(`location.hash=${JSON.stringify(value)}`)
     await loaded(text)
   }
+  // Report step 2 is a pair of radio choices (present/absent), not a select.
+  async function choose(name, value) {
+    await evaluate(
+      `document.querySelector('input[name=${JSON.stringify(name)}][value=${JSON.stringify(value)}]').click()`,
+    )
+  }
   async function set(selector, value) {
     await evaluate(
       `(()=>{const e=document.querySelector(${JSON.stringify(selector)});const prototype=e.tagName==='SELECT'?HTMLSelectElement.prototype:e.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(e,${JSON.stringify(value)});e.dispatchEvent(new Event(e.tagName==='SELECT'?'change':'input',{bubbles:true}))})()`,
@@ -285,7 +291,7 @@ try {
   await loaded('Stop-work alert active')
   const demoReportOpened = performance.now()
   await hash('/crew/reports', 'Report a hazard')
-  await set('form select[required]', 'present')
+  await choose('presence', 'present')
   await writeFile(
     join(output, 'demo-photo.png'),
     Buffer.from(
@@ -485,7 +491,7 @@ try {
           page === 'briefings'
             ? 'Read-only stored briefings'
             : page === 'reports'
-              ? 'Hazard present or absent'
+              ? 'Is it there?'
               : page === 'alerts'
                 ? 'acknowledgement(s)'
                 : persona === 'supervisor'
@@ -622,15 +628,15 @@ try {
       ),
       'Stored briefings must only use GET',
     )
-    await hash('/crew/reports', 'Hazard present or absent')
-    await set('form select[required]', 'present')
+    await hash('/crew/reports', 'Is it there?')
+    await choose('presence', 'present')
     assert(
       await evaluate(
         "document.querySelector('form input[type=file]').required && document.querySelector('form button[type=submit]').disabled",
       ),
       'Live present report must require photo',
     )
-    await set('form select[required]', 'absent')
+    await choose('presence', 'absent')
     assert(
       await evaluate(
         "!document.querySelector('form input[type=file]').required && !document.querySelector('form button[type=submit]').disabled",
@@ -659,7 +665,7 @@ try {
       )
     }
     await evaluate('window.harness.settings({mutationStatus:200})')
-    await set('form select[required]', 'present')
+    await choose('presence', 'present')
     async function attachMockPhoto() {
       const { root } = await send('DOM.getDocument')
       const { nodeId } = await send('DOM.querySelector', {
@@ -768,8 +774,8 @@ try {
       'Crew cannot edit supervisor instruction',
     )
     // A second report exercises a null suggestion and a manual final instruction.
-    await hash('/crew/reports', 'Hazard present or absent')
-    await set('form select[required]', 'present')
+    await hash('/crew/reports', 'Is it there?')
+    await choose('presence', 'present')
     await attachMockPhoto()
     await click('Submit report')
     await loaded('Report accepted by backend')

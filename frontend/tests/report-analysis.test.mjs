@@ -249,12 +249,30 @@ function form(mode) {
 test('live reports start from the site while asking for the device location', () => {
   const html = form('live')
   assert(text(html).includes('Finding your location…'))
-  assert(html.includes('value="25.76"') && html.includes('value="-80.49"'))
+  assert(
+    text(html).includes('The site’s location is used if this takes too long.'),
+  )
+  // Clean UI: no coordinates unless the crew member enters a different spot.
+  assert(!text(html).includes('Latitude') && !html.includes('value="25.76"'))
+  assert(text(html).includes('Enter a different spot'))
   assert(text(html).includes('only with your permission'))
 })
 
 test('demo reports never request device location and say they are approximate', () => {
   const html = text(form('demo'))
-  assert(html.includes('Approximate: site'))
+  assert(html.includes('Using the site’s location (approximate)'))
+  assert(html.includes('Simulated report: device location is not requested.'))
   assert(!html.includes('Finding your location'))
+  assert(!html.includes('Latitude'))
+})
+
+test('present/absent is a pair of large choices, not a dropdown', () => {
+  const html = form('live')
+  assert(text(html).includes('2 · Is it there? (required)'))
+  assert.equal((html.match(/name="presence"/g) ?? []).length, 2)
+  assert(
+    text(html).includes('Hazard present') &&
+      text(html).includes('Hazard absent'),
+  )
+  assert(!html.includes('<select required'))
 })

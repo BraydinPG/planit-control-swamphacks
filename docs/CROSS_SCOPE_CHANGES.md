@@ -1,3 +1,15 @@
+## Report form and map cleanup (Braydin, for Cache/Rudra UI) — 2026-10-17
+
+Explicit user requests (Braydin):
+- **Report step 2:** the present/absent `<select>` became two large radio choices styled like the category step. The select's selected colors (`bg-stop text-white`) conflicted with the shared `field` class (`bg-surface text-ink`), so a choice rendered as white on white.
+- **Location (T034A):** no latitude/longitude by default. One status line ("Using your current location · Accurate to about 12 m", "Finding your location…", "Using the site's location (approximate)" with the reason). The fields appear only after "Enter a different spot", or while pinning or fixing an invalid point.
+- **Map (`components/data/SiteMap.tsx`):**
+  - The OpenStreetMap basemap loads by default, and there is no opt-in toggle.
+  - Offline (`navigator.onLine` false), or when no tile loads, the map section is hidden and the location list remains. It returns on reconnect.
+- **`scripts/check-shell.mjs`:** clicks the presence radios instead of setting the select.
+
+Checks: 104 frontend tests, oxlint, `tsc -b`, and build clean.
+
 ## Report location, analysis panel, and duration on screen (T034A, T036A, T036B; Braydin for Cache) — 2026-10-17
 
 Explicit user authorization (Braydin): complete Cache's T034A, T036A, and T036B in Cache's frontend files, matching Rudra's redesign theme (existing tokens, `card`/`kicker`/`chip`/`field`, `RiskShape`, existing icons; no new colors).
