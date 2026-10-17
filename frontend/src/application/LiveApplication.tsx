@@ -52,10 +52,10 @@ function LiveSession({ client }: { client: HttpClient }) {
       <AppShell
         workspaceOverride={auth.role}
         badge="Authenticated API"
-        message="Backend permissions govern every request. No demo data is substituted after errors."
+        message="Connected mode. Access follows your account permissions; failures are shown without demo data."
         controls={
           <div className="flex flex-wrap items-center gap-3">
-            <span>{auth.role} session</span>
+            <span>{auth.role === 'crew' ? 'Crew' : 'Supervisor'} session</span>
             <button className={control} onClick={() => void auth.logout()}>
               Sign out
             </button>

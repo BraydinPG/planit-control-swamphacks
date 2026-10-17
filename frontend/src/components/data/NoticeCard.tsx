@@ -5,6 +5,8 @@ import { Action, field, labelText } from './Interaction'
 import { Timestamp } from './Status'
 import { RiskShape } from './Risk'
 import { ExpectedDuration } from './Duration'
+import { displayLabel } from '../../presentation/display'
+import { Details } from './Details'
 /** `outlook` is the site's event outlook; it shows on the confirmed notice it belongs to. */
 export function NoticeCard({
   notice,
@@ -38,7 +40,7 @@ function NoticeWorkflow({
   return (
     <article
       data-notice-id={notice.id}
-      className={`space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? 'border-dashed border-caution' : 'border-line-strong'}`}
+      className={`scroll-mt-20 space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? 'border-dashed border-caution' : 'border-line-strong'}`}
     >
       <div className="flex items-start gap-3">
         <RiskShape
@@ -47,27 +49,15 @@ function NoticeWorkflow({
         />
         <div className="min-w-0 flex-1">
           <p className="kicker">
-            {potential ? 'Potential notice' : 'Confirmed notice'}
+            {potential
+              ? 'Potential hazard · awaiting confirmation'
+              : 'Confirmed hazard'}
           </p>
           <h3 className="text-xl font-bold">
-            {potential ? 'potential ' : ''}
-            {notice.hazard_label}
+            {displayLabel(notice.hazard_label)}
           </h3>
         </div>
       </div>
-      <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-2">
-        <span>
-          Status: <strong className="text-ink">{notice.status}</strong>
-        </span>
-        <span>
-          Radius: {notice.radius_miles} mi ({notice.radius_source}
-          {notice.radius_source === 'default' ? ' prototype default' : ''})
-        </span>
-      </p>
-      <p className="break-words text-xs text-muted">
-        {notice.source} · {notice.source_ref} · Created{' '}
-        <Timestamp value={notice.created_at} />
-      </p>
       {potential ? (
         <p className="rounded-xl border border-dashed border-line-strong px-3 py-2.5 text-sm font-semibold">
           No instruction: supervisor confirmation is pending.
@@ -78,7 +68,7 @@ function NoticeWorkflow({
             Supervisor-approved instruction
           </strong>
           <p className="mt-1 text-lg font-semibold">{notice.instruction}</p>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-sm text-muted">
             Sent <Timestamp value={notice.instruction_sent_at} />
           </p>
         </div>
@@ -107,8 +97,8 @@ function NoticeWorkflow({
         notice.confirmed_by !== principalId &&
         !notice.instruction_sent_at && (
           <p className="rounded-xl border border-dashed border-line-strong px-3 py-2.5 text-sm text-ink-2">
-            Another supervisor confirmed this hazard. Only that supervisor may
-            send the instruction. Refresh for current server state.
+            Only the supervisor who confirmed this hazard can send its
+            instruction.
           </p>
         )}
       {persona === 'supervisor' &&
@@ -121,6 +111,23 @@ function NoticeWorkflow({
             sent={setNotice}
           />
         )}
+      <Details title="Notice source and coverage">
+        <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-2">
+          <span>
+            Status:{' '}
+            <strong className="text-ink">{displayLabel(notice.status)}</strong>
+          </span>
+          <span>
+            Radius: {notice.radius_miles} mi (
+            {displayLabel(notice.radius_source)}
+            {notice.radius_source === 'default' ? ' prototype default' : ''})
+          </span>
+        </p>
+        <p className="break-words text-sm text-muted">
+          {notice.source} · {notice.source_ref} · Created{' '}
+          <Timestamp value={notice.created_at} />
+        </p>
+      </Details>
     </article>
   )
 }
@@ -140,8 +147,8 @@ function InstructionEditor({
     <div className="space-y-3 rounded-xl border border-line bg-surface-2 p-3">
       <p className="text-sm font-semibold">
         {notice.suggested_instruction
-          ? 'Suggested instruction — review before sending (server draft):'
-          : 'No suggestion available; the confirming supervisor writes the instruction.'}
+          ? 'Suggested instruction · not yet approved'
+          : 'Write an instruction for the crew.'}
       </p>
       {notice.suggested_instruction && (
         <blockquote className="border-l-2 border-sim pl-3 text-sm italic text-ink-2">
@@ -159,9 +166,9 @@ function InstructionEditor({
           onChange={(e) => setInstruction(e.target.value)}
         />
       </label>
-      <p className="text-xs text-muted">
-        1–500 characters. Sending explicitly approves this text for backend
-        delivery. No suggestion is sent automatically.
+      <p className="text-sm text-muted">
+        Review before sending. Your action approves this instruction. Maximum
+        500 characters.
       </p>
       <Action
         capability="hazards"

@@ -121,8 +121,8 @@ test('stored Gemini/template cards retain hazards, source times, evidence and un
     assert(
       html.includes(
         fixture.generated_by === 'fallback'
-          ? 'Deterministic template fallback'
-          : 'Gemini output',
+          ? 'Template fallback'
+          : 'Gemini draft',
       ),
     )
     for (const time of [
@@ -153,8 +153,8 @@ test('briefings show the 0–10 index and each hazard’s points, never a level 
   const text = renderToStaticMarkup(
     React.createElement(BriefingCard, { value: gemini }),
   ).replace(/<[^>]+>/g, '')
-  assert(text.includes('Site hazard index at generation: 6.1 / 10 · high'))
-  assert(text.includes('Not enough current data to score'))
+  assert(text.includes('Score when written: 6.1 / 10 · High'))
+  assert(text.includes('Evidence incomplete; current conditions unknown'))
   assert(text.includes('Lightning stop-work (simulated) · +3.0 pts'))
   assert(text.includes('Afternoon thunderstorms · not in score'))
   const empty = renderToStaticMarkup(
@@ -162,13 +162,13 @@ test('briefings show the 0–10 index and each hazard’s points, never a level 
       value: { ...gemini, risk_score: 0, data_completeness: 0 },
     }),
   ).replace(/<[^>]+>/g, '')
-  assert(empty.includes('Not enough current data to score'))
+  assert(empty.includes('Evidence incomplete; current conditions unknown'))
   const legacy = renderToStaticMarkup(
     React.createElement(BriefingCard, {
       value: { ...gemini, risk_score: null, data_completeness: null },
     }),
   ).replace(/<[^>]+>/g, '')
-  assert(legacy.includes('Risk level at generation: high'))
+  assert(legacy.includes('Risk level when written: High'))
 })
 test('briefing index and points are validated', () => {
   const gemini = fixtures.find((f) => f.generated_by === 'gemini')

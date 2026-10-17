@@ -133,7 +133,7 @@ test('protection and encounter render independently, unknown never reads as harm
   const statusless = structuredClone(byName('American alligator'))
   statusless.protection.status = null
   const gator = html(React.createElement(SpeciesCard, { species: statusless }))
-  assert.match(gator, /Status unknown \(not supplied\)/)
+  assert.match(gator, /Protection status unknown/)
   assert.match(gator, /Keep your distance/)
 })
 
