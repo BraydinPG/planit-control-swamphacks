@@ -11,7 +11,7 @@ from pydantic import ValidationError
 
 from ml.collect_hazard_sources import FIXTURES
 from ml.hazard_registry import FEMA_CROSSWALK, MANUAL_FAMILIES, load_registry
-from ml.hazard_rehearsal import DEMO_POLICY, run, verify_fixtures
+from ml.hazard_rehearsal import DEMO_POLICY, check_rehearsal_scope, run, verify_fixtures
 from ml.hazard_scenarios import activation, box, fixture_alert, fixture_evidence, fixture_report
 from ml.schemas import parse_utc
 from ml.sources.bounded import RestrictedRedirect, snapshot, validate_url
@@ -510,6 +510,36 @@ def test_real_point_query_receipts_and_snapshot_counts():
             assert typed.query_site_id == sid and typed.query_point is not None
             assert not typed.is_fixture and typed.source_version
     assert data["counts"]["nws_alerts"] == len(data["alerts"])
+
+
+def test_rehearsal_permission_contract_requires_scope_and_replay():
+    request = {"event_context": activation(SITE, STAMP, "Flood"), "site_context": SITE}
+    check_rehearsal_scope("crew", frozenset({SITE["id"]}), request)
+    for role, ids in (
+        ("crew", frozenset()),
+        ("supervisor", frozenset()),
+        ("anonymous", frozenset({SITE["id"]})),
+    ):
+        with pytest.raises(PermissionError):
+            check_rehearsal_scope(role, ids, request)
+    request["event_context"]["event_status"] = "confirmed_active"
+    with pytest.raises(PermissionError):
+        check_rehearsal_scope("supervisor", frozenset({SITE["id"]}), request)
+
+
+def test_canonical_schemas_and_fixture_requests_match_runtime_contract():
+    for name, model in (
+        ("comprehensive_request.schema.json", ComprehensiveRequest),
+        ("comprehensive_outlook.schema.json", ComprehensiveOutlook),
+    ):
+        assert json.loads((FIXTURES / name).read_text()) == model.model_json_schema()
+    for i in (1, 2, 3):
+        ComprehensiveRequest.model_validate(
+            json.loads((FIXTURES / f"example_{i}_request.json").read_text())
+        )
+        ComprehensiveOutlook.model_validate(
+            json.loads((FIXTURES / f"example_{i}_response.json").read_text())
+        )
 
 
 @pytest.mark.parametrize(

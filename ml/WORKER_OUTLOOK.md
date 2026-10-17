@@ -1,5 +1,7 @@
 # Worker advisory slice, contract 2.0.0
 
+The separate opt-in [comprehensive 2.1.0 package](HAZARD_INTEGRATION.md) extends this slice with native official notices, reviewed worksite-report contracts and explicit cascading-hazard unknowns. Run `python -m ml.hazard_rehearsal --require-models` for its 31-scenario/50-site offline acceptance. The 2.0 callable and strict schema documented here remain intact; migrate explicitly with the new callable/adapter.
+
 `build_worker_outlook(event_context, site_context, evidence)` connects the preserved regional duration research to source-grounded local environmental context. It is a separate Cache-owned library and offline harness. It adds no production route, frontend switch, database import, alert logic, or score contribution.
 
 ```mermaid

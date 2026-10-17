@@ -206,6 +206,8 @@ def shakemap_at_site(xml: bytes, receipt: dict, site: SiteContext) -> ContextSig
     if len(xml) > 16_000_000 or b"<!DOCTYPE" in xml.upper() or b"<!ENTITY" in xml.upper():
         raise ValueError("Unsafe or oversized ShakeMap XML")
     root = ET.fromstring(xml)
+    if root.attrib.get("shakemap_event_type", "ACTUAL") != "ACTUAL":
+        raise ValueError("Scenario ShakeMap cannot be labeled as an actual issued model product")
     ns = {"s": root.tag.split("}")[0].lstrip("{")} if "}" in root.tag else {}
     prefix = "s:" if ns else ""
     spec = root.find(prefix + "grid_specification", ns)
@@ -291,5 +293,7 @@ def shakemap_at_site(xml: bytes, receipt: dict, site: SiteContext) -> ContextSig
             "lat_spacing": dy,
             "event_id": root.attrib.get("event_id", "unknown"),
             "map_version": root.attrib.get("shakemap_version", "unknown"),
+            "map_status": root.attrib.get("map_status", "unknown"),
+            "uncertainty_grid": "not_retrieved",
         },
     )

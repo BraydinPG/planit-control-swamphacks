@@ -1,6 +1,7 @@
-"""Explicit opt-in bounded capture/export. Offline acceptance never imports network clients."""
+"""Explicit opt-in bounded capture/export. Offline acceptance never acquires remote data."""
 
 import argparse
+import hashlib
 import json
 import sys
 
@@ -232,13 +233,22 @@ def collect():
 
 
 def fixture_manifest():
-    files = {
-        p.name: {"sha256": file_sha256(p), "bytes": p.stat().st_size}
-        for p in sorted(FIXTURES.glob("*.json"))
-        if p.name != "manifest.json"
-    }
+    files = {}
+    for path in sorted(FIXTURES.glob("*.json")):
+        if path.name == "manifest.json":
+            continue
+        content = path.read_bytes().replace(b"\r\n", b"\n")
+        files[path.name] = {"sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content)}
     (FIXTURES / "manifest.json").write_text(
-        json.dumps({"schema_version": "1.0.0", "files": files}, indent=2), encoding="utf-8"
+        json.dumps(
+            {
+                "schema_version": "1.0.0",
+                "hash_basis": "UTF-8 text with CRLF normalized to LF",
+                "files": files,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
     )
 
 

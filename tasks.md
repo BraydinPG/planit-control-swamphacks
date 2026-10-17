@@ -72,9 +72,9 @@ Rudra's API-dependent lanes start after T006 and T007. Cache may start the indep
 Worker advisory continuation (Cache-owned, explicit user authorization; independent of production integration):
 
 Comprehensive hazard follow-up (new branch after PR #9 merged):
-- [ ] **TML-H01 | Cache | Audit natural and cascading worksite hazards.** Typed registry, FEMA/NOAA crosswalk, official source pointers and distinct maturity states.
-- [ ] **TML-H02 | Cache | Strengthen official evidence and unknown hazards.** Bounded source receipts, strict alerts, additive advisory schema and trusted report contracts without production writes.
-- [ ] **TML-H03 | Cache | Verify comprehensive offline rehearsal.** At least 20 adversarial scenarios, 50+ reconciled EIA identities, source coverage/missingness, performance and clean setup.
+- [x] **TML-H01 | Cache | Audit natural and cascading worksite hazards.** 146-entry typed registry, all 54 raw NOAA labels, FEMA 18-group crosswalk, official pointers and distinct maturity/sign-off states.
+- [x] **TML-H02 | Cache | Strengthen official evidence and unknown hazards.** 64 source receipts, 50 NWS point queries, strict native alerts, opt-in 2.1 schema/report contracts and explicit cascading unknowns; no production writes.
+- [x] **TML-H03 | Cache | Verify comprehensive offline rehearsal.** 31 adversarial scenarios, 50 reconciled backend EIA identities, coverage/missingness/performance; fresh-environment full suite 361 passed with frontend/backend checks.
 - [ ] **TML-H04 | Cache | Publish tested owner handoffs.** Update context, verification reports and review PR; preserve teammate features and all research/safety gates.
 
 - [x] **TML-W01 | Cache | Verify merged ancestry and shared project memory.** PR #4/#6 merge ancestry verified, new branch from `20af37d`, `PROJECT_CONTEXT.md` created with the AGENTS read-first/update pointer.

@@ -49,3 +49,7 @@ The corrected full evaluation took about eight seconds here. Entire episodes cro
 The weather command makes zero network requests in cache-only mode. A fresh checkout has no weather cache; insufficient cached support fails explicitly. An intentional run without `--cache-only` may fetch up to 20 responses per year sequentially. ERA5 valid time does not establish historical operational availability.
 
 See `ml/INTEGRATION.md` for typed input, the tested adapter, exact output example, receipt verification, and backend import setup. No ML route is added.
+# Comprehensive hazard acceptance: `python -m ml.hazard_rehearsal --require-models`
+
+After the existing provisioning steps below, this runs the 31 scenarios and 50 reconciled EIA sites offline. See [HAZARD_INTEGRATION.md](HAZARD_INTEGRATION.md) for 2.1 migration, frozen schemas, source gaps and owner handoffs.
+

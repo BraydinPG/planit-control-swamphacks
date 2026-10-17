@@ -245,7 +245,7 @@
     "expected_error": null,
     "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
     "request_factory": "ml.hazard_scenarios.scenarios()",
-    "canonical_request_sha256": "e4417b1062ba118b052d07865f47ffe7b1d34eef6a31599048f62f16b1249082",
+    "canonical_request_sha256": "098cc559b8709bf5f258ae53a7828e2d04701a733eed7d0070401f3a3788caf5",
     "input_counts": {
       "evidence": 0,
       "alerts": 0,
@@ -357,7 +357,7 @@
     "expected_error": null,
     "source_mode": "Actual captured sources where supplied; all activation and synthetic fixture inputs explicitly labeled; not an actual worker incident",
     "request_factory": "ml.hazard_scenarios.scenarios()",
-    "canonical_request_sha256": "3140e4f932210bbe281d2ffd5a3db81b573e947b0bc33ac4c62c269a28c9743d",
+    "canonical_request_sha256": "70803adcb3c7332d04a56a7682323f72b6e269aa4640213fdb47cafbb173b89a",
     "input_counts": {
       "evidence": 0,
       "alerts": 0,

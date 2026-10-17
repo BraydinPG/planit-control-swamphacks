@@ -17,7 +17,6 @@ from pydantic import ValidationError
 from ml.collect_hazard_sources import FIXTURES
 from ml.config import REPORT_DIR
 from ml.hazard_scenarios import activation, scenarios
-from ml.provision import file_sha256
 from ml.worker.comprehensive import build_comprehensive_outlook, _covers
 from ml.worker.comprehensive_schema import (
     ComprehensiveOutlook,
@@ -39,12 +38,26 @@ def verify_fixtures():
     manifest = json.loads((FIXTURES / "manifest.json").read_text())
     if manifest["schema_version"] != "1.0.0":
         raise ValueError("Unknown fixture manifest version")
+    if manifest.get("hash_basis") != "UTF-8 text with CRLF normalized to LF":
+        raise ValueError("Unknown normalized fixture hash basis")
     for name, expected in manifest["files"].items():
         if Path(name).name != name:
             raise ValueError("Unsafe fixture manifest path")
         file = FIXTURES / name
-        if file.stat().st_size != expected["bytes"] or file_sha256(file) != expected["sha256"]:
+        content = file.read_bytes().replace(b"\r\n", b"\n")
+        if (
+            len(content) != expected["bytes"]
+            or hashlib.sha256(content).hexdigest() != expected["sha256"]
+        ):
             raise ValueError("Normalized fixture checksum mismatch: " + name)
+
+
+def check_rehearsal_scope(role: str, allowed_site_ids: frozenset[str], request: dict):
+    """Fixture-only permission rehearsal, not Auth0 validation or a production dependency."""
+    if request["event_context"]["event_status"] != "historical_replay":
+        raise PermissionError("Rehearsal is restricted to explicitly labeled replay activation")
+    if role not in ("crew", "supervisor") or request["site_context"]["id"] not in allowed_site_ids:
+        raise PermissionError("Fixture principal has no assigned-site/organization scope")
 
 
 def _assert_safety(outlook):
@@ -82,6 +95,9 @@ def run(
     exported_sites = json.loads((FIXTURES / "backend_sites.json").read_text())
     index = {r["id"]: r for r in exported_sites["records"]}
     cases, summary, samples, runtimes = scenarios(), [], [], {}
+    fixture_scope = frozenset(exported_sites["batch_site_ids"]) | frozenset(
+        c["request"]["site_context"]["id"] for c in cases
+    )
     tested_hazards = set()
     cold_artifact_ms = None
     if benchmark and predictor is None:
@@ -106,6 +122,7 @@ def run(
     ):
         for case in cases:
             request, before = case["request"], copy.deepcopy(case["request"])
+            check_rehearsal_scope("supervisor", fixture_scope, request)
             start = time.perf_counter()
             try:
                 validated = ComprehensiveRequest.model_validate(request)
@@ -199,6 +216,11 @@ def run(
                 if sid in snapshot.get("site_alert_states", {})
                 else [],
             }
+            check_rehearsal_scope(
+                "supervisor",
+                fixture_scope,
+                {**request, "site_context": site.model_dump(mode="json")},
+            )
             outlook = build_comprehensive_outlook(**request, predictor=predictor)
             checked = _assert_safety(outlook)
             provider_counts = Counter(

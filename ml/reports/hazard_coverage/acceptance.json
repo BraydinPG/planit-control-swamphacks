@@ -148,107 +148,107 @@
   "sites_without_local_shakemap": 50,
   "sites_without_trusted_live_crew_or_asset_feed": 50,
   "performance": {
-    "cold_flood_artifact_initialization_ms": 8.395700016990304,
+    "cold_flood_artifact_initialization_ms": 8.420700003625825,
     "workers": 1,
-    "batch_ms": 699.909499991918,
-    "batch_ms_per_site": 13.99818999983836,
-    "warm_response_validation_mean_ms_30_calls": 1.2352899997495115,
-    "peak_traced_python_allocations_one_call_bytes": 1156720,
+    "batch_ms": 693.488899996737,
+    "batch_ms_per_site": 13.86977799993474,
+    "warm_response_validation_mean_ms_30_calls": 1.2533366670443986,
+    "peak_traced_python_allocations_one_call_bytes": 1152320,
     "traced_memory_is_not_process_RSS": true,
     "scenario_calls": {
       "real_local_rain_and_gauge_without_basin_or_datum": {
-        "first_ms": 32.4694000009913,
+        "first_ms": 34.617000026628375,
         "warm_calls": 30,
-        "warm_median_ms": 5.587750012637116
+        "warm_median_ms": 5.920449999393895
       },
       "real_wind_and_forecast_backend_identity": {
-        "first_ms": 23.51279999129474,
+        "first_ms": 23.71440001297742,
         "warm_calls": 30,
-        "warm_median_ms": 5.6130500161089
+        "warm_median_ms": 5.643499986035749
       },
       "real_native_nws_notice_hypothetical_activation": {
-        "first_ms": 10.658399987732992
+        "first_ms": 11.599199991906062
       },
       "fixture_verified_basin_and_datum_not_inundation": {
-        "first_ms": 1.2465000036172569
+        "first_ms": 1.4845999830868095
       },
       "flash_flood_polygon": {
-        "first_ms": 25.071399984881282
+        "first_ms": 25.519899994833395
       },
       "expired_flash_flood_notice": {
-        "first_ms": 11.745700001483783
+        "first_ms": 11.960000003455207
       },
       "flash_flood_polygon_hole_negative": {
-        "first_ms": 11.73430000199005
+        "first_ms": 12.054699996951967
       },
       "wind_units_and_station_distance": {
-        "first_ms": 1.884699973743409
+        "first_ms": 1.6896000015549362
       },
       "heat_matched_inputs": {
-        "first_ms": 1.3938999909441918
+        "first_ms": 1.3246999878901988
       },
       "heat_mismatched_inputs": {
-        "first_ms": 1.0874999861698598
+        "first_ms": 1.0972000018227845
       },
       "heat_stale_inputs": {
-        "first_ms": 1.0176000068895519
+        "first_ms": 1.1165000032633543
       },
       "tropical_wind_rain_coastal_unknown_intensity": {
-        "first_ms": 11.628400010522455
+        "first_ms": 11.85579999582842
       },
       "lightning_restrike_contract_no_timer": {
-        "first_ms": 0.913399999262765
+        "first_ms": 0.9512999968137592
       },
       "winter_ice_and_reviewed_road_notice": {
-        "first_ms": 1.3078000047244132
+        "first_ms": 1.379899971652776
       },
       "wildfire_hotspot_perimeter_smoke_fixtures": {
-        "first_ms": 1.4223000034689903
+        "first_ms": 1.4536000089719892
       },
       "real_shakemap_hypothetical_non_US_location": {
-        "first_ms": 0.9556000004522502
+        "first_ms": 0.9867999760899693
       },
       "quake_us_site_no_local_shaking_and_tsunami_fixture": {
-        "first_ms": 0.7847000088077039
+        "first_ms": 0.7870999979786575
       },
       "coastal_datum_not_site_inundation": {
-        "first_ms": 0.9341999830212444
+        "first_ms": 0.9280999947804958
       },
       "tornado_hail_thunderstorm_unknown_models": {
-        "first_ms": 1.3458000030368567
+        "first_ms": 1.3805000053253025
       },
       "dust_fog_visibility_context": {
-        "first_ms": 0.9504000190645456
+        "first_ms": 0.906600005691871
       },
       "landslide_soft_ground_postfire_unknown": {
-        "first_ms": 0.7679999980609864
+        "first_ms": 0.7502000080421567
       },
       "drought_soil_fireweather_context": {
-        "first_ms": 1.3552000164054334
+        "first_ms": 1.3943999947514385
       },
       "real_swpc_context_no_outage_prediction": {
-        "first_ms": 3.7031999963801354
+        "first_ms": 3.8825999945402145
       },
       "electrical_dangers_unknown_despite_weather": {
-        "first_ms": 56.28729998716153
+        "first_ms": 59.37339999945834
       },
       "reviewed_and_pending_utility_reports": {
-        "first_ms": 1.6619999951217324
+        "first_ms": 1.7285000067204237
       },
       "communications_and_access_only_reviewed_reports": {
-        "first_ms": 1.0504000238142908
+        "first_ms": 1.1109999904874712
       },
       "compound_overlap_conflicts_disjoint_geography": {
-        "first_ms": 2.4796999932732433
+        "first_ms": 2.4867999891284853
       },
       "future_reanalysis_not_operational_feature": {
-        "first_ms": 1.2300999951548874
+        "first_ms": 1.2621000059880316
       },
       "forged_future_activation_and_missing_evidence": {
-        "first_ms": 0.7088000129442662
+        "first_ms": 0.7137000211514533
       },
       "missing_credentials_and_failed_source_explicit": {
-        "first_ms": 0.8802000083960593
+        "first_ms": 0.8854000188875943
       }
     }
   },
