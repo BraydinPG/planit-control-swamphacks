@@ -108,8 +108,10 @@ test('one site payload cannot mix headline and nested stored-score versions', as
     { risk_score: detail.risk_score - 1 },
     { risk_level: 'critical' },
     { model_version: 'different-server-version' },
-    { data_completeness: 0 },
-    { updated_at: '2026-10-17T18:00:00Z' },
+    { data_completeness: detail.data_completeness === 0 ? 1 : 0 },
+    {
+      updated_at: new Date(Date.parse(detail.updated_at) + 1000).toISOString(),
+    },
     { score: null },
   ])
     await assert.rejects(

@@ -5,10 +5,10 @@
     "organization_id": null,
     "forecast_window_start": "2026-10-18T11:00:00Z",
     "forecast_window_end": "2026-10-18T23:00:00Z",
-    "summary": "Tomorrow brings high heat and a continuing Flood Watch. Afternoon storms are possible. Wildlife remains near the east access road.",
+    "summary": "Simulated scenario: heat, a Flood Watch and a wildlife report at generation time. Afternoon storms are a scenario forecast, not current conditions.",
     "risk_level": "high",
-    "risk_score": 7.6,
-    "data_completeness": 0.71,
+    "risk_score": 6.1,
+    "data_completeness": 0.0,
     "hazards": [
       {
         "hazard": "Lightning stop-work (simulated)",
@@ -18,22 +18,22 @@
         ]
       },
       {
-        "hazard": "Heat",
-        "points": 1.5,
+        "hazard": "Heat (simulated)",
+        "points": 1.11,
         "evidence_ids": [
-          "obs-fc-1"
+          "obs-wx-3"
         ]
       },
       {
-        "hazard": "Flooding",
+        "hazard": "Flooding (simulated)",
         "points": 1.0,
         "evidence_ids": [
           "obs-flood-1"
         ]
       },
       {
-        "hazard": "Wildlife",
-        "points": 0.5,
+        "hazard": "Wildlife (simulated confirmed report)",
+        "points": 1.0,
         "evidence_ids": [
           "report-wildlife-1"
         ]
@@ -50,7 +50,7 @@
       {
         "action": "Schedule heavy work before noon and plan water and shade breaks.",
         "evidence_ids": [
-          "obs-fc-1"
+          "obs-wx-3"
         ]
       },
       {
@@ -62,27 +62,33 @@
     ],
     "evidence": [
       {
-        "id": "obs-fc-1",
-        "kind": "observation",
-        "label": "Forecast heat index 108 °F",
-        "observed_at": null
+        "id": "alert-ltg-demo",
+        "kind": "score_factor",
+        "label": "Lightning stop-work active, latest qualifying strike 4.2 mi; feed coverage unknown [simulated; not live coverage]",
+        "observed_at": "2026-10-17T17:57:00Z"
+      },
+      {
+        "id": "obs-wx-3",
+        "kind": "score_factor",
+        "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
+        "observed_at": "2026-10-17T17:40:00Z"
       },
       {
         "id": "obs-flood-1",
-        "kind": "observation",
-        "label": "Flood Watch",
-        "observed_at": null
-      },
-      {
-        "id": "alert-ltg-demo",
-        "kind": "alert",
-        "label": "Lightning stop-work (simulated)",
-        "observed_at": null
+        "kind": "score_factor",
+        "label": "Flood Watch in effect (prototype weight) [simulated; not live coverage]",
+        "observed_at": "2026-10-17T16:30:00Z"
       },
       {
         "id": "report-wildlife-1",
-        "kind": "report",
-        "label": "Confirmed wildlife report",
+        "kind": "score_factor",
+        "label": "Confirmed crew report: wildlife",
+        "observed_at": "2026-10-17T15:50:00Z"
+      },
+      {
+        "id": "obs-fc-1",
+        "kind": "observation",
+        "label": "Simulated forecast temperature 95 °F",
         "observed_at": null
       },
       {
@@ -93,6 +99,7 @@
       }
     ],
     "unknowns": [
+      "Simulated fixture: no current live feed coverage. The index demonstrates rules-0.2 arithmetic, not verified current conditions.",
       "Hurricane feed unavailable at generation time.",
       "Earthquake data stale (last update 3 h ago)."
     ],
@@ -107,21 +114,35 @@
     "forecast_window_end": "2026-10-18T23:00:00Z",
     "summary": "Gemini unavailable. Template briefing built from current site data.",
     "risk_level": "high",
-    "risk_score": 7.6,
-    "data_completeness": 0.71,
+    "risk_score": 6.1,
+    "data_completeness": 0.0,
     "hazards": [
       {
-        "hazard": "Heat index 108 °F",
-        "points": 1.5,
+        "hazard": "Lightning stop-work (simulated)",
+        "points": 3.0,
         "evidence_ids": [
-          "obs-fc-1"
+          "alert-ltg-demo"
         ]
       },
       {
-        "hazard": "Flood Watch",
+        "hazard": "Heat (simulated)",
+        "points": 1.11,
+        "evidence_ids": [
+          "obs-wx-3"
+        ]
+      },
+      {
+        "hazard": "Flooding (simulated)",
         "points": 1.0,
         "evidence_ids": [
           "obs-flood-1"
+        ]
+      },
+      {
+        "hazard": "Wildlife (simulated confirmed report)",
+        "points": 1.0,
+        "evidence_ids": [
+          "report-wildlife-1"
         ]
       }
     ],
@@ -136,21 +157,46 @@
     ],
     "evidence": [
       {
-        "id": "obs-fc-1",
-        "kind": "observation",
-        "label": "Forecast heat index 108 °F",
-        "observed_at": null
+        "id": "alert-ltg-demo",
+        "kind": "score_factor",
+        "label": "Lightning stop-work active, latest qualifying strike 4.2 mi; feed coverage unknown [simulated; not live coverage]",
+        "observed_at": "2026-10-17T17:57:00Z"
+      },
+      {
+        "id": "obs-wx-3",
+        "kind": "score_factor",
+        "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
+        "observed_at": "2026-10-17T17:40:00Z"
       },
       {
         "id": "obs-flood-1",
+        "kind": "score_factor",
+        "label": "Flood Watch in effect (prototype weight) [simulated; not live coverage]",
+        "observed_at": "2026-10-17T16:30:00Z"
+      },
+      {
+        "id": "report-wildlife-1",
+        "kind": "score_factor",
+        "label": "Confirmed crew report: wildlife",
+        "observed_at": "2026-10-17T15:50:00Z"
+      },
+      {
+        "id": "obs-fc-1",
         "kind": "observation",
-        "label": "Flood Watch",
+        "label": "Simulated forecast temperature 95 °F",
+        "observed_at": null
+      },
+      {
+        "id": "obs-fc-2",
+        "kind": "observation",
+        "label": "Forecast thunderstorm chance 70% after 14:00",
         "observed_at": null
       }
     ],
     "unknowns": [
-      "Hurricane feed unavailable.",
-      "Earthquake data stale."
+      "Simulated fixture: no current live feed coverage. The index demonstrates rules-0.2 arithmetic, not verified current conditions.",
+      "Hurricane feed unavailable at generation time.",
+      "Earthquake data stale (last update 3 h ago)."
     ],
     "generated_by": "fallback",
     "created_at": "2026-10-17T18:00:00Z"

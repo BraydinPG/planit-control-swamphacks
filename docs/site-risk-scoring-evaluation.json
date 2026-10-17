@@ -1114,9 +1114,9 @@
   ],
   "existing_demo_fixture": {
     "path": "frontend/src/fixtures/site-detail.json",
-    "archived_illustrative_score": 7.6,
-    "recomputed_index": 5.0,
-    "note": "Archived illustrative display fixtures are unchanged; not rules-0.2 live scores."
+    "archived_illustrative_score": 6.1,
+    "recomputed_index": 6.1,
+    "note": "Simulated rules-0.2 fixture recomputed with the same algorithm; not a live score or operational validation."
   },
   "canonical_examples": {
     "no_evidence": {
@@ -1353,8 +1353,8 @@
     },
     "existing_demo_detail_recomputed": {
       "site_id": "site-demo-everglades",
-      "risk_score": 5.0,
-      "risk_level": "moderate",
+      "risk_score": 6.1,
+      "risk_level": "high",
       "factor_contributions": [
         {
           "factor": "lightning",
@@ -1370,25 +1370,25 @@
         },
         {
           "factor": "heat_index",
-          "label": "Heat index unknown (no qualified direct metric or co-timed station/grid temperature-humidity pair)",
-          "contribution": 0.0,
-          "value": null,
-          "unit": null,
+          "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
+          "contribution": 1.11,
+          "value": 112.0,
+          "unit": "°F",
           "source": "NWS",
-          "observed_at": null,
-          "data_state": "unavailable",
+          "observed_at": "2026-10-17T17:40:00Z",
+          "data_state": "simulated",
           "is_prototype": true,
-          "evidence_id": null
+          "evidence_id": "obs-wx-3"
         },
         {
           "factor": "flood",
-          "label": "Flood Watch in effect (prototype weight)",
+          "label": "Flood Watch in effect (prototype weight) [simulated; not live coverage]",
           "contribution": 1.0,
           "value": "Flood Watch",
           "unit": null,
           "source": "NWS",
           "observed_at": "2026-10-17T16:30:00Z",
-          "data_state": "observed",
+          "data_state": "simulated",
           "is_prototype": true,
           "evidence_id": "obs-flood-1"
         },
@@ -1418,7 +1418,7 @@
         },
         {
           "factor": "earthquake",
-          "label": "No qualifying earthquakes (last successful fetch 3 h ago) [stale; not live coverage]",
+          "label": "No qualifying earthquakes (last successful fetch 3 h ago) (simulated replay inputs) [stale; not live coverage]",
           "contribution": 0.0,
           "value": null,
           "unit": null,
@@ -1431,8 +1431,8 @@
       ],
       "model_version": "rules-0.2",
       "model_is_fallback": false,
-      "confidence": 0.33,
-      "data_completeness": 0.33,
+      "confidence": 0.0,
+      "data_completeness": 0.0,
       "previous_score": null,
       "created_at": "2026-10-17T18:00:00Z"
     }
