@@ -3,6 +3,7 @@
 Read this verified index first, then `AGENTS.md`, `spec.md`, `tasks.md` and relevant source. Keep this short; detailed evidence belongs in the linked guides.
 
 ## T055 checkpoint: 2026-10-17
+- Delivery: implementation `61b9263` committed and pushed to `origin/feature/nick-hazard-confirmation`; review PR #26 opened against main: https://github.com/BraydinPG/planit-control-swamphacks/pull/26. T054/T054A/T055 are ready for Rudra review; no merge or deployment performed.
 - Same `feature/nick-hazard-confirmation` branch: T054 crew-hazard confirmation now atomically persists a refreshed deterministic site score with the report/notice/audits. Scoring failure rolls back confirmation; absent review and instruction send do not refresh scores. T055 checked after acceptance; Rudra handoff: `docs/T055_IMPLEMENTATION.md`.
 - Scoring uses all confirmed-present site reports, without the UI's 50-report display limit. Existing weights, default severity, cap, evidence IDs, freshness and ML exclusion preserved. Only the reporting site's score changes; lightning/alerts/countdowns unchanged.
 - `score_site` retains default commit behavior and adds `commit=False` for caller-owned transactions; per-site PostgreSQL row lock, UUID score IDs and monotonically ordered version timestamps prevent competing/same-time refresh ambiguity. DB tables and API fields unchanged.
