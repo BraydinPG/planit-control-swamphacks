@@ -7,6 +7,7 @@ from app.schemas.common import FactorContribution, RiskLevel, Schema
 from app.schemas.hazards import HazardNotice
 from app.schemas.observations import Observation
 from app.schemas.orgs import TeamRef
+from app.schemas.outlook import EventOutlook
 from app.schemas.reports import CrewReport
 from app.schemas.scores import HazardScore
 
@@ -44,3 +45,7 @@ class SiteDetail(SiteSummary):
     alerts: list[Alert]
     reports: list[CrewReport]
     notices: list[HazardNotice] = []
+    event_outlook: EventOutlook | None = Field(
+        default=None,
+        description="Advisory outlook for a supervisor-confirmed active event. Null when none.",
+    )

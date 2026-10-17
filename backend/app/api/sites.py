@@ -20,12 +20,14 @@ from sqlalchemy.orm import Session, selectinload
 from app.api.deps import get_db, get_now
 from app.db import models as db
 from app.ingestion.settings import get_ingestion_settings
+from app.outlook import EventOutlookService, event_context_from_notice, get_event_outlook_service
 from app.schemas import (
     Acknowledgement,
     Alert,
     AlertState,
     CrewReport,
     DataState,
+    EventOutlook,
     FactorContribution,
     HazardNotice,
     HazardScore,
@@ -47,6 +49,7 @@ NOTICE_LIMIT = 20
 
 DbSession = Annotated[Session, Depends(get_db)]
 Now = Annotated[datetime, Depends(get_now)]
+OutlookService = Annotated[EventOutlookService, Depends(get_event_outlook_service)]
 
 
 @router.get("", response_model=list[SiteSummary])
@@ -69,7 +72,13 @@ def list_sites(user: AuthenticatedUser, session: DbSession) -> list[SiteSummary]
 
 
 @router.get("/{site_id}", response_model=SiteDetail)
-def get_site(site_id: str, user: AuthenticatedUser, session: DbSession, now: Now) -> SiteDetail:
+def get_site(
+    site_id: str,
+    user: AuthenticatedUser,
+    session: DbSession,
+    now: Now,
+    outlooks: OutlookService,
+) -> SiteDetail:
     visible = _visible_site_ids(session, user)
     if visible is not None and site_id not in visible:
         raise HTTPException(status_code=403, detail="This site is not assigned to your team")
@@ -80,8 +89,10 @@ def get_site(site_id: str, user: AuthenticatedUser, session: DbSession, now: Now
         raise HTTPException(status_code=404, detail="Site not found")
     score = _latest_scores(session, site_id).get(site_id)
     alerts = load_active_alerts(session, site_id)
+    summary = _summary(site, score, len(alerts))
+    notices = _notices(session, site)
     return SiteDetail(
-        **_summary(site, score, len(alerts)).model_dump(),
+        **summary.model_dump(),
         location_type=site.location_type,
         source=site.source,
         region=site.region,
@@ -89,8 +100,26 @@ def get_site(site_id: str, user: AuthenticatedUser, session: DbSession, now: Now
         score=_score(score) if score else None,
         alerts=alerts,
         reports=load_reports(session, site_id),
-        notices=_notices(session, site),
+        notices=notices,
+        event_outlook=_event_outlook(outlooks, summary, notices, now),
     )
+
+
+def _event_outlook(
+    outlooks: EventOutlookService,
+    site: SiteSummary,
+    notices: list[HazardNotice],
+    now: datetime,
+) -> EventOutlook | None:
+    """T050 advisory for the newest confirmed flood notice covering the site, else None.
+
+    Computed after the score and alerts and never fed back into them.
+    """
+    for notice in sorted(notices, key=lambda n: n.confirmed_at or n.created_at, reverse=True):
+        context = event_context_from_notice(notice, site, now)
+        if context is not None:
+            return outlooks.outlook(site, context)
+    return None
 
 
 def _visible_site_ids(session: Session, user: CurrentUser) -> set[str] | None:
