@@ -18,7 +18,7 @@
 - Only T030 checkbox changed after its done criterion passed; T031/T032/T063 and every other state preserved.
 - No auth/backend/shared type/fixture JSON/ML/manifest/lockfile edits; no new project dependencies.
 - Cross-scope authorization, all changed paths and Nick handoff: `docs/CROSS_SCOPE_CHANGES.md`; fixture commands/limits: `frontend/SHELL.md`.
-- Implementation commit/review PR: T030 checkpoint in this branch, pending publication for Nick review; no merge authorized.
+- Implementation: `9d94f75e78b33c1a73d31ed2d35e02138ecf5785`; PR #16 open for Nick (`n1ckbown`) review: https://github.com/BraydinPG/planit-control-swamphacks/pull/16 (not merged).
 - Existing offline ML preview remains `python -m ml.worker_preview` (T087); combined 2.1.0 callable/contracts unchanged.
 - Prior ML source snapshot: 2026-10-17T07:18:48.564672Z, 50 sites/150 replay outputs; environmental evidence 2/50, notices 10/50.
 - Next unblocked task: Nick T031 (T006/T007 checked), before T032 crew home. T063 remains a later integration task.

@@ -66,5 +66,14 @@
   "limits": [
     "Preview workspace selection is not authentication",
     "No site list/detail, score factors, alert controls, report writes, briefings or API integration delivered"
-  ]
+  ],
+  "implementation_commit": "9d94f75e78b33c1a73d31ed2d35e02138ecf5785",
+  "review_pr": {
+    "number": 16,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/16",
+    "state": "open",
+    "base": "main",
+    "requested_reviewer": "n1ckbown",
+    "merged": false
+  }
 }

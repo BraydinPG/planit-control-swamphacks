@@ -35,4 +35,4 @@ Limits: the app shell remains a demonstration. Preview workspace selection grant
 
 Next owner work: **Nick T031**, prerequisites T006/T007 checked. T032 then needs T030 and T031. Rudra's T050 and API integration remain separate; Braydin's Auth0 module requires T066 wiring before the application can claim an authenticated session. Review the main fixture score wording with Rudra before any future scoring display; do not change or approve ML semantics through this shell.
 
-Implementation checkpoint / review PR: pending publication; resolve the T030 implementation commit in this branch. Nick is the requested reviewer; Rudra coordinates merge after review.
+Implementation checkpoint: `9d94f75e78b33c1a73d31ed2d35e02138ecf5785`. Review PR: [#16](https://github.com/BraydinPG/planit-control-swamphacks/pull/16), open against `main`; review requested from verified Nick handle `n1ckbown`. No acceptance by Nick or merge is claimed. Rudra coordinates merge after review.
