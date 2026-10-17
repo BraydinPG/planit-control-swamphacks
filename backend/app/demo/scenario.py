@@ -71,6 +71,8 @@ DEMO_SITE_ID = "demo-everglades"
 WILDLIFE_REPORT_ID = "demo-report-wildlife"
 WILDLIFE_NOTICE_ID = "demo-notice-wildlife"
 FLOOD_NOTICE_ID = "demo-notice-flood"
+FLASH_FLOOD_NOTICE_ID = "demo-notice-flash-flood"
+FLASH_FLOOD_ALERT_ID = "demo-nws-flash-flood-warning"
 FLOOD_ALERT_ID = "demo-nws-flood-warning"
 CREW_MEMBERSHIP_ID = "demo-membership-crew"
 SUPERVISOR_MEMBERSHIP_ID = "demo-membership-supervisor"
@@ -379,12 +381,53 @@ def _flood_notice(session: Session, accounts: DemoAccounts, now: datetime) -> No
                 EvidenceKind.OBSERVATION,
                 f"NWS Flood Warning ({SIMULATED})",
                 now - timedelta(hours=3, minutes=5),
-            )
+            ),
+            # T050A: the outlook conditions on a trusted event start, never on the
+            # notice's creation or the warning's issue time.
+            _evidence(
+                f"{FLOOD_NOTICE_ID}:start",
+                EvidenceKind.EVENT_START,
+                f"Flood began ({SIMULATED})",
+                now - timedelta(hours=2, minutes=50),
+            ),
         ],
     )
     session.add(notice)
     session.flush()
     _deliver(session, notice, accounts, created)
+
+    # A second, separate event: a Flash Flood is its own target with its own model.
+    flash = db.HazardNotice(
+        id=FLASH_FLOOD_NOTICE_ID,
+        hazard_label=HAZARD_LABELS[ReportCategory.FLOODING],
+        source=NoticeSource.FEED,
+        source_ref=FLASH_FLOOD_ALERT_ID,
+        lat=SITE_LAT,
+        lon=SITE_LON,
+        radius_miles=DEFAULT_RADIUS_MILES[ReportCategory.FLOODING],
+        radius_source=RadiusSource.DEFAULT,
+        status=NoticeStatus.CONFIRMED,
+        created_at=now - timedelta(minutes=45),
+        confirmed_by=accounts.supervisor_user_id,
+        confirmed_at=now - timedelta(minutes=35),
+        evidence=[
+            _evidence(
+                FLASH_FLOOD_ALERT_ID,
+                EvidenceKind.OBSERVATION,
+                f"NWS Flash Flood Warning ({SIMULATED})",
+                now - timedelta(minutes=70),
+            ),
+            _evidence(
+                f"{FLASH_FLOOD_NOTICE_ID}:start",
+                EvidenceKind.EVENT_START,
+                f"Flash flooding began ({SIMULATED})",
+                now - timedelta(minutes=65),
+            ),
+        ],
+    )
+    session.add(flash)
+    session.flush()
+    _deliver(session, flash, accounts, flash.created_at)
 
 
 def _deliver(
@@ -455,7 +498,9 @@ def _remove_previous(session: Session, accounts: DemoAccounts) -> None:
     session.execute(
         delete(db.HazardNotice).where(
             or_(
-                db.HazardNotice.id.in_([WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID]),
+                db.HazardNotice.id.in_(
+                    [WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID, FLASH_FLOOD_NOTICE_ID]
+                ),
                 db.HazardNotice.source_ref.in_(report_ids),
             )
         )

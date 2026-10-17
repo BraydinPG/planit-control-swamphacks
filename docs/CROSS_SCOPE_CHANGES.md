@@ -373,3 +373,13 @@ factors keep their points in briefing hazards; incomplete-evidence unknowns) and
 backend). Presentation helper `frontend/src/components/data/evidence.ts` and the site
 factor breakdown in `ConnectedPages.tsx` (Claude's redesign files). No schema, contract,
 weight or scorer change. Details: SITE_SCORING_INTEGRATION.md.
+
+### 2026-10-17 — Rudra/Claude: T050A multi-event outlooks (contract published)
+
+Explicit request to connect Cache's PR #39 adapter to the site API and UI. Additive contract
+`SiteDetail.event_outlooks` + `EvidenceKind.event_start` (docs/EVENT_OUTLOOKS_API.md); the
+singular `event_outlook` is kept. Focused edits outside Rudra's paths: frontend
+`live-read-validation.ts` (Codex: tolerant card checks), `demo/client.ts` and
+`tests/mock-service.ts` (default `event_outlooks: []`), new `EventOutlooks.tsx` and its
+placement on site detail (Claude). No `ml/**`, score, alert, auth or DB-schema change; notice
+evidence is existing JSON. Cache/Codex: please review the contract before live testing.

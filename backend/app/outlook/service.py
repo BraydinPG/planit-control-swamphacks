@@ -34,6 +34,12 @@ class EventOutlookService:
         self._lock = Lock()
 
     def outlook(self, site: SiteLike, event_context: dict[str, Any]) -> EventOutlook:
+        if not event_context.get("event_start_utc"):
+            return unavailable(
+                event_context,
+                "Actual event start is unavailable. A notice or warning creation time is "
+                "not used as the event start.",
+            )
         predictor = self._get_predictor()
         if predictor is None:
             return unavailable(event_context, self._load_error or "model unavailable")

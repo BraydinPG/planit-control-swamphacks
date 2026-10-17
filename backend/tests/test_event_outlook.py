@@ -58,6 +58,14 @@ OK_RESULT = {
 }
 
 
+START = {
+    "id": "notice-flood:start",
+    "kind": "event_start",
+    "label": "Flood began (observed)",
+    "observed_at": NOW - timedelta(hours=3),
+}
+
+
 def notice(status="confirmed", label="flooding", confirmed_minutes_ago=30, **extra):
     fields = dict(
         id="notice-flood",
@@ -70,6 +78,8 @@ def notice(status="confirmed", label="flooding", confirmed_minutes_ago=30, **ext
         radius_source="default",
         status=status,
         created_at=NOW - timedelta(hours=2),
+        # Trusted event start (T050A); created_at is never used as the start.
+        evidence=[START],
     )
     if status == "confirmed":
         fields |= dict(
@@ -104,7 +114,9 @@ def test_only_confirmed_flood_notices_build_a_context(candidate) -> None:
 
 
 def test_simulated_evidence_marks_a_historical_replay() -> None:
-    simulated = notice(evidence=[{"id": "e", "kind": "observation", "label": "Flood (simulated)"}])
+    simulated = notice(
+        evidence=[START, {"id": "e", "kind": "observation", "label": "Flood (simulated)"}]
+    )
     context = event_context_from_notice(simulated, SITE, NOW)
     assert context["event_status"] == "historical_replay"
     assert context["is_simulated"] is True
@@ -243,7 +255,7 @@ def seed(session: Session, with_flood_notice: bool) -> None:
                 created_at=n.created_at,
                 confirmed_by=n.confirmed_by,
                 confirmed_at=n.confirmed_at,
-                evidence=[],
+                evidence=[{**START, "observed_at": START["observed_at"].isoformat()}],
             )
         )
     session.commit()
