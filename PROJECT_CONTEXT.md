@@ -3,6 +3,7 @@
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
 ## Demo score and prediction failure fixes - 2026-10-17
+- [PR44](https://github.com/BraydinPG/planit-control-swamphacks/pull/44) is open for review against main; implementation `9ae6866`, reviewed-main merge `07c71db`. No automatic merge or operational enablement.
 - Explicit Cache bug-fix assignment on `feature/cache-demo-score-prediction-fixes`, initially main `0a0d5c8`; reviewed main `3272930` incorporated with team/species and supervisor changes preserved. Authorized Rudra-path changes are in `docs/CROSS_SCOPE_CHANGES.md`; no scoring algorithm/weights, ML, Auth0, DB configuration or canonical schema edits by Cache.
 - `backend/scripts/generate_fixtures.py` calls existing `compute_score`: Everglades **6.1/10 high, rules-0.2**, from simulated lightning 3.0 + heat 1.11 + Flood Watch 1.0 + confirmed wildlife 1.0, rounded by the scorer. T069 weather inputs reused; no ML term. List/detail/both briefings agree; live completeness 0 is explicitly incomplete. See `docs/SITE_RISK_SCORING.md`.
 - Six outlook cards retain replay/historical/unavailable meanings and original EIA reference provenance. Frontend validates nested forecasts before rendering; backend contains conversion failures per event. Missing/duplicate outputs remain visible unavailable cards; score/alerts stay intact.
