@@ -21,9 +21,9 @@ export interface AttentionItem {
 const categoryNames: Record<CrewReport['category'], string> = {
   broken_pole_downed_line: 'broken pole or downed line',
   on_site_fire: 'on-site fire',
-  access_mat_deterioration: 'access mat deterioration',
   wildlife: 'wildlife',
   flooding: 'flooding',
+  access_mat_deterioration: 'access mat deterioration',
   other: 'other hazard',
 }
 const ruleNames: Record<string, string> = {

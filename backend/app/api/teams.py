@@ -10,6 +10,7 @@
   organization. Codes look like `XXXX-XXXX` and expire after seven days.
 - `DELETE /api/join-codes/{code}`: a supervisor revokes one of their organization's codes.
   People who already joined keep their membership.
+- `PATCH /api/organization`: a supervisor renames their organization.
 - `POST /api/teams`, `PATCH /api/teams/{team_id}`, `DELETE /api/teams/{team_id}`: a
   supervisor adds, renames, moves (site), or removes teams in their organization. A site
   has at most one team; a team with members can't be removed.
@@ -34,6 +35,7 @@ from app.schemas import (
     JoinCode,
     JoinRequest,
     OrganizationTeams,
+    OrganizationUpdate,
     TeamCreate,
     TeamMember,
     TeamRoster,
@@ -109,6 +111,17 @@ def team(user: Supervisor, session: DbSession, now: Now) -> OrganizationTeams:
         supervisors=[_member(m) for m in members if m.role == "supervisor"],
         teams=[_roster(t, members, codes, now) for t in teams],
     )
+
+
+@router.patch("/api/organization", response_model=OrganizationTeams)
+def rename_organization(
+    body: OrganizationUpdate, user: Supervisor, session: DbSession, now: Now
+) -> OrganizationTeams:
+    membership = _organization_of(session, user)
+    membership.organization.name = body.name.strip()
+    audit(session, user.sub, "organization.rename", membership.organization_id, now)
+    session.commit()
+    return team(user, session, now)
 
 
 @router.post("/api/teams", response_model=TeamRoster, status_code=201)

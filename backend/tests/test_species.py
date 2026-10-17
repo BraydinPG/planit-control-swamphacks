@@ -633,3 +633,10 @@ def test_species_context_never_changes_score_alerts_or_reports(client: TestClien
 def test_route_is_get_only(client: TestClient) -> None:
     for method in ("post", "put", "patch", "delete"):
         assert getattr(client, method)("/api/sites/site-a/species").status_code == 405
+
+
+def test_recorded_demo_gemini_response_passes_the_grounding_check() -> None:
+    recorded = json.loads((FIXTURES / "gemini_species_everglades.json").read_text("utf-8"))
+    accepted = word_species(facts(), client=gemini(recorded["response"]))
+    assert accepted is not None
+    assert len(accepted) == len(recorded["response"]["species"])

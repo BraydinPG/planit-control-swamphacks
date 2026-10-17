@@ -387,3 +387,34 @@ test('the live client sends team changes to the team routes', async () => {
     'DELETE /api/teams/team%3A1 ',
   ])
 })
+
+test('supervisors rename their organization (demo and live)', async () => {
+  const demo = new DemoClient(() => 'supervisor', storage())
+  assert.equal(
+    (await demo.renameOrganization(' Gator Power ')).organization_name,
+    'Gator Power',
+  )
+  await assert.rejects(
+    () => new DemoClient(() => 'crew', storage()).renameOrganization('X'),
+    (e) => e.status === 403,
+  )
+  const calls = []
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(`${options.method} ${new URL(url).pathname} ${options.body}`)
+      return Response.json({
+        organization_id: 'org-1',
+        organization_name: 'Gator Power',
+        supervisors: [],
+        teams: [],
+      })
+    },
+  )
+  assert.equal(
+    (await api.renameOrganization('Gator Power')).organization_name,
+    'Gator Power',
+  )
+  assert.deepEqual(calls, ['PATCH /api/organization {"name":"Gator Power"}'])
+})

@@ -52,6 +52,8 @@ export interface Client {
   revokeJoinCode(code: string): Promise<void>
   /** Crew account with no team joins the team behind a code. */
   join(code: string): Promise<Account>
+  /** Supervisor: rename their organization. */
+  renameOrganization(name: string): Promise<OrganizationTeams>
   /** Supervisor: add, rename or move (site), and remove teams in their organization. */
   createTeam(input: TeamCreate): Promise<TeamRoster>
   updateTeam(id: string, input: TeamUpdate): Promise<TeamRoster>

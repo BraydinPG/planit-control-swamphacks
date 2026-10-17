@@ -531,6 +531,11 @@ export class DemoClient implements Client {
       })
     return site
   }
+  async renameOrganization(name: string) {
+    this.supervisor()
+    this.roster.organization_name = name.trim()
+    return this.team()
+  }
   async createTeam(input: TeamCreate) {
     this.supervisor()
     const site = this.freeSite(input.site_id, null)
