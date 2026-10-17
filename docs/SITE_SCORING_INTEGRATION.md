@@ -205,7 +205,16 @@ report unchanged, confirmation 3.0→4.0, rejected/absent unchanged, lightning 7
 feed outage held at 7.0 with completeness 0. Results: 727 backend, 108 frontend tests,
 Ruff, lint, build and `check-shell.mjs` pass.
 
-Not verified here: a running backend with the approved `.env` against Tiger Data and
-real Auth0 sign-in. No backend was running locally, and seeding T069 rewrites the
-shared demo rows, so that run needs an owner go-ahead. Check `model_version` in
-`GET /api/sites` reads `rules-0.2` to confirm the server is the merged scorer.
+Real Tiger Data check (owner-approved, 2026-10-17 17:09 UTC): this branch's
+`python -m app.demo seed` ran against the configured `DATABASE_URL` (demo rows only
+replaced; demo accounts linked). Read-only queries then showed: latest demo score rows
+7.1 high, completeness 0, `rules-0.2` (the only model_version stored); the API's own
+summary code returns the same 7.1/high/`rules-0.2` with 1 active alert; the stored
+briefing is 7.1 with hazard points summing to 7.1 and the new incomplete-evidence
+unknown; 256 of 257 sites have no score row, so they show "Not scored yet".
+This branch's backend started against that configuration: `/health` ok, anonymous
+`/api/sites` 401. **Authenticated HTTP reads are blocked**: `AUTH0_DOMAIN` and
+`AUTH0_AUDIENCE` are present but empty in `backend/.env`, so every bearer token gets
+503 "Auth0 is not configured" (correctly). `NWS_USER_AGENT` is also empty, so live
+weather ingestion was not run. Braydin's Auth0 values are needed before a signed-in
+browser check of list/detail/refresh/confirmation through the real API.
