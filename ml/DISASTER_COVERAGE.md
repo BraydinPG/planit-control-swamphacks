@@ -92,7 +92,7 @@ Counts below describe downloaded records, not a complete national inventory. `un
 |---|---:|---:|---|---|
 | [NHC Atlantic tracks/advisories](https://www.nhc.noaa.gov/data/) | 13,836 | 459 | real data retrieved | Post-analysis tracks; issued advisories are a small probe, not an operational training cohort. |
 | [Observed station heat/wind](https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database) | 122,270 | 416 | real data retrieved | Rounded station observations; original availability/QC vintages absent. |
-| [NIFC historical perimeters](https://data-nifc.opendata.arcgis.com/) | 191 | 177 | real data retrieved | Perimeters do not reconstruct containment or as-of progression. |
+| [NIFC historical perimeters](https://data-nifc.opendata.arcgis.com/) | 191 | 177 | real data retrieved | 191 perimeter attribute records (geometry not retrieved) do not reconstruct containment or as-of progression. |
 | [USGS gauge feasibility](https://api.waterdata.usgs.gov/docs/ogcapi/) | 97 | unknown | real data retrieved | Gauge datum/basin/site transfer not validated. |
 | [NWS captured environmental evidence](https://www.weather.gov/documentation/services-web-API) | 316 | unknown | real data retrieved | Descriptive evidence only; no learned site probability or original historical vintage reconstructed. |
 | [COOPS captured environmental evidence](https://api.tidesandcurrents.noaa.gov/api/prod/) | 1,439 | unknown | real data retrieved | Descriptive evidence only; no learned site probability or original historical vintage reconstructed. |
@@ -101,7 +101,8 @@ Counts below describe downloaded records, not a complete national inventory. `un
 | [NDBC captured environmental evidence](https://www.ndbc.noaa.gov/measdes.shtml) | 6,390 | unknown | real data retrieved | Descriptive evidence only; no learned site probability or original historical vintage reconstructed. |
 | [EIA-860M representative location metadata](https://www.eia.gov/electricity/data/eia860m/) | 28,379 | 14,700 | real data retrieved | 50 validated locations exported for the research harness; no backend database import or active-worksite verification. |
 | [NASA FIRMS](https://firms.modaps.eosdis.nasa.gov/) | unknown | unknown | fixture tested, not retrieved | Thermal anomalies are not containment or a complete fire perimeter. |
-| [EPA AirNow/AQS](https://docs.airnowapi.org/) | unknown | unknown | fixture tested, not retrieved | AirNow preliminary data and reporting areas do not establish on-site exposure; AQS is a distinct regulatory archive. |
+| [EPA AirNow reporting-area API](https://docs.airnowapi.org/) | unknown | unknown | fixture tested, not retrieved | Fixture-tested parser only; preliminary reporting-area data do not establish on-site exposure. |
+| [EPA AQS regulatory archive](https://www.epa.gov/aqs) | unknown | unknown | identified only | Identified only: no AQS records retrieved or adapter tested; regulatory observations do not establish site exposure. |
 | [NWPS river forecasts](https://water.noaa.gov/) | unknown | unknown | identified only | Flood stage is gauge/datum specific; no automatic site inundation mapping. |
 | [USGS landslide inventories](https://www.usgs.gov/programs/landslide-hazards) | unknown | unknown | identified only | Susceptibility/occurrence inventories lack validated local future labels in this package. |
 | [NOAA tsunami history/warnings](https://www.ncei.noaa.gov/products/natural-hazards/tsunamis-earthquakes-volcanoes/tsunamis) | unknown | unknown | identified only | Historical occurrence is not an issued site warning or evacuation forecast. |

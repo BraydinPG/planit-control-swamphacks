@@ -5093,7 +5093,7 @@
       "availability": "mixed_observed_issued_or_retrospective; per-evidence gate authoritative",
       "outcome_label_validity": "No new learned local target validated",
       "gaps": [
-        "Perimeters do not reconstruct containment or as-of progression."
+        "191 perimeter attribute records (geometry not retrieved) do not reconstruct containment or as-of progression."
       ],
       "supported_targets": [],
       "evidence_feed_status": "captured_or_investigated",
@@ -5101,7 +5101,7 @@
       "validation_gate_outcome": "not_a_new_predictive_validation",
       "integration_status": "independent ML harness only",
       "limitations": [
-        "Perimeters do not reconstruct containment or as-of progression."
+        "191 perimeter attribute records (geometry not retrieved) do not reconstruct containment or as-of progression."
       ],
       "source_version": "683fb8db5ba7619cf33d5a39462b0124aa99c08b06b4a3ef17eebea9082df97b",
       "receipts": [
@@ -5213,8 +5213,8 @@
       ],
       "downloaded": true,
       "adapter_fixture_tested": true,
-      "temporal_coverage": "2026-10-17T05:42:44.000015+00:00",
-      "geographic_coverage": "Two representative EIA sites / source footprints",
+      "temporal_coverage": "Snapshot at 2026-10-17T05:42:44.000015+00:00; per-evidence valid windows; full raw span not profiled",
+      "geographic_coverage": "Two Tampa/Phoenix-area station and forecast-grid footprints",
       "record_count": 316,
       "episode_count": null,
       "independent_event_count": null,
@@ -5324,8 +5324,8 @@
       ],
       "downloaded": true,
       "adapter_fixture_tested": true,
-      "temporal_coverage": "2026-10-17T05:42:44.000015+00:00",
-      "geographic_coverage": "Two representative EIA sites / source footprints",
+      "temporal_coverage": "Snapshot at 2026-10-17T05:42:44.000015+00:00; per-evidence valid windows; full raw span not profiled",
+      "geographic_coverage": "Station 8726520, St. Petersburg, Florida",
       "record_count": 1439,
       "episode_count": null,
       "independent_event_count": null,
@@ -5390,8 +5390,8 @@
       ],
       "downloaded": true,
       "adapter_fixture_tested": true,
-      "temporal_coverage": "2026-10-17T05:42:44.000015+00:00",
-      "geographic_coverage": "Two representative EIA sites / source footprints",
+      "temporal_coverage": "Snapshot at 2026-10-17T05:42:44.000015+00:00; per-evidence valid windows; full raw span not profiled",
+      "geographic_coverage": "Global catalog query, minimum magnitude 4",
       "record_count": 20,
       "episode_count": null,
       "independent_event_count": null,
@@ -5438,8 +5438,8 @@
       ],
       "downloaded": true,
       "adapter_fixture_tested": true,
-      "temporal_coverage": "2026-10-17T05:42:44.000015+00:00",
-      "geographic_coverage": "Two representative EIA sites / source footprints",
+      "temporal_coverage": "Snapshot at 2026-10-17T05:42:44.000015+00:00; per-evidence valid windows; full raw span not profiled",
+      "geographic_coverage": "Planetary Kp context, not site exposure",
       "record_count": 57,
       "episode_count": null,
       "independent_event_count": null,
@@ -5486,8 +5486,8 @@
       ],
       "downloaded": true,
       "adapter_fixture_tested": true,
-      "temporal_coverage": "2026-10-17T05:42:44.000015+00:00",
-      "geographic_coverage": "Two representative EIA sites / source footprints",
+      "temporal_coverage": "Snapshot at 2026-10-17T05:42:44.000015+00:00; per-evidence valid windows; full raw span not profiled",
+      "geographic_coverage": "Atlantic marine buoy 41009; no automatic onshore association",
       "record_count": 6390,
       "episode_count": null,
       "independent_event_count": null,
@@ -5606,11 +5606,11 @@
       "receipts": []
     },
     {
-      "canonical_name": "EPA AirNow/AQS",
+      "canonical_name": "EPA AirNow reporting-area API",
       "family": "visibility_air_quality",
       "raw_event_types": [],
       "official_source_url": "https://docs.airnowapi.org/",
-      "access": "AirNow account/key; AQS account/API key; no credentials supplied",
+      "access": "AirNow account/API key; no credentials supplied",
       "licensing": "Retain agency attribution and product-specific use terms; no key or credentials committed.",
       "maturity": [
         "source_discovered",
@@ -5629,7 +5629,7 @@
       "availability": "mixed_observed_issued_or_retrospective; per-evidence gate authoritative",
       "outcome_label_validity": "No new learned local target validated",
       "gaps": [
-        "AirNow preliminary data and reporting areas do not establish on-site exposure; AQS is a distinct regulatory archive."
+        "Fixture-tested parser only; preliminary reporting-area data do not establish on-site exposure."
       ],
       "supported_targets": [],
       "evidence_feed_status": "not_retrieved",
@@ -5637,7 +5637,43 @@
       "validation_gate_outcome": "not_a_new_predictive_validation",
       "integration_status": "independent ML harness only",
       "limitations": [
-        "AirNow preliminary data and reporting areas do not establish on-site exposure; AQS is a distinct regulatory archive."
+        "Fixture-tested parser only; preliminary reporting-area data do not establish on-site exposure."
+      ],
+      "source_version": null,
+      "receipts": []
+    },
+    {
+      "canonical_name": "EPA AQS regulatory archive",
+      "family": "visibility_air_quality",
+      "raw_event_types": [],
+      "official_source_url": "https://www.epa.gov/aqs",
+      "access": "Distinct regulatory archive; API account/key not supplied",
+      "licensing": "Retain agency attribution and product-specific use terms; no key or credentials committed.",
+      "maturity": [
+        "source_discovered"
+      ],
+      "downloaded": false,
+      "adapter_fixture_tested": false,
+      "temporal_coverage": "not acquired",
+      "geographic_coverage": "source-dependent",
+      "record_count": null,
+      "episode_count": null,
+      "independent_event_count": null,
+      "group_definition": "Distinct source IDs/clusters where reported; independence not established",
+      "spatial_resolution": "Station / forecast polygon / regional / global, explicitly per evidence",
+      "temporal_resolution": "Provider-specific; see receipts and evidence windows",
+      "availability": "mixed_observed_issued_or_retrospective; per-evidence gate authoritative",
+      "outcome_label_validity": "No new learned local target validated",
+      "gaps": [
+        "Identified only: no AQS records retrieved or adapter tested; regulatory observations do not establish site exposure."
+      ],
+      "supported_targets": [],
+      "evidence_feed_status": "not_retrieved",
+      "model_availability": "see existing per-target model registry; no new learned model",
+      "validation_gate_outcome": "not_a_new_predictive_validation",
+      "integration_status": "independent ML harness only",
+      "limitations": [
+        "Identified only: no AQS records retrieved or adapter tested; regulatory observations do not establish site exposure."
       ],
       "source_version": null,
       "receipts": []

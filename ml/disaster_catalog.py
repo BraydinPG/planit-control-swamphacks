@@ -265,7 +265,7 @@ def build_catalog() -> dict:
             "2021-2024 in requested sample",
             "Legacy layer subset, not complete national incidents",
             "Public ArcGIS layer; honor per-layer use terms",
-            "Perimeters do not reconstruct containment or as-of progression.",
+            "191 perimeter attribute records (geometry not retrieved) do not reconstruct containment or as-of progression.",
         ),
         (
             "USGS gauge feasibility",
@@ -333,12 +333,37 @@ def build_catalog() -> dict:
             )
         entries.append(entry)
     snapshot = json.loads((REPORT_DIR / "worker_outlook/feed_snapshot.json").read_text())
-    for prefix, family, url in (
-        ("NWS_", "wind_convective", "https://www.weather.gov/documentation/services-web-API"),
-        ("COOPS_", "coastal_ocean", "https://api.tidesandcurrents.noaa.gov/api/prod/"),
-        ("USGS_earthquakes", "earthquake", "https://earthquake.usgs.gov/fdsnws/event/1/"),
-        ("SWPC_", "space_weather", "https://www.swpc.noaa.gov/products/planetary-k-index"),
-        ("NDBC_", "coastal_ocean", "https://www.ndbc.noaa.gov/measdes.shtml"),
+    for prefix, family, url, geographic_scope in (
+        (
+            "NWS_",
+            "wind_convective",
+            "https://www.weather.gov/documentation/services-web-API",
+            "Two Tampa/Phoenix-area station and forecast-grid footprints",
+        ),
+        (
+            "COOPS_",
+            "coastal_ocean",
+            "https://api.tidesandcurrents.noaa.gov/api/prod/",
+            "Station 8726520, St. Petersburg, Florida",
+        ),
+        (
+            "USGS_earthquakes",
+            "earthquake",
+            "https://earthquake.usgs.gov/fdsnws/event/1/",
+            "Global catalog query, minimum magnitude 4",
+        ),
+        (
+            "SWPC_",
+            "space_weather",
+            "https://www.swpc.noaa.gov/products/planetary-k-index",
+            "Planetary Kp context, not site exposure",
+        ),
+        (
+            "NDBC_",
+            "coastal_ocean",
+            "https://www.ndbc.noaa.gov/measdes.shtml",
+            "Atlantic marine buoy 41009; no automatic onshore association",
+        ),
     ):
         data = [d for d in snapshot["datasets"] if d["name"].startswith(prefix)]
         files = {d["file"] for d in data}
@@ -349,8 +374,10 @@ def build_catalog() -> dict:
                 family,
                 url,
                 "Public serial snapshot; no key",
-                snapshot["as_of_utc"],
-                "Two representative EIA sites / source footprints",
+                "Snapshot at "
+                + snapshot["as_of_utc"]
+                + "; per-evidence valid windows; full raw span not profiled",
+                geographic_scope,
                 sum(d["record_count"] or 0 for d in data),
                 None,
                 "Descriptive evidence only; no learned site probability or original historical vintage reconstructed.",
@@ -383,11 +410,18 @@ def build_catalog() -> dict:
             "Thermal anomalies are not containment or a complete fire perimeter.",
         ),
         (
-            "EPA AirNow/AQS",
+            "EPA AirNow reporting-area API",
             "visibility_air_quality",
             "https://docs.airnowapi.org/",
-            "AirNow account/key; AQS account/API key; no credentials supplied",
-            "AirNow preliminary data and reporting areas do not establish on-site exposure; AQS is a distinct regulatory archive.",
+            "AirNow account/API key; no credentials supplied",
+            "Fixture-tested parser only; preliminary reporting-area data do not establish on-site exposure.",
+        ),
+        (
+            "EPA AQS regulatory archive",
+            "visibility_air_quality",
+            "https://www.epa.gov/aqs",
+            "Distinct regulatory archive; API account/key not supplied",
+            "Identified only: no AQS records retrieved or adapter tested; regulatory observations do not establish site exposure.",
         ),
         (
             "NWPS river forecasts",
@@ -449,7 +483,7 @@ def build_catalog() -> dict:
                     "FIRMS"
                     if name == "NASA FIRMS"
                     else "AirNow"
-                    if name == "EPA AirNow/AQS"
+                    if name == "EPA AirNow reporting-area API"
                     else "none"
                 )
                 in tested_adapters,

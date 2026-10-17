@@ -1,14 +1,15 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 06:02:37; update with each relevant checkpoint.
+- UTC verification: 2026-10-17 06:40:52; update with each relevant checkpoint.
 - Working branch: `feature/cache-combined-disaster-outlooks`.
-- Base: `origin/main` at `20af37d858d3961f5a250aadb9ce94a23e710fed`.
+- Base: `origin/main` at `2bf48e9`; teammate API/DB commits preserved by clean rebase.
+- Verified implementation: `5aa49a0`; context/verification follow-up commits may follow.
 - GitHub PR #4: merged 2026-10-17, merge `cf9d3bb`; already an ancestor of main.
 - GitHub PR #6: merged 2026-10-17, merge `20af37d`; source head `28b89cf`.
 - Both merge states verified through GitHub API and local ancestry, not assumed.
 - Python: `ml/.venv/Scripts/python.exe`, 3.14.5; pinned ML dependencies exist.
-- Fresh isolated environment: 238 ML/backend tests passed, including 62 new worker checks.
+- Fresh isolated environment: 252 ML/backend tests passed, including 62 new worker checks.
 - Backend lint/format, new Python lint/format, frontend lint/typecheck/build passed.
 - Existing nine duration artifacts/reference predictions verified without refitting.
 - New PR is pending publication at this checkpoint; do not merge into main.
@@ -43,6 +44,7 @@
 - `backend/app/schemas/observations.py`: current reading/location/time shape.
 - `backend/app/schemas/sites.py`: SiteSummary and SiteDetail.
 - Existing backend Observation lacks the full issue/availability/vintage/coverage contract.
+- Main now includes Tiger Data models/schema setup and an empty seed; no EIA import yet.
 - Do not invent those missing fields from a fetched timestamp.
 - `ml/predict.py`: `predict_active_event`, legacy `predict_site` adapter.
 - `ml/backend_adapter.py`: cached `ActiveEventPredictor`, including `predict_for_site`.
@@ -95,7 +97,7 @@
 | Site wind/heat/rain | Real observed/issued evidence, matching gates | No learned local probability or worker exposure claim |
 | Earthquake | 20 catalog events; synthetic local demo | No local shaking/structural estimate |
 | Coastal/buoy/SWPC | Real probes, source/QC/association checks | No inundation/outage prediction |
-| AirNow/FIRMS | Fixture-tested only | Credentials/archive data not acquired |
+| AirNow/FIRMS | Fixture-tested only | Credentials/archive data not acquired; AQS identified only |
 | Other NOAA hazards | All 54 raw types inventoried | No added predictive dispatch |
 | Terrain/tsunami/volcano feeds | Sources identified | No issued-vintage/local-label acquisition |
 
