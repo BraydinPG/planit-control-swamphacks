@@ -52,7 +52,12 @@ export function tokenIdentity(token, role, config, now = Date.now()) {
     if (parts.length !== 3 || !parts[2]) throw new Error()
     const header = JSON.parse(Buffer.from(parts[0], 'base64url'))
     const claims = JSON.parse(Buffer.from(parts[1], 'base64url'))
-    const assigned = claims[config.rolesClaim]
+    const rawRoles = claims[config.rolesClaim]
+    const assigned = Array.isArray(rawRoles)
+      ? rawRoles
+          .filter((r) => typeof r === 'string')
+          .map((r) => r.trim().toLowerCase())
+      : null
     const audiences = Array.isArray(claims.aud) ? claims.aud : [claims.aud]
     if (
       header.alg !== 'RS256' ||
@@ -89,7 +94,13 @@ export async function runAcceptance({
   evidenceType = 'real_http',
 }) {
   const checks = []
-  const snapshots = { sites: [], details: [], alerts: [], reports: [] }
+  const snapshots = {
+    sites: [],
+    details: [],
+    alerts: [],
+    reports: [],
+    briefings: [],
+  }
   const sessions = {}
   const add = (id, status, detail) => checks.push({ id, status, detail })
   for (const [id, path, options] of [
@@ -131,12 +142,13 @@ export async function runAcceptance({
       ? 'Auth service unavailable; token validation not verified'
       : `HTTP ${invalid.status}; expected 401`,
   )
-  const guardsPassed = checks.every((c) => c.status === 'passed')
+  let guardsPassed = checks.every((c) => c.status === 'passed')
   const reportsPublished = inventory.some(
     (r) => r.path === '/api/reports' && r.method === 'get' && r.available,
   )
   if (reportsPublished) {
     const response = await request('/api/reports')
+    guardsPassed = guardsPassed && response.status === 401
     add(
       'anonymous_reports',
       response.status === 401
@@ -152,6 +164,74 @@ export async function runAcceptance({
       'blocked',
       'Report listing not published by running backend',
     )
+  // A missing optional route is blocked, not permission proof. Every published
+  // protected route must reject anonymous requests before any account token is used.
+  for (const [id, template, path, method, body] of [
+    [
+      'review',
+      '/api/reports/{report_id}/review',
+      '/api/reports/__planit_denial_probe__/review',
+      'POST',
+      { decision: 'rejected' },
+    ],
+    [
+      'confirm',
+      '/api/hazards/{hazard_id}/confirm',
+      '/api/hazards/__planit_denial_probe__/confirm',
+      'POST',
+      null,
+    ],
+    [
+      'instruction',
+      '/api/hazards/{hazard_id}/instruction',
+      '/api/hazards/__planit_denial_probe__/instruction',
+      'POST',
+      { instruction: 'Denied probe only' },
+    ],
+    [
+      'site_briefing',
+      '/api/sites/{site_id}/briefing',
+      '/api/sites/__planit_denial_probe__/briefing',
+      'GET',
+      null,
+    ],
+    ['organization_briefings', '/api/briefings', '/api/briefings', 'GET', null],
+  ]) {
+    if (
+      !inventory.some(
+        (r) =>
+          r.path === template &&
+          r.method === method.toLowerCase() &&
+          r.available,
+      )
+    ) {
+      add(
+        `anonymous_${id}`,
+        'blocked',
+        'Route not published; no missing-route denial counted as permission proof',
+      )
+      continue
+    }
+    const response = await request(path, {
+      method,
+      ...(body
+        ? {
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          }
+        : {}),
+    })
+    guardsPassed = guardsPassed && response.status === 401
+    add(
+      `anonymous_${id}`,
+      response.status === 401
+        ? 'passed'
+        : response.status === 0 || response.status === 503
+          ? 'blocked'
+          : 'failed',
+      `HTTP ${response.status}; expected 401`,
+    )
+  }
   const configured =
     readiness?.auth?.configured &&
     !readiness.auth.dev_auth_bypass &&
@@ -202,7 +282,6 @@ export async function runAcceptance({
           alerts.some((a) => !sites.some((s) => s.id === a.site_id)))
       )
         throw new Error()
-      sessions[role] = { client, identity, sites, alerts }
       snapshots.sites.push(...sites)
       snapshots.details.push(detail)
       snapshots.alerts.push(...alerts)
@@ -221,6 +300,7 @@ export async function runAcceptance({
           `${reports.length} authorized report(s) read; no report write performed`,
         )
       }
+      sessions[role] = { client, identity, sites, alerts }
       add(
         `${role}_sites`,
         'passed',
@@ -239,6 +319,59 @@ export async function runAcceptance({
           ? `HTTP ${error.status}; no fixtures substituted`
           : 'Token, response contract or authorized read failed; details suppressed',
       )
+    }
+  }
+  // T067 stored reads are independently reported; absence is not an API outage.
+  for (const role of ['crew', 'supervisor']) {
+    const session = sessions[role]
+    if (!session) {
+      add(
+        `${role}_stored_briefings`,
+        'blocked',
+        'Authorized account reads required',
+      )
+      continue
+    }
+    for (const [id, template, load] of [
+      [
+        'site_briefing',
+        '/api/sites/{site_id}/briefing',
+        () => session.client.briefing(session.sites[0].id),
+      ],
+      [
+        'organization_briefings',
+        '/api/briefings',
+        () => session.client.briefings(),
+      ],
+    ]) {
+      if (
+        !inventory.some(
+          (r) => r.path === template && r.method === 'get' && r.available,
+        )
+      ) {
+        add(`${role}_${id}`, 'blocked', 'Stored briefing route not published')
+        continue
+      }
+      try {
+        const value = await load()
+        const rows = Array.isArray(value) ? value : value ? [value] : []
+        snapshots.briefings.push(...rows)
+        add(
+          `${role}_${id}`,
+          'passed',
+          rows.length
+            ? `${rows.length} stored briefing(s) validated; content omitted`
+            : 'No stored briefing yet; scheduled empty state; no generation request sent',
+        )
+      } catch (error) {
+        add(
+          `${role}_${id}`,
+          'failed',
+          Number.isInteger(error?.status)
+            ? `HTTP ${error.status}; no fixtures substituted`
+            : 'Stored response validation failed; private details omitted',
+        )
+      }
     }
   }
   const crew = sessions.crew,
@@ -303,6 +436,47 @@ export async function runAcceptance({
         'Report review endpoint not published; 404 is not proof of role enforcement',
       )
   } else add('cross_role_scope', 'blocked', 'Both real account reads required')
+  if (crew)
+    for (const [id, template, path, body] of [
+      [
+        'confirm',
+        '/api/hazards/{hazard_id}/confirm',
+        '/api/hazards/__planit_denial_probe__/confirm',
+        null,
+      ],
+      [
+        'instruction',
+        '/api/hazards/{hazard_id}/instruction',
+        '/api/hazards/__planit_denial_probe__/instruction',
+        { instruction: 'Denied probe only' },
+      ],
+    ]) {
+      if (
+        !inventory.some(
+          (r) => r.path === template && r.method === 'post' && r.available,
+        )
+      ) {
+        add(
+          `crew_${id}_denied`,
+          'blocked',
+          'Route not published; no 404 role proof',
+        )
+        continue
+      }
+      const response = await request(path, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accounts.crew}`,
+          ...(body ? { 'Content-Type': 'application/json' } : {}),
+        },
+        ...(body ? { body: JSON.stringify(body) } : {}),
+      })
+      add(
+        `crew_${id}_denied`,
+        response.status === 403 ? 'passed' : 'failed',
+        `HTTP ${response.status}; expected supervisor-only denial before record lookup`,
+      )
+    }
   if (!allowAcknowledge)
     add(
       'acknowledgement_persistence',
@@ -350,7 +524,13 @@ export async function runAcceptance({
         if (
           !ack?.id ||
           !Number.isFinite(Date.parse(ack.acknowledged_at)) ||
-          !observer?.acknowledgements.some((a) => a.id === ack.id)
+          !observer?.acknowledgements.some(
+            (a) =>
+              a.id === ack.id &&
+              a.alert_id === ack.alert_id &&
+              a.user_id === ack.user_id &&
+              a.acknowledged_at === ack.acknowledged_at,
+          )
         )
           throw new Error()
         add(

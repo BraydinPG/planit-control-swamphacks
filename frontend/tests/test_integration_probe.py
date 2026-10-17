@@ -200,3 +200,61 @@ def test_private_token_prompt_refuses_noninteractive_echo_fallback():
     assert result.returncode == 1
     assert "Refusing an echoed token prompt" in result.stderr
     assert "Existing Auth0 crew access token" not in result.stderr
+
+
+def test_stored_briefings_use_canonical_schema_and_redact_invalid_payloads():
+    fixtures = ROOT / "frontend/src/fixtures/briefings.json"
+    rows = json.loads(fixtures.read_text(encoding="utf-8"))
+    result = probe.validate_payloads({"briefings": rows})
+    assert result["status"] == "passed"
+    assert result["counts"]["briefings"] == len(rows)
+    result = probe.validate_payloads({"briefings": [{"summary": "private-test-marker"}]})
+    assert result["status"] == "failed"
+    assert "private-test-marker" not in json.dumps(result)
+
+
+def test_explicit_configuration_root_reads_settings_without_copying_or_connecting(tmp_path):
+    configured = tmp_path / "approved-project"
+    backend = configured / "backend"
+    backend.mkdir(parents=True)
+    settings = backend / ".env"
+    content = "GEMINI_API_KEY=private-test-marker\nDEV_AUTH_BYPASS=false\n"
+    settings.write_text(content, encoding="utf-8")
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "frontend/scripts/probe-integration.py"),
+            "--configuration-root",
+            str(configured),
+        ],
+        input="{}",
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    payload = json.loads(result.stdout)
+    assert result.returncode == 0
+    assert payload["configuration"]["GEMINI_API_KEY"] == "set"
+    assert payload["database"]["status"] == "not_run"
+    assert not payload["auth"]["dev_auth_bypass"]
+    assert "private-test-marker" not in result.stdout + result.stderr
+    assert settings.read_text(encoding="utf-8") == content
+    assert set(backend.iterdir()) == {settings}
+
+
+def test_missing_configuration_root_is_redacted_and_blocked(tmp_path):
+    missing = tmp_path / "private-test-marker"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "frontend/scripts/probe-integration.py"),
+            "--configuration-root",
+            str(missing),
+        ],
+        input="{}",
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert json.loads(result.stdout)["status"] == "blocked"
+    assert "private-test-marker" not in result.stdout + result.stderr

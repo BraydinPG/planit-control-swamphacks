@@ -1,8 +1,16 @@
 # Frontend integration status
 
-Verified 2026-10-17. PR #24 merged as `f3a65a7` and T067A PR #27 merged as `1eed70e` by maintainers during this run. T065 continues on `feature/cache-report-lifecycle-integration` from reviewed main `dcd9fc5` (PR #28 scoring-history fix), targeting main with no duplicated parent diff. PR #26 (`9809db4`) and Braydin's T058A/Auth0 updates are inherited unchanged.
+Verified 2026-10-17. PR #29 is merged as `ebd6d92`; Codex functional changes now use separate worktree `C:/Users/cache/planit-control-functional`, branch `feature/cache-functional-acceptance`. Claude actively owns presentation in the primary checkout. No unmerged prerequisite PR at startup; no visual files touched. Current path/interface handoff: FUNCTIONAL_INTEGRATION_HANDOFF.md.
 
-Review: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), implementation `60ce280`, open against main. No merge or real acceptance claimed.
+Cache clarified that existing Auth0 crew/supervisor test aliases are intended for the demo. No employee/real-user records, profiles, accounts or database rows were created by Codex. Actual Auth0-backed demo behavior can satisfy integration; isolated mocked authentication cannot prove it. Local approved environment settings/sessions are still missing in both checked roots. Tenant/account existence is not inferred from missing local files; demo membership linkage remains owner setup.
+
+Current functional changes: canonical site/alert/nested evidence validation, typed acknowledgement response, all-published-route anonymous gate before account tokens, case-insensitive role metadata matching existing auth exports, crew notice denial checks, stored site/org briefing reads, full acknowledgement identity/time read-back, and read-only cross-worktree configuration selection. Source/imports stay in this worktree; private settings are never copied. No API/auth/backend/schema/fixture/dependency changes.
+
+Current checks: **68 Node**, **521 backend/probe** (511+10), lint/TypeScript, fixture/API-mode builds, Ruff and existing browser demo/mock workflows at 1440/390/320 pass. Actual ten anonymous/development-header denials return401; invalid token503 remains unverified; all11 source/running routes match, no drift. No authenticated demo mutation performed; readiness exits2. API-mode build has a chunk-size warning (531kB); no visual/composition refactor attempted. Exact evidence: functional-integration-verification.json. Historical T065 evidence remains in t065-verification.json.
+
+T063-T068 remain unchecked. T063 needs actual Auth0 demo site reads; T064 needs persisted demo ack/browser reload; T066 needs actual demo-role UI/API permissions; T065 needs actual full report lifecycle; T067 still lacks enrichment; T068 waits for those flows and Claude's integrated redesign. No task checkbox changed in this run.
+
+Review: [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30), source checkpoints `b7c8dc4` / `11806fa`, open against main at publication.
 
 ## Authorized sequence and task evidence
 

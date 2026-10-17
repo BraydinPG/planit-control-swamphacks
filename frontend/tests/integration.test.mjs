@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { createServer } from 'vite'
 import {
+  REQUIRED_ROUTES,
   origin,
   routeInventory,
   tokenIdentity,
@@ -59,6 +60,9 @@ const initialAlerts = JSON.parse(
 const reportsFixture = JSON.parse(
   await readFile(new URL('../src/fixtures/reports.json', import.meta.url)),
 )
+const briefingsFixture = JSON.parse(
+  await readFile(new URL('../src/fixtures/briefings.json', import.meta.url)),
+)
 function harness(overrides = {}, sourceAlerts = initialAlerts) {
   const accounts = { crew: jwt('crew'), supervisor: jwt('supervisor') },
     calls = []
@@ -74,6 +78,11 @@ function harness(overrides = {}, sourceAlerts = initialAlerts) {
       role,
     })
     if (!role) return new Response('', { status: 401 })
+    if (pathname === '/api/briefings') return Response.json(briefingsFixture)
+    if (pathname.endsWith('/briefing'))
+      return Response.json(briefingsFixture[0])
+    if (pathname.startsWith('/api/hazards/'))
+      return new Response('', { status: role === 'crew' ? 403 : 404 })
     if (pathname === '/api/sites')
       return Response.json(role === 'crew' ? [fixtures[0]] : fixtures)
     if (pathname === '/api/reports')
@@ -324,4 +333,139 @@ test('accepting an invalid bearer token prevents sending real account credential
   assert.equal(byId(result, 'invalid_token').status, 'failed')
   assert.equal(byId(result, 'crew_session').status, 'blocked')
   assert(!h.calls.some((c) => c.role))
+})
+
+const publishedInventory = () =>
+  routeInventory(
+    REQUIRED_ROUTES.reduce((paths, [path, method]) => {
+      ;(paths[path] ??= {})[method] = {}
+      return paths
+    }, {}),
+  )
+
+test('a late anonymous-report success blocks all account-token use and acknowledgement writes', async () => {
+  const h = harness({
+    inventory: publishedInventory(),
+    allowAcknowledge: true,
+    alertId: 'alert-ltg-demo',
+  })
+  const request = h.options.request
+  h.options.request = (path, options) =>
+    path === '/api/reports'
+      ? Promise.resolve({ status: 200 })
+      : request(path, options)
+  const r = await runAcceptance(h.options)
+  assert.equal(byId(r, 'anonymous_reports').status, 'failed')
+  assert.equal(byId(r, 'crew_session').status, 'blocked')
+  assert.equal(byId(r, 'acknowledgement_persistence').status, 'blocked')
+  assert(!h.calls.some((c) => c.role))
+})
+
+test('every published protected briefing/review/notice route must reject anonymously before account tokens are used', async () => {
+  for (const [fragment, id] of [
+    ['/review', 'review'],
+    ['/confirm', 'confirm'],
+    ['/instruction', 'instruction'],
+    ['/briefing', 'site_briefing'],
+    ['/api/briefings', 'organization_briefings'],
+  ]) {
+    for (const status of [200, 503]) {
+      const h = harness({ inventory: publishedInventory() }),
+        request = h.options.request
+      h.options.request = (path, options) =>
+        path.endsWith(fragment)
+          ? Promise.resolve({ status })
+          : request(path, options)
+      const r = await runAcceptance(h.options)
+      assert.equal(
+        byId(r, `anonymous_${id}`).status,
+        status === 200 ? 'failed' : 'blocked',
+      )
+      assert.equal(byId(r, 'crew_session').status, 'blocked')
+      assert(!h.calls.some((c) => c.role))
+    }
+  }
+})
+
+test('access-token metadata honors the existing case-insensitive role contract, without replacing server verification', () => {
+  assert.equal(
+    tokenIdentity(
+      jwt('crew', { [config.rolesClaim]: [' Crew '] }),
+      'crew',
+      config,
+    ).role,
+    'crew',
+  )
+  assert.throws(() =>
+    tokenIdentity(
+      jwt('crew', { [config.rolesClaim]: ['Crew', 'SUPERVISOR'] }),
+      'crew',
+      config,
+    ),
+  )
+})
+
+test('published stored briefings and crew notice denials use existing HTTP client; no successful report or generation writes', async () => {
+  const h = harness({ inventory: publishedInventory() }),
+    r = await runAcceptance(h.options)
+  for (const role of ['crew', 'supervisor'])
+    for (const id of ['site_briefing', 'organization_briefings'])
+      assert.equal(byId(r, `${role}_${id}`).status, 'passed')
+  for (const id of [
+    'crew_review_denied',
+    'crew_confirm_denied',
+    'crew_instruction_denied',
+  ])
+    assert.equal(byId(r, id).status, 'passed')
+  assert(r.snapshots.briefings.length > 0)
+  assert(
+    !h.calls.some(
+      (c) =>
+        c.method === 'POST' &&
+        (c.path === '/api/reports' || c.path.includes('briefing')),
+    ),
+  )
+  assert(!JSON.stringify(r.report).includes('private-crew-subject'))
+  assert.equal(r.report.live_acceptance_complete, false)
+})
+
+test('stored site absence is valid empty evidence; organization failures remain failures without fixture substitution', async () => {
+  const h = harness({ inventory: publishedInventory() }),
+    makeClient = h.options.makeClient
+  h.options.makeClient = (token) => {
+    const api = makeClient(token)
+    api.briefing = async () => null
+    api.briefings = async () => {
+      throw Object.assign(new Error(secret), { status: 503 })
+    }
+    return api
+  }
+  const r = await runAcceptance(h.options)
+  assert.equal(byId(r, 'crew_site_briefing').status, 'passed')
+  assert.match(byId(r, 'crew_site_briefing').detail, /No stored briefing yet/)
+  assert.equal(byId(r, 'crew_organization_briefings').status, 'failed')
+  assert.equal(r.snapshots.briefings.length, 0)
+  assert(!JSON.stringify(r.report).includes(secret))
+})
+
+test('independent acknowledgement read-back must match server actor, alert and timestamp as well as ID', async () => {
+  const h = harness({ allowAcknowledge: true, alertId: 'alert-ltg-demo' }),
+    makeClient = h.options.makeClient
+  h.options.makeClient = (token) => {
+    const api = makeClient(token)
+    if (token === h.options.accounts.supervisor) {
+      const read = api.alerts.bind(api)
+      api.alerts = async () =>
+        (await read()).map((a) => ({
+          ...a,
+          acknowledgements: a.acknowledgements.map((ack) => ({
+            ...ack,
+            acknowledged_at: '2026-01-01T00:00:00Z',
+          })),
+        }))
+    }
+    return api
+  }
+  const r = await runAcceptance(h.options)
+  assert.equal(byId(r, 'acknowledgement_persistence').status, 'failed')
 })

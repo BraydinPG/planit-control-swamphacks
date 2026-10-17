@@ -27,7 +27,7 @@ export interface Client {
   site(id: string): Promise<SiteRecord>
   alerts(): Promise<Alert[]>
   reports(): Promise<CrewReport[]>
-  acknowledge(id: string): Promise<unknown>
+  acknowledge(id: string): Promise<Alert>
   submit(input: ReportCreate, photo: File | null): Promise<CrewReport>
   review(id: string, input: ReportReview): Promise<CrewReport>
   confirm(id: string): Promise<HazardConfirmResponse>

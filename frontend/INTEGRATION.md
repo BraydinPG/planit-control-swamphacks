@@ -1,6 +1,6 @@
 # Frontend run and integration guide
 
-Cache owns this implementation following the user's 2026-10-17 transfer from Nick. T030's layout/navigation is retained. This is one React/Vite/Tailwind application using one shared client interface; no API server or authentication implementation was added.
+Current split: Codex/Cache owns functionality; Claude is actively redesigning pages/components/styles. See docs/FUNCTIONAL_INTEGRATION_HANDOFF.md before changing shared interfaces. Nick's earlier attribution is preserved. T030's layout/navigation is retained. This is one React/Vite/Tailwind application using one shared client interface; no API server or authentication implementation was added.
 
 ## Run the interactive demo
 
@@ -74,11 +74,11 @@ From `frontend/`, with Vite running for the browser check:
 ```powershell
 npm run lint
 npm run build
-node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs tests/lifecycle.test.mjs
+node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs tests/integration.test.mjs tests/briefings.test.mjs tests/lifecycle.test.mjs tests/live-read.test.mjs
 node scripts/check-shell.mjs http://localhost:5173/
 ```
 
-Build includes TypeScript. The combined suite has 56 focused checks (39 prior, 5 stored-briefing and 12 mocked HTTP lifecycle tests); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
+Build includes TypeScript. The combined suite has 68 focused checks (56 prior plus 12 read/ack and diagnostic regressions); the latter are labeled mock transport tests, not real Auth0/Tiger Data acceptance. Browser acceptance uses Node 24's built-in WebSocket and installed headless Edge/Chromium, with isolated profiles, temporary loopback configuration-test servers and screenshots under ignored `.shell-check/`. Set `SHELL_BROWSER` to an installed Chromium path when not using Windows Edge. It leaves the original Vite server running. `tests/browser.html` is a mocked-provider/HTTP test entry and is not a production build input or Auth0 verification.
 
 For the built demo, run `npm run preview -- --host localhost --port 5174 --strictPort` in a second terminal after building, then `node scripts/check-shell.mjs http://localhost:5174/ --production`. This exercises the same demo lifecycle against static production assets and verifies that the mocked auth harness is absent; compile-time mode/provider tests run only against the development server. A fresh committed frontend export at `4a9e44f`, with no `.env`, cache, Python or model artifacts copied, passed `npm ci`, build and this full production-bundle browser check. The existing Auth0 dependency's postinstall allowScripts warning did not prevent installation/build; npm reported zero known vulnerabilities at that check.
 

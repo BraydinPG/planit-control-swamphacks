@@ -1,3 +1,25 @@
+## Functional diagnostics / Claude coordination - 2026-10-17
+
+Published [PR #30](https://github.com/BraydinPG/planit-control-swamphacks/pull/30) against main; source checkpoints `b7c8dc4` and `11806fa`. Open at publication, no Codex merge. This follow-up records exact refs; no implementation/task state changes.
+
+User authorization: Codex handles API/state/Auth0 consumption/diagnostics/tests; Claude actively owns visual files. User clarified existing Auth0 crew/supervisor test aliases are the demo accounts; do not create real-user/employee records. No identities, profiles or DB rows were created. Auth0-backed demo acceptance remains separate from isolated mocks.
+
+Separate branch/worktree `feature/cache-functional-acceptance` / `C:/Users/cache/planit-control-functional`, from merged PR #29 main `ebd6d92`. API checkpoint `b7c8dc4` is preserved below. No unmerged parent dependency; primary checkout/server and teammate jobs/configuration are untouched. Full path ownership and stable component interfaces: FUNCTIONAL_INTEGRATION_HANDOFF.md.
+
+Diagnostic changes: `frontend/scripts/check-live-integration.mjs` (explicit read-only configuration-root), `scripts/integration/acceptance.mjs` (gate every published anonymous denial before tokens; role casing, stored reads, crew notice denial and complete ack read-back), `scripts/probe-integration.py` (canonical Briefing validation; external settings without copying/code import changes), `scripts/run-live-account-check.py` (forward settings-root; hidden stdin tokens unchanged), `tests/integration.test.mjs` and `tests/test_integration_probe.py` (six/three new regression checks). API/test changes are the prior checkpoint's exact paths. No JSX/presentation/composition/auth/canonical fixtures/types/backend/ML/manifest/lockfile edits.
+
+Shared docs: PROJECT_CONTEXT, INTEGRATION_STATUS, this log, FRONTEND_REDESIGN_HANDOFF, new FUNCTIONAL_INTEGRATION_HANDOFF and functional-integration-verification.json, frontend/INTEGRATION and LIVE_INTEGRATION. Task.md is unchanged. Documentation distinguishes actual provider-authenticated demo data from mocks and preserves existing owner work.
+
+Checks: 68 Node, 521 Python (511 backend+10 probe), lint/TypeScript, fixture/API-mode builds, Ruff and existing installed Edge workflows at 1440/390/320 pass. API build warns for 531kB chunk; no conflicting layout/code-splitting change attempted. Initial new tests exposed a fixture assumption and the backend loader's source-fixed .env path; corrected test setup and explicit-root handling, with final checks passing. Actual local readiness: all11 operations match, ten anonymous/dev-header denials401, invalid bearer503, no Auth0 demo session or DB connection; exit2. Exact commands/results/files are in the machine record.
+
+Rudra/Braydin: use existing demo setup and private session/configuration handoff; no employee accounts are needed. Claude: no component migration required; retain Client/hook interfaces, server-owned alert state, explicit instruction approval and stable notice IDs. Shared type/composition/config changes require coordination. Final implementation commit and review PR follow this verified checkpoint; no merge authorized/performed by Codex.
+
+## Functional API validation checkpoint - 2026-10-17
+
+User explicitly authorized Codex API/state/diagnostics/tests while Claude owns presentation. Separate worktree/branch from merged PR #29 main `ebd6d92`; primary checkout/server untouched. This checkpoint changes only `frontend/src/api/{contracts,http-client,live-read-validation}.ts`, new `frontend/tests/live-read.test.mjs`, context and this record. Canonical types/fixtures remain read-only; no pages/components/styles/auth/backend/ML/manifests/locks.
+
+Site/alert DTOs, coordinates/nulls/source times/IDs and acknowledgement response now validated. Client method arguments unchanged; acknowledgement return is typed Alert. Six focused read/ack regressions pass; existing suite and current combined diagnostics were verified together (68 Node /521 Python; lint/build/browser pass). Final diagnostic and full coordination evidence follows in the next focused commit. No task checkbox changed; Auth0 test identities, not employee records, are intended for actual demo acceptance.
+
 ## T065 frontend lifecycle integration - 2026-10-17
 
 Published implementation `60ce28082e5bf18822f758bec4f4b1686d3dc794`: [PR #29](https://github.com/BraydinPG/planit-control-swamphacks/pull/29), open against main at publication. This metadata-only follow-up records exact refs; source validation and T065 unchecked state are unchanged. Rudra/Braydin should use the owner handoff below.
