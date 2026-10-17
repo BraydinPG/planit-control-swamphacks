@@ -3,6 +3,8 @@
 Cache's explicitly authorized ingestion/refresh change, based on main `11c62b6`,
 on `feature/cache-feed-refresh-performance`. Review owners: Braydin (providers,
 configuration) and Rudra (persistence, notices and scoring integration).
+Implementation checkpoint `ffff712`; `e0120fb` incorporates reviewed main `cdba4c3`
+(only incoming frontend hover styling). The PR has no frontend diff against that main.
 
 ## What was measured
 

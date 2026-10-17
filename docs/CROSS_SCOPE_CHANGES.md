@@ -2,7 +2,8 @@
 
 Explicit task-specific user authorization permits focused ingestion/refresh edits.
 Branch `feature/cache-feed-refresh-performance`, baseline `11c62b6`; latest fetched
-main `cdba4c3` changes only UI hover styling, preserved on integration. No teammate
+main `cdba4c3` changes only UI hover styling, incorporated by `e0120fb` after
+implementation checkpoint `ffff712`. No teammate
 worktree/server changes. T043/T043A/T044/T045B/C/D/T049B/T073 remain historically
 completed; no new task checkbox or live-service acceptance claim.
 
