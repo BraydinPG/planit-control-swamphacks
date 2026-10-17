@@ -840,7 +840,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
       </div>
       <fieldset>
         <legend className={step}>1 · Hazard category</legend>
-        <div className="grid grid-cols-2 gap-2 @lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2 @lg:grid-cols-3 @4xl:grid-cols-6">
           {Object.entries(categories).map(([id, label]) => (
             <label
               key={id}
@@ -1281,62 +1281,54 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const [siteId, setSiteId] = useState(choices[0].id)
   const site = choices.find((s) => s.id === siteId) ?? choices[0]
   return (
-    // One grid for the form and the review queue. Row 1 holds the controls and
-    // the queue heading. The form takes the first cell of row 2; report cards
-    // fill the other columns left to right and then continue under the form,
-    // so no column is left with blank space while the queue runs on. The form
-    // is its own container so its controls size to its column, not the page.
-    <div className="pc-enter grid items-start gap-4 @3xl:grid-cols-2 @5xl:grid-cols-3">
-      <div className="@3xl:self-end">
-        <div className="flex flex-wrap items-end gap-3">
-          <label className={`${labelText} min-w-0 flex-1`}>
-            Report location
-            <select
-              aria-label="Report location"
-              className={field}
-              value={site.id}
-              onChange={(e) => setSiteId(e.target.value)}
-            >
-              {choices.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="button" className={control} onClick={refresh}>
-            <Icon name="refresh" className="size-4" />
-            Refresh reports
-          </button>
-        </div>
+    // The hazard report is the main task: controls, then the form across the
+    // full width, then the review queue with cards laid out left to right.
+    <div className="pc-enter space-y-6">
+      <div className="flex flex-wrap items-end gap-3">
+        <label className={`${labelText} min-w-0 flex-1 @3xl:max-w-md`}>
+          Report location
+          <select
+            aria-label="Report location"
+            className={field}
+            value={site.id}
+            onChange={(e) => setSiteId(e.target.value)}
+          >
+            {choices.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button type="button" className={control} onClick={refresh}>
+          <Icon name="refresh" className="size-4" />
+          Refresh reports
+        </button>
       </div>
-      {/* On one column, the queue heading and cards follow the form. */}
-      <div className="mt-4 @max-3xl:order-1 @3xl:mt-0 @3xl:self-center @5xl:col-span-2">
-        <SectionHead kicker="Review queue" title="Reports and review" />
-      </div>
+      {/* Its own container, so the form's controls size to the form. */}
       <div className="@container">
         <ReportForm key={site.id} site={site} />
       </div>
-      {result.data ? (
-        <section className="contents" aria-label="Submitted reports">
-          {result.data
-            .filter((r) => sites.some((s) => s.id === r.site_id))
-            .map((r) => (
-              <div key={r.id} className="min-w-0 @max-3xl:order-2">
-                <ReportCard report={r} />
-              </div>
-            ))}
-          {!result.data.length && (
-            <div className="@max-3xl:order-2 @5xl:col-span-2">
-              <Empty>No reports returned.</Empty>
-            </div>
-          )}
-        </section>
-      ) : (
-        <div className="@max-3xl:order-2 @5xl:col-span-2">
+      <section className="space-y-3" aria-label="Submitted reports">
+        <SectionHead kicker="Review queue" title="Reports and review" />
+        {result.data ? (
+          result.data.length ? (
+            <ul className="grid items-start gap-4 @3xl:grid-cols-2 @6xl:grid-cols-3">
+              {result.data
+                .filter((r) => sites.some((s) => s.id === r.site_id))
+                .map((r) => (
+                  <li key={r.id} className="min-w-0">
+                    <ReportCard report={r} />
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <Empty>No reports returned.</Empty>
+          )
+        ) : (
           <LoadState error={result.error} />
-        </div>
-      )}
+        )}
+      </section>
     </div>
   )
 }
