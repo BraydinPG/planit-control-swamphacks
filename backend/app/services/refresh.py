@@ -97,7 +97,7 @@ def refresh_all(session: Session, now: datetime, feeds: list[Feed] | None = None
         try:
             fetched = [_storable(o, now) for o in fetched]
             for o in fetched:
-                session.merge(_row(o))
+                session.merge(observation_row(o))
             session.commit()
             result.observations += len(fetched)
             lightning = apply_lightning_rule(session, site.id, fetched, now)
@@ -136,7 +136,7 @@ def _storable(o: Observation, now: datetime) -> Observation:
     return o.model_copy(update=update) if update else o
 
 
-def _row(o: Observation) -> db.Observation:
+def observation_row(o: Observation) -> db.Observation:
     return db.Observation(
         id=o.id,
         site_id=o.site_id,
