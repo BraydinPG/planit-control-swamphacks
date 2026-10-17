@@ -43,8 +43,9 @@ export function AlertCard({
         {countdown(alert, now)}
       </p>
       <p className="text-xs">
-        A zero countdown never clears an alert or authorizes work. Follow the
-        authoritative alert and employer procedures.
+        Countdown is a display estimate. A zero countdown never clears an alert
+        or authorizes work. Follow the authoritative alert and employer
+        procedures.
       </p>
       {detail && (
         <div className="mt-4 space-y-4">
@@ -64,7 +65,11 @@ export function AlertCard({
             {alert.acknowledgements.length} acknowledgement(s). Acknowledging
             does not clear the alert.
           </p>
-          <Action run={() => client.acknowledge(alert.id)}>
+          <Action
+            capability="acknowledge"
+            disabled={alert.state !== 'active'}
+            run={() => client.acknowledge(alert.id)}
+          >
             {client.mode === 'demo'
               ? 'Record simulated acknowledgement'
               : 'Acknowledge alert'}

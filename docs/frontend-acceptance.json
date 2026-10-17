@@ -1,9 +1,9 @@
 {
-  "verified_at": "2026-10-17T09:20:03.733Z",
-  "implementation_base": "140d118",
+  "verified_at": "2026-10-17T09:30:03.326Z",
+  "implementation_base": "723a5b8294b1015d232551ad5664e6df761a8209",
   "browser": {
     "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
-    "checked_at": "2026-10-17T09:20:03.733Z",
+    "checked_at": "2026-10-17T09:30:03.326Z",
     "url": "http://localhost:5173/",
     "browser": "Installed headless Edge/Chrome via CDP",
     "results": [
@@ -39,6 +39,9 @@
         "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
       },
       {
+        "alerts": "published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified"
+      },
+      {
         "auth": "mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions",
         "api": "mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation",
         "real_auth": "not verified; tenant credentials unavailable"
@@ -67,7 +70,7 @@
     },
     {
       "command": "node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs",
-      "passed": 21,
+      "passed": 23,
       "failed": 0
     },
     {
@@ -85,24 +88,44 @@
     {
       "command": "python frontend/scripts/export-demo-sources.py",
       "result": "50 exact reference IDs and 2 validated comprehensive 2.1 replay responses; no downloads/refit"
+    },
+    {
+      "command": "python -m pytest backend/tests -q",
+      "source": "current checkout incorporating main 723a5b8",
+      "passed": 297,
+      "warnings": 1
     }
   ],
   "live_checks": [
     {
       "url": "http://localhost:5173/",
-      "status": 200
+      "status": 200,
+      "body": "Vite HTML received"
     },
     {
       "url": "http://127.0.0.1:8000/health",
-      "status": 200
+      "status": 200,
+      "body": "{\"status\":\"ok\"}"
     },
     {
       "url": "http://127.0.0.1:8000/api/sites",
-      "status": 401
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
+    },
+    {
+      "url": "http://127.0.0.1:8000/api/alerts?state=all",
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
     },
     {
       "url": "http://localhost:5173/api/sites",
-      "status": 401
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
+    },
+    {
+      "url": "http://localhost:5173/api/alerts?state=all",
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
     }
   ],
   "not_verified": [
@@ -114,5 +137,16 @@
   "export_sha256": {
     "frontend/src/demo/generated/references.json": "db4b08ce88889475c12b652b4b147047fa905822baec8177c2200fa650b43e9d",
     "frontend/src/demo/generated/advisories.json": "76df2458ebffde11a1141d8685a744cf32e0263cb33b6fc0e03df6b5fdca112f"
-  }
+  },
+  "implementation_commits": [
+    "140d118",
+    "3fbd98f",
+    "dc35458"
+  ],
+  "resolved_check_failures": [
+    "Initial small-phone alert action below fold: moved action before alert metadata; final three-viewport acceptance passes.",
+    "Leaflet vendor cascade shrank zoom controls: increased override specificity; explicit >=44px check passes.",
+    "After inherited T050 fixture addition, no-outlook test used a now-supported compact fixture: use genuinely unsupported reference plus verify supplied compact replay separately; all 23 pass.",
+    "Mock role transition retained alert route: browser test explicitly navigates supervisor overview after role switch; final full workflow passes."
+  ]
 }

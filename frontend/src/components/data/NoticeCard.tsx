@@ -40,7 +40,7 @@ export function NoticeCard({ notice }: { notice: HazardNotice }) {
         <p>Confirmed; no approved instruction has been sent.</p>
       )}
       {persona === 'supervisor' && notice.status === 'potential' && (
-        <Action run={() => client.confirm(notice.id)}>
+        <Action capability="hazards" run={() => client.confirm(notice.id)}>
           Confirm potential hazard
         </Action>
       )}
@@ -68,6 +68,7 @@ export function NoticeCard({ notice }: { notice: HazardNotice }) {
               />
             </label>
             <Action
+              capability="hazards"
               disabled={!instruction.trim()}
               run={() => client.instruct(notice.id, instruction)}
             >

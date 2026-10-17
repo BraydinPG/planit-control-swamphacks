@@ -556,7 +556,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
       </label>
       <button
         className={primary}
-        disabled={busy || !presence || !client.writesAvailable}
+        disabled={busy || !presence || !client.capabilities.reports}
         type="submit"
       >
         {busy
@@ -565,7 +565,7 @@ function ReportForm({ site }: { site: SiteSummary }) {
             ? 'Submit simulated report'
             : 'Submit report'}
       </button>
-      {!client.writesAvailable && (
+      {!client.capabilities.reports && (
         <p>
           Live report submission and photo storage are unavailable on this
           backend.
@@ -803,20 +803,20 @@ function BriefingsPage({ sites }: { sites: SiteSummary[] }) {
       <div className="flex flex-wrap gap-3">
         <button
           className={control}
-          disabled={busy || !client.writesAvailable}
+          disabled={busy || !client.capabilities.ai}
           onClick={() => void load('briefing')}
         >
           Request next-day briefing
         </button>
         <button
           className={control}
-          disabled={busy || !client.writesAvailable}
+          disabled={busy || !client.capabilities.ai}
           onClick={() => void load('explanation')}
         >
           Request score explanation
         </button>
       </div>
-      {!client.writesAvailable && (
+      {!client.capabilities.ai && (
         <p>
           Live briefing and explanation endpoints are unavailable. No simulated
           response is substituted.

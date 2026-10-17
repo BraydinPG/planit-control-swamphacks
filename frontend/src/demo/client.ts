@@ -86,6 +86,7 @@ export function initialDemo(): DemoSnapshot {
       alerts: [],
       reports: [],
       notices: [],
+      event_outlook: null,
     }
   })
   details[assigned] = clone(detailJSON as SiteRecord)
@@ -101,7 +102,7 @@ export function initialDemo(): DemoSnapshot {
 }
 export class DemoClient implements Client {
   mode = 'demo' as const
-  writesAvailable = true
+  capabilities = { acknowledge: true, reports: true, hazards: true, ai: true }
   private state: DemoSnapshot
   private photoURLs = new Map<string, string>()
   private persona: () => Persona

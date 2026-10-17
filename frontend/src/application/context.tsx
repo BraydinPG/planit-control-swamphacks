@@ -59,13 +59,10 @@ export function demoClient(client: Client) {
 }
 export function useClock() {
   const { client } = useApplication()
-  const tick = () => demoClient(client)?.now() ?? Date.now()
+  const tick = () => client.now?.() ?? Date.now()
   const [now, setNow] = useState(tick)
   useEffect(() => {
-    const timer = setInterval(
-      () => setNow(demoClient(client)?.now() ?? Date.now()),
-      1000,
-    )
+    const timer = setInterval(() => setNow(client.now?.() ?? Date.now()), 1000)
     return () => clearInterval(timer)
   }, [client])
   return now

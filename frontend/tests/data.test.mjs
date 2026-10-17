@@ -203,9 +203,20 @@ test('2.1 replay matches exact site only; wrong site cannot borrow probabilities
     /Developer\/demo advisory/,
   )
   assert.match(
-    render(await client.site(assigned)),
+    render(
+      await client.site(
+        (await client.sites()).find(
+          (s) =>
+            s.id.startsWith('eia860m-') &&
+            !['eia860m-FL-59611', 'eia860m-AZ-68414'].includes(s.id),
+        ).id,
+      ),
+    ),
     /No supported event outlook/,
   )
+  const compact = render(await client.site(assigned))
+  assert.match(compact, /Replay.*Flood/)
+  assert(!compact.includes('Developer/demo advisory'))
 })
 test('HTTP adapter passes Auth0 token and multipart photo, never a fake dev-role header', async () => {
   const calls = [],
@@ -233,7 +244,61 @@ test('HTTP adapter passes Auth0 token and multipart photo, never a fake dev-role
   assert.equal(calls[0].options.body.get('hazard_present'), 'false')
   assert.equal(calls[0].options.body.get('photo').name, 'demo.png')
 })
-for (const status of [401, 403, 404, 422, 503])
+test('published T048 client requests all states, sends authenticated acknowledgement and uses server clock estimate', async () => {
+  const demo = new DemoClient(() => 'crew', storage())
+  let alerts = await demo.alerts()
+  const calls = []
+  const serverTime = '2026-10-17T18:00:00Z'
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer test' }),
+    async (url, options) => {
+      calls.push(
+        `${options.method ?? 'GET'} ${new URL(url).pathname}${new URL(url).search}`,
+      )
+      if (options.method === 'POST') {
+        alerts = alerts.map((a) =>
+          a.id === 'alert-ltg-demo'
+            ? {
+                ...a,
+                acknowledgements: [
+                  ...a.acknowledgements,
+                  {
+                    id: 'server-ack',
+                    user_id: 'server-user',
+                    alert_id: a.id,
+                    acknowledged_at: serverTime,
+                  },
+                ],
+              }
+            : a,
+        )
+        return Response.json(alerts[0])
+      }
+      return Response.json(alerts, {
+        headers: { Date: new Date(serverTime).toUTCString() },
+      })
+    },
+  )
+  assert(api.capabilities.acknowledge)
+  assert(
+    !api.capabilities.reports &&
+      !api.capabilities.hazards &&
+      !api.capabilities.ai,
+  )
+  await api.alerts()
+  assert(Math.abs(api.now() - Date.parse(serverTime)) < 1000)
+  await api.acknowledge('alert-ltg-demo')
+  assert(
+    (await api.alerts())[0].acknowledgements.some((a) => a.id === 'server-ack'),
+  )
+  assert.deepEqual(calls, [
+    'GET /api/alerts?state=all',
+    'POST /api/alerts/alert-ltg-demo/acknowledge',
+    'GET /api/alerts?state=all',
+  ])
+})
+for (const status of [401, 403, 404, 409, 422, 503])
   test(`HTTP ${status} stays an explicit failure without fixtures`, async () => {
     const api = new HttpClient(
       'http://localhost:8000',

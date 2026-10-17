@@ -533,8 +533,21 @@ try {
     'Live role selector leaked',
   )
   await hash('/crew/overview', 'Stop-work alert active')
+  await click('Inspect alert and acknowledge')
+  await loaded('Acknowledge alert')
+  await click('Acknowledge alert')
+  await loaded('Action recorded.')
+  assert(
+    await evaluate(
+      "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
+    ),
+  )
+  results.push({
+    alerts:
+      'published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified',
+  })
   await evaluate("window.harness.mount('supervisor')")
-  await loaded('5 backend-authorized locations')
+  await hash('/supervisor/overview', '5 backend-authorized locations')
   await until(
     () =>
       evaluate(

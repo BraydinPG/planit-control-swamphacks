@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useApplication } from '../../application/context'
+import type { Client } from '../../api/contracts'
 export const control =
   'min-h-11 min-w-11 rounded-lg border border-slate-400 bg-white px-3 py-2 text-sm text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-60'
 export const primary = control + ' bg-teal-800! text-white! border-teal-800!'
@@ -22,10 +23,12 @@ export function Action({
   run,
   children,
   disabled = false,
+  capability = 'reports',
 }: {
   run: () => Promise<unknown>
   children: ReactNode
   disabled?: boolean
+  capability?: keyof Client['capabilities']
 }) {
   const { refresh, client } = useApplication()
   const [busy, setBusy] = useState(false)
@@ -35,7 +38,7 @@ export function Action({
       <button
         type="button"
         className={control}
-        disabled={busy || disabled || !client.writesAvailable}
+        disabled={busy || disabled || !client.capabilities[capability]}
         onClick={async () => {
           setBusy(true)
           setMessage('')
@@ -52,7 +55,7 @@ export function Action({
       >
         {busy ? 'Working…' : children}
       </button>
-      {!client.writesAvailable && (
+      {!client.capabilities[capability] && (
         <p className="text-sm">
           This action is unavailable on the current live backend.
         </p>

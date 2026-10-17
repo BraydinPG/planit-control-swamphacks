@@ -10,29 +10,18 @@ import type {
   SiteSummary,
 } from '../types/api'
 
-/** Opt-in T050 addition published in main 9d73a77. Does not alter Rudra's mirror. */
-export interface EventOutlook {
-  status: 'ok' | 'unavailable' | 'not_applicable_no_confirmed_event'
-  event_id: string | null
-  event_type: string | null
-  as_of_utc: string | null
-  generated_at_utc: string
-  ongoing_probability: Record<string, number>
-  remaining_hours_p10: number | null
-  remaining_hours_median: number | null
-  remaining_hours_p90: number | null
-  trend: string
-  model_version: string
-  is_simulated: boolean
-  production_eligible: false
-  limitations: string[]
-  advisory_notice: string
-}
-export type SiteRecord = SiteDetail & { event_outlook?: EventOutlook | null }
+/** Main now includes Rudra's T050 canonical EventOutlook; no independent mirror. */
+export type SiteRecord = SiteDetail
 export type Persona = 'crew' | 'supervisor'
 export interface Client {
   mode: 'demo' | 'live'
-  writesAvailable: boolean
+  capabilities: {
+    acknowledge: boolean
+    reports: boolean
+    hazards: boolean
+    ai: boolean
+  }
+  now?(): number
   sites(): Promise<SiteSummary[]>
   site(id: string): Promise<SiteRecord>
   alerts(): Promise<Alert[]>

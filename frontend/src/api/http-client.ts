@@ -11,11 +11,18 @@ import { ApiError, type Client, type SiteRecord } from './contracts'
 
 export class HttpClient implements Client {
   mode = 'live' as const
-  writesAvailable = false // Current published backend has site reads only; owner must enable implemented routes.
+  // T048 is published; other write routes are still absent. Enable each deliberately after review.
+  capabilities = {
+    acknowledge: true,
+    reports: false,
+    hazards: false,
+    ai: false,
+  }
   private base: URL
   private headers: () => Promise<Record<string, string>>
   private fetcher: typeof fetch
   private timeout: number
+  private clockOffset = 0
   constructor(
     base: string,
     headers: () => Promise<Record<string, string>>,
@@ -69,6 +76,7 @@ export class HttpClient implements Client {
           401,
           'A valid Auth0 session is required. Sign in again.',
         )
+      const started = Date.now()
       const response = await this.fetcher(new URL(path, this.base), {
         ...options,
         signal: controller.signal,
@@ -81,11 +89,15 @@ export class HttpClient implements Client {
             : {}),
         },
       })
+      const serverTime = Date.parse(response.headers.get('Date') ?? '')
+      if (Number.isFinite(serverTime))
+        this.clockOffset = serverTime + (Date.now() - started) / 2 - Date.now()
       if (!response.ok) {
         const message: Record<number, string> = {
           401: 'Session expired or token rejected. Sign in again.',
           403: 'Permission denied by the backend.',
           404: 'This endpoint or record is unavailable.',
+          409: 'Alert state changed. Refresh before acknowledging.',
           422: 'The backend rejected the submitted fields.',
           503: 'The service or database is unavailable.',
         }
@@ -112,6 +124,9 @@ export class HttpClient implements Client {
     } finally {
       clearTimeout(deadline)
     }
+  }
+  now() {
+    return Date.now() + this.clockOffset
   }
   sites() {
     return this.request<SiteSummary[]>('/api/sites').then((rows) => {
@@ -146,7 +161,7 @@ export class HttpClient implements Client {
     })
   }
   alerts() {
-    return this.request<Alert[]>('/api/alerts')
+    return this.request<Alert[]>('/api/alerts?state=all')
   }
   reports() {
     return this.request<CrewReport[]>('/api/reports')

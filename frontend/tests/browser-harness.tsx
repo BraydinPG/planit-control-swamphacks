@@ -4,11 +4,13 @@ import { AuthContext, type AuthContextValue } from '../src/auth/context'
 import { LiveApplication } from '../src/application/LiveApplication'
 import sitesJSON from '../src/fixtures/sites.json'
 import detailJSON from '../src/fixtures/site-detail.json'
+import alertsJSON from '../src/fixtures/alerts.json'
 import '../src/index.css'
 const root = createRoot(document.getElementById('auth-test')!)
 let role: 'crew' | 'supervisor' | null = 'crew',
   status = 200
 const requests: string[] = []
+const alerts = structuredClone(alertsJSON)
 window.fetch = async (input, options) => {
   const url = new URL(String(input), location.origin)
   requests.push(`${options?.method ?? 'GET'} ${url.pathname}`)
@@ -23,10 +25,35 @@ window.fetch = async (input, options) => {
     return new Response('', { status: 401 })
   if (url.pathname === '/api/sites')
     return Response.json(role === 'crew' ? [sitesJSON[0]] : sitesJSON)
+  if (url.pathname === '/api/alerts')
+    return Response.json(
+      alerts.filter(
+        (a) => role === 'supervisor' || a.site_id === sitesJSON[0].id,
+      ),
+    )
+  if (url.pathname.endsWith('/acknowledge')) {
+    const alert = alerts.find(
+      (a) => a.id === decodeURIComponent(url.pathname.split('/')[3]),
+    )
+    if (!alert) return new Response('', { status: 404 })
+    if (alert.state !== 'active') return new Response('', { status: 409 })
+    if (!alert.acknowledgements.some((a) => a.user_id === `mock-${role}`))
+      alert.acknowledgements.push({
+        id: 'mock-ack',
+        alert_id: alert.id,
+        user_id: `mock-${role}`,
+        acknowledged_at: new Date().toISOString(),
+      })
+    return Response.json(alert)
+  }
   const id = decodeURIComponent(url.pathname.split('/')[3] ?? '')
   if (role === 'crew' && id !== sitesJSON[0].id)
     return new Response('', { status: 403 })
-  if (id === detailJSON.id) return Response.json(detailJSON)
+  if (id === detailJSON.id)
+    return Response.json({
+      ...detailJSON,
+      alerts: alerts.filter((a) => a.site_id === id),
+    })
   const summary = sitesJSON.find((s) => s.id === id)
   return summary
     ? Response.json({
@@ -39,6 +66,7 @@ window.fetch = async (input, options) => {
         alerts: [],
         reports: [],
         notices: [],
+        event_outlook: null,
       })
     : new Response('', { status: 404 })
 }
