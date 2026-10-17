@@ -11,6 +11,7 @@ One `FeedCache` per feed, so a failing feed never marks another feed stale. Rule
 The cache lives in process memory. Persisting Observations is the caller's job.
 """
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -18,6 +19,8 @@ from threading import Lock
 
 from app.ingestion.base import SiteLike, unavailable_observation
 from app.schemas import DataState, HazardType, Observation
+
+logger = logging.getLogger(__name__)
 
 FetchSite = Callable[[SiteLike, datetime], list[Observation]]
 
@@ -49,7 +52,16 @@ class FeedCache:
         """Fetch fresh readings for one site, falling back to cached data on any failure."""
         try:
             observations = fetch_site(site, now)
-        except Exception:
+        except Exception as exc:
+            # A failed fetch is never silent: it falls back to stale or unavailable readings.
+            logger.warning(
+                "%s %s fetch failed for %s; using cached readings: %s: %s",
+                self.source,
+                self.hazard_type.value,
+                site.id,
+                type(exc).__name__,
+                str(exc)[:200],
+            )
             return self._fallback(site, now)
         stamped = tuple(
             o if o.fetched_at else o.model_copy(update={"fetched_at": now}) for o in observations

@@ -451,7 +451,8 @@ def _prompt(inputs: BriefingInputs) -> str:
         "and cite it. Never turn it into a time when work can resume.\n"
         "- List anything important that the evidence does not cover in unknowns.\n\n"
         f"Evidence:\n{json.dumps(evidence, indent=1)}\n\n"
-        f"Known gaps (already reported to the crew):\n{json.dumps(inputs.unknowns)}\n"
+        "Known gaps (already listed in the briefing; do not repeat or reword them in "
+        f"unknowns):\n{json.dumps(inputs.unknowns)}\n"
     )
 
 
