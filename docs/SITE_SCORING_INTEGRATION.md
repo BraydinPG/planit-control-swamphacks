@@ -6,7 +6,7 @@ from that main in the separate functional worktree. Claude's unmerged redesign i
 on `feature/rudra-ui` ([PR #32](https://github.com/BraydinPG/planit-control-swamphacks/pull/32),
 `ac5861c` when inspected); no presentation files were edited. Its shared-log change
 appends at the file end; this branch prepends a separate entry to avoid overlap.
-T063–T068 remain unchecked. Machine evidence: [verification JSON](site-scoring-integration-verification.json).
+T063–T068 remain unchecked. Implementation `b7d1293`; [PR #33](https://github.com/BraydinPG/planit-control-swamphacks/pull/33) is open against main at publication; no Codex merge. Machine evidence: [verification JSON](site-scoring-integration-verification.json).
 
 ## What was exercised
 

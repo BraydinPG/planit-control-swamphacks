@@ -766,5 +766,13 @@
     "existing_backend_pid": 65924,
     "restarted_or_changed_by_codex": false,
     "loaded_backend_version_verified_via_authenticated_request": false
+  },
+  "implementation_commit": "b7d12934f6f646b1f4be0c57c02eb0cc73aa0d0f",
+  "review_pr": {
+    "number": 33,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/33",
+    "state_at_publication": "open",
+    "base": "main",
+    "merged_by_codex": false
   }
 }
