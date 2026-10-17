@@ -6,8 +6,9 @@ then saves a new `HazardScore` row. T055 can join a report-confirmation transact
 `GET /api/sites` shows the newest row.
 
 The refresh loop (`app.services.refresh`, T049B) passes `observations`: the readings it
-just fetched, which hold each feed's current state. Stored history would also hold older
-"none" rows and expired alerts.
+just fetched, which hold each feed's current state. Other callers, such as a report
+confirmation (T055), score from stored history. That history also holds older "none" rows
+and expired alerts, so `current_readings` keeps only each feed's latest fetch (T076).
 """
 
 from datetime import UTC, datetime, timedelta
@@ -20,7 +21,28 @@ from app.api.sites import load_active_alerts, load_observations, report_schema
 from app.db import models as db
 from app.rules.score import compute_score
 from app.rules.settings import RuleSettings
-from app.schemas import HazardScore, Observation, ReviewStatus
+from app.schemas import HazardScore, HazardType, Observation, ReviewStatus
+
+
+def current_readings(observations: list[Observation]) -> list[Observation]:
+    """Each feed's readings from its latest fetch. Older fetches are history, not state.
+
+    A feed is its hazard type and source. Lightning is one feed whatever its source,
+    because its "none" reading switches between replay and GOES GLM. Rows without
+    `fetched_at` (not stored by the refresh loop) are kept.
+    """
+
+    def feed(o: Observation) -> tuple:
+        if o.hazard_type == HazardType.LIGHTNING_STRIKE:
+            return (o.hazard_type,)
+        return (o.hazard_type, o.source)
+
+    latest: dict[tuple, datetime] = {}
+    for o in observations:
+        if o.fetched_at is not None:
+            key = feed(o)
+            latest[key] = max(latest.get(key, o.fetched_at), o.fetched_at)
+    return [o for o in observations if o.fetched_at is None or o.fetched_at == latest[feed(o)]]
 
 
 def score_site(
@@ -66,7 +88,9 @@ def score_site(
     ).all()
     score = compute_score(
         site_id,
-        observations if observations is not None else load_observations(session, site_id, now),
+        observations
+        if observations is not None
+        else current_readings(load_observations(session, site_id, now)),
         load_active_alerts(session, site_id),
         [report_schema(report) for report in reports],
         now,
