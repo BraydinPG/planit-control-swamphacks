@@ -11,7 +11,8 @@ React + TypeScript UI, built with Vite and Tailwind CSS. API routes, auth checks
 | `frontend/` | Vite + React + TypeScript + Tailwind UI | Nick (`src/pages`, `src/components`, `src/styles`, `src/api`), Braydin (`src/auth`) |
 | `frontend/src/types/api.ts` | TypeScript mirror of the API schemas | Rudra |
 | `frontend/src/fixtures/` | Mock API responses for fixture mode (generated) | Rudra |
-| `backend/app/` | FastAPI app and every API route | Rudra (except `backend/app/security/`, `backend/app/db/`, `backend/app/ingestion/`, and `backend/app/gemini/`, owned by Braydin) |
+| `backend/app/` | FastAPI app and every API route | Rudra (except `backend/app/security/`, `backend/app/db/`, and `backend/app/gemini/`, owned by Braydin) |
+| `backend/app/ingestion/` | Live-feed adapters | Split by file: Rudra (NWS weather, forecast, flood alerts, shared `FeedCache`), Braydin (lightning, hurricane, earthquake, flood gauges) |
 | Vultr deployment files | Hosting, backend deploy, and photo storage config | Braydin |
 | `backend/app/schemas/` | Canonical Pydantic API schemas | Rudra |
 | `backend/tests/` | Backend tests | Rudra |
@@ -49,6 +50,45 @@ pytest
 ```
 
 Health check: `GET http://localhost:8000/health` returns `{"status": "ok"}`.
+
+### Windows Smart App Control
+
+If `pytest` or `uvicorn` fails with `An Application Control policy has blocked this file` for a `sqlalchemy\...\_*_cy*.pyd` file, Smart App Control is blocking SQLAlchemy's optional compiled speedups. Smart App Control has no per-file allow list, so reinstall SQLAlchemy as pure Python instead of turning it off:
+
+```powershell
+cd backend
+$env:DISABLE_SQLALCHEMY_CEXT = "1"
+.venv\Scripts\python -m pip install --force-reinstall --no-deps --no-binary sqlalchemy "sqlalchemy>=2.0"
+```
+
+This changes only your local virtual environment. To see which file was blocked, open Event Viewer and go to Applications and Services Logs > Microsoft > Windows > CodeIntegrity > Operational.
+
+### Live data feeds
+
+`backend/app/ingestion/` turns public hazard feeds into `Observation` records. Every adapter exposes `fetch(sites, now) -> list[Observation]`.
+
+| Feed | Module | Source | Status |
+|---|---|---|---|
+| Weather and hourly forecast | `nws_weather.py` | NWS `api.weather.gov`: point lookup, latest station observation, hourly forecast | Built (T043) |
+| Flood alerts | `nws_alerts.py` | NWS active alerts: Flood Warning, Flash Flood Warning, Flood Watch | Built (T043A) |
+| Lightning, hurricanes, earthquakes, flood gauges | Braydin's adapters | See `spec.md` section 5 | Planned (T045–T045D) |
+
+Freshness (`cache.py`, T044): each feed keeps its own cache of the last successful readings per site.
+
+- A failed refresh returns those readings marked `stale`.
+- Readings older than `FEED_STALE_AFTER_MINUTES` (default 60) are `stale`.
+- After `FEED_UNAVAILABLE_AFTER_MINUTES` (default 360), or when nothing was ever fetched, the feed reports `unavailable`.
+- A stale or unavailable feed is never shown as current, and it never clears an alert.
+
+Configuration: set `NWS_USER_AGENT` in `backend/.env`. NWS requires an identifying User-Agent, and without one the NWS feeds report `unavailable`.
+
+Manual check against live NWS data, from `backend/`:
+
+```bash
+python -c "from datetime import UTC, datetime; from types import SimpleNamespace as S; from app.ingestion import nws_weather; [print(o.hazard_type, o.label, o.value, o.unit, o.data_state) for o in nws_weather.fetch([S(id='demo', lat=25.76, lon=-80.49)], datetime.now(UTC))]"
+```
+
+Adding a feed: follow `AGENTS.md`, "Ingestion interface", then "Adding a feed adapter." Tests use canned responses through `httpx.MockTransport` (see `backend/tests/nws_fakes.py`) and never call the network.
 
 ### Fixtures
 

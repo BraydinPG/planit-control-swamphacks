@@ -77,7 +77,10 @@ The outcome target is conditional on a verified/confirmed active event or an exp
 
 ### Ingestion interface
 
-Braydin publishes one adapter per live feed in `backend/app/ingestion/<feed>.py`. Feeds and sources are listed in `spec.md` section 5, "Live data sources."
+Each live feed has one adapter in `backend/app/ingestion/<feed>.py`. Feeds and sources are listed in `spec.md` section 5, "Live data sources." Ownership inside `backend/app/ingestion/` is split by file:
+
+- Rudra owns the NWS feeds and the shared freshness cache (T043, T043A, T044): `__init__.py`, `base.py`, `settings.py`, `cache.py`, `nws.py`, `nws_weather.py`, and `nws_alerts.py`.
+- Braydin owns every other adapter there: lightning replay and live lightning, hurricanes, earthquakes, and USGS flood gauges (T045–T045D). Those adapters wrap their fetches in `cache.FeedCache` so every feed reports stale and unavailable the same way.
 
 ```text
 fetch(sites, now) -> list[Observation]
@@ -89,6 +92,48 @@ lightning.submit_strike(lat, lon, time, simulated) -> Observation
 ```
 
 `hazard_type` is one of `weather`, `forecast`, `flood_alert`, `flood_gauge`, `lightning_strike`, `hurricane`, or `earthquake`. `data_state` is one of `observed`, `forecast`, `simulated`, `stale`, or `unavailable`. Rudra's alert rules and scoring read only these Observations and never call a feed directly. Broken electrical poles, downed lines, on-site fires, and other on-site hazards have no adapter. They arrive only through crew reports.
+
+NWS conventions:
+
+- Weather and forecast Observations carry one metric each. `label` is one of the constants in `nws_weather.METRIC_LABELS`: `Temperature`, `Relative humidity`, `Heat index`, and `Precipitation probability`. Temperatures are in °F.
+- A successful flood-alert fetch with no active alerts returns one `flood_alert` Observation with `value=None` and `label="No active NWS flood alerts"`. A failed fetch returns `data_state="unavailable"`. Never read an empty list as "no flood."
+
+#### Adding a feed adapter
+
+Braydin's adapters (T045A–T045D) follow the same pattern as `nws_weather.py` and `nws_alerts.py`. Write a `fetch_site` for one site and let `FeedCache` handle freshness:
+
+```python
+from datetime import datetime
+
+from app.ingestion import FeedCache, FeedError, SiteLike
+from app.ingestion.settings import get_ingestion_settings
+from app.schemas import HazardType, Observation
+
+settings = get_ingestion_settings()
+cache = FeedCache("USGS", HazardType.EARTHQUAKE, settings.stale_after, settings.unavailable_after)
+
+
+def fetch_site(site: SiteLike, now: datetime) -> list[Observation]:
+    """Fresh readings for one site. Raise FeedError when the source gives nothing usable."""
+    ...
+
+
+def fetch(sites: list[SiteLike], now: datetime) -> list[Observation]:
+    return [o for site in sites for o in cache.refresh(site, now, fetch_site)]
+```
+
+`FeedCache.refresh` stamps `fetched_at` on success. On any exception, it returns the last readings marked `stale`, or an `unavailable` placeholder when nothing is cached or the cache is older than `FEED_UNAVAILABLE_AFTER_MINUTES`. `FeedCache.snapshot(site, now)` reads cached data without fetching. Use one `FeedCache` per feed, so one outage never marks another feed stale.
+
+Adapter rules:
+
+- `sites` is anything with `id`, `lat`, and `lon` (`SiteLike`): a DB `Site`, a `SiteSummary`, or a test stub.
+- On success with nothing found (no storms, no earthquakes), return one explicit "none" Observation with `value=None` and a clear `label`. Never return an empty list, because empty can't be told apart from a failure.
+- Skip null source values. Never write them as zero.
+- Label replayed or fixture data `simulated=True` with `data_state="simulated"`.
+- Use `httpx` for HTTP. It's already a runtime dependency. `google-genai` is only for Gemini calls.
+- Adapters don't write to the database. The caller stores the returned Observations.
+- Tests never hit the network. Serve canned source JSON through `httpx.MockTransport`, following `backend/tests/nws_fakes.py`.
+- Settings come from `IngestionSettings` (`backend/app/ingestion/settings.py`). Add new feed variables there and to `backend/.env.example`.
 
 ### Backend routes
 
@@ -143,7 +188,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 ### Braydin: Auth0, Tiger Data, ingestion, Gemini, and Vultr deployment
 
-**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, `backend/app/gemini/**`, database migrations, Vultr deployment files, `frontend/src/auth/**`, `auth/SETUP.md`.
+**Owned paths:** `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**` except Rudra's NWS and cache files (listed under "Ingestion interface"), `backend/app/gemini/**`, database migrations, Vultr deployment files, `frontend/src/auth/**`, `auth/SETUP.md`.
 
 **Do not edit:** Nick’s pages/components/styles, Rudra’s alert-rule and scoring files, shared manifests, lockfiles, root README. A Gemini router may be registered in `backend/app/main.py`. Do not change Rudra’s other routes there.
 
@@ -161,9 +206,9 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Create migrations, enable TimescaleDB, and convert `Observation`, `Alert`, and `AuditEvent` into hypertables.
 - Add a runnable seed command. Leave demo scenario contents for Rudra to fill.
 - Import and validate 50 or more EIA-860M locations. Label these as representative power plant locations.
-- Build the P0 live feeds: NWS weather and forecast, NWS flood alerts, and the labeled lightning replay fixture. Normalize each into `Observation` records through the ingestion interface.
+- Build the labeled lightning replay fixture (P0). Normalize it into `Observation` records through the ingestion interface. Rudra builds the NWS weather, forecast, and flood-alert feeds.
 - Build the P1 live feeds when P0 is stable: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
-- Cache each feed's last successful result, track freshness per feed, and mark stale and unavailable states. A failed refresh must never appear current. Keep each adapter replaceable.
+- Wrap each of your feeds in Rudra's `cache.FeedCache`, so it tracks freshness per feed and marks stale and unavailable states. A failed refresh must never appear current. Keep each adapter replaceable.
 - Do not implement alert rules or scores. Rudra's rules read your Observations.
 - Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, explanation, enrichment, notice-radius, and instruction-suggestion calls. Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
 - Register the Gemini router from `backend/app/main.py` without changing Rudra’s other routes.
@@ -197,14 +242,14 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 ### Rudra: backend routes, alert rules, and scoring
 
-**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, and `backend/app/gemini/**`, shared API types, root `README.md`, shared configuration and manifests.
+**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, Braydin's files in `backend/app/ingestion/`, and `backend/app/gemini/**`. Inside `backend/app/ingestion/`, Rudra owns the NWS and cache files listed under "Ingestion interface." Also shared API types, root `README.md`, shared configuration and manifests.
 
-**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, `backend/app/ingestion/**`, `backend/app/gemini/**`, database migrations, Vultr deployment files, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
+**Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, Braydin's adapters in `backend/app/ingestion/`, `backend/app/gemini/**`, database migrations, Vultr deployment files, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
 
 **Tasks:**
 
 - First publish the shared API and model contracts, including the ingestion interface. Provide fixture JSON for Nick.
-- Import Braydin’s ingestion adapters. Do not fetch live feeds in route or rule files.
+- Build the NWS weather and forecast feed, the NWS flood-alert feed, and the shared `FeedCache` with per-feed stale and unavailable states (T043, T043A, T044) in your files under `backend/app/ingestion/`. Import Braydin's other adapters. Do not fetch live feeds in route or rule files.
 - Import Braydin’s Tiger Data session and models into FastAPI routes from the shared contract. Do not add those routes in another framework. Do not edit migrations or hypertables.
 - Implement lightning stop-work within 10 miles and a resettable 30-minute all-clear. Provide a labeled replay fixture if live lightning access is unreliable.
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
@@ -220,7 +265,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 **Can start immediately:** Yes. Start with contract, app skeleton, seed fixtures, site endpoints, and deterministic alert logic.
 
-**Integration dependencies:** Cache supplies the model function. Braydin supplies token/role dependencies, the database session, the ingestion adapters, and the Gemini functions. Nick supplies the frontend. Use temporary stubs until each module arrives.
+**Integration dependencies:** Cache supplies the model function. Braydin supplies token/role dependencies, the database session, the non-NWS ingestion adapters, and the Gemini functions. Nick supplies the frontend. Use temporary stubs until each module arrives.
 
 ## Role and permission policy
 
@@ -242,7 +287,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 ## Integration and merge schedule
 
 1. **Kickoff, hour 0–1:** Rudra creates the skeleton and publishes contracts. Each person confirms path ownership and creates a branch.
-2. **Parallel build, hours 1–8:** Cache works in `ml/`, Braydin in auth, database, ingestion, and Gemini paths, Nick in frontend paths, Rudra in backend route, rule, and scoring paths. Use fixtures and stubs.
+2. **Parallel build, hours 1–8:** Cache works in `ml/`, Braydin in auth, database, non-NWS ingestion, and Gemini paths, Nick in frontend paths, Rudra in backend route, rule, scoring, and NWS ingestion paths. Use fixtures and stubs.
 3. **First integration, hours 8–12:** Merge API contract and seed data, then Cache interface, Braydin modules, then Nick screens. Keep `main` runnable.
 4. **Feature integration, hours 12–27:** Connect model, Auth0, API, and UI. Each owner keeps edits inside their paths. Resolve interface questions in the contract before editing code.
 5. **Freeze, hours 27–32:** Stop adding features. Test role boundaries, lightning reset, report review, Gemini fallback, model fallback, and stale data.
