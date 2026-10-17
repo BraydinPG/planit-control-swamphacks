@@ -229,7 +229,10 @@ function SitePage({
               />
             </summary>
             <div className="border-t border-line px-5 pb-2">
-              <Factors factors={site.top_factors} />
+              {/* The full stored breakdown; top_factors is the list's top three only. */}
+              <Factors
+                factors={site.score?.factor_contributions ?? site.top_factors}
+              />
             </div>
           </details>
         </div>
