@@ -1,0 +1,12 @@
+{
+  "url": "https://earthquake.usgs.gov/product/oaf/ci38457511/us/1788406203671/forecast.json",
+  "file": "ridgecrest-oaf.json",
+  "bytes": 14911,
+  "sha256": "8ad8a8332c8e349ae847b46b831401c9fa0f738fbe9297ed30e590ca02584c0c",
+  "retrieved_at_utc": "2026-10-17T17:06:59.758600Z",
+  "content_type": "application/json",
+  "historical_availability_verified": false,
+  "collection_policy": "serial; <=1 request/s/host; 15s timeout; 2 attempts; <=8MB default",
+  "provider_rate_limit": "Provider limits apply; this local cap is not a provider quota guarantee",
+  "use": "Agency attribution and product-specific terms; public research snapshot, no secrets"
+}

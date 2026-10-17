@@ -1,0 +1,38 @@
+{
+  "contract_version": "ml-event-outlooks-1.0.0",
+  "site": {
+    "lat": 28.066389,
+    "lon": -82.0175,
+    "id": "eia860m-FL-59611",
+    "name": "LKL BLBD, LLC",
+    "source": "EIA-860M August 2026; backend selection export",
+    "inventory_vintage": "2026-08; reference inventory, not historical work order"
+  },
+  "as_of_utc": "2024-09-27T05:00:00Z",
+  "events": [
+    {
+      "event_id": "AL092024",
+      "notice_id": null,
+      "event_name": "Helene advisory 15 / hypothetical reference-site display",
+      "event_type": "Hurricane (Typhoon)",
+      "confirmation": {
+        "status": "historical_replay",
+        "basis": "hypothetical_activation",
+        "source_id": "demo-activation",
+        "confirmed_at_utc": "2024-09-27T05:00:00Z",
+        "available_at_utc": "2024-09-27T05:00:00Z"
+      },
+      "association": {
+        "site_id": "eia860m-FL-59611",
+        "method": "reference_replay",
+        "source_id": "demo-reference-association",
+        "description": "Hypothetical activation at a real current EIA reference location; no actual work order or historical incident linkage asserted."
+      },
+      "event_start_utc": null,
+      "event_definition": null,
+      "observations": [],
+      "station_id": null,
+      "official_product_id": "helene-015"
+    }
+  ]
+}

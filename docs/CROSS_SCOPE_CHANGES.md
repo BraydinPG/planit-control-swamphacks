@@ -1,3 +1,23 @@
+## Multi-event ML integration handoff (Cache) - 2026-10-17
+
+Explicit user assignment: reuse existing qualified event models and build a typed
+multi-event preview in `ml/**`; propose API/component inputs without changing
+Rudra's contracts or Claude's UI. Branch `feature/cache-multi-event-outlooks`,
+base main `ca99e64`, no unmerged dependency; Rudra PR #38 remains independent.
+
+- New ML adapter/schema, bounded official-product parsers, checksummed NHC/USGS
+  captures, verified local artifact reuse, 16-case static preview and tests.
+- Shared edit: `PROJECT_CONTEXT.md` gains this verified navigation/handoff entry;
+  this log records ownership. `tasks.md` and all teammate implementation files
+  are unchanged. Exact inputs, schemas, examples and acceptance proposals for
+  Rudra/Claude are in `ml/EVENT_OUTLOOKS.md` and `ml/fixtures/event_outlooks/`.
+- Initial verification: 50 focused checks; complete ML/backend 1,016 before the
+  final phase-identity check; 103 frontend tests, lint/TypeScript/build pass.
+  Final results/publication: `ml/reports/event_outlooks_verification.json`.
+- No authenticated production integration, event activation feed, score/alert
+  change or newly validated local probability. T050A remains pending with Rudra;
+  source publication/retrieval and hypothetical activation are separately labeled.
+
 ## Report location, analysis panel, and duration on screen (T034A, T036A, T036B; Braydin for Cache) — 2026-10-17
 
 Explicit user authorization (Braydin): complete Cache's T034A, T036A, and T036B in Cache's frontend files, matching Rudra's redesign theme (existing tokens, `card`/`kicker`/`chip`/`field`, `RiskShape`, existing icons; no new colors).

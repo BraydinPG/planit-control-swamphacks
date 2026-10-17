@@ -1,0 +1,12 @@
+{
+  "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/ci38457511.geojson",
+  "file": "ridgecrest-detail.json",
+  "bytes": 155986,
+  "sha256": "b50ed4fa2bf4e43b897db38c5881dcdd0628c242207d96e1146022304f45ec77",
+  "retrieved_at_utc": "2026-10-17T17:06:59.674769Z",
+  "content_type": "application/json; charset=utf-8",
+  "historical_availability_verified": false,
+  "collection_policy": "serial; <=1 request/s/host; 15s timeout; 2 attempts; <=8MB default",
+  "provider_rate_limit": "Provider limits apply; this local cap is not a provider quota guarantee",
+  "use": "Agency attribution and product-specific terms; public research snapshot, no secrets"
+}
