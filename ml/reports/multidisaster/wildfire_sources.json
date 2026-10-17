@@ -1,0 +1,101 @@
+{
+  "status": "OFFICIAL_SOURCE_INVESTIGATION_NOT_MODEL_VALIDATION",
+  "sources": [
+    {
+      "url": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/InterAgencyFirePerimeterHistory_All_Years_View/FeatureServer/0?f=json",
+      "file": "nifc_history_metadata.json",
+      "bytes": 11215,
+      "sha256": "683fb8db5ba7619cf33d5a39462b0124aa99c08b06b4a3ef17eebea9082df97b",
+      "retrieved_at_utc": "2026-10-17T04:57:29.194660+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/InterAgencyFirePerimeterHistory_All_Years_View/FeatureServer/0/query?f=json&where=1%3D1&returnCountOnly=true",
+      "file": "nifc_all_history_count.json",
+      "bytes": 15,
+      "sha256": "bd571653b30a29aa43bdc74158cf7e1e367076aa7606acc9f053170360b120b5",
+      "retrieved_at_utc": "2026-10-17T04:57:29.473446+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/InterAgencyFirePerimeterHistory_All_Years_View/FeatureServer/0/query?f=json&where=FIRE_YEAR_INT+%3E%3D+2021+AND+FIRE_YEAR_INT+%3C%3D+2025&returnCountOnly=true",
+      "file": "nifc_requested_2021_2025_count.json",
+      "bytes": 15,
+      "sha256": "ed29e8723edd7009a714a41a7840740406c6b8cf95767a345e68b7c38410de88",
+      "retrieved_at_utc": "2026-10-17T04:57:29.669375+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/InterAgencyFirePerimeterHistory_All_Years_View/FeatureServer/0/query?f=json&where=1%3D1&outFields=IRWINID%2CUNQE_FIRE_ID%2CFIRE_YEAR_INT%2CDATE_CUR%2CGIS_ACRES%2CINCIDENT%2CFEATURE_CA&returnGeometry=false&resultRecordCount=200&orderByFields=FIRE_YEAR_INT+DESC",
+      "file": "nifc_history_sample.json",
+      "bytes": 37718,
+      "sha256": "c675645e1d056b6f87cbb309f448a29a6a4e7d5feeb877ec6a16e2d2e5548b08",
+      "retrieved_at_utc": "2026-10-17T04:57:30.077467+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/InterAgencyFirePerimeterHistory_All_Years_View/FeatureServer/0/query?f=json&where=FIRE_YEAR_INT+%3E%3D+2021+AND+FIRE_YEAR_INT+%3C%3D+2025&outFields=IRWINID%2CUNQE_FIRE_ID%2CFIRE_YEAR_INT%2CDATE_CUR%2CGIS_ACRES%2CINCIDENT%2CFEATURE_CA&returnGeometry=false&resultRecordCount=200&orderByFields=FIRE_YEAR_INT+DESC",
+      "file": "nifc_2021_2025_sample.json",
+      "bytes": 45427,
+      "sha256": "484eb85078e7fb5c09c668dbfe40c495b543f1e9f71cf624159ba164ce725e67",
+      "retrieved_at_utc": "2026-10-17T05:02:44.450936+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    }
+  ],
+  "prediction_eligible": false,
+  "production_eligibility": false,
+  "available_fields": [
+    "AGENCY",
+    "COMMENTS",
+    "DATE_CUR",
+    "FEATURE_CA",
+    "FIRE_YEAR",
+    "FIRE_YEAR_INT",
+    "FORID",
+    "GEO_ID",
+    "GIS_ACRES",
+    "GlobalID",
+    "INCIDENT",
+    "IRWINID",
+    "LOCAL_NUM",
+    "MAP_METHOD",
+    "OBJECTID",
+    "POO_RESP_I",
+    "SOURCE",
+    "UNIT_ID",
+    "UNQE_FIRE_ID"
+  ],
+  "containment_field_present": false,
+  "all_history_perimeter_record_count": 98168,
+  "requested_2021_2025_perimeter_record_count": 191,
+  "downloaded_perimeter_sample_records": 200,
+  "sample_distinct_incident_ids": 13,
+  "sample_years": [
+    9999
+  ],
+  "sample_is_not_complete_incident_history": true,
+  "requested_period_sample": {
+    "records": 191,
+    "distinct_incident_ids": 177,
+    "years": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "exceeded_transfer_limit": false
+  },
+  "limitations": [
+    "Historical perimeters are mapped footprints, not timestamped containment outcomes.",
+    "A final perimeter or modification date does not reconstruct an as-of growth/containment trajectory.",
+    "The legacy interagency history layer is distinct from current WFIGS annual/perimeter feeds.",
+    "NASA FIRMS historical standard-product downloads require Earthdata archive access; no credentials were requested or fabricated.",
+    "FIRMS detection normalization is implemented and fixture-tested; no historical FIRMS detections were downloaded in this run.",
+    "No wildfire model is trained or exposed; neither hotspot disappearance nor perimeter finalization is containment."
+  ]
+}

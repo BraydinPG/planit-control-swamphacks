@@ -73,7 +73,8 @@ def _coordinate(value: str | None, minimum: float, maximum: float) -> float | No
     return parsed
 
 
-def normalize_noaa_row(row: dict[str, str], source_year: int | None = None) -> dict[str, object]:
+def normalize_noaa_row(row: dict[str, str], source_year: int | None = None, *,
+                       allow_zero_duration: bool = False) -> dict[str, object]:
     """Return an allowlisted event record; never include narratives or final magnitude."""
     missing = _REQUIRED_COLUMNS.difference(row)
     if missing:
@@ -92,7 +93,7 @@ def normalize_noaa_row(row: dict[str, str], source_year: int | None = None) -> d
     start = _utc_timestamp(begin_value, timezone_label)
     end_value = (row.get("END_DATE_TIME") or "").strip()
     end = _utc_timestamp(end_value, timezone_label) if end_value else None
-    if end and end <= start:
+    if end and (end < start or (end == start and not allow_zero_duration)):
         raise ValueError("NOAA recorded end must be later than its recorded start")
 
     latitude = _coordinate(row.get("BEGIN_LAT"), -90, 90)

@@ -1,0 +1,99 @@
+{
+  "source": "NHC Atlantic HURDAT2 post-analysis best tracks",
+  "source_receipt": {
+    "url": "https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt",
+    "file": "hurdat2-1851-2025-092326.txt",
+    "bytes": 7071568,
+    "sha256": "75202780ce56c8458f16fbef5fb8a026b99b00878dbb95c458211b3e6ef125b4",
+    "retrieved_at_utc": "2026-10-17T04:56:01.111111+00:00",
+    "historical_asof_availability_verified": false,
+    "cached": true
+  },
+  "full_archive": {
+    "track_points": 55524,
+    "missing_pressure": 30331,
+    "missing_wind": 32,
+    "storms": 1988
+  },
+  "modeled_period": "2000-2025",
+  "selected_storms": 459,
+  "selected_track_points": 13836,
+  "selected_missing_wind": 0,
+  "selected_missing_pressure": 0,
+  "storms_by_year": {
+    "2000": 19,
+    "2001": 17,
+    "2002": 14,
+    "2003": 21,
+    "2004": 16,
+    "2005": 31,
+    "2006": 10,
+    "2007": 17,
+    "2008": 17,
+    "2009": 11,
+    "2010": 21,
+    "2011": 20,
+    "2012": 19,
+    "2013": 15,
+    "2014": 9,
+    "2015": 12,
+    "2016": 16,
+    "2017": 18,
+    "2018": 16,
+    "2019": 20,
+    "2020": 31,
+    "2021": 21,
+    "2022": 16,
+    "2023": 21,
+    "2024": 18,
+    "2025": 13
+  },
+  "complete_lifecycle_intervals": 327,
+  "label_quality": {
+    "unknown_lifecycle_end_excluded": 132
+  },
+  "basin": "North Atlantic only; no Pacific typhoon generalization",
+  "historical_asof_availability_verified": false,
+  "operational_evaluation_eligible": false,
+  "limitations": [
+    "HURDAT2 is post-storm analysis, not an operational advisory issued at the historical as-of time.",
+    "Wind is cyclone maximum sustained wind, not local site wind.",
+    "Unknown terminal phase is censored/excluded, never inferred from a disappearing track.",
+    "A sampled non-tropical transition is not dissipation, absence of hazards, or work clearance."
+  ],
+  "operational_advisory_probe": {
+    "index_receipt": {
+      "url": "https://www.nhc.noaa.gov/archive/2024/HELENE.shtml",
+      "file": "helene_2024_advisory_index.html",
+      "bytes": 37555,
+      "sha256": "b8771ceee6989681c0f7e5213656d01920db64288b7fa1121f3fefa0c9a892e0",
+      "retrieved_at_utc": "2026-10-17T05:00:08.639145+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    "advisories_examined": [
+      {
+        "url": "https://www.nhc.noaa.gov/archive/2024/al09/al092024.public.001.shtml",
+        "file": "al092024.public.001.shtml",
+        "bytes": 27152,
+        "sha256": "49c92555535ed328273735a610031f0fd2e5aee1dbf6fe755e17d792547a6ff5",
+        "retrieved_at_utc": "2026-10-17T05:02:30.004469+00:00",
+        "historical_asof_availability_verified": false,
+        "cached": true,
+        "issued_time_text_excerpt": "ZCZC MIATCPAT4 ALL TTAA00 KNHC DDHHMM BULLETIN Potential Tropical Cyclone Nine Advisory Number 1 NWS National Hurricane Center Miami FL AL092024 1100 AM EDT Mon Sep 23 2024 ...DISTURBANCE FORECAST TO STRENGTHEN OVER THE NEXT FEW DAYS... ...TROPICAL STORM WARNINGS AND HURRICANE WATCHES ISSUED FOR PORTIONS OF MEXICO AND CUBA... SUMMARY OF 1100 AM EDT...1500 UTC...INFORMATION ----------------------------------------------- LOCATION...17.6N 82.0W ABOUT 130 MI...205 KM SSW OF GRAND CAYMAN ABOUT 350 MI...565 KM SSE OF THE WESTERN TIP OF CUBA MAXIMUM SUSTAINED WINDS...30 MPH...45 KM/H PRESENT MOVEMENT...N OR 350 DEGREES AT 6 MPH...9 KM/H MINIMUM CENTRAL PRESSURE...1004 MB...29.65 INCHES WATCHES AND WARNINGS -------------------- CHANGES WITH THIS ADVISORY: The government of Mexico has issued a Tropical Storm Warning for the Yucatan Peninsula of Mexico from Rio Lagartos to Tulum, and a Hurricane "
+      },
+      {
+        "url": "https://www.nhc.noaa.gov/archive/2024/al09/al092024.public.002.shtml",
+        "file": "al092024.public.002.shtml",
+        "bytes": 28721,
+        "sha256": "f78afdb10b4f7fe51bbd8d426d20a7dd414aa9fedaa1ae48ac5de629f01d1201",
+        "retrieved_at_utc": "2026-10-17T05:02:30.159383+00:00",
+        "historical_asof_availability_verified": false,
+        "cached": true,
+        "issued_time_text_excerpt": "ZCZC MIATCPAT4 ALL TTAA00 KNHC DDHHMM BULLETIN Potential Tropical Cyclone Nine Advisory Number 2 NWS National Hurricane Center Miami FL AL092024 500 PM EDT Mon Sep 23 2024 ...DISTURBANCE FORECAST TO STRENGTHEN SIGNIFICANTLY DURING THE NEXT FEW DAYS... ...TROPICAL STORM WATCHES ISSUED FOR THE LOWER FLORIDA KEYS AND DRY TORTUGAS... SUMMARY OF 500 PM EDT...2100 UTC...INFORMATION ---------------------------------------------- LOCATION...18.1N 82.2W ABOUT 105 MI...170 KM SW OF GRAND CAYMAN ABOUT 315 MI...510 KM SE OF THE WESTERN TIP OF CUBA MAXIMUM SUSTAINED WINDS...35 MPH...55 KM/H PRESENT MOVEMENT...NNW OR 345 DEGREES AT 7 MPH...11 KM/H MINIMUM CENTRAL PRESSURE...1003 MB...29.62 INCHES WATCHES AND WARNINGS -------------------- CHANGES WITH THIS ADVISORY: A Tropical Storm Watch has been issued for the Dry Tortugas and the Lower Florida Keys south of the Seven Mile Bridge. SUMMARY OF WATCHES "
+      }
+    ],
+    "usable_storms_for_training": 0,
+    "status": "availability_demonstrated_not_a_training_or_validation_cohort"
+  }
+}

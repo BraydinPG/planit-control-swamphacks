@@ -17,6 +17,9 @@ reports/purged_v2/*
 !reports/purged_v2/benchmark.json
 !reports/purged_v2/adapter_smoke.json
 !reports/purged_v2/monte_carlo_summary.json
+!reports/multidisaster/
+reports/multidisaster/*
+!reports/multidisaster/*.json
 reports/backtest_smoke_metrics.json
 reports/worker_benchmark.json
 __pycache__/
