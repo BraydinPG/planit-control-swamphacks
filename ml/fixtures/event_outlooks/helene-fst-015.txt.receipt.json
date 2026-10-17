@@ -1,0 +1,12 @@
+{
+  "url": "https://ftp.nhc.noaa.gov/atcf/archive/2024/messages/al092024.fstadv.015",
+  "file": "helene-fst-015.txt",
+  "bytes": 1555,
+  "sha256": "2fb53989a75f7d0045616ba09763f2c60d3af1cec939223fb692be3580800af5",
+  "retrieved_at_utc": "2026-10-17T17:06:56.115063Z",
+  "content_type": "unknown",
+  "historical_availability_verified": false,
+  "collection_policy": "serial; <=1 request/s/host; 15s timeout; 2 attempts; <=8MB default",
+  "provider_rate_limit": "Provider limits apply; this local cap is not a provider quota guarantee",
+  "use": "Agency attribution and product-specific terms; public research snapshot, no secrets"
+}

@@ -13,7 +13,8 @@ the time it runs:
 - `memberships` linking the Auth0 demo crew and supervisor accounts, read from
   `DEMO_CREW_USER_ID` and `DEMO_SUPERVISOR_USER_ID` (Auth0 user IDs, kept in the
   uncommitted backend/.env). Without them, the seed uses `demo|crew` and
-  `demo|supervisor`, which no real account can sign in as.
+  `demo|supervisor`, which no real account can sign in as. Teammates join the same team
+  as crew through `DEMO_EXTRA_CREW_USER_IDS` (comma-separated Auth0 user IDs).
 - Simulated NWS-shaped heat, humidity, rain-chance, and Flood Warning readings.
 - A confirmed wildlife crew report, with the supervisor's sent instruction.
 - A confirmed flood notice built from that simulated Flood Warning, so the site detail
@@ -28,8 +29,9 @@ Only rows tied to the demo site, organization, team, demo notices, and the two d
 accounts are removed. EIA-860M sites and other organizations are untouched. Audit events
 are never deleted. The seed adds its own `demo.seed` event.
 
-Live feeds: with `FEED_REFRESH_ENABLED=true`, the refresh loop later replaces the
-simulated readings with live ones and rescores. The notices, report, and alert stay.
+Live feeds: the refresh loop skips the demo site (`location_type="demo_site"`), so its
+scripted readings, score, and alert stay as seeded while every other site gets live data.
+Re-run `seed` before presenting to restart the 30-minute countdown and tomorrow's briefing.
 """
 
 from dataclasses import dataclass
@@ -61,7 +63,7 @@ from app.schemas import (
     Severity,
 )
 from app.services.alerts import apply_lightning_rule, audit
-from app.services.refresh import observation_row
+from app.services.refresh import DEMO_LOCATION_TYPE, observation_row
 from app.services.reports import DEFAULT_RADIUS_MILES, HAZARD_LABELS, notice_recipients
 from app.services.scoring import score_site
 
@@ -71,6 +73,8 @@ DEMO_SITE_ID = "demo-everglades"
 WILDLIFE_REPORT_ID = "demo-report-wildlife"
 WILDLIFE_NOTICE_ID = "demo-notice-wildlife"
 FLOOD_NOTICE_ID = "demo-notice-flood"
+FLASH_FLOOD_NOTICE_ID = "demo-notice-flash-flood"
+FLASH_FLOOD_ALERT_ID = "demo-nws-flash-flood-warning"
 FLOOD_ALERT_ID = "demo-nws-flood-warning"
 CREW_MEMBERSHIP_ID = "demo-membership-crew"
 SUPERVISOR_MEMBERSHIP_ID = "demo-membership-supervisor"
@@ -105,6 +109,12 @@ WILDLIFE_INSTRUCTION = (
 class DemoAccounts:
     crew_user_id: str = PLACEHOLDER_CREW
     supervisor_user_id: str = PLACEHOLDER_SUPERVISOR
+    # More crew members on the demo team, e.g. each teammate's own account.
+    extra_crew_user_ids: tuple[str, ...] = ()
+
+    @property
+    def user_ids(self) -> list[str]:
+        return [self.crew_user_id, self.supervisor_user_id, *self.extra_crew_user_ids]
 
     @property
     def linked(self) -> bool:
@@ -136,6 +146,8 @@ def seed_demo(
         raise ValueError("now must include a timezone")
     if accounts.crew_user_id == accounts.supervisor_user_id:
         raise ValueError("The crew and supervisor demo accounts must be different users")
+    if len(set(accounts.user_ids)) != len(accounts.user_ids):
+        raise ValueError("Each demo account can appear only once")
     now = now.astimezone(UTC)
     _remove_previous(session, accounts)
 
@@ -205,7 +217,7 @@ def _site_and_people(session: Session, accounts: DemoAccounts) -> db.Site:
             name="Everglades Field Site (demo)",
             lat=SITE_LAT,
             lon=SITE_LON,
-            location_type="demo_site",
+            location_type=DEMO_LOCATION_TYPE,
             source="Demo scenario (simulated; not an EIA-860M location)",
             region="FL",
             timezone=SITE_TIMEZONE,
@@ -235,6 +247,16 @@ def _site_and_people(session: Session, accounts: DemoAccounts) -> db.Site:
                 user_id=accounts.supervisor_user_id,
                 organization_id=DEMO_ORG_ID,
                 role="supervisor",
+            ),
+            *(
+                db.Membership(
+                    id=f"{CREW_MEMBERSHIP_ID}-{n}",
+                    user_id=user_id,
+                    organization_id=DEMO_ORG_ID,
+                    team_id=DEMO_TEAM_ID,
+                    role="crew",
+                )
+                for n, user_id in enumerate(accounts.extra_crew_user_ids, start=2)
             ),
         ]
     )
@@ -379,12 +401,53 @@ def _flood_notice(session: Session, accounts: DemoAccounts, now: datetime) -> No
                 EvidenceKind.OBSERVATION,
                 f"NWS Flood Warning ({SIMULATED})",
                 now - timedelta(hours=3, minutes=5),
-            )
+            ),
+            # T050A: the outlook conditions on a trusted event start, never on the
+            # notice's creation or the warning's issue time.
+            _evidence(
+                f"{FLOOD_NOTICE_ID}:start",
+                EvidenceKind.EVENT_START,
+                f"Flood began ({SIMULATED})",
+                now - timedelta(hours=2, minutes=50),
+            ),
         ],
     )
     session.add(notice)
     session.flush()
     _deliver(session, notice, accounts, created)
+
+    # A second, separate event: a Flash Flood is its own target with its own model.
+    flash = db.HazardNotice(
+        id=FLASH_FLOOD_NOTICE_ID,
+        hazard_label=HAZARD_LABELS[ReportCategory.FLOODING],
+        source=NoticeSource.FEED,
+        source_ref=FLASH_FLOOD_ALERT_ID,
+        lat=SITE_LAT,
+        lon=SITE_LON,
+        radius_miles=DEFAULT_RADIUS_MILES[ReportCategory.FLOODING],
+        radius_source=RadiusSource.DEFAULT,
+        status=NoticeStatus.CONFIRMED,
+        created_at=now - timedelta(minutes=45),
+        confirmed_by=accounts.supervisor_user_id,
+        confirmed_at=now - timedelta(minutes=35),
+        evidence=[
+            _evidence(
+                FLASH_FLOOD_ALERT_ID,
+                EvidenceKind.OBSERVATION,
+                f"NWS Flash Flood Warning ({SIMULATED})",
+                now - timedelta(minutes=70),
+            ),
+            _evidence(
+                f"{FLASH_FLOOD_NOTICE_ID}:start",
+                EvidenceKind.EVENT_START,
+                f"Flash flooding began ({SIMULATED})",
+                now - timedelta(minutes=65),
+            ),
+        ],
+    )
+    session.add(flash)
+    session.flush()
+    _deliver(session, flash, accounts, flash.created_at)
 
 
 def _deliver(
@@ -455,7 +518,9 @@ def _remove_previous(session: Session, accounts: DemoAccounts) -> None:
     session.execute(
         delete(db.HazardNotice).where(
             or_(
-                db.HazardNotice.id.in_([WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID]),
+                db.HazardNotice.id.in_(
+                    [WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID, FLASH_FLOOD_NOTICE_ID]
+                ),
                 db.HazardNotice.source_ref.in_(report_ids),
             )
         )
@@ -471,7 +536,7 @@ def _remove_previous(session: Session, accounts: DemoAccounts) -> None:
         delete(db.Membership).where(
             or_(
                 db.Membership.organization_id == DEMO_ORG_ID,
-                db.Membership.user_id.in_([accounts.crew_user_id, accounts.supervisor_user_id]),
+                db.Membership.user_id.in_(accounts.user_ids),
             )
         )
     )

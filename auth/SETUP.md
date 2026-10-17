@@ -97,12 +97,20 @@ Auth0 does not put role names in tokens by default. The app reads them from the 
 
 ```js
 exports.onExecutePostLogin = async (event, api) => {
-  const claim = 'https://planit-control/roles';
-  const roles = (event.authorization && event.authorization.roles) || [];
-  api.idToken.setCustomClaim(claim, roles);
-  api.accessToken.setCustomClaim(claim, roles);
+  const ns = 'https://planit-control/';
+  const assigned = (event.authorization && event.authorization.roles) || [];
+  // New accounts start as crew. Crew see nothing until they join a team with a
+  // supervisor's join code. Supervisors are only ever assigned here in the dashboard.
+  const roles = assigned.length ? assigned : ['crew'];
+  api.idToken.setCustomClaim(ns + 'roles', roles);
+  api.accessToken.setCustomClaim(ns + 'roles', roles);
+  // Name and email for the supervisor's team roster (never used for access).
+  if (event.user.email) api.accessToken.setCustomClaim(ns + 'email', event.user.email);
+  if (event.user.name) api.accessToken.setCustomClaim(ns + 'name', event.user.name);
 };
 ```
+
+New accounts need no role assignment: they sign up, get `crew` from this Action, and join a team with a code their supervisor creates on the **Team** tab. Only supervisor accounts are assigned a role (Supervisor) in the dashboard, and an administrator links each to an organization (`DEMO_SUPERVISOR_USER_ID`, `BRIEFING_TEST_SUPERVISOR_USER_ID`). The backend gives the default `crew` role its permissions when the token's list is empty; a supervisor always needs its permissions assigned.
 
 Click **Deploy**. Then open **Actions → Triggers → post-login**, drag `Add PlanIT roles` into the flow, and click **Apply**. Without this step, every user sees "No role assigned".
 

@@ -8,7 +8,7 @@ Run from backend/:
 import os
 from pathlib import Path
 
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.engine import Engine
 
 from app.db.connection import get_database_url, to_driver_url
@@ -23,6 +23,9 @@ ADDED_COLUMNS = (
     ("crew_reports", "site_distance_miles", "DOUBLE PRECISION"),
     ("briefings", "risk_score", "DOUBLE PRECISION"),  # T058C
     ("briefings", "data_completeness", "DOUBLE PRECISION"),
+    ("memberships", "email", "VARCHAR"),  # team roster and join codes
+    ("memberships", "display_name", "VARCHAR"),
+    ("memberships", "joined_at", "TIMESTAMPTZ"),
 )
 
 HYPERTABLES = (
@@ -53,15 +56,26 @@ def initialize_database(engine: Engine | None = None) -> None:
     with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
         connection.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb"))
     with engine.begin() as connection:
+        if connection.dialect.name == "postgresql":
+            # Fail fast rather than queue every API request behind a lock we can't get.
+            connection.execute(text("SET LOCAL lock_timeout = '15s'"))
         Base.metadata.create_all(connection)
+        # ALTER and create_hypertable lock the table even when there is nothing to do, and
+        # would queue every request behind a running backend. Touch only what is missing.
+        existing = inspect(connection)
         for table, column, sql_type in ADDED_COLUMNS:
+            if column not in {c["name"] for c in existing.get_columns(table)}:
+                connection.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {sql_type}"))
+        converted = set(
             connection.execute(
-                text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {column} {sql_type}")
-            )
+                text("SELECT hypertable_name FROM timescaledb_information.hypertables")
+            ).scalars()
+        )
         for table, column in HYPERTABLES:
-            connection.execute(
-                text(f"SELECT create_hypertable('{table}', '{column}', if_not_exists => TRUE)")
-            )
+            if table not in converted:
+                connection.execute(
+                    text(f"SELECT create_hypertable('{table}', '{column}', if_not_exists => TRUE)")
+                )
 
 
 def main() -> None:

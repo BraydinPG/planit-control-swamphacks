@@ -28,7 +28,26 @@ from app.schemas.hazards import (
 )
 from app.schemas.observations import HazardType, Observation
 from app.schemas.orgs import Organization, Team, TeamRef
-from app.schemas.outlook import ADVISORY_NOTICE, EventOutlook
+from app.schemas.outlook import (
+    ADVISORY_NOTICE,
+    AftershockBin,
+    AftershockRegion,
+    AftershockWindow,
+    DurationForecast,
+    DurationPersistence,
+    EventOutlook,
+    EventOutlookCard,
+    Mainshock,
+    OfficialAftershockForecast,
+    OfficialEventForecast,
+    OfficialSource,
+    OutlookAssociation,
+    OutlookConfirmation,
+    OutlookEvidenceRef,
+    RemainingDurationHours,
+    StormPoint,
+    UnavailableForecast,
+)
 from app.schemas.reports import (
     AnalysisPoint,
     AnalysisVerdict,
@@ -54,9 +73,23 @@ from app.schemas.species import (
     SpeciesEntry,
     WildlifeReportRef,
 )
+from app.schemas.teams import (
+    Account,
+    JoinCode,
+    JoinRequest,
+    OrganizationTeams,
+    TeamMember,
+    TeamRoster,
+)
 
 __all__ = [
     "ADVISORY_NOTICE",
+    "Account",
+    "JoinCode",
+    "JoinRequest",
+    "OrganizationTeams",
+    "TeamMember",
+    "TeamRoster",
     "AnalysisPoint",
     "AnalysisVerdict",
     "LocationSource",
@@ -71,6 +104,22 @@ __all__ = [
     "DataState",
     "EncounterGuidance",
     "EventOutlook",
+    "AftershockBin",
+    "AftershockRegion",
+    "AftershockWindow",
+    "DurationForecast",
+    "DurationPersistence",
+    "EventOutlookCard",
+    "Mainshock",
+    "OfficialAftershockForecast",
+    "OfficialEventForecast",
+    "OfficialSource",
+    "OutlookAssociation",
+    "OutlookConfirmation",
+    "OutlookEvidenceRef",
+    "RemainingDurationHours",
+    "StormPoint",
+    "UnavailableForecast",
     "Evidence",
     "EvidenceKind",
     "FactorContribution",

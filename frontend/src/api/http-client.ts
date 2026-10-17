@@ -5,11 +5,14 @@ import {
   validateUniqueRows,
 } from './live-read-validation'
 import {
+  validateAccount,
   validateBriefing,
+  validateJoinCode,
   validateReport,
   validateNotice,
   validateConfirmation,
   validateSpeciesContext,
+  validateTeams,
 } from './validate'
 import type { ReportCreate, ReportReview } from '../types/api'
 import { ApiError, type Client } from './contracts'
@@ -23,6 +26,7 @@ export class HttpClient implements Client {
     reviewReports: true,
     hazards: true,
     briefings: true,
+    team: true,
   }
   private base: URL
   private headers: () => Promise<Record<string, string>>
@@ -293,6 +297,29 @@ export class HttpClient implements Client {
         return null
       throw error
     }
+  }
+  me() {
+    return this.request<unknown>('/api/me').then(validateAccount)
+  }
+  team() {
+    return this.request<unknown>('/api/team').then(validateTeams)
+  }
+  createJoinCode(teamId: string) {
+    return this.request<unknown>(
+      `/api/teams/${encodeURIComponent(teamId)}/join-codes`,
+      { method: 'POST' },
+    ).then(validateJoinCode)
+  }
+  async revokeJoinCode(code: string) {
+    await this.request(`/api/join-codes/${encodeURIComponent(code)}`, {
+      method: 'DELETE',
+    })
+  }
+  join(code: string) {
+    return this.request<unknown>('/api/join', {
+      method: 'POST',
+      body: JSON.stringify({ code }),
+    }).then(validateAccount)
   }
 }
 

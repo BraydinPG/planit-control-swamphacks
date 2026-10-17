@@ -18,6 +18,7 @@ export type IconName =
   | 'spark'
   | 'doc'
   | 'layers'
+  | 'team'
 const paths: Record<IconName, string> = {
   overview: 'M3 10.5 12 3l9 7.5V21H3z',
   sites:
@@ -41,6 +42,7 @@ const paths: Record<IconName, string> = {
     'M12 3v4 M12 17v4 M3 12h4 M17 12h4 M6 6l2.5 2.5 M15.5 15.5 18 18 M18 6l-2.5 2.5 M8.5 15.5 6 18',
   doc: 'M6 2h9l5 5v15H6z M14 2v6h6 M9 13h8 M9 17h6',
   layers: 'M12 2 2 7l10 5 10-5-10-5Z M2 17l10 5 10-5 M2 12l10 5 10-5',
+  team: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0 M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75',
 }
 
 export function Icon({

@@ -1,5 +1,10 @@
 /** Runtime checks for canonical T063/T064 reads. Never derives a score or alert state. */
-import type { Alert, SiteDetail, SiteSummary } from '../types/api'
+import type {
+  Alert,
+  EventOutlookCard,
+  SiteDetail,
+  SiteSummary,
+} from '../types/api'
 import { ApiError } from './contracts'
 import {
   date,
@@ -44,6 +49,94 @@ const outlook = (v: unknown) =>
     strings(v.limitations) &&
     v.advisory_notice ===
       'Advisory only. Does not change the score, clear alerts, or authorize work.')
+const FORECAST_KINDS = [
+  'historical_duration_research',
+  'official_event_forecast',
+  'official_aftershock_forecast',
+  'unavailable',
+]
+const outlookCard = (v: unknown, id: string): v is EventOutlookCard =>
+  record(v) &&
+  text(v.event_id) &&
+  v.site_id === id &&
+  text(v.event_name) &&
+  text(v.event_type) &&
+  ['current', 'replay', 'historical_example'].includes(
+    String(v.presentation),
+  ) &&
+  ['available', 'unavailable', 'not_applicable'].includes(String(v.status)) &&
+  record(v.confirmation) &&
+  record(v.association) &&
+  date(v.as_of_utc) &&
+  record(v.forecast) &&
+  FORECAST_KINDS.includes(String(v.forecast.kind)) &&
+  (v.status === 'available') === (v.forecast.kind !== 'unavailable') &&
+  (v.forecast.kind !== 'historical_duration_research' ||
+    (Array.isArray(v.forecast.persistence) &&
+      v.forecast.persistence.every(
+        (p) => record(p) && range(p.recorded_event_ongoing_probability, 0, 1),
+      ))) &&
+  (v.forecast.kind !== 'unavailable' || text(v.forecast.reason)) &&
+  Array.isArray(v.evidence) &&
+  strings(v.limitations) &&
+  typeof v.is_simulated === 'boolean' &&
+  v.production_eligibility === false &&
+  v.site_hazard_probability === null
+/**
+ * T050A cards are advisory: a malformed card becomes a visible "Prediction
+ * unavailable" card instead of failing the whole site page. A backend without
+ * the field (pre-T050A) yields no cards.
+ */
+function outlookCards(v: unknown, id: string): EventOutlookCard[] {
+  if (v === undefined) return []
+  if (!Array.isArray(v)) throw new ApiError(502, 'Invalid event outlooks')
+  return v.map((card, index) =>
+    outlookCard(card, id)
+      ? card
+      : {
+          event_id: `invalid-outlook-${index}`,
+          site_id: id,
+          notice_id: null,
+          event_name: 'Event outlook',
+          event_type: 'Unknown',
+          presentation: 'current',
+          confirmation: {
+            status: 'unconfirmed',
+            basis: 'none',
+            source_id: null,
+            confirmed_at_utc: null,
+            available_at_utc: null,
+          },
+          association: {
+            site_id: id,
+            method: 'unknown',
+            source_id: null,
+            description: 'Not supplied.',
+          },
+          as_of_utc: new Date().toISOString(),
+          event_start_utc: null,
+          last_observation_at_utc: null,
+          last_forecast_issued_at_utc: null,
+          evidence_status: 'rejected_for_forecast',
+          status: 'unavailable',
+          forecast: {
+            kind: 'unavailable',
+            reason_code: 'invalid_response',
+            reason:
+              'Prediction unavailable: the server sent an outlook this page could not verify.',
+            required_inputs: [],
+          },
+          evidence: [],
+          limitations: [],
+          is_simulated: false,
+          research_only: true,
+          production_eligibility: false,
+          site_hazard_probability: null,
+          advisory_notice:
+            'Advisory only. Does not change the score, clear alerts, or authorize work.',
+        },
+  )
+}
 const factors = (v: unknown) =>
   Array.isArray(v) &&
   v.every(
@@ -226,15 +319,20 @@ export function validateSiteDetail(v: unknown, id: string): SiteDetail {
       v.risk_level !== v.score.risk_level ||
       v.model_version !== v.score.model_version ||
       v.data_completeness !== v.score.data_completeness ||
-      Date.parse(String(v.updated_at)) !== Date.parse(String(v.score.created_at)))
+      Date.parse(String(v.updated_at)) !==
+        Date.parse(String(v.score.created_at)))
   )
     throw new ApiError(
       502,
       'Inconsistent stored score response. Refresh before using this site detail.',
     )
   if (v.score === null && (v.risk_score !== null || v.risk_level !== null))
-    throw new ApiError(502, 'Site detail is missing its stored score breakdown.')
+    throw new ApiError(
+      502,
+      'Site detail is missing its stored score breakdown.',
+    )
   v.notices.forEach((notice) => validateNotice(notice)) // Radius/receipt scope is enforced by FastAPI.
+  v.event_outlooks = outlookCards(v.event_outlooks, id)
   return v as unknown as SiteDetail
 }
 

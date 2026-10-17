@@ -1,9 +1,12 @@
 import { ApiError } from './contracts'
 import type {
+  Account,
   Briefing,
   CrewReport,
   HazardNotice,
   HazardConfirmResponse,
+  JoinCode,
+  OrganizationTeams,
   SiteSpeciesContext,
 } from '../types/api'
 
@@ -37,6 +40,73 @@ const risk = (v: unknown) =>
 const inRange = (v: unknown, max: number) =>
   v === null ||
   (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= max)
+const role = (v: unknown) => v === 'crew' || v === 'supervisor'
+const nullable = (v: unknown) => v === null || text(v)
+export function validateAccount(v: unknown): Account {
+  if (
+    !record(v) ||
+    !role(v.role) ||
+    ![
+      'organization_id',
+      'organization_name',
+      'team_id',
+      'team_name',
+      'site_id',
+    ].every((k) => nullable(v[k]))
+  )
+    throw new ApiError(502, 'Invalid account response')
+  return v as unknown as Account
+}
+const codeShape = /^[A-Z2-9]{4}-[A-Z2-9]{4}$/
+export function validateJoinCode(v: unknown): JoinCode {
+  if (
+    !record(v) ||
+    !text(v.code) ||
+    !codeShape.test(v.code) ||
+    !text(v.team_id) ||
+    !date(v.created_at) ||
+    !date(v.expires_at)
+  )
+    throw new ApiError(502, 'Invalid join code response')
+  return v as unknown as JoinCode
+}
+const member = (v: unknown) =>
+  record(v) &&
+  text(v.user_id) &&
+  nullable(v.name) &&
+  nullable(v.email) &&
+  role(v.role) &&
+  (v.joined_at === null || date(v.joined_at))
+export function validateTeams(v: unknown): OrganizationTeams {
+  if (
+    !record(v) ||
+    !text(v.organization_id) ||
+    !text(v.organization_name) ||
+    !Array.isArray(v.supervisors) ||
+    !v.supervisors.every(member) ||
+    !Array.isArray(v.teams) ||
+    !v.teams.every(
+      (t) =>
+        record(t) &&
+        text(t.id) &&
+        text(t.name) &&
+        nullable(t.site_id) &&
+        nullable(t.site_name) &&
+        Array.isArray(t.members) &&
+        t.members.every(member) &&
+        Array.isArray(t.join_codes) &&
+        t.join_codes.every((c) => {
+          try {
+            return Boolean(validateJoinCode(c))
+          } catch {
+            return false
+          }
+        }),
+    )
+  )
+    throw new ApiError(502, 'Invalid team response')
+  return v as unknown as OrganizationTeams
+}
 export function validateBriefing(v: unknown, site?: string): Briefing {
   if (
     !record(v) ||

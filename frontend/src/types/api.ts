@@ -21,6 +21,8 @@ export type EvidenceKind =
   | 'score_factor'
   | 'model_output'
   | 'notice'
+  /** Trusted, server-written start of a confirmed event (T050A). */
+  | 'event_start'
 
 /** `fallback` is the deterministic template used when Gemini fails. */
 export type GeneratedBy = 'gemini' | 'fallback'
@@ -65,6 +67,58 @@ export interface Team {
   organization_id: string
   name: string
   site_id: string | null
+}
+
+// ---- team onboarding and roster ----
+
+/** One person on a roster. Name and email come from their Auth0 sign-in. */
+export interface TeamMember {
+  user_id: string
+  name: string | null
+  email: string | null
+  role: 'crew' | 'supervisor'
+  joined_at: string | null
+}
+
+/** `XXXX-XXXX`: lets a crew account join one team until it expires (7 days) or is revoked. */
+export interface JoinCode {
+  code: string
+  team_id: string
+  created_at: string
+  expires_at: string
+}
+
+export interface TeamRoster {
+  id: string
+  name: string
+  site_id: string | null
+  site_name: string | null
+  members: TeamMember[]
+  /** Active codes only. */
+  join_codes: JoinCode[]
+}
+
+/** GET /api/team: the supervisor's organization, its supervisors, and every team. */
+export interface OrganizationTeams {
+  organization_id: string
+  organization_name: string
+  supervisors: TeamMember[]
+  teams: TeamRoster[]
+}
+
+/** GET /api/me and POST /api/join. Organization fields are null until the account joins. */
+export interface Account {
+  role: 'crew' | 'supervisor'
+  organization_id: string | null
+  organization_name: string | null
+  team_id: string | null
+  team_name: string | null
+  site_id: string | null
+}
+
+/** Body for POST /api/join. Case, spaces and a missing dash are forgiven. */
+export interface JoinRequest {
+  code: string
 }
 
 // ---- observations ----
@@ -392,6 +446,181 @@ export interface SiteDetail extends SiteSummary {
   notices: HazardNotice[]
   /** Advisory outlook for a supervisor-confirmed active event. Null when none. */
   event_outlook: EventOutlook | null
+  /**
+   * T050A: one advisory card per confirmed event, keyed by event_id. Never changes
+   * the score, alerts, the lightning timer, or work authorization.
+   */
+  event_outlooks: EventOutlookCard[]
+}
+
+// ---- T050A event outlook cards (mirror of app.schemas.outlook) ----
+
+export interface OutlookConfirmation {
+  status: 'confirmed_active' | 'historical_replay' | 'unconfirmed' | 'resolved'
+  basis:
+    | 'independent_observation'
+    | 'confirmed_worksite_report'
+    | 'historical_record'
+    | 'hypothetical_activation'
+    | 'official_event_record'
+    | 'warning_only'
+    | 'none'
+  source_id: string | null
+  confirmed_at_utc: string | null
+  available_at_utc: string | null
+}
+
+export interface OutlookAssociation {
+  site_id: string
+  method: 'site_verified' | 'regional_context' | 'reference_replay' | 'unknown'
+  source_id: string | null
+  description: string
+}
+
+export interface OutlookEvidenceRef {
+  id: string
+  source_id: string
+  valid_time_utc: string
+  available_at_utc: string
+}
+
+export interface DurationPersistence {
+  horizon_hours: number
+  /** Chance the recorded event is still ongoing at the horizon (0–1). */
+  recorded_event_ongoing_probability: number
+}
+
+export interface RemainingDurationHours {
+  p10: number | null
+  median: number | null
+  p90: number | null
+}
+
+export interface DurationForecast {
+  kind: 'historical_duration_research'
+  target_definition: string
+  model_version: string
+  estimator: string
+  persistence: DurationPersistence[]
+  remaining_duration_hours: RemainingDurationHours
+  model_card: string
+  training_support_at_event_age: number | null
+  trend: 'unknown'
+}
+
+export interface OfficialSource {
+  id: string
+  provider: 'NHC' | 'USGS'
+  url: string
+  sha256: string
+  issued_at_utc: string
+  retrieved_at_utc: string
+  available_at_utc: string | null
+  vintage: 'archive_capture' | 'contemporaneous_capture'
+}
+
+export interface StormPoint {
+  lat: number
+  lon: number
+  valid_at_utc: string
+  max_sustained_wind_kt: number
+  gust_kt: number | null
+  phase: string | null
+}
+
+export interface OfficialEventForecast {
+  kind: 'official_event_forecast'
+  cyclone_id: string
+  storm_name: string
+  provider_version: string
+  source: OfficialSource
+  next_advisory_at_utc: string
+  initial_position: StormPoint
+  forecast_points: StormPoint[]
+  site_wind_forecast: null
+}
+
+export interface Mainshock {
+  lat: number
+  lon: number
+  event_id: string
+  time_utc: string
+  magnitude: number
+}
+
+export interface AftershockBin {
+  magnitude_at_least: number
+  probability_at_least_one: number
+  count_p95_minimum: number | null
+  count_p95_maximum: number | null
+}
+
+export interface AftershockWindow {
+  label: string
+  start_utc: string
+  end_utc: string
+  bins: AftershockBin[]
+}
+
+export interface AftershockRegion {
+  lat: number
+  lon: number
+  radius_km: number
+  interpretation: 'provider_sequence_region_not_site_probability'
+}
+
+export interface OfficialAftershockForecast {
+  kind: 'official_aftershock_forecast'
+  mainshock: Mainshock
+  provider_version: string
+  source: OfficialSource
+  mainshock_source: OfficialSource
+  expires_at_utc: string
+  region: AftershockRegion
+  windows: AftershockWindow[]
+  earthquake_remaining_duration: null
+}
+
+export interface UnavailableForecast {
+  kind: 'unavailable'
+  reason_code: string
+  reason: string
+  required_inputs: string[]
+}
+
+export type OutlookForecast =
+  | DurationForecast
+  | OfficialEventForecast
+  | OfficialAftershockForecast
+  | UnavailableForecast
+
+export interface EventOutlookCard {
+  event_id: string
+  site_id: string
+  notice_id: string | null
+  event_name: string
+  event_type: string
+  /** historical_example: archived product shown as an example, not a current prediction. */
+  presentation: 'current' | 'replay' | 'historical_example'
+  confirmation: OutlookConfirmation
+  association: OutlookAssociation
+  as_of_utc: string
+  event_start_utc: string | null
+  last_observation_at_utc: string | null
+  last_forecast_issued_at_utc: string | null
+  evidence_status:
+    | 'rejected_for_forecast'
+    | 'accepted_for_research'
+    | 'issued_provider_product'
+  status: 'available' | 'unavailable' | 'not_applicable'
+  forecast: OutlookForecast
+  evidence: OutlookEvidenceRef[]
+  limitations: string[]
+  is_simulated: boolean
+  research_only: boolean
+  production_eligibility: false
+  site_hazard_probability: null
+  advisory_notice: string
 }
 
 // ---- species context (GET /api/sites/{id}/species) ----

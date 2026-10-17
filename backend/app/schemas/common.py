@@ -35,6 +35,9 @@ class EvidenceKind(StrEnum):
     SCORE_FACTOR = "score_factor"
     MODEL_OUTPUT = "model_output"
     NOTICE = "notice"
+    # Trusted, server-written start time of a confirmed event (T050A). Never a notice
+    # or warning creation time.
+    EVENT_START = "event_start"
 
 
 class GeneratedBy(StrEnum):

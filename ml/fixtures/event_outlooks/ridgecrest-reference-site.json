@@ -1,0 +1,21 @@
+{
+  "site": {
+    "id": "eia860m-CA-57764",
+    "name": "Naval Air Weapons Station China Lake",
+    "lat": 35.68771,
+    "lon": -117.6814,
+    "source": "EIA-860M August 2026 (representative power plant location)",
+    "inventory_vintage": "2026-08; current reference, not historical work order"
+  },
+  "distance_to_oaf_region_center_km": 14.298549011216354,
+  "selection": "Nearest operating workbook row to the published OAF circle; existing backend read-only load_plants mapping; not seeded or a verified work order",
+  "eia_source_receipt": {
+    "url": "https://www.eia.gov/electricity/data/eia860m/xls/august_generator2026.xlsx",
+    "file": "august_generator2026.xlsx",
+    "bytes": 13955142,
+    "sha256": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "retrieved_at_utc": "2026-10-17T05:30:41.806592+00:00",
+    "historical_asof_availability_verified": false
+  },
+  "oaf_region_source_sha256": "8ad8a8332c8e349ae847b46b831401c9fa0f738fbe9297ed30e590ca02584c0c"
+}

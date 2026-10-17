@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 
-from app.api import alerts, hazards, reports, sites, species
+from app.api import alerts, hazards, reports, sites, species, teams
 from app.db import validate_database_url
 from app.gemini import router as gemini_router
 from app.gemini.briefing_schedule import start_briefing_scheduler
@@ -50,6 +50,7 @@ app.include_router(alerts.router)
 app.include_router(reports.router)
 app.include_router(hazards.router)
 app.include_router(species.router)
+app.include_router(teams.router)
 app.include_router(gemini_router.router)
 
 

@@ -21,7 +21,15 @@ from app.api.deps import get_db, get_now
 from app.db import models as db
 from app.ingestion import SiteLike
 from app.ingestion.settings import get_ingestion_settings
-from app.outlook import EventOutlookService, event_context_from_notice, get_event_outlook_service
+from app.outlook import (
+    EventOutlookService,
+    EventOutlooksService,
+    event_context_from_notice,
+    event_inputs,
+    get_event_outlook_service,
+    get_event_outlooks_service,
+)
+from app.outlook.context import is_simulated
 from app.schemas import (
     Acknowledgement,
     Alert,
@@ -51,6 +59,7 @@ NOTICE_LIMIT = 20
 DbSession = Annotated[Session, Depends(get_db)]
 Now = Annotated[datetime, Depends(get_now)]
 OutlookService = Annotated[EventOutlookService, Depends(get_event_outlook_service)]
+OutlooksService = Annotated[EventOutlooksService, Depends(get_event_outlooks_service)]
 
 
 @router.get("", response_model=list[SiteSummary])
@@ -79,6 +88,7 @@ def get_site(
     session: DbSession,
     now: Now,
     outlooks: OutlookService,
+    event_outlooks: OutlooksService,
 ) -> SiteDetail:
     visible = visible_site_ids(session, user)
     if visible is not None and site_id not in visible:
@@ -92,17 +102,27 @@ def get_site(
     alerts = load_active_alerts(session, site_id)
     summary = _summary(site, score, len(alerts))
     notices = load_notices(session, site, viewer=user)
+    observations = load_observations(session, site_id, now)
+    reports = load_reports(session, site_id, viewer=user)
+    # Advisory only, computed after the score and alerts and never fed back into them.
+    cards = event_outlooks.cards(
+        site,
+        event_inputs(site, notices, reports, observations, now),
+        now,
+        demo=any(is_simulated(n) for n in notices),
+    )
     return SiteDetail(
         **summary.model_dump(),
         location_type=site.location_type,
         source=site.source,
         region=site.region,
-        observations=load_observations(session, site_id, now),
+        observations=observations,
         score=_score(score) if score else None,
         alerts=alerts,
-        reports=load_reports(session, site_id, viewer=user),
+        reports=reports,
         notices=notices,
         event_outlook=event_outlook_for(outlooks, summary, notices, now),
+        event_outlooks=cards,
     )
 
 
