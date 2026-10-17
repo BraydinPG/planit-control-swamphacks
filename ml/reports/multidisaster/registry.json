@@ -1,0 +1,377 @@
+{
+  "contract_version": "1.1",
+  "events": {
+    "High Wind": {
+      "status": "evaluated_research",
+      "category": "high_wind",
+      "event_type": "High Wind",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration High Wind recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/high_wind.joblib",
+      "artifact_sha256": "f1747096ad30d175c39131d28e32cfef600da89da681668c4c21a07bd7c9ed5a",
+      "artifact_model_version": "active-high_wind-pooled-logistic-v1",
+      "selected_estimator": "kaplan_meier",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": true,
+      "qualification_failures": [],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Strong Wind": {
+      "status": "trained_not_qualified",
+      "category": "strong_wind",
+      "event_type": "Strong Wind",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Strong Wind recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        1,
+        3,
+        6
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/strong_wind.joblib",
+      "artifact_sha256": "e846181a2ef508cc39db84fd3f244e0bf975416ceaa4439de44f017f91e91f2f",
+      "artifact_model_version": "active-strong_wind-pooled-logistic-v1",
+      "selected_estimator": "logistic",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": false,
+      "qualification_failures": [
+        "test_3h_calibration_gate_failed"
+      ],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Flash Flood": {
+      "status": "evaluated_research",
+      "category": "flash_flood",
+      "event_type": "Flash Flood",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Flash Flood recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        1,
+        3,
+        6
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/flash_flood.joblib",
+      "artifact_sha256": "b0d0fb70077ccaf2d9eadd234278c34ac88928393682465dc00d146a2032af7f",
+      "artifact_model_version": "active-flash_flood-pooled-logistic-v1",
+      "selected_estimator": "kaplan_meier",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": true,
+      "qualification_failures": [],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Heavy Rain": {
+      "status": "evaluated_research",
+      "category": "heavy_rain",
+      "event_type": "Heavy Rain",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Heavy Rain recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        1,
+        3,
+        6
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/heavy_rain.joblib",
+      "artifact_sha256": "fbdee08c9e7dbc93a061f007f15045679e585950cc204197b3effc4ec8488120",
+      "artifact_model_version": "active-heavy_rain-pooled-logistic-v1",
+      "selected_estimator": "kaplan_meier",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": true,
+      "qualification_failures": [],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Winter Storm": {
+      "status": "evaluated_research",
+      "category": "winter_storm",
+      "event_type": "Winter Storm",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Winter Storm recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/winter_storm.joblib",
+      "artifact_sha256": "17e614428e1051c9af8ae5e38f3e02027699d9aad4c200167906bb8ab67b4110",
+      "artifact_model_version": "active-winter_storm-pooled-logistic-v1",
+      "selected_estimator": "kaplan_meier",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": true,
+      "qualification_failures": [],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Ice Storm": {
+      "status": "trained_not_qualified",
+      "category": "ice_storm",
+      "event_type": "Ice Storm",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Ice Storm recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/ice_storm.joblib",
+      "artifact_sha256": "143100e02cca8d68bab7331b3709d0545c361c21c5c8609b5fb016575b74ced9",
+      "artifact_model_version": "active-ice_storm-pooled-logistic-v1",
+      "selected_estimator": "logistic",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": false,
+      "qualification_failures": [
+        "validation_6h_insufficient_episode_groups",
+        "validation_12h_insufficient_episode_groups",
+        "validation_24h_insufficient_episode_groups",
+        "validation_24h_sparse_outcome_class",
+        "validation_24h_calibration_gate_failed"
+      ],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Heavy Snow": {
+      "status": "trained_not_qualified",
+      "category": "heavy_snow",
+      "event_type": "Heavy Snow",
+      "event_definition": "noaa_positive_continuous_recorded_interval",
+      "target": "NOAA regional positive-duration Heavy Snow recorded-interval persistence; not intensity or site safety",
+      "supported_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "minimum_event_age_hours": 1,
+      "artifact": "multidisaster/heavy_snow.joblib",
+      "artifact_sha256": "eb808f2ba7f5235dde0a3eeb7adcacb5f33c95576eab517d371f59c9f4f8aa6c",
+      "artifact_model_version": "active-heavy_snow-pooled-logistic-v1",
+      "selected_estimator": "logistic",
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "prediction_eligible": false,
+      "qualification_failures": [
+        "test_12h_calibration_gate_failed",
+        "test_24h_calibration_gate_failed"
+      ],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "NOAA regional recorded interval, not verified worksite exposure or safety.",
+        "Zero-duration/point reports are excluded; at least one hour of independently confirmed continuing activity is required."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Heat Index Exceedance": {
+      "status": "evaluated_research",
+      "category": "heat",
+      "event_type": "Heat Index Exceedance",
+      "event_definition": "observed_station_hourly_heat_index_at_or_above_90f",
+      "target": "Observed hourly station heat-index >=90F threshold-episode persistence, not NOAA administrative Heat duration or worksite safety",
+      "supported_horizons_hours": [
+        1,
+        3,
+        6
+      ],
+      "minimum_event_age_hours": 0,
+      "artifact": "multidisaster/heat_index_exceedance.joblib",
+      "artifact_sha256": "50b6c8423a6239b59bd38d822e03b6a005dc0074fc81eb17685a6f4390876f06",
+      "artifact_model_version": "active-heat_index_exceedance-pooled-logistic-v1",
+      "selected_estimator": "logistic",
+      "data_version": "NOAA-ISD-Lite-2021-2025:81caf434714c00959f8c48cad9838565ca750111a51723e6d77395a57676914f",
+      "prediction_eligible": true,
+      "qualification_failures": [],
+      "limitations": [
+        "Recorded/observed episode end is not worksite clearance.",
+        "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+        "Historical source revision/availability is not verified as of the past decision time.",
+        "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+        "Three airport stations in FL/TX/AZ, not a nationwide site-exposure model.",
+        "2025 legacy station archives end in August; no complete-year claim.",
+        "Hourly rounded archived observations; individual QC flags and original issue/acquisition times are unavailable in ISD-Lite.",
+        "Threshold 90F is a configurable research definition, not work/rest or employer policy.",
+        "Heat index is derived from observed temperature/dewpoint; it is not a directly measured WBGT.",
+        "Station/week clusters reduce repeated-cycle dependence but are not independent regional heatwaves."
+      ],
+      "historical_asof_availability_verified": false,
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false
+    },
+    "Thunderstorm Wind": {
+      "status": "ingestion_only",
+      "event_type": "Thunderstorm Wind",
+      "category": "thunderstorm_wind",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "Damage/point reports do not establish a continuous thunderstorm lifetime or intensity trajectory."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Hurricane (Typhoon)": {
+      "status": "ingestion_only",
+      "event_type": "Hurricane (Typhoon)",
+      "category": "tropical_cyclone",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "Regional NOAA episodes are not cyclone identities; use NHC storm-grouped tracks/advisories."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Tropical Storm": {
+      "status": "ingestion_only",
+      "event_type": "Tropical Storm",
+      "category": "tropical_cyclone",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "Regional reports cannot replace NHC storm identity or advisory-time measurements."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Tropical Depression": {
+      "status": "ingestion_only",
+      "event_type": "Tropical Depression",
+      "category": "tropical_cyclone",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "Regional reports cannot replace NHC storm identity or advisory-time measurements."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Excessive Heat": {
+      "status": "ingestion_only",
+      "event_type": "Excessive Heat",
+      "category": "heat",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "Administrative reporting intervals are not measured station heat-index threshold exceedances."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Heat": {
+      "status": "ingestion_only",
+      "event_type": "Heat",
+      "category": "heat",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "Use separately derived observed station threshold episodes; NOAA administrative duration is not local heat exposure."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Wildfire": {
+      "status": "ingestion_only",
+      "event_type": "Wildfire",
+      "category": "wildfire",
+      "prediction_eligible": false,
+      "qualification_failures": [],
+      "data_version": "NOAA-2021-2025:52ea4091b89e69f5b409531dd56fc00829e29bdb60cf187c47dfebe699b58508",
+      "limitations": [
+        "No stable incident identity or containment time series in these NOAA rows; recorded end is not containment."
+      ],
+      "operational_evaluation_eligible": false,
+      "production_eligibility": false,
+      "historical_asof_availability_verified": false
+    },
+    "Flood": {
+      "event_type": "Flood",
+      "category": "flood",
+      "status": "preserved_research_default",
+      "prediction_eligible": true,
+      "model_version": "noaa-flood-conditional-km-v2",
+      "data_version": "NOAA-2021-2025-pinned-purged-v2",
+      "evaluation_reference": "ml/reports/purged_v2/backtest_metrics.json",
+      "production_eligibility": false,
+      "operational_evaluation_eligible": false
+    }
+  }
+}

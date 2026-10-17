@@ -1,5 +1,7 @@
 # Evaluation
 
+This page preserves the Flood v2 evaluation. New event-specific evaluations, including failed categories and the offline NHC experiment, are in [MULTIDISASTER_EVALUATION.md](MULTIDISASTER_EVALUATION.md); source/target policies are in [MULTIDISASTER.md](MULTIDISASTER.md).
+
 **Current evidence: newly rerun, boundary-purged historical Flood backtest; production eligibility is false.** The 2025 period was previously inspected. It is out of time relative to fitting, but not a fresh untouched holdout.
 
 ## Provenance and correction

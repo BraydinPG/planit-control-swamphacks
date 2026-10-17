@@ -1,6 +1,8 @@
 # Backend integration contract
 
-Rudra owns event confirmation, authorization, routes, scores, and deterministic alerts. Braydin owns database/ingestion modules. The integrated backend exposes only `GET /health`; canonical Pydantic schemas and their TypeScript mirror are now published, while frontend/auth implementations remain starter/placeholders. This package provides a tested import, not live route integration. Team changes through `origin/main` at `008ba2a` are integrated.
+Contract 1.1 adds event-specific research dispatch without changing these callable signatures or shared route schemas. Read the [multi-disaster handoff](MULTIDISASTER.md#rudra-handoff-contract-11) for exact target definitions, horizons, evidence requirements, qualified/disabled types, and examples. The instructions below retain the Flood v2 integration.
+
+Rudra owns event confirmation, authorization, routes, scores, and deterministic alerts. Braydin owns database/ingestion modules. This package provides a tested import, not live route integration. The expansion began from `cf9d3bb` after Flood PR #4 merged and was rebased onto `origin/main` at `482b4f9`, including the team's merged API PR #5 and ownership updates. Unmerged team feature work is preserved.
 
 ## Import and lifecycle
 

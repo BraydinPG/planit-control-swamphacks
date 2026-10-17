@@ -1,0 +1,882 @@
+{
+  "status": "evaluated_research",
+  "event_type": "Heat Index Exceedance",
+  "category": "heat",
+  "event_definition": "observed_station_hourly_heat_index_at_or_above_90f",
+  "target": "Observed hourly station heat-index >=90F threshold-episode persistence, not NOAA administrative Heat duration or worksite safety",
+  "supported_horizons_hours": [
+    1,
+    3,
+    6
+  ],
+  "minimum_event_age_hours": 0,
+  "artifact": "multidisaster/heat_index_exceedance.joblib",
+  "artifact_sha256": "50b6c8423a6239b59bd38d822e03b6a005dc0074fc81eb17685a6f4390876f06",
+  "artifact_model_version": "active-heat_index_exceedance-pooled-logistic-v1",
+  "selected_estimator": "logistic",
+  "data_version": "NOAA-ISD-Lite-2021-2025:81caf434714c00959f8c48cad9838565ca750111a51723e6d77395a57676914f",
+  "source_receipts": [
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv",
+      "file": "isd-history.csv",
+      "bytes": 2914601,
+      "sha256": "1994747ab4af1b97e63adb434b4d0d022f2daee76f0c144ea9ab46be2d906604",
+      "retrieved_at_utc": "2026-10-17T04:50:49.706992+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2021/722020-12839-2021.gz",
+      "file": "722020-12839-2021.gz",
+      "bytes": 82939,
+      "sha256": "da8b88750778c8c9699151b7127ef3b359678609b362f5ddbb59dfed09a0af07",
+      "retrieved_at_utc": "2026-10-17T04:55:00.496706+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2022/722020-12839-2022.gz",
+      "file": "722020-12839-2022.gz",
+      "bytes": 83190,
+      "sha256": "0a7b26d7dc5ac90001ad75e540e6de86d8aa12d7467ff98735061dc371016b1c",
+      "retrieved_at_utc": "2026-10-17T04:55:00.776578+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2023/722020-12839-2023.gz",
+      "file": "722020-12839-2023.gz",
+      "bytes": 83472,
+      "sha256": "59b5845f3914220cbca8231de37acd68d52db2acf47a7d061236decf6b185a51",
+      "retrieved_at_utc": "2026-10-17T04:55:01.031974+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2024/722020-12839-2024.gz",
+      "file": "722020-12839-2024.gz",
+      "bytes": 83495,
+      "sha256": "fcb9c0604da56038c2faaed06841a99696edb464a2e0daa60b3cf014ada58a49",
+      "retrieved_at_utc": "2026-10-17T04:55:01.368002+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2025/722020-12839-2025.gz",
+      "file": "722020-12839-2025.gz",
+      "bytes": 53563,
+      "sha256": "e5f2c581f5eaa6fcdaf332b2e04019e36b36c89f6482f659429cc20e87c49f92",
+      "retrieved_at_utc": "2026-10-17T04:55:01.686911+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2021/722430-12960-2021.gz",
+      "file": "722430-12960-2021.gz",
+      "bytes": 85548,
+      "sha256": "59c04cc8072479f27e844f860c18c5988998f35c0b4a7795f12d1284e5344433",
+      "retrieved_at_utc": "2026-10-17T04:55:02.040419+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2022/722430-12960-2022.gz",
+      "file": "722430-12960-2022.gz",
+      "bytes": 85975,
+      "sha256": "92d5be2228a90a220f4540dbc01f727cb56d2552411b42a029da0b1ba09d38b9",
+      "retrieved_at_utc": "2026-10-17T04:55:02.336707+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2023/722430-12960-2023.gz",
+      "file": "722430-12960-2023.gz",
+      "bytes": 85510,
+      "sha256": "8206470b040fc5dfb1f381cf76374d336a9a8783d9c63f3325b01d4d814fe977",
+      "retrieved_at_utc": "2026-10-17T04:55:02.641365+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2024/722430-12960-2024.gz",
+      "file": "722430-12960-2024.gz",
+      "bytes": 86467,
+      "sha256": "a79f204d1b20da8ef975c0a52343d9a0102447670d122becf16c05f80eeda8ef",
+      "retrieved_at_utc": "2026-10-17T04:55:02.998502+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2025/722430-12960-2025.gz",
+      "file": "722430-12960-2025.gz",
+      "bytes": 56394,
+      "sha256": "b9f49ce5da12ec6beb6ccdeb5c7a4e76bd0380b7d5aa77cf1222db2e4102a317",
+      "retrieved_at_utc": "2026-10-17T04:55:03.393516+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2021/722780-23183-2021.gz",
+      "file": "722780-23183-2021.gz",
+      "bytes": 86968,
+      "sha256": "6c080d18a86413aa1dd90ebeed234b4621b28acfd728719781e20ac14486cff1",
+      "retrieved_at_utc": "2026-10-17T04:55:03.775008+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2022/722780-23183-2022.gz",
+      "file": "722780-23183-2022.gz",
+      "bytes": 86935,
+      "sha256": "9047cf201584774903ce7f9bccb881ae226cc301881151e7e423e44cd5271679",
+      "retrieved_at_utc": "2026-10-17T04:55:04.183433+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2023/722780-23183-2023.gz",
+      "file": "722780-23183-2023.gz",
+      "bytes": 86917,
+      "sha256": "91d246cdeb92d961b92fd619d84ecca9c520d92a19f993fcc2ce3c8aa16c606b",
+      "retrieved_at_utc": "2026-10-17T04:55:04.482182+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2024/722780-23183-2024.gz",
+      "file": "722780-23183-2024.gz",
+      "bytes": 86567,
+      "sha256": "d0541c71d3a0523725575557995c1bc17939d0f96add0d5285a59920ed96d44c",
+      "retrieved_at_utc": "2026-10-17T04:55:04.793673+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2025/722780-23183-2025.gz",
+      "file": "722780-23183-2025.gz",
+      "bytes": 57025,
+      "sha256": "94d20420f93c9fb89e7d69f1b49ca046062bd6b4bb4f4ea09f04cc7694bcbe47",
+      "retrieved_at_utc": "2026-10-17T04:55:05.091721+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    }
+  ],
+  "training_policy": "whole_episode_purge_plus_7_day_fit_selection_embargo",
+  "split": {
+    "train": {
+      "event_records": 1666,
+      "episode_groups": 265,
+      "snapshots": 4391
+    },
+    "validation": {
+      "event_records": 524,
+      "episode_groups": 92,
+      "snapshots": 1438
+    },
+    "test": {
+      "event_records": 396,
+      "episode_groups": 59,
+      "snapshots": 1116
+    },
+    "excluded": {
+      "event_records": 0,
+      "episode_groups": 0,
+      "snapshots": 0
+    }
+  },
+  "validation": {
+    "logistic": {
+      "1h": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "brier_score": 0.09406757941456745,
+        "reliability": [
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4544783660259941,
+            "observed_frequency": 0.6666666666666666,
+            "count": 3
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5451860525824463,
+            "observed_frequency": 0.625,
+            "count": 8
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.675416507163273,
+            "observed_frequency": 0.6363636363636364,
+            "count": 22
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.723726953763391,
+            "observed_frequency": 0.6153846153846154,
+            "count": 13
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8544542110844731,
+            "observed_frequency": 0.8595890410958904,
+            "count": 584
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9164648183505457,
+            "observed_frequency": 0.926980198019802,
+            "count": 808
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.07613184040369259,
+          "upper_95": 0.10994309033433199
+        },
+        "positive_labels": 1280,
+        "negative_labels": 158,
+        "expected_calibration_error": 0.01045748090208996
+      },
+      "3h": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "brier_score": 0.17765056603645335,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.16038429002796628,
+            "observed_frequency": 0.0,
+            "count": 11
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3457084527565222,
+            "observed_frequency": 0.41935483870967744,
+            "count": 31
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.40697584061015135,
+            "observed_frequency": 0.25,
+            "count": 4
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5658850398030565,
+            "observed_frequency": 0.6916299559471366,
+            "count": 227
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6601208124361482,
+            "observed_frequency": 0.6820809248554913,
+            "count": 173
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7535053848686113,
+            "observed_frequency": 0.772215269086358,
+            "count": 799
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8126653807144318,
+            "observed_frequency": 0.9119170984455959,
+            "count": 193
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.15832199994125215,
+          "upper_95": 0.19715233999748105
+        },
+        "positive_labels": 1082,
+        "negative_labels": 356,
+        "expected_calibration_error": 0.04945976560684481
+      },
+      "6h": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "brier_score": 0.23135140371195265,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.03198127863486456,
+            "observed_frequency": 0.0,
+            "count": 11
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.1366955093828174,
+            "observed_frequency": 0.17142857142857143,
+            "count": 35
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3495393294207858,
+            "observed_frequency": 0.4131147540983607,
+            "count": 305
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5455556276295008,
+            "observed_frequency": 0.5764119601328903,
+            "count": 602
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.643809217577743,
+            "observed_frequency": 0.7134020618556701,
+            "count": 485
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.21608487108480282,
+          "upper_95": 0.2444619898291266
+        },
+        "positive_labels": 825,
+        "negative_labels": 613,
+        "expected_calibration_error": 0.05096383686027841
+      },
+      "duration": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "median_remaining_time_mae_hours": 9.17107093184979,
+        "median_prediction_count": 1438,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 7.28974358974359,
+          "upper_95": 11.885755603759943
+        },
+        "p10_p90_interval_coverage": 0.868567454798331,
+        "interval_prediction_count": 1438,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.833994708994709,
+          "upper_95": 0.8978605935127675
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "kaplan_meier": {
+      "1h": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "brier_score": 0.09544817185721101,
+        "reliability": [
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8582307279598863,
+            "observed_frequency": 0.848761408083442,
+            "count": 767
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9171666795162248,
+            "observed_frequency": 0.9374068554396423,
+            "count": 671
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.07754877790651726,
+          "upper_95": 0.11189668436622967
+        },
+        "positive_labels": 1280,
+        "negative_labels": 158,
+        "expected_calibration_error": 0.014495220020755168
+      },
+      "3h": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "brier_score": 0.1861370178068487,
+        "reliability": [
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7262830889007964,
+            "observed_frequency": 0.7524339360222532,
+            "count": 1438
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.16779579171817008,
+          "upper_95": 0.2027555524249892
+        },
+        "positive_labels": 1082,
+        "negative_labels": 356,
+        "expected_calibration_error": 0.02615084712145677
+      },
+      "6h": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "brier_score": 0.24486418302734778,
+        "reliability": [
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.47213622291021673,
+            "observed_frequency": 0.4773662551440329,
+            "count": 243
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5375466232031393,
+            "observed_frequency": 0.5933054393305439,
+            "count": 1195
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.24105329902421987,
+          "upper_95": 0.24848181406335967
+        },
+        "positive_labels": 825,
+        "negative_labels": 613,
+        "expected_calibration_error": 0.047220224690588224
+      },
+      "duration": {
+        "snapshot_count": 1438,
+        "episode_count": 92,
+        "median_remaining_time_mae_hours": 9.51182197496523,
+        "median_prediction_count": 1438,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 7.480276816608996,
+          "upper_95": 12.193035579106738
+        },
+        "p10_p90_interval_coverage": 0.8205841446453408,
+        "interval_prediction_count": 1438,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 92,
+          "replicates": 500,
+          "lower_95": 0.7756813417190775,
+          "upper_95": 0.8658623136976579
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    }
+  },
+  "test": {
+    "logistic": {
+      "1h": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "brier_score": 0.09356307321519594,
+        "reliability": [
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.531616080894363,
+            "observed_frequency": 0.4444444444444444,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6708286751680861,
+            "observed_frequency": 0.6666666666666666,
+            "count": 12
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7364972116958868,
+            "observed_frequency": 0.6666666666666666,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8558874257010246,
+            "observed_frequency": 0.8494983277591973,
+            "count": 299
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9269618887748913,
+            "observed_frequency": 0.9174078780177891,
+            "count": 787
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.07643977017823826,
+          "upper_95": 0.11209777071034603
+        },
+        "positive_labels": 994,
+        "negative_labels": 122,
+        "expected_calibration_error": 0.009760134843884445
+      },
+      "3h": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "brier_score": 0.17226063241367492,
+        "reliability": [
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.1624695868581047,
+            "observed_frequency": 0.2857142857142857,
+            "count": 7
+          },
+          {
+            "bin_lower": 0.2,
+            "bin_upper": 0.3,
+            "mean_predicted": 0.21100871614901745,
+            "observed_frequency": 0.0,
+            "count": 2
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.3374351859908599,
+            "observed_frequency": 0.5,
+            "count": 12
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.4112175720006901,
+            "observed_frequency": 0.3333333333333333,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5625951176778523,
+            "observed_frequency": 0.684931506849315,
+            "count": 73
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6390425585784186,
+            "observed_frequency": 0.6695652173913044,
+            "count": 115
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7691930675110003,
+            "observed_frequency": 0.7557692307692307,
+            "count": 520
+          },
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8320089954775431,
+            "observed_frequency": 0.8624338624338624,
+            "count": 378
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.15098183723479744,
+          "upper_95": 0.1968175125691139
+        },
+        "positive_labels": 857,
+        "negative_labels": 259,
+        "expected_calibration_error": 0.03123487744499522
+      },
+      "6h": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "brier_score": 0.23024447010564464,
+        "reliability": [
+          {
+            "bin_lower": 0.0,
+            "bin_upper": 0.1,
+            "mean_predicted": 0.03775092718944382,
+            "observed_frequency": 0.0,
+            "count": 9
+          },
+          {
+            "bin_lower": 0.1,
+            "bin_upper": 0.2,
+            "mean_predicted": 0.1546467613912653,
+            "observed_frequency": 0.14285714285714285,
+            "count": 21
+          },
+          {
+            "bin_lower": 0.3,
+            "bin_upper": 0.4,
+            "mean_predicted": 0.34916094892334326,
+            "observed_frequency": 0.5342465753424658,
+            "count": 73
+          },
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.42116775191860895,
+            "observed_frequency": 0.3739130434782609,
+            "count": 115
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.5717094205818551,
+            "observed_frequency": 0.6855670103092784,
+            "count": 194
+          },
+          {
+            "bin_lower": 0.6,
+            "bin_upper": 0.7,
+            "mean_predicted": 0.6569411103726204,
+            "observed_frequency": 0.6192307692307693,
+            "count": 520
+          },
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7142717146505462,
+            "observed_frequency": 0.6684782608695652,
+            "count": 184
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.21375079315466314,
+          "upper_95": 0.24780835558401004
+        },
+        "positive_labels": 663,
+        "negative_labels": 453,
+        "expected_calibration_error": 0.06241633318077126
+      },
+      "duration": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "median_remaining_time_mae_hours": 6.261648745519714,
+        "median_prediction_count": 1116,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 5.1055363321799305,
+          "upper_95": 7.755597014925373
+        },
+        "p10_p90_interval_coverage": 0.921146953405018,
+        "interval_prediction_count": 1116,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.8996478873239436,
+          "upper_95": 0.9432989690721649
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    },
+    "kaplan_meier": {
+      "1h": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "brier_score": 0.09575166044024912,
+        "reliability": [
+          {
+            "bin_lower": 0.8,
+            "bin_upper": 0.9,
+            "mean_predicted": 0.8569977575829656,
+            "observed_frequency": 0.8566610455311973,
+            "count": 593
+          },
+          {
+            "bin_lower": 0.9,
+            "bin_upper": 1.0,
+            "mean_predicted": 0.9220587289894671,
+            "observed_frequency": 0.9292543021032504,
+            "count": 523
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.07828671723962295,
+          "upper_95": 0.11459373318081852
+        },
+        "positive_labels": 994,
+        "negative_labels": 122,
+        "expected_calibration_error": 0.0035510349329814766
+      },
+      "3h": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "brier_score": 0.1771986451039039,
+        "reliability": [
+          {
+            "bin_lower": 0.7,
+            "bin_upper": 0.8,
+            "mean_predicted": 0.7325334767974135,
+            "observed_frequency": 0.767921146953405,
+            "count": 1116
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.1594740237446306,
+          "upper_95": 0.19617056200271923
+        },
+        "positive_labels": 857,
+        "negative_labels": 259,
+        "expected_calibration_error": 0.035387670155991424
+      },
+      "6h": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "brier_score": 0.24058863338274453,
+        "reliability": [
+          {
+            "bin_lower": 0.4,
+            "bin_upper": 0.5,
+            "mean_predicted": 0.47356580427446576,
+            "observed_frequency": 0.4619289340101523,
+            "count": 197
+          },
+          {
+            "bin_lower": 0.5,
+            "bin_upper": 0.6,
+            "mean_predicted": 0.550788255568289,
+            "observed_frequency": 0.6224156692056583,
+            "count": 919
+          }
+        ],
+        "episode_bootstrap_brier_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.2359212496898773,
+          "upper_95": 0.2458843914622486
+        },
+        "positive_labels": 663,
+        "negative_labels": 453,
+        "expected_calibration_error": 0.061037685102878214
+      },
+      "duration": {
+        "snapshot_count": 1116,
+        "episode_count": 59,
+        "median_remaining_time_mae_hours": 6.163978494623656,
+        "median_prediction_count": 1116,
+        "median_mae_episode_bootstrap_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 4.728909952606635,
+          "upper_95": 8.050541516245488
+        },
+        "p10_p90_interval_coverage": 0.8870967741935484,
+        "interval_prediction_count": 1116,
+        "unidentifiable_interval_count": 0,
+        "coverage_episode_bootstrap_95": {
+          "episode_count": 59,
+          "replicates": 500,
+          "lower_95": 0.8456678700361011,
+          "upper_95": 0.9215686274509803
+        },
+        "coverage_interpretation": "conditional on both quantiles identifiable before modeling horizon"
+      }
+    }
+  },
+  "validation_mean_brier": {
+    "logistic": 0.16768984972099113,
+    "kaplan_meier": 0.17548312423046916
+  },
+  "qualification_rules": {
+    "minimum_evaluation_episode_groups": 30,
+    "minimum_labels_per_class": 10,
+    "maximum_expected_calibration_error": 0.15,
+    "logistic_validation_improvement_fraction": 0.02
+  },
+  "qualification_failures": [],
+  "historical_asof_availability_verified": false,
+  "operational_evaluation_eligible": false,
+  "production_eligibility": false,
+  "prediction_eligible": true,
+  "example_context": {
+    "event_id": "heat:722020-12839:2025-03-10T19:00:00Z",
+    "event_type": "Heat Index Exceedance",
+    "event_status": "historical_replay",
+    "event_start_utc": "2025-03-10T19:00:00Z",
+    "as_of_utc": "2025-03-10T19:00:00Z",
+    "event_definition": "observed_station_hourly_heat_index_at_or_above_90f",
+    "is_simulated": true,
+    "location": {
+      "region": "MIAMI INTERNATIONAL AIRPORT",
+      "spatial_match_quality": "region_only"
+    },
+    "station_id": "722020-12839"
+  },
+  "limitations": [
+    "Recorded/observed episode end is not worksite clearance.",
+    "2025 is a first fixed evaluation for this new target, with no test-score tuning; Flood 2025 was previously inspected.",
+    "Historical source revision/availability is not verified as of the past decision time.",
+    "Episode groups are reporting/evaluation clusters, not verified independent disasters.",
+    "Three airport stations in FL/TX/AZ, not a nationwide site-exposure model.",
+    "2025 legacy station archives end in August; no complete-year claim.",
+    "Hourly rounded archived observations; individual QC flags and original issue/acquisition times are unavailable in ISD-Lite.",
+    "Threshold 90F is a configurable research definition, not work/rest or employer policy.",
+    "Heat index is derived from observed temperature/dewpoint; it is not a directly measured WBGT.",
+    "Station/week clusters reduce repeated-cycle dependence but are not independent regional heatwaves."
+  ],
+  "timings_seconds": {
+    "split_snapshot_seconds": 0.03367060000891797,
+    "validation_fit_seconds": 0.029510300024412572,
+    "validation_score_bootstrap_seconds": 0.370044900017092,
+    "final_fit_seconds": 0.07600659999297932,
+    "test_score_bootstrap_seconds": 0.2896242000279017,
+    "total": 0.8131104000203777
+  },
+  "fit_recipe": {
+    "offsets_hours": [
+      0,
+      3,
+      6,
+      9
+    ],
+    "train_end_year": 2023,
+    "validation_year": 2024,
+    "test_year": 2025,
+    "embargo_days": 7
+  },
+  "reference_ongoing_probability": {
+    "1h": 0.5162998103206635,
+    "3h": 0.1624695868581047,
+    "6h": 0.03428249893618995
+  },
+  "example_observed_remaining_hours": 1.0
+}

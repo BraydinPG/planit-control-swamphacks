@@ -1,5 +1,7 @@
 # Methodology
 
+This page describes the preserved Flood baseline. The separately defined multi-disaster targets, grouping, source limitations, and evaluation gates are in [MULTIDISASTER.md](MULTIDISASTER.md).
+
 ## Prediction scope
 
 This package estimates the recorded continuation/resolution of a NOAA Flood event conditional on that event already being active at an as-of time. It does not estimate disaster onset, local water depth, damage, injury, infrastructure condition, worksite accessibility, or safe-to-work status. `trend` remains `unknown` because this dataset does not provide matched time-varying severity labels available at prediction time.

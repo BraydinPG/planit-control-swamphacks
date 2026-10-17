@@ -1,0 +1,214 @@
+{
+  "source": "NOAA observed ISD-Lite, not ERA5 or issued forecasts",
+  "sources": [
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv",
+      "file": "isd-history.csv",
+      "bytes": 2914601,
+      "sha256": "1994747ab4af1b97e63adb434b4d0d022f2daee76f0c144ea9ab46be2d906604",
+      "retrieved_at_utc": "2026-10-17T04:50:49.706992+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": true
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2021/722020-12839-2021.gz",
+      "file": "722020-12839-2021.gz",
+      "bytes": 82939,
+      "sha256": "da8b88750778c8c9699151b7127ef3b359678609b362f5ddbb59dfed09a0af07",
+      "retrieved_at_utc": "2026-10-17T04:55:00.496706+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2022/722020-12839-2022.gz",
+      "file": "722020-12839-2022.gz",
+      "bytes": 83190,
+      "sha256": "0a7b26d7dc5ac90001ad75e540e6de86d8aa12d7467ff98735061dc371016b1c",
+      "retrieved_at_utc": "2026-10-17T04:55:00.776578+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2023/722020-12839-2023.gz",
+      "file": "722020-12839-2023.gz",
+      "bytes": 83472,
+      "sha256": "59b5845f3914220cbca8231de37acd68d52db2acf47a7d061236decf6b185a51",
+      "retrieved_at_utc": "2026-10-17T04:55:01.031974+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2024/722020-12839-2024.gz",
+      "file": "722020-12839-2024.gz",
+      "bytes": 83495,
+      "sha256": "fcb9c0604da56038c2faaed06841a99696edb464a2e0daa60b3cf014ada58a49",
+      "retrieved_at_utc": "2026-10-17T04:55:01.368002+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2025/722020-12839-2025.gz",
+      "file": "722020-12839-2025.gz",
+      "bytes": 53563,
+      "sha256": "e5f2c581f5eaa6fcdaf332b2e04019e36b36c89f6482f659429cc20e87c49f92",
+      "retrieved_at_utc": "2026-10-17T04:55:01.686911+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2021/722430-12960-2021.gz",
+      "file": "722430-12960-2021.gz",
+      "bytes": 85548,
+      "sha256": "59c04cc8072479f27e844f860c18c5988998f35c0b4a7795f12d1284e5344433",
+      "retrieved_at_utc": "2026-10-17T04:55:02.040419+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2022/722430-12960-2022.gz",
+      "file": "722430-12960-2022.gz",
+      "bytes": 85975,
+      "sha256": "92d5be2228a90a220f4540dbc01f727cb56d2552411b42a029da0b1ba09d38b9",
+      "retrieved_at_utc": "2026-10-17T04:55:02.336707+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2023/722430-12960-2023.gz",
+      "file": "722430-12960-2023.gz",
+      "bytes": 85510,
+      "sha256": "8206470b040fc5dfb1f381cf76374d336a9a8783d9c63f3325b01d4d814fe977",
+      "retrieved_at_utc": "2026-10-17T04:55:02.641365+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2024/722430-12960-2024.gz",
+      "file": "722430-12960-2024.gz",
+      "bytes": 86467,
+      "sha256": "a79f204d1b20da8ef975c0a52343d9a0102447670d122becf16c05f80eeda8ef",
+      "retrieved_at_utc": "2026-10-17T04:55:02.998502+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2025/722430-12960-2025.gz",
+      "file": "722430-12960-2025.gz",
+      "bytes": 56394,
+      "sha256": "b9f49ce5da12ec6beb6ccdeb5c7a4e76bd0380b7d5aa77cf1222db2e4102a317",
+      "retrieved_at_utc": "2026-10-17T04:55:03.393516+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2021/722780-23183-2021.gz",
+      "file": "722780-23183-2021.gz",
+      "bytes": 86968,
+      "sha256": "6c080d18a86413aa1dd90ebeed234b4621b28acfd728719781e20ac14486cff1",
+      "retrieved_at_utc": "2026-10-17T04:55:03.775008+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2022/722780-23183-2022.gz",
+      "file": "722780-23183-2022.gz",
+      "bytes": 86935,
+      "sha256": "9047cf201584774903ce7f9bccb881ae226cc301881151e7e423e44cd5271679",
+      "retrieved_at_utc": "2026-10-17T04:55:04.183433+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2023/722780-23183-2023.gz",
+      "file": "722780-23183-2023.gz",
+      "bytes": 86917,
+      "sha256": "91d246cdeb92d961b92fd619d84ecca9c520d92a19f993fcc2ce3c8aa16c606b",
+      "retrieved_at_utc": "2026-10-17T04:55:04.482182+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2024/722780-23183-2024.gz",
+      "file": "722780-23183-2024.gz",
+      "bytes": 86567,
+      "sha256": "d0541c71d3a0523725575557995c1bc17939d0f96add0d5285a59920ed96d44c",
+      "retrieved_at_utc": "2026-10-17T04:55:04.793673+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    },
+    {
+      "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-lite/2025/722780-23183-2025.gz",
+      "file": "722780-23183-2025.gz",
+      "bytes": 57025,
+      "sha256": "94d20420f93c9fb89e7d69f1b49ca046062bd6b4bb4f4ea09f04cc7694bcbe47",
+      "retrieved_at_utc": "2026-10-17T04:55:05.091721+00:00",
+      "historical_asof_availability_verified": false,
+      "cached": false
+    }
+  ],
+  "stations": {
+    "722020-12839": {
+      "station_id": "722020-12839",
+      "name": "MIAMI INTERNATIONAL AIRPORT",
+      "state": "FL",
+      "lat": 25.788,
+      "lon": -80.317,
+      "archive_end_metadata": "20250827",
+      "source_rows": 40762,
+      "missing_heat_measurement": 2,
+      "complete_threshold_episodes": 1175,
+      "observation_gaps": 10,
+      "right_censored_episodes_excluded": 2,
+      "first_valid_time": "2021-01-01T00:00:00Z",
+      "last_valid_time": "2025-08-27T04:00:00Z",
+      "threshold_episode_count": 1175,
+      "evaluation_week_groups": 166
+    },
+    "722430-12960": {
+      "station_id": "722430-12960",
+      "name": "G BUSH INTERCONTINENTAL AP/HOUSTON AP",
+      "state": "TX",
+      "lat": 29.984,
+      "lon": -95.361,
+      "archive_end_metadata": "20250827",
+      "source_rows": 40781,
+      "missing_heat_measurement": 2,
+      "complete_threshold_episodes": 794,
+      "observation_gaps": 1,
+      "right_censored_episodes_excluded": 1,
+      "first_valid_time": "2021-01-01T00:00:00Z",
+      "last_valid_time": "2025-08-27T05:00:00Z",
+      "threshold_episode_count": 794,
+      "evaluation_week_groups": 130
+    },
+    "722780-23183": {
+      "station_id": "722780-23183",
+      "name": "PHOENIX SKY HARBOR INTL AIRPORT",
+      "state": "AZ",
+      "lat": 33.428,
+      "lon": -112.004,
+      "archive_end_metadata": "20250826",
+      "source_rows": 40727,
+      "missing_heat_measurement": 7,
+      "complete_threshold_episodes": 617,
+      "observation_gaps": 6,
+      "right_censored_episodes_excluded": 1,
+      "first_valid_time": "2021-01-01T00:00:00Z",
+      "last_valid_time": "2025-08-25T12:00:00Z",
+      "threshold_episode_count": 617,
+      "evaluation_week_groups": 120
+    }
+  },
+  "threshold_f": 90.0,
+  "event_definition": "observed_station_hourly_heat_index_at_or_above_90f",
+  "event_records": 2586,
+  "historical_asof_availability_verified": false,
+  "limitations": [
+    "Three airport stations in FL/TX/AZ, not a nationwide site-exposure model.",
+    "2025 legacy station archives end in August; no complete-year claim.",
+    "Hourly rounded archived observations; individual QC flags and original issue/acquisition times are unavailable in ISD-Lite.",
+    "Threshold 90F is a configurable research definition, not work/rest or employer policy.",
+    "Heat index is derived from observed temperature/dewpoint; it is not a directly measured WBGT.",
+    "Station/week clusters reduce repeated-cycle dependence but are not independent regional heatwaves."
+  ]
+}
