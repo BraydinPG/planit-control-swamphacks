@@ -6,6 +6,7 @@ import { createServer } from 'node:net'
 import { join } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
+import { checkReportLocation } from './integration/location-browser.mjs'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 const output = join(root, '.shell-check')
@@ -122,7 +123,8 @@ async function offModeServer(setting) {
     [
       '--input-type=module',
       '--eval',
-      `import {createServer} from 'vite'; const server=await createServer({root:${JSON.stringify(root)},cacheDir:${JSON.stringify(join(output, `mode-${setting}-${Date.now()}`))},server:{host:'127.0.0.1',port:${port},strictPort:true}});await server.listen();`,
+      // These fixed-source helpers do not need file watchers (including old browser profiles).
+      `import {createServer} from 'vite'; const server=await createServer({root:${JSON.stringify(root)},cacheDir:${JSON.stringify(join(output, `mode-${setting}-${Date.now()}`))},server:{host:'127.0.0.1',port:${port},strictPort:true,watch:null}});await server.listen();`,
     ],
     {
       cwd: root,
@@ -280,6 +282,7 @@ try {
   await loaded('Server reports cleared')
   await click('Replay additional qualifying strike')
   await loaded('Stop-work alert active')
+  const demoReportOpened = performance.now()
   await hash('/crew/reports', 'Report a hazard')
   await set('form select[required]', 'present')
   await writeFile(
@@ -300,6 +303,10 @@ try {
   })
   await click('Submit simulated report')
   await loaded('Simulated report stored')
+  const demoReportMs = Math.round(performance.now() - demoReportOpened)
+  assert(demoReportMs < 30000, 'Existing no-note demo report must finish in under 30 seconds')
+  results.push({ existing_report_no_note_no_gps_ms: demoReportMs,
+    scope: 'Automated existing simulated form only; T034A form/metadata acceptance remains blocked by T053A' })
   const reportId = await evaluate(
     "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].id",
   )
@@ -523,6 +530,7 @@ try {
       'all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
   })
   if (!production) {
+    results.push(await checkReportLocation({ base, navigate, evaluate, until }))
     await navigate(
       new URL('/tests/browser.html', base).href,
       'Sign in required',
@@ -870,6 +878,7 @@ try {
       JSON.stringify(
         {
           error: String(error),
+          completed_results: results,
           errors,
           failedRequests,
           pending_requests: [...inFlightRequests.values()],

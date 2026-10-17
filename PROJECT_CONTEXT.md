@@ -2,7 +2,14 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
-## Current site-scoring integration verification - 2026-10-17
+## Current T034A report-location checkpoint - 2026-10-17
+- PR #33 is merged (`a54b87e`); fresh `feature/cache-report-device-location` in the functional worktree starts at main `681582b`, with no unmerged dependency. Primary checkout/Claude's visual work untouched.
+- New in-memory `frontend/src/application/useReportLocation.ts` / `report-location.ts`: one-shot permission-based device location, immediate approximate site fallback, 8-second deadline, validated accuracy, pin priority, site/session reset and close cleanup. Demo never acquires real GPS; no storage/network/Gemini calls.
+- **T034A remains unchecked:** T034 checked, T053A unchecked; canonical ReportCreate/CrewReport/TS/persistence still lack source/accuracy/distance. Existing form and transport unchanged. Hook/browser tests are preparation, not persisted form acceptance. [Exact Claude/Rudra/Braydin wiring and acceptance](docs/REPORT_LOCATION_INTEGRATION.md).
+- Verified 90 Node (19 new location cases),105 focused backend compatibility tests, lint/TypeScript, fixture/API builds and installed Edge regression at1440/390/320 plus synthetic StrictMode hook. Existing Starlette warning/API554.37kB chunk warning remain; no real GPS/Auth0/Tiger claims. Final browser timing/publication refs recorded in the handoff/log.
+- 2026-10-17 12:30 UTC shared log: context, integration status, functional/redesign handoffs, CROSS_SCOPE_CHANGES and report-location guide record the pending owner gate. tasks.md unchanged, including T034A/T053A/T063-T068. Next: Rudra/Braydin T053A, then Claude's existing form wiring and Cache acceptance; no main merge by Codex.
+
+## Previous site-scoring integration verification - 2026-10-17
 - PR #31 merged `07a459d`; branch started there. Maintainers merged Claude's PR #32 as `176cf36` during publication; integrated that main into the feature branch as `3b8dfe2`, preserving every visual file byte-for-byte against main. No manual visual edits or Codex main merge; primary checkout/server untouched. No unmerged parent dependency.
 - [SITE_SCORING_INTEGRATION.md](docs/SITE_SCORING_INTEGRATION.md) is the current acceptance/owner checklist; [redacted evidence](docs/site-scoring-integration-verification.json). Actual local Auth0 SPA/backend and Tiger Data settings remain missing; DB contents/memberships unknown. No real authenticated read/write, source retrieval or seed performed. T069 source seed is still explicitly empty.
 - One controlled whole-path test reuses NWS MockTransport/adapters -> refresh -> T051A -> in-memory test persistence -> protected API/test JWT -> report confirmation: indices 2.1 ->3 pending unchanged ->4 confirmed ->7 replayed lightning; outage holds7 with active alert and completeness0. List/detail/stored factors and ranking agree. Test identities/DB are not Auth0/Tiger acceptance.

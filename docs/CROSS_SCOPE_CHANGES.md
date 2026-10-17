@@ -90,6 +90,18 @@ Historical records below retain their original as-of facts; current status is IN
 
 # Cross-scope changes
 
+## T034A device-location preparation — 2026-10-17 12:30 UTC
+
+Explicit Cache assignment: implement report geolocation functionality under application/tests, preserving Claude's visual files and Rudra/Braydin's unpublished T053A contract. PR #33 is merged (`a54b87e`); isolated `feature/cache-report-device-location` starts at latest main `681582be17315444f5ed9785c15f0fb37e8c09eb`, no unmerged dependency. Primary checkout/server left untouched.
+
+New `frontend/src/application/report-location.ts` and `useReportLocation.ts` implement one-shot/permission-based live acquisition, approximate site fallback while pending/failed, finite coordinate/accuracy checks,8-second timeout,pin priority,site/session reset,close cleanup and ignored late callbacks. Demo never requests private GPS; neither module writes storage or sends network/Gemini requests. A retained old form handler cannot restart acquisition after close or change a reopened session. No new fields sent to existing report transport; **ReportForm remains unchanged** because T053A source/accuracy/backend distance are absent. T034A/T053A and all other task states remain unchanged.
+
+New19 Node cases and test-only React StrictMode/browser harness extend the existing Edge checker, without an alternate app/API/dependency. All90 Node and105 report/upload/schema/fixture/mirror backend tests pass; lint/TypeScript/fixture+API builds pass. Existing Starlette deprecation and API554.37kB chunk warning retained. Existing application regression at1440/390/320 and synthetic hook pass with no browser exceptions/backend calls. Final repeated browser timing and commit/PR are recorded below after verification/publication. A broad string assertion accidentally matched an unrelated fixture coordinate and the initial backend test path was wrong; corrected to report identity/actual test file before final checks. Test-only render lint warnings fixed; no existing test weakened.
+
+Shared changes: this log, PROJECT_CONTEXT, INTEGRATION_STATUS, functional/redesign handoffs and new REPORT_LOCATION_INTEGRATION guide, to keep Claude/Rudra/Braydin aware of ready logic and exact contract/form blockers. No tasks.md/page/component/style/App/backend/DB/migration/auth/contract/fixture/ML/manifest/lock/deployment edit. No actual GPS, authenticated DB write, identity provisioning, or operational task completion claimed.
+
+Final verification 2026-10-17T12:33:25.849Z: all browser stages pass, including closed/reopened-session protection; zero browser exceptions/backend requests. Existing automated no-note/no-GPS simulated form takes91ms. Two intervening runs exceeded the existing30-second cold helper-server limit before completing config checks. Disabling unnecessary file watching in fixed-source helper servers gives final false/invalid-mode startup23.404/10.614s; assertions/deadline unchanged. New failure JSON includes completed stages, and hook checks run before config startup to distinguish failures. No source/form behavior changes from this harness adjustment.
+
 ## Phase 4 integration preparation - 2026-10-17
 
 Cache implements under the user's explicit frontend/ML and phase-4 authorization. Starting checkout was clean at `8af5b9d`, PR #19 initially open, so this work began on a separate stacked branch. #19 merged during execution (`64cf632`), followed by Rudra's T052/T053 publication. Branch `feature/cache-live-integration-checks` fast-forwarded to reviewed main `9ba1b7c` without conflicts or loss of untracked work and now targets main. Nick's new backend T054/T054A/T055 ownership was preserved. No owner backend/auth/contract work was copied or rewritten.
