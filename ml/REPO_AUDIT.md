@@ -1,5 +1,13 @@
 # Repository Audit
 
+## Codex takeover update: October 17, 2026
+
+The earlier audit below describes the prior assistant's work. Codex independently verified the workspace at `8db7dac`, preserved and committed 17 pending ML files, fetched and integrated team scope through `5bde676`, and checked the active parent/child backtest before making changes. Source archives and preserved artifact/report hashes matched. The initial 63 tests passed, while compilation exposed the untracked benchmark syntax error.
+
+The subsequent chronology audit found eight episodes with recorded outcomes crossing fit/selection boundaries. V2 purges them, defaults to KM based on corrected validation, provisions a separately hashed model, and supplies a tested site-aware backend adapter. The obsolete old backtest was stopped only after preserving outputs and verifying exact process identity. Current evidence, 82 passing checks, reproducibility, timings, process disposition, and remaining integration dependencies are documented in `ml/TAKEOVER_REPORT.md`. Original reports/models remain preserved as superseded v1 evidence. No teammate implementation was overwritten.
+
+## Earlier assistant's historical audit
+
 ## Git snapshot
 
 - Repository root: `C:/Users/cache/OneDrive/Documents/planit-control-swamphacks`.

@@ -32,19 +32,23 @@ The complete predictor allowlist is:
 
 `END_DATE_TIME`, total duration, final event magnitude, damage, casualties, narratives, and all post-as-of observations are never features. The generated hazard training rows contain one row per at-risk hour, with an event-end indicator for the next hour. Episodes stay intact across splits. Events longer than 168 hours are administratively right-censored at that horizon; unknown-end rows are excluded rather than labeled resolved. The Flood archive subset happened to contain no unknown-end intervals.
 
-The current model does not use weather or current site observations. A separate Open-Meteo adapter can retrieve hourly historical reanalysis and enforces the as-of cutoff, but those data are not joined to NOAA records because region/point matching and operational availability are not sufficiently established. Reanalysis is retrospective context, not archived forecasts issued at the historical decision time.
+Runtime inference does not use weather or current site observations. A separate research experiment joins cached Open-Meteo ERA5 reanalysis to 100 reported NOAA event points, retaining only valid times at or before each snapshot. Historical operational availability and site exposure remain unverified. Acquisition-time gaps are explicit. This experiment is production-ineligible and is not an archived issued-forecast backtest.
 
 ## Models
 
 The required comparison is an empirical Kaplan–Meier recorded-duration baseline. For elapsed event age $a$ and forecast horizon $h$, the baseline estimates conditional persistence as $S(a+h)/S(a)$, with a training-only risk-set support check. It does not draw an unconditional total duration and subtract event age.
 
+KM is the default advisory estimator because corrected 2024 validation favors it at all horizons. Logistic remains an explicit comparison. Both use the same trusted artifact bundle. V2 artifacts include a boundary-purging training policy; legacy artifacts are labeled superseded. No estimator contributes to the site score.
+
 The fitted model is a regularized pooled-logistic discrete-time hazard model (`scikit-learn LogisticRegression`, `C=0.1`, fixed seed 42). Features are `log1p(elapsed_hours)`, `sin(start_month)`, and `cos(start_month)`. Hourly conditional end hazards are multiplied to obtain consistent, non-increasing persistence probabilities. Event rows within one NOAA episode are downweighted by the count of rows in that episode. The artifact stores training event/episode counts, support limits, the KM baseline records, and model version.
 
 ## Validation design
 
-- Train: event-onset years 2021–2023, 1,788 episode groups.
-- Validation: 2024, 590 episode groups, with all same-episode records assigned together.
+- Train: event-onset years 2021–2023, 1,787 episode groups.
+- Validation: 2024, 583 episode groups, with all same-episode records assigned together.
 - Final out-of-time test: 2025, 567 episode groups, not used to fit the reported final model.
-- Snapshot counts: 10,564 train, 4,077 validation, and 3,539 test. Snapshot-level metrics are correlated and are reported with episode counts and episode-group bootstrap intervals.
+- Snapshot counts: 10,558 train, 4,053 validation, and 3,539 test. Snapshot-level metrics are correlated and are reported with episode counts and episode-group bootstrap intervals.
 
-Metrics and the held-out replay are in `ml/EVALUATION.md` and `ml/reports/backtest_metrics.json`. Monte Carlo checks sample the fitted discrete hazards and are not independent evidence of accuracy.
+Entire episodes whose recorded outcomes cross 2024-01-01 or 2025-01-01 are purged before fitting or selection: eight episodes / 12 records. Earliest-start grouping alone leaked later outcomes in v1. Weather sampling retains full episode boundaries even when the earliest event has no reported coordinates. Unknown-end events never become resolved labels. The inspected 2025 period is not a fresh untouched holdout after correction.
+
+Current metrics and the replay are in `ml/EVALUATION.md` and `ml/reports/purged_v2/backtest_metrics.json`. The original report is preserved as superseded v1 evidence. Bootstrap resamples complete episodes and computes snapshot-weighted metrics; preaggregated group sums preserve seeded estimates within floating-point tolerance. Monte Carlo is an offline arithmetic check, not independent accuracy evidence.

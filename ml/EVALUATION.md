@@ -1,57 +1,66 @@
 # Evaluation
 
-**Status: REAL HISTORICAL OUT-OF-TIME BACKTEST COMPLETED.** This validates prediction of NOAA recorded Flood interval persistence only, not site-level flood conditions or worker safety.
+**Current evidence: newly rerun, boundary-purged historical Flood backtest; production eligibility is false.** The 2025 period was previously inspected. It is out of time relative to fitting, but not a fresh untouched holdout.
 
-## Data and split
+## Provenance and correction
 
-Downloaded NOAA NCEI Storm Events detail archives for 2021–2025. The actual source filenames, URLs, byte sizes, retrieval timestamps, and SHA-256 hashes are in `ml/reports/source_manifest.json`; no raw data or model artifact is committed.
+All five NOAA NCEI Storm Events 2021-2025 detail archives match sizes/SHA-256 in `ml/reports/source_manifest.json`. Parsing reproduced 349,030 rows, 10,322 valid Flood intervals, 1,249 malformed Flood exclusions, zero duplicate event IDs, and 2,945 episodes. Raw data and binary artifacts remain ignored.
 
-The parser read 349,030 rows, retained 10,322 valid Flood event records, rejected 1,249 malformed supported-type rows, and found zero duplicate event IDs and zero unknown-end Flood records. NOAA event records were grouped by `EPISODE_ID` before splitting:
+Earliest-start assignment allowed later outcomes into training: one episode crosses 2024-01-01 and seven cross 2025-01-01. V2 purges all 12 records in those eight episodes from every split. Original `ml/reports/backtest_metrics.json`, weather reports, and models are retained as **superseded v1 evidence**. Current results are in `ml/reports/purged_v2/backtest_metrics.json`.
 
-| Split | Years | Event records | NOAA episode groups | Active snapshots |
-|---|---:|---:|---:|---:|
-| Train | 2021–2023 | 6,249 | 1,788 | 10,564 |
-| Validation | 2024 | 2,169 | 590 | 4,077 |
-| Out-of-time test | 2025 | 1,904 | 567 | 3,539 |
-
-All records in an episode were assigned by the episode's earliest event-start year. Final test predictions use a model fit only on 2021–2024. There are no weather features in this model.
-
-## Brier scores
-
-Target is `P(recorded Flood event still ongoing at horizon | recorded event active at as-of time)`. Lower is better. Scores are computed over correlated snapshots; episode counts and episode-bootstrap ranges are included in the JSON report.
-
-| Held-out period | Horizon | Pooled logistic | Conditional KM baseline |
+| Split | Records | Episodes | Snapshots |
 |---|---:|---:|---:|
-| 2024 validation (trained through 2023) | 6h | 0.2168 | 0.2116 |
-| 2024 validation (trained through 2023) | 12h | 0.2425 | 0.2327 |
-| 2024 validation (trained through 2023) | 24h | 0.2408 | 0.2255 |
-| 2025 test (trained through 2024) | 6h | 0.2189 | 0.2269 |
-| 2025 test (trained through 2024) | 12h | 0.2390 | 0.2433 |
-| 2025 test (trained through 2024) | 24h | 0.2097 | 0.2100 |
+| Train, 2021-2023 | 6,245 | 1,787 | 10,558 |
+| Validation, 2024 | 2,161 | 583 | 4,053 |
+| Test, 2025 | 1,904 | 567 | 3,539 |
 
-The fitted model is slightly better on the 2025 6h and 12h Brier scores and essentially tied at 24h, but it is worse than the KM baseline at all three horizons on 2024 validation. This is not stable evidence that the fitted model is generally superior; do not present it as such or use the tiny test gains to claim operational utility.
+Final fitting uses 8,406 records / 2,370 episodes through 2024. No onset, injury, site safety, or severity/trend target is modeled.
 
-Episode bootstrap 95% ranges for the 2025 logistic Brier scores were 0.2027–0.2373 (6h), 0.2245–0.2536 (12h), and 0.1949–0.2218 (24h). These intervals quantify resampling variability across observed episode groups, not geographic independence or future operational performance.
+## Full-cohort comparison
 
-## Duration and calibration
+Identical eligible snapshots are used per horizon. Lower Brier is better. JSON includes reliability tables and 500-replicate episode-bootstrap 95% intervals.
 
-On 3,539 test snapshots, median remaining-duration MAE was 40.83 hours. This large error reflects a long-tailed duration distribution and shows that the median duration is not a reliable site-specific planning estimate. The model could identify finite p10/p90 bounds for only 1,331 snapshots; their empirical p10–p90 coverage was 86.9%. For the remaining 2,208 snapshots at least one tail quantile was not identifiable before the 168-hour modeling horizon and is returned as null.
+| Period | Horizon | Age/month logistic | Conditional KM |
+|---|---:|---:|---:|
+| 2024 validation | 6h | 0.216986 | 0.211733 |
+| 2024 validation | 12h | 0.242210 | 0.232385 |
+| 2024 validation | 24h | 0.239856 | 0.224849 |
+| 2025 corrected test | 6h | 0.219250 | 0.226955 |
+| 2025 corrected test | 12h | 0.238631 | 0.243271 |
+| 2025 corrected test | 24h | 0.208665 | 0.209916 |
 
-Reliability tables are in `backtest_metrics.json`. At 24 hours, for example, the 0.6–0.7 predicted-persistence bin averaged 0.623 while the observed frequency was 0.450 (391 snapshots), an overestimate of recorded persistence. The largest 6h probability errors include test event `1284116` / episode `205751`: predicted persistence 0.859, but the recorded interval ended within 6h. Such early recorded ends matter because overestimated persistence can mislead planning just as unsupported early-resolution claims can.
+KM wins all validation horizons and remains default. Logistic wins the inspected test comparisons, with small differences at 12/24h. This is not stable evidence of superiority or operational utility. Hyperparameters were not tuned on the 2025 correction.
 
-## Held-out replay
+| Test duration metric | Logistic | KM |
+|---|---:|---:|
+| Median remaining-time MAE, 3,539 snapshots | 40.71h | 41.26h |
+| Identifiable p10/p90 interval count | 1,843 | 1,904 |
+| Coverage among identified intervals | 88.28% | 79.52% |
+| Unidentified interval count | 1,696 | 1,635 |
 
-NOAA event `1230682` was replayed at `2025-02-25T21:30:00Z`, with the final model trained through 2024. The model estimated recorded-event persistence of 0.786 at 6h, 0.668 at 12h, and 0.530 at 24h; the conditional median remaining duration was 28h and p90 was unidentifiable. The later NOAA recorded end was `2025-02-27T00:45:00Z`, 27.25 hours after the replay time. The event is region-only and this result does not establish local conditions or clearance.
+Coverage populations differ; these percentages are not a paired superiority comparison. Median-MAE bootstrap ranges are 30.38-54.45h (logistic) and 30.96-54.73h (KM). Large duration errors limit site-specific planning. Calibration is imperfect: test KM 24h predictions averaging 0.614 correspond to observed persistence 0.437 (686 snapshots). Episode resampling does not remove regional/storm reporting dependence.
 
-## Offline Monte Carlo
+## Matched retrospective weather experiment
 
-The synthetic, explicitly labeled fixture was sampled 5,000 times with seed 42. Absolute simulated-vs-analytic persistence differences were 0.0038 (6h), 0.0052 (12h), and 0.0029 (24h); 179/5,000 draws remained unresolved at the 168h simulation horizon. This confirms sampler arithmetic/reproducibility only. It does not validate the model; the historical backtest above is the independent outcome evaluation. Summary: `ml/reports/monte_carlo_summary.json`.
+`ml/reports/purged_v2/weather_comparison.json` was rerun with 100 cached ERA5 responses and zero network calls. There are 60 training, 20 validation, and 20 test episodes, one representative event per episode. All three models use identical fetched training event IDs. Weather is frozen at snapshot time, with train-only imputation/scaling. Its repeated-snapshot risk rows differ from event-level age/month fitting; gains cannot be attributed solely to added weather features.
 
-## Limitations
+Each horizon uses the prediction intersection: **28 validation snapshots / 20 episodes**, **26 test snapshots / 20 episodes**. The old unequal-sample report (34 versus 28 validation, 30 versus 26 test) is unsuitable for comparison.
 
-- NOAA county/zone records are regional proxies and are not verified EIA-site or worksite flood labels.
-- Event time uses a fixed numeric source offset; daylight-saving ambiguity limits absolute-time precision.
-- Current model features omit historical weather and current observations. The Open-Meteo adapter is tested and retrieved retrospective reanalysis, but it is not joined or treated as a forecast issued at the historical decision time.
-- No matched severity time series exists here; trend is always `unknown`.
-- The out-of-time test is one calendar year and shares broad geographic/reporting processes with training years.
-- Event-record end is not an all-clear, safe-to-enter, or resume-work label.
+| Period | Horizon | Weather | Age/month | KM |
+|---|---:|---:|---:|---:|
+| 2024 validation | 6h | 0.228451 | 0.242415 | 0.230903 |
+| 2024 validation | 12h | 0.264725 | 0.240773 | 0.227844 |
+| 2024 validation | 24h | 0.272163 | 0.244036 | 0.214405 |
+| 2025 inspected test | 6h | 0.143758 | 0.211857 | 0.218938 |
+| 2025 inspected test | 12h | 0.125528 | 0.187789 | 0.181733 |
+| 2025 inspected test | 24h | 0.141386 | 0.162950 | 0.157605 |
+
+Mean validation Brier is 0.255113 weather / 0.242408 age-month / 0.224384 KM. The existing rule requiring 2% improvement over both references does not select weather; the fallback selects KM. Test gains cannot reverse that decision.
+
+JSON includes calibration, grouped Brier intervals, duration error/coverage intervals, per-model identifiable-tail counts, a separate duration comparison on common finite intervals, and weather response URL/hash provenance. ERA5 valid times precede as-of, but historical operational availability is unverified. Cached original acquisition times are unknown and labeled. Regional points do not verify EIA-site exposure. Weather never enters runtime inference, scoring, or operational instructions.
+
+## Timing and Monte Carlo
+
+See `ml/reports/purged_v2/benchmark.json` and `ml/TAKEOVER_REPORT.md`. The corrected full evaluation took about eight seconds including startup, with parsing, snapshot, fitting, scoring, and save timings recorded separately. This is not a measured speedup against the unfinished old job.
+
+The preserved v1 Monte Carlo summary remains arithmetic evidence only. The newly rerun v2 5,000-draw check has absolute analytic/sampling errors 0.00308/0.00403/0.00090 at 6/12/24h and 172 unresolved draws. Unresolved draws remain in quantile denominators, so unidentified tails return null. Current simulation is offline/internal and excluded from inference. Agreement with model-implied persistence does not validate real-world accuracy. Replays and fixtures are labeled simulated.

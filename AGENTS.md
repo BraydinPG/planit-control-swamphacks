@@ -13,8 +13,7 @@ Default ownership is a coordination boundary, not a reason to block explicitly a
 
 1. Use React + TypeScript with Vite and Tailwind CSS for the frontend, and FastAPI for every backend route. Tiger Data is the application database, Vultr hosts the app and photo object storage, and Auth0 is the only identity provider. Auth0, Tiger Data, and Vultr are sponsors for tracks. Gemini API and scikit-learn complete the stack. Style UI with Tailwind utility classes. Do not add a second CSS framework, database, identity provider, or application host. The existing Vite app does not replace the API. Do not implement routes in Next.js, Express, Flask, or another server. Preserve other repository conventions.
 2. Respect the ownership map as the default. Explicit project-level authorization can permit focused edits outside an owner's paths; preserve unrelated work and coordinate interface changes.
-3. Avoid root manifests, lockfiles, shared environment templates, migrations, and API contracts by default. Explicit project-level authorization permits focused changes when required; notify the relevant owner and preserve unrelated work.
-Braydin owns Tiger Data migrations.
+3. Avoid root manifests, lockfiles, shared environment templates, migrations, and API contracts by default. Explicit project-level authorization permits focused changes when required; notify the relevant owner and preserve unrelated work. Braydin owns Tiger Data migrations.
 4. Begin with fixtures and stable interfaces. Do not wait for another agent’s implementation to finish before building your independent module.
 5. Do not commit secrets, API keys, tokens, private photos, or real personal data.
 6. Label simulated, stale, mocked, and unavailable data in code and UI.

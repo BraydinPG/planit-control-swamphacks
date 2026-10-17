@@ -1,83 +1,97 @@
-# Backend Integration Contract
+# Backend integration contract
 
-The accepted `feature/cache-ml` branch now includes Rudra's merged minimal FastAPI `/health` app and backend dependency/test scaffold. The backend still has no API schemas, active-event source, event activation, site data, auth policy, score pipeline, or ML import. This document defines the ML boundary only; it does not add a route or require a frontend change. Rudra remains the authority for event confirmation, role checks, final site score, deterministic alerts, and lightning timers.
+Rudra owns event confirmation, authorization, routes, scores, and deterministic alerts. Braydin owns database/ingestion modules. The integrated backend exposes only `GET /health`; frontend/auth remain starter/placeholders. This package provides a tested import, not live route integration. Team scope from `origin/main` at `5bde676` is preserved alongside conditional active-event scope.
 
-## Primary callable
+## Import and lifecycle
+
+Provision using `ml/QUICKSTART.md`. Initialize one predictor per backend process using a trusted local receipt. Hash checking verifies identity; never deserialize an artifact from an untrusted sender.
 
 ```python
-from ml.predict import predict_active_event
+import json
+from ml.config import MODEL_PATH
+from ml.backend_adapter import ActiveEventPredictor
 
-outlook = predict_active_event(event_context)
+receipt = json.loads(MODEL_PATH.with_suffix(".manifest.json").read_text(encoding="utf-8"))
+predictor = ActiveEventPredictor(MODEL_PATH, expected_sha256=receipt["artifact_sha256"])
+
+# In Rudra's authorized route, after confirming the event:
+event_outlook = predictor.predict_for_site(site, event_context)
+# Separate optional response field after approval; no score/alert mutation.
 ```
 
-Required fields:
+The site uses shared `id`, `lat`, and `lon` fields. The adapter rejects invalid coordinates or conflicting site IDs, preserves inputs, and never infers exposure. Event-location coordinates remain independent of site coordinates; `site_association` records the representative monitored location separately.
 
-- `event_id`: stable source/event identifier.
-- `event_type`: currently exactly `Flood`.
-- `event_status`: `confirmed_active` or `historical_replay`. Historical replay is always marked simulated.
-- `as_of_utc`: timezone-aware ISO-8601 time.
-- `event_start_utc`: required to condition on event age; unknown onset returns unavailable.
-- `site_id`, `location.region`, or valid `location.lat` and `location.lon` association.
-- Optional `location.spatial_match_quality`: `site_verified`, `point_nearby`, `region_only`, or `unknown`.
-- Optional `recent_observations[]`: each item has a timezone-aware `valid_time_utc` no later than `as_of_utc`. These are validated but not consumed by this trained model.
+`from ml.predict import predict_active_event` also works directly. It loads the default artifact per call; the adapter loads once. Recreate the adapter after provisioning if initialization found no model. Inference never fits, accesses the network, or runs Monte Carlo.
 
-The result is JSON serializable with `allow_nan=False`. An `ok` result contains `scope="conditional_on_confirmed_active_event"`, 6h/12h/24h recorded-event-ongoing probabilities and exact complements, remaining-duration quantiles (null when the tail is not identified within 168h), a separate conditional KM baseline, evidence-quality counts, version, and `trend="unknown"`. An unsupported event, missing model, missing age/location, invalid status, or future observation returns `status="unavailable"` (inactive/no event returns `not_applicable_no_confirmed_event`) with an empty `outcomes` object and no fabricated probabilities.
+When starting in `backend/`, put the repository root on Python's import path:
 
-Example context below is synthetic and is not a real NOAA report:
+```powershell
+# From repository root:
+$env:PYTHONPATH = (Get-Location).Path
+Set-Location backend
+# Use an environment containing backend and ML dependencies.
+python -m uvicorn app.main:app --port 8000
+```
 
-```python
-fixture_context = {
-    "site_id": "eia-example-site-01",
-    "event_id": "fixture-flood-001",
-    "event_type": "Flood",
-    "event_status": "historical_replay",
-    "event_start_utc": "2024-09-10T10:00:00Z",
-    "as_of_utc": "2024-09-10T16:00:00Z",
-    "location": {
-        "lat": 28.0,
-        "lon": -82.7,
-        "region": "example county",
-        "spatial_match_quality": "region_only",
-    },
-    "recent_observations": [{
-        "type": "precipitation_6h",
-        "value": 18.0,
-        "unit": "mm",
-        "valid_time_utc": "2024-09-10T16:00:00Z",
-        "source": "synthetic_fixture",
-    }],
-    "is_simulated": True,
+A fresh-process test starts in `backend/` with this import path and runs the real adapter. It does not add an endpoint or bypass Auth0.
+
+## Context and result
+
+Types are in `ml/contracts.py`; runtime validation is in `ml/schemas.py`.
+
+- Require event ID/type, confirmed-active or historical-replay status, timezone-aware as-of time, and known event start no later than as-of.
+- Require a site ID, region, or valid coordinate pair. Spatial match quality is explicit; coordinates do not establish verified exposure.
+- Observations require finite values and valid time no later than as-of. Supplied acquisition times must also precede as-of; absent acquisition times are counted. These observations are validated but not model predictors.
+- Optional evidence requires ID, source, and availability time no later than as-of. Missing provenance is labeled; supplied provenance is not independently verified. Rudra must confirm activation/evidence.
+
+Exact synthetic input (not a real event or site):
+
+```json
+{
+  "site_id": "eia-example-site-01",
+  "event_id": "fixture-flood-001",
+  "event_type": "Flood",
+  "event_status": "historical_replay",
+  "event_start_utc": "2024-09-10T10:00:00Z",
+  "as_of_utc": "2024-09-10T16:00:00Z",
+  "location": {"lat": 28.0, "lon": -82.7, "region": "example county", "spatial_match_quality": "region_only"},
+  "evidence": [{"id": "fixture-active-confirmation", "source": "synthetic_fixture_not_real_event_evidence", "available_at_utc": "2024-09-10T16:00:00Z"}],
+  "is_simulated": true
 }
-outlook = predict_active_event(fixture_context)
-if outlook["status"] == "ok":
-    # Optional response field only after Rudra approves its API contract.
-    response["event_outlook"] = outlook
 ```
 
-Do not put raw Monte Carlo draws in APIs, Gemini prompts, or UI. The backend may expose a compact outlook only after it confirms the event and approves its response schema.
+Verified v2 output excerpt:
 
-## Legacy `predict_site` compatibility
-
-The original six keys remain. Probabilities, if available, are named `active_event_persists_6`, `_12`, and `_24`; these are not chances that an event starts. No event context returns `{}`. `model_component_0_10` is a neutral compatibility placeholder of `0.0`, `confidence` is `null`, and `data_quality.include_model_component_in_site_score` is always `false`. The backend must skip the component entirely, never add or subtract the placeholder, and must not let ML alter deterministic alerts.
-
-```python
-from ml.predict import predict_site
-
-prediction = predict_site({"active_event_context": event_context})
-if prediction["data_quality"]["include_model_component_in_site_score"]:
-    approved_component = prediction["model_component_0_10"]
-else:
-    # Exclude the component; do not use its neutral placeholder in the score.
-    approved_component = None
-# Evaluate deterministic stop-work rules independently of this result.
+```json
+{
+  "status": "ok",
+  "scope": "conditional_on_confirmed_active_event",
+  "estimator": "kaplan_meier",
+  "model_version": "noaa-flood-conditional-km-v2",
+  "production_eligibility": false,
+  "is_simulated": true,
+  "outcomes": {
+    "recorded_event_ongoing_probability": {"6h": 0.7093663911845713, "12h": 0.6049586776859471, "24h": 0.47300275482093423},
+    "recorded_event_ended_probability": {"6h": 0.29063360881542866, "12h": 0.39504132231405287, "24h": 0.5269972451790658},
+    "remaining_duration_hours": {"p10": 2.0, "median": 22.0, "p90": null, "tail_horizon_hours": 168, "max_remaining_hours": 162.0, "tail_beyond_24h": true},
+    "trend": "unknown",
+    "trend_basis": "no_validated_time_varying_severity_labels"
+  }
+}
 ```
 
-## Artifact lifecycle and failure behavior
+The complete result adds IDs, as-of/generation time, evidence sources, support/missingness/acquisition-time counts, artifact version/training policy, KM reference probabilities, and limitations. The full fixture/result and measured latency are in `ml/reports/purged_v2/adapter_smoke.json`. Unidentified duration quantiles are null. The 168h limit is total event age, with current remaining support given separately.
 
-Train/backtest writes `ml/artifacts/active_event.joblib`, which is ignored and must be produced in the deployment build or installed through a trusted model-artifact process. Inference makes no network calls and does not train or simulate. Load only trusted artifacts from the matching model version. Missing/corrupt/unsupported artifacts return unavailable; the backend should retain existing deterministic behavior. Use a process-level backend cache if repeated disk loads are undesirable.
+Inactive/no event returns `not_applicable_no_confirmed_event`. Invalid input, unsupported type, unavailable/corrupt model, insufficient support, or unsupported horizons returns `unavailable`; both return empty outcomes and the no-clearance warning. Results are strict JSON. Probabilities are deterministic; generation time records the call. Logistic is explicit research comparison via `predict_active_event(context, estimator="logistic")`.
 
-The backend README starts Uvicorn from `backend/`; in that launch context the repository root is not automatically on `sys.path`. Before importing `ml.predict` from a future route, Rudra should either install the ML package or add the repository root to the backend process import path. The backend import has not been tested because no ML endpoint or event context exists yet.
+## Compatibility and Rudra checklist
 
-## Message for Rudra
+`predict_site` retains the original six keys. Pass context via `features["active_event_context"]`. Probability names are `active_event_persists_6`, `_12`, `_24`; no context yields an empty dictionary. The score component 0.0 is an excluded placeholder, confidence is null, and `include_model_component_in_site_score=false`. Skip this component entirely. No outlook lowers risk, clears alerts, or authorizes work.
 
-> Cache's primary interface is `predict_active_event(event_context)`, conditional on a backend-confirmed active Flood and as-of time. The trained model currently uses NOAA Flood event age and month only; it does not consume weather/current site observations, and NOAA geography is regional. `recorded_event_end` is not a site-clearance signal. `predict_site` keeps the six legacy keys but uses explicit persistence names and sets `include_model_component_in_site_score=false`; exclude its zero placeholder. No API route or frontend change is required until you approve an optional response field. Deterministic alerts and lightning timers remain authoritative.
+1. Provision alongside backend dependencies and verify the trusted receipt.
+2. Approve the optional response field and supply authorized site/event/as-of evidence.
+3. Initialize one predictor per process; expose simulated/unavailable/limited states.
+4. Keep scores, Gemini, deterministic alerts, and lightning timers independent.
+5. Run the backend import test and ML smoke; add a route acceptance test once the route exists.
+
+Copy-ready handoff: Cache exports a tested conditional Flood outlook through `ActiveEventPredictor` and `predict_active_event`. KM is default because corrected 2024 validation favors it. V2 purges boundary episodes. The compatibility score component stays excluded. Weather remains ERA5 retrospective research, trend is unknown, and all outputs remain production-ineligible advisory evidence. No result establishes site clearance. T050 remains Rudra's integration task.

@@ -307,7 +307,7 @@ The primary active-event model export is `predict_active_event(event_context)`. 
 
 - Keep weather data cached and show freshness.
 - If Gemini fails, show deterministic text or factor data.
-- If the model fails, show the labeled fallback score.
+- If the active-event model fails, show an unavailable advisory outlook and retain deterministic score and alert behavior.
 - If a feed is stale or unavailable, show that state and reduce confidence. Do not present stale observations as current. Track freshness per feed, so one failed feed does not mark the others stale.
 - A feed outage never clears an alert or lowers a score to zero risk.
 - Keep lightning alerts and rule evaluation independent from Gemini and model availability.
