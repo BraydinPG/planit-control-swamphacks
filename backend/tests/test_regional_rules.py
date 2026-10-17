@@ -21,7 +21,9 @@ from app.rules.regional import (
 from app.rules.score import compute_score
 from app.rules.settings import RuleSettings
 from app.schemas import DataState, HazardType, Observation
+from app.security import CurrentUser, roles
 from app.services.feed_notices import send_feed_notices
+from app.services.hazards import confirm_hazard
 
 NOW = datetime(2026, 10, 17, 18, 0, tzinfo=UTC)
 SETTINGS = RuleSettings(_env_file=None)
@@ -300,3 +302,13 @@ def test_notice_delivery_is_audited(session) -> None:
     actions = {(e.actor, e.action, e.entity) for e in session.scalars(select(db.AuditEvent))}
     assert ("system:rules", "notice.create", notice.id) in actions
     assert ("system:rules", "notice.deliver", f"{notice.id}->team-a") in actions
+    assert ("system:notices", "notice.supervisor.deliver", f"{notice.id}->auth0|sup") in actions
+
+
+def test_detected_feed_notice_can_be_confirmed_by_its_recorded_recipient(session) -> None:
+    [(notice, _)] = send_feed_notices(session, SITE, [quake(10.0, 4.8)], NOW, SETTINGS)
+    user = CurrentUser("auth0|sup", "supervisor", roles.SUPERVISOR_PERMISSIONS)
+    confirmed = confirm_hazard(session, notice.id, user, NOW)
+    assert confirmed.status == "confirmed" and confirmed.confirmed_by == user.sub
+    assert list(session.scalars(select(db.CrewReport))) == []
+    assert list(session.scalars(select(db.HazardScore))) == []

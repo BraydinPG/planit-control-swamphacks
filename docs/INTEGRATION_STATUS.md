@@ -2,6 +2,16 @@
 
 Phase-4 checkpoint verified 2026-10-17. PR #19 merged as `64cf632` during this run. Branch `feature/cache-live-integration-checks` now incorporates reviewed main `9b395f0` (initial phase-4 base `9ba1b7c`) (T052/T053, PR #20/#21) initially by fast-forward, then merged latest reviewed T049A/T049B main while preserving both sets of context notes. It will target main. Rudra's canonical backend/auth/types/fixtures remain unchanged by Cache.
 
+Backend availability update (2026-10-17, T054): this checkout now includes T053 report
+creation, T054 confirmation/absent-report review and T054A supervisor instruction send.
+See `T054_IMPLEMENTATION.md` and `T054A_IMPLEMENTATION.md` for routes, permissions,
+receipts, Gemini draft/manual fallback and verification. T055 also refreshes the reporting
+site's score atomically after present-report confirmation; see `T055_IMPLEMENTATION.md`.
+Frontend report capabilities
+and real end-to-end acceptance remain pending. The
+frontend verification record below predates these backend additions.
+
+
 Review: [PR #24](https://github.com/BraydinPG/planit-control-swamphacks/pull/24), open against main; initial implementation `ff35b7b`. Latest main T049A/T049B is inherited unchanged. The source-context conflict is resolved without dropping teammate notes. Local feed refresh stays explicitly disabled; no background provider job was started by this acceptance.
 
 ## Actual readiness and task state

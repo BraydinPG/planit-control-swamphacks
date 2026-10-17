@@ -158,8 +158,8 @@ Adapter rules:
 - `POST /api/reports/{id}/review`
 - `POST /api/hazards/{id}/confirm`
 - `POST /api/hazards/{id}/instruction`
-- `POST /api/sites/{id}/briefings`
-- `POST /api/sites/{id}/explanations`
+- `GET /api/sites/{id}/briefing`
+- `GET /api/briefings`
 
 These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Cache uses these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
 
@@ -182,7 +182,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 ### Cache: AI/ML
 
-**Owned paths:** `ml/**`, including training, features, prediction, evaluation, and model notes.
+**Owned paths:** `ml/**`, including training, features, prediction, evaluation, and model notes. Also the 0–10 site risk algorithm: `backend/app/rules/score.py` and the score weights in `backend/app/rules/settings.py` (T051A).
 
 **Do not edit:** backend routes, DB models/migrations, root README and canonical API/ML contracts. Frontend scope is explicitly transferred below; focused frontend configuration/dependencies require the change log and owner review.
 
@@ -200,7 +200,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 **Can start immediately:** Yes. Use mock feature rows until Braydin’s site ingestion is ready.
 
-**Integration dependency:** Rudra imports the function and combines its output with live deterministic factors. Do not implement the final risk score or lightning alert logic. Live feeds supply deterministic factors, not model training labels. The model scope stays as described above.
+**Integration dependency:** Rudra imports the function and combines its output with live deterministic factors. Own the deterministic 0–10 site risk algorithm (T051A). It weights current factors and confirmed reports by risk and never includes ML or Gemini output. Do not implement lightning alert logic. Live feeds supply deterministic factors, not model training labels. The model scope stays as described above.
 
 ### Braydin: Auth0, Tiger Data, ingestion, Gemini, and Vultr deployment
 
@@ -226,7 +226,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Build the P1 live feeds when P0 is stable: hurricanes (NHC and NWS tropical alerts), earthquakes (USGS), USGS flood gauges, and a best-effort live lightning feed that falls back to the replay fixture.
 - Wrap each of your feeds in Rudra's `cache.FeedCache`, so it tracks freshness per feed and marks stale and unavailable states. A failed refresh must never appear current. Keep each adapter replaceable.
 - Do not implement alert rules or scores. Rudra's rules read your Observations.
-- Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, explanation, enrichment, notice-radius, and instruction-suggestion calls. Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
+- Own `backend/app/gemini/**`, including the client already added in T056. Implement the briefing, enrichment, notice-radius, and instruction-suggestion calls. Briefings are generated automatically at 6 PM site-local time for every team site whose organization has a supervisor, and stored; there is no manual generation. There is no score-explanation call: the score is a deterministic weighted algorithm shown as its factor breakdown. Validate structured output. Use the category default radius from `spec.md` when Gemini is unresponsive or the radius is invalid. Gemini cannot send an instruction, declare work safe, or clear an alert.
 - Register the Gemini router from `backend/app/main.py` without changing Rudra’s other routes.
 - Own Vultr deployment: deployment config, backend deploy, and the deployed security and CORS check. Rudra owns the photo storage helper (T052), and Braydin provisions the Vultr Object Storage bucket and its credentials for deployment. Nick still deploys the frontend. Rudra still writes the root README and Devpost submission.
 
@@ -243,7 +243,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 **Tasks:**
 
 - Build mobile-first crew screens and desktop/tablet supervisor screens.
-- Include crew home, alert detail and timer, hazard report with a present-or-absent choice, supervisor full map, the location list with each assigned team, site detail, briefing, and Gemini explanation views. Locations with a team appear above locations without one.
+- Include crew home, alert detail and timer, hazard report with a present-or-absent choice, supervisor full map, the location list with each assigned team, site detail with the score's weighted factor breakdown, and briefing views. Locations with a team appear above locations without one.
 - Use mock JSON that follows the shared contract. Add a fixture switch so the interface works before backend integration.
 - Show data freshness, source, simulated/stale/unavailable status, score factors, and evidence references. Show source and state separately for each feed: weather, forecast, flood, lightning, hurricane, and earthquake.
 - Include report categories for broken electrical pole or downed line, on-site fire, wildlife, flooding, and other. These hazards come only from crew reports.
@@ -258,7 +258,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 
 ### Rudra: backend routes, alert rules, and scoring
 
-**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, Braydin's files in `backend/app/ingestion/`, and `backend/app/gemini/**`. Inside `backend/app/ingestion/`, Rudra owns the NWS and cache files listed under "Ingestion interface." Also shared API types, root `README.md`, shared configuration and manifests.
+**Owned paths:** `backend/app/**` except `backend/app/security/**`, `backend/app/db/**`, Braydin's files in `backend/app/ingestion/`, and `backend/app/gemini/**`. Inside `backend/app/ingestion/`, Rudra owns the NWS and cache files listed under "Ingestion interface." Also shared API types, root `README.md`, shared configuration and manifests. Cache owns the risk algorithm in `backend/app/rules/score.py` and the score weights in `backend/app/rules/settings.py`.
 
 **Do not edit:** `ml/**`, `backend/app/security/**`, `backend/app/db/**`, Braydin's adapters in `backend/app/ingestion/`, `backend/app/gemini/**`, database migrations, Vultr deployment files, Nick’s frontend pages/components/styles, `frontend/src/auth/**`.
 
@@ -270,7 +270,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Implement lightning stop-work within 10 miles and a resettable 30-minute all-clear. Provide a labeled replay fixture if live lightning access is unreliable.
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
 - Implement the prototype hurricane and earthquake rules from `spec.md` using Braydin's Observations. Each creates a potential-hazard notice and a score factor. Label distance and magnitude settings as prototype values.
-- Integrate Cache’s `predict_site()` output and compute the final score from model output, current factors, and confirmed reports.
+- Store and serve the final score from Cache's risk algorithm (T051A) through `services/scoring.py` and the site routes. The conditional ML outlook stays out of the score.
 - Implement crew reports, review state, acknowledgements, and audit events. Store photos through your photo storage helper in `backend/app/storage/` (T052): Vultr Object Storage when configured, and a private local directory in development. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
 - Call Braydin’s radius function for that notice. If it reports Gemini unresponsive or an invalid radius, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate. Do not call Gemini from route or rule files.
 - Let any supervisor who received the notice confirm the hazard. Call Braydin’s instruction function, let the confirming supervisor edit the suggestion, and send that final text to every team inside the stored radius.
@@ -295,8 +295,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
 | Confirm a potential hazard from a received notice | No | Any notified supervisor |
 | Edit and send the instruction for that hazard | No | The confirming supervisor |
-| Generate organization-wide briefings | No | Own organization only |
-| Request score explanation | Assigned site only | Own organization |
+| Read organization-wide briefings | Own organization only | Own organization only |
 
 The backend is the authority for permissions. Frontend guards improve UX but do not replace API checks.
 
@@ -330,7 +329,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 - A detected hazard or a crew member marking a hazard present sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius.
 - Any notified supervisor can confirm it. Teams inside that radius then receive the instruction that supervisor accepted or edited.
 - A supervisor sees the full map and every location with its assigned team, occupied locations first, and makes the final call on that organization’s reports that no hazard is present.
-- Gemini briefings and explanations cite supplied evidence, state unknowns, validate against schemas, and fall back safely.
+- Gemini briefings cite supplied evidence, state unknowns, validate against schemas, and fall back safely. Gemini never explains or interprets the hazard score.
 - Auth0 roles change available actions and backend permissions.
 - The interface works on mobile and desktop and includes stale, unavailable, loading, and error states.
 - The public README describes data sources, model evaluation and limitations, Gemini safeguards, Auth0 setup, and demo steps.

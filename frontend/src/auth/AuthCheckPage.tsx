@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from './context'
 import { RequireRole } from './RequireRole'
-import { ROLE_LABELS } from './roles'
+import { ROLE_LABELS, ROLES_CLAIM } from './roles'
 
 /**
  * Isolated sign-in check for T025/T026 and the demo-account setup in auth/SETUP.md.
@@ -68,13 +68,20 @@ export function AuthCheckPage() {
   )
 }
 
-/** Shows audience, scope, and expiry from the token payload. Never displays the token. */
+/**
+ * Shows expiry, the roles claim, and permission names from the token payload, for setup
+ * checks. Never displays the token itself.
+ */
 function describeToken(token: string): string {
   try {
     const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
     const expires = new Date(payload.exp * 1000).toLocaleTimeString()
-    const permissions = Array.isArray(payload.permissions) ? payload.permissions.length : 0
-    return `Access token received. Expires ${expires}. ${permissions} permissions.`
+    const permissions: string[] = Array.isArray(payload.permissions) ? payload.permissions : []
+    const roles = payload[ROLES_CLAIM]
+    const roleText = Array.isArray(roles)
+      ? `roles claim: [${roles.join(', ')}]`
+      : 'roles claim: missing (the post-login Action did not run)'
+    return `Access token received. Expires ${expires}. ${roleText}. ${permissions.length} permissions: ${permissions.sort().join(', ')}.`
   } catch {
     return 'Access token received.'
   }

@@ -15,9 +15,14 @@ export function isRole(value: unknown): value is Role {
   return value === 'crew' || value === 'supervisor'
 }
 
-/** Supervisor wins when both are assigned, matching the backend. */
+/**
+ * Supervisor wins when both are assigned, matching the backend. Role names match
+ * regardless of case or surrounding spaces ("Supervisor" counts).
+ */
 export function roleFromClaim(value: unknown): Role | null {
-  const names = Array.isArray(value) ? value : []
+  const names = (Array.isArray(value) ? value : [])
+    .filter((name): name is string => typeof name === 'string')
+    .map((name) => name.trim().toLowerCase())
   if (names.includes('supervisor')) return 'supervisor'
   if (names.includes('crew')) return 'crew'
   return null

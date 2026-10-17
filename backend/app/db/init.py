@@ -14,6 +14,10 @@ from sqlalchemy.engine import Engine
 from app.db.connection import get_database_url, to_driver_url
 from app.db.models import Base
 
+# Columns added after a table was first created. `create_all` never alters existing
+# tables, so each runs as an idempotent ALTER.
+ADDED_COLUMNS = (("sites", "timezone", "VARCHAR"),)
+
 HYPERTABLES = (
     ("observations", "observed_at"),
     ("alerts", "triggered_at"),
@@ -43,6 +47,10 @@ def initialize_database(engine: Engine | None = None) -> None:
         connection.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb"))
     with engine.begin() as connection:
         Base.metadata.create_all(connection)
+        for table, column, sql_type in ADDED_COLUMNS:
+            connection.execute(
+                text(f"ALTER TABLE {table} ADD COLUMN IF NOT EXISTS {column} {sql_type}")
+            )
         for table, column in HYPERTABLES:
             connection.execute(
                 text(f"SELECT create_hypertable('{table}', '{column}', if_not_exists => TRUE)")

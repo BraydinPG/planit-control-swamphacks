@@ -1,1 +1,6 @@
 .shell-check/
+
+# Auth0 MCP onboarding (credentials and tool state)
+.env.local
+.auth0-mcp-state.json
+.auth0-mcp-writes.log
