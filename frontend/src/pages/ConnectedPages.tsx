@@ -438,7 +438,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
       </div>
       <section
         aria-label="Location filters"
-        className={`${card} grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end @3xl:shadow-[0_1px_2px_rgba(0,0,0,0.06)]`}
+        className={`${card} border border-line/80 bg-surface supports-[backdrop-filter]:bg-surface/90 shadow-[0_8px_28px_rgba(0,0,0,0.07)] backdrop-blur-xl backdrop-saturate-150 grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end`}
       >
         <LocationSearch
           sites={ranked}
