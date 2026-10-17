@@ -44,6 +44,10 @@ Nine ignored environment/artifact files are hash-unchanged. Demo remains at
 http://localhost:5177/; no teammate server was restarted. Review: Rudra for UI,
 Braydin/Rudra for the unchanged backend-authored wording noted in the guide.
 
+Published [PR47](https://github.com/BraydinPG/planit-control-swamphacks/pull/47),
+open against main, verified UI commit `a5a06cd`; no Codex merge. This publication
+note changes only the shared context/log; the implementation checks above stand.
+
 ## Canonical demo scores and prediction failure handling (Cache) — 2026-10-17
 
 Explicit user authorization: fix the obsolete fixture score and both reproduced
