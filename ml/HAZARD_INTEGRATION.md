@@ -1,5 +1,7 @@
 # Comprehensive worker advisory: opt-in contract 2.1.0
 
+For the read-only T087 browser/terminal preview and generated 2.1 JSON, run `python -m ml.worker_preview` after the setup below. [WORKER_PREVIEW.md](WORKER_PREVIEW.md) documents the 50-site picker, three replay examples, missing-artifact fallback and task-specific owner handoffs. This does not implement T050, T063 or application-demo acceptance.
+
 This Cache-owned library adds explicit worksite verification questions, native official notices, reviewed-report contracts and contextual source estimates. It serves no endpoint, validates no Auth0 token and changes no route, score, warning, work permission or timer. All outputs remain research-only and operationally ineligible.
 
 ## Run the complete offline acceptance package

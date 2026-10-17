@@ -1,0 +1,65 @@
+{
+  "task_id": "T087",
+  "verified_at_utc": "2026-10-17 08:20:44 UTC",
+  "branch": "feature/cache-worker-preview",
+  "base_commit": "cd36d32",
+  "pr12": {
+    "state": "merged",
+    "merge_commit": "bcf61e22d9445d9e76977d07657ae7a827113042",
+    "merged_at": "2026-10-17T07:59:44Z"
+  },
+  "baseline": {
+    "command": "python -m pytest ml/tests/test_worker_outlook.py ml/tests/test_hazard_coverage.py -q",
+    "passed": 130
+  },
+  "focused": {
+    "command": "python -m pytest ml/tests/test_worker_preview.py -q",
+    "passed": 15
+  },
+  "full_suite": {
+    "command": "python -m pytest ml/tests backend/tests -q",
+    "passed": 415,
+    "seconds": 20.47,
+    "warnings": [
+      "Existing Starlette/httpx deprecation"
+    ],
+    "initial_attempt": "Collection failed: h5py absent in older environment; installed existing backend/requirements-dev.txt, rerun passed"
+  },
+  "lint": "ruff check --select E4,E7,E9,F ml/worker_preview.py ml/tests/test_worker_preview.py: passed",
+  "format": "ruff format --check ml/worker_preview.py ml/tests/test_worker_preview.py: passed",
+  "dependencies": "python -m pip check: no broken requirements",
+  "offline_preview": {
+    "command": ".\\ml\\.venv\\Scripts\\python.exe -m ml.worker_preview --require-models",
+    "sites": 50,
+    "validated_outputs": 150,
+    "weather_sites": 2,
+    "notice_sites": 10,
+    "snapshot_as_of_utc": "2026-10-17T07:18:48.564672Z"
+  },
+  "clean_candidate_export": {
+    "candidate_tree": "e9f9a54d426aa48488d1c6c614453ea453b1a5f9",
+    "export": "C:\\Users\\cache\\OneDrive\\Documents\\planit-control-swamphacks\\ml\\.venv\\preview_export_20261017T081939Z",
+    "missing_artifacts": "150 valid outputs; all Layer A unavailable",
+    "verified_local_artifact_copies": "150 valid outputs; Flood/High Wind supported_research",
+    "clean_export_tests": "...............                                                          [100%]\n15 passed in 7.87s",
+    "environment": "Pinned installed ML dependencies; no PYTHONPATH, source caches or credentials; candidate Git index export before checkbox completion"
+  },
+  "browser": "Edge headless screenshot generated and visually inspected; terminal Flood/High Wind/missing examples and saved canonical JSON validated",
+  "scope": "ml/** plus tasks.md T087 and PROJECT_CONTEXT.md; no backend/frontend/auth/shared schema/manifest edits",
+  "models": "Reused pinned artifacts; no refit, archive acquisition, new backtest or local probability validation",
+  "task_done": "Browser/terminal renders; all outputs validate; clean-source missing-artifact fallback and provisioned copies work; safety tests and integration guide pass",
+  "limits": [
+    "Replay only; not production integration",
+    "Local hazard/severity probabilities null; manual hazards unknown",
+    "No T050/T063/T070 or full-app completion claim"
+  ],
+  "implementation_commit": "555ce0a856608c263fb2a69c7ff684e3db25b926",
+  "review_pr": {
+    "number": 14,
+    "url": "https://github.com/BraydinPG/planit-control-swamphacks/pull/14",
+    "state": "open",
+    "draft": false,
+    "base": "main",
+    "merged": false
+  }
+}

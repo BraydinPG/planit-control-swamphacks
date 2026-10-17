@@ -1,33 +1,25 @@
 # PlanIT Control: shared project context
 
 ## Last verified
-- UTC verification: 2026-10-17 07:43:12; update with each relevant checkpoint.
-- Working branch: `feature/cache-hazard-coverage` (new comprehensive coverage push).
-- Current base includes `origin/main` at `cc67e58`; site routes and nullable-score schema preserved.
-- Published implementation checkpoint `84d3d2d`; synchronized main without force-pushing it.
-- GitHub PR #4: merged 2026-10-17, merge `cf9d3bb`; already an ancestor of main.
-- GitHub PR #6: merged 2026-10-17, merge `20af37d`; source head `28b89cf`.
-- Both merge states verified through GitHub API and local ancestry, not assumed.
-- Python: `ml/.venv/Scripts/python.exe`, 3.14.5; pinned ML dependencies exist.
-- Fresh isolated environment: 361 ML/backend tests passed, including 68 new hazard checks.
-- Backend lint/format, new Python lint/format, frontend lint/typecheck/build passed.
-- Existing nine duration artifacts/reference predictions verified without refitting.
-- PR #9 merged at `f4ee557` on 2026-10-17T06:49:58Z; API and ancestry reverified.
-- Current push starts from `origin/main` at `f4ee557`; PR #9 branch is preserved.
-- Initial checkpoint: 62 worker tests pass; no long ML jobs or uncommitted work recovered.
-- Main includes Rudra's NWS weather/flood ingestion; Cache additions stay in `ml/`.
-- Hazard checkpoint: 128 focused checks passed before final hardening; full suite now 361.
-- New opt-in 2.1.0 composer adds native notices, controlled report contracts and worksite unknowns.
-- 146 hazard entries crosswalk all 54 raw NOAA labels and 18 FEMA groups; no new models.
-- Offline rehearsal: 31 scenarios, 50 reconciled backend-selected EIA identities, no network.
-- New captures: 553 national NWS notices, all 50 point queries successful (11 notice records).
-- Actual replay coverage: two sites with local weather, ten with qualified official notices.
-- Gauge/site transfers, trusted live reports/assets and local US-site ShakeMap remain unavailable.
-- Code checkpoint `c61c9ab` pushed; full suite/builds and clean Git-export checks pass.
-- Clean export: 31 scenarios/50 sites pass without models and with verified artifact copies; no source caches/credentials.
-- PR #12 is open/ready against main: https://github.com/BraydinPG/planit-control-swamphacks/pull/12
-- Owner handoff posted: PR #12 comment 6231337589; full details in HAZARD_INTEGRATION.
-- Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
+- UTC verification: 2026-10-17 08:20:44 UTC; task T087 only in this run.
+- Branch: `feature/cache-worker-preview`, from current main `cd36d32` (no stacked dependency).
+- PR #12 merged 2026-10-17T07:59:44Z at `bcf61e2`; verified through API and ancestry.
+- Earlier PR #4/#6/#9 remain merged; new backend T045-T045D feed work is preserved.
+- T087: independent static HTML/terminal preview; `python -m ml.worker_preview`.
+- Exact callable: `ml.worker.comprehensive.build_comprehensive_outlook`; schema 2.1.0 unchanged.
+- Output: `ml/reports/worker_preview/index.html`, canonical per-site JSON, schemas, `preview.txt`.
+- 50 reference sites / 150 validated outputs; Flood, High Wind and missing-source replays.
+- Fixed snapshot: 2026-10-17T07:18:48.564672Z; weather evidence 2/50, qualified notices 10/50.
+- Model artifacts reused; all local hazard probabilities null, manual dangers unknown.
+- Baseline 130 passed; new preview tests 15 passed; complete ML/backend suite 415 passed (one deprecation warning).
+- Existing declared backend h5py dependency installed after initial collection failure; no requirements changed.
+- Changed Python lint/format and pip check pass. No frontend/shared contract changes or frontend build needed.
+- Clean candidate Git export: all 150 outputs validate without artifacts and with verified artifact copies; 15 preview tests pass.
+- No credentials, source caches, downloads, refits or operational validation needed for the offline run.
+- Browser rendering inspected in Edge; generated HTML has no scripts, network assets or API.
+- T087 checkbox updated with implementation after its done check; other task states preserved.
+- Implementation commit: `555ce0a856608c263fb2a69c7ff684e3db25b926`; PR #14 open/ready: https://github.com/BraydinPG/planit-control-swamphacks/pull/14 (not merged).
+- Handoffs: `ml/WORKER_PREVIEW.md` and `ml/HAZARD_INTEGRATION.md`; T050/T063/application acceptance stay open.
 
 ## Mission and boundaries
 - Layer A: conditional evolution of an already confirmed event, never event onset.
@@ -45,7 +37,7 @@
 
 ## Ownership
 - Cache: `ml/**`, datasets, evaluation, advisory contracts and offline demos.
-- This task explicitly authorizes root `PROJECT_CONTEXT.md` and a short AGENTS pointer.
+- T087 authorizes `ml/**`, its exact `tasks.md` entry and factual `PROJECT_CONTEXT.md` updates only.
 - Rudra: API contracts/routes, deterministic alerts/scoring, root README; see AGENTS.
 - Nick: frontend pages/components/styles/API client; preserve his files.
 - Braydin: auth, database/ingestion, Gemini, Vultr deployment per current AGENTS.
@@ -167,6 +159,7 @@ python -m pytest ml/tests backend/tests -q
 - New cold/warm/batch/validation and traced-allocation measurements are in hazard acceptance.json.
 
 ## Next actions and handoff
+- Next unblocked tracked task: Nick T063 (T041/T042 checked); Cache preview does not complete it.
 1. Rudra: review opt-in FastAPI wiring after assigned-site authorization; keep controls separate.
 2. Braydin: supply true event confirmation, source timestamps/versions, auth and basin evidence.
 3. Nick: display method/window/source, derived/demo badges and unknowns; no clearance countdown.
@@ -181,6 +174,8 @@ python -m pytest ml/tests backend/tests -q
 - 2026-10-17: preserve existing duration fits; prioritize evidence-only site conditions.
 - 2026-10-17: all-category census and two-layer research slice verified; site ML not forced.
 - 2026-10-17: 256 checks passed on base `7950971`; feature pushed and PR #9 opened for review.
-- 2026-10-17: PR #9 merged; new 2.1 hazard package passes 361 checks and clean-export fallback/provisioned replay; PR #12 open, not merged.
+- 2026-10-17: PR #9 merged; new 2.1 hazard package passes 361 checks and clean-export fallback/provisioned replay; PR #12 was then open; merge reverified in the T087 checkpoint above.
 - Update this file in the same commit as model/contract/source/handoff/test changes.
 - Reconcile teammate edits; keep deep details in ML docs, not a transcript here.
+
+- 2026-10-17 08:20:44 UTC: T087 changes `tasks.md` (one new Cache task/check-off) and this index for accurate coordination; code/tests/docs stay in `ml/`. Rudra, Nick and Braydin should read WORKER_PREVIEW. Evidence and candidate export identity: `ml/preview_verification.json`; implementation `555ce0a`, PR #14 (open for Rudra review).
