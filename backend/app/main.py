@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 
-from app.api import alerts, reports, sites
+from app.api import alerts, hazards, reports, sites
 from app.db import validate_database_url
 from app.ingestion.settings import get_ingestion_settings
 
@@ -41,6 +41,7 @@ app = FastAPI(title="PlanIT Control API", version="0.1.0", lifespan=lifespan)
 app.include_router(sites.router)
 app.include_router(alerts.router)
 app.include_router(reports.router)
+app.include_router(hazards.router)
 
 
 @app.get("/health")

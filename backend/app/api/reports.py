@@ -1,4 +1,4 @@
-"""`POST /api/reports` and `GET /api/reports` (T053).
+"""Report creation/listing (T053) and supervisor absent-report review (T054).
 
 `POST /api/reports` takes a multipart form: `site_id`, `category`, `hazard_present`,
 `lat`, `lon`, optional `note`, and a `photo` file. A photo is required when the hazard is
@@ -10,6 +10,8 @@ Access (spec.md section 8):
   team. A supervisor may report for any site assigned to a team in their organization.
 - `GET /api/reports` shows crew their team's site reports, and supervisors their
   organization's reports.
+- `POST /api/reports/{id}/review` is restricted to the reporting organization's
+  supervisor and reports marked absent. Present reports use hazard confirmation.
 """
 
 from datetime import datetime
@@ -23,8 +25,16 @@ from sqlalchemy.orm import selectinload
 from app.api.deps import get_now
 from app.api.sites import DbSession, report_schema, visible_site_ids
 from app.db import models as db
-from app.schemas import CrewReport, ReportCategory, ReportCreate
-from app.security import AuthenticatedUser, CurrentUser, membership_for, require_permission, roles
+from app.schemas import CrewReport, ReportCategory, ReportCreate, ReportReview
+from app.security import (
+    AuthenticatedUser,
+    CurrentUser,
+    membership_for,
+    require_permission,
+    require_role,
+    roles,
+)
+from app.services.hazards import review_absent_report
 from app.services.reports import Reporter, create_report
 from app.storage import InvalidPhoto, PhotoStore, get_photo_store, read_limited, save_photo
 
@@ -34,6 +44,18 @@ Now = Annotated[datetime, Depends(get_now)]
 Submitter = Annotated[CurrentUser, Depends(require_permission(roles.SUBMIT_REPORTS))]
 Photos = Annotated[PhotoStore, Depends(get_photo_store)]
 REPORT_LIMIT = 200
+Reviewer = Annotated[CurrentUser, Depends(require_permission(roles.REVIEW_REPORTS))]
+
+
+@router.post(
+    "/{report_id}/review",
+    response_model=CrewReport,
+    dependencies=[Depends(require_role("supervisor"))],
+)
+def review_report(
+    report_id: str, review: ReportReview, user: Reviewer, session: DbSession, now: Now
+) -> CrewReport:
+    return report_schema(review_absent_report(session, report_id, review, user, now))
 
 
 @router.post("", response_model=CrewReport, status_code=201)

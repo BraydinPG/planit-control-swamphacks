@@ -1,5 +1,14 @@
 # Frontend integration status
 
+Backend availability update (2026-10-17, T054): this checkout now includes T053 report
+creation, T054 confirmation/absent-report review and T054A supervisor instruction send.
+See `T054_IMPLEMENTATION.md` and `T054A_IMPLEMENTATION.md` for routes, permissions,
+receipts, Gemini draft/manual fallback and verification. T055 also refreshes the reporting
+site's score atomically after present-report confirmation; see `T055_IMPLEMENTATION.md`.
+Frontend report capabilities
+and real end-to-end acceptance remain pending. The
+frontend verification record below predates these backend additions.
+
 Verified 2026-10-17. Cache now owns remaining frontend implementation; Nick retains prior attribution. PR #16 and #17 merged during this run (`806676e` and `7021ce2`). Delivery moved to new branch `feature/cache-frontend-workflows`, targeting main `723a5b8`, which includes Rudra's T050 (`9d73a77`) and newly merged T048 (`944471f`, PR #18). Reviewed main was incorporated without conflicts in `dc35458`; no Cache-authored backend/schema changes. No merge of this delivery is authorized.
 
 Review: [PR #19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open against main, implementation head `8834867`. This handoff is reviewable and pushed; no deployed production integration is claimed.
