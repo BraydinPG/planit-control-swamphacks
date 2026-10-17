@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const output = join(root, '.shell-check')
 const base = new URL(process.argv[2] ?? 'http://localhost:5173/')
+const production = process.argv.includes('--production')
 assert(
   ['localhost', '127.0.0.1', '[::1]'].includes(base.hostname) &&
     base.protocol === 'http:' &&
@@ -515,77 +516,92 @@ try {
     accessibility:
       'all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
   })
-  await navigate(new URL('/tests/browser.html', base).href, 'Sign in required')
-  await evaluate("window.harness.mount('loading')")
-  await loaded('Checking sign-in')
-  await evaluate("window.harness.mount('no-role')")
-  await loaded('No role assigned')
-  await evaluate("window.harness.mount('dev')")
-  await loaded('Development bypass roles are not accepted')
-  await evaluate("window.harness.mount('crew')")
-  await loaded('Stop-work alert active')
-  await hash(
-    '/supervisor/sites/site-fixture-b',
-    'outside the sites returned for your session',
-  )
-  assert(
-    await evaluate("!document.body.innerText.includes('Preview workspace')"),
-    'Live role selector leaked',
-  )
-  await hash('/crew/overview', 'Stop-work alert active')
-  await click('Inspect alert and acknowledge')
-  await loaded('Acknowledge alert')
-  await click('Acknowledge alert')
-  await loaded('Action recorded.')
-  assert(
-    await evaluate(
-      "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
-    ),
-  )
-  results.push({
-    alerts:
-      'published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified',
-  })
-  await evaluate("window.harness.mount('supervisor')")
-  await hash('/supervisor/overview', '5 backend-authorized locations')
-  await until(
-    () =>
-      evaluate(
-        "document.querySelectorAll('.leaflet-overlay-pane path.leaflet-interactive').length===5",
-      ),
-    'mock live map',
-  )
-  for (const [status, text] of [
-    [401, 'Session expired'],
-    [403, 'Permission denied'],
-    [503, 'service or database is unavailable'],
-  ]) {
-    await evaluate(`window.harness.mount('crew',${status})`)
-    await loaded(text)
-    assert(
-      await evaluate("!document.body.innerText.includes('Line Crew A')"),
-      'Error substituted fixture data',
-    )
-  }
-  await evaluate("window.harness.mount('logged-out')")
-  await loaded('Sign in required')
-  results.push({
-    auth: 'mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions',
-    api: 'mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation',
-    real_auth: 'not verified; tenant credentials unavailable',
-  })
-  for (const setting of ['false', 'typo']) {
-    const url = await offModeServer(setting)
+  if (!production) {
     await navigate(
-      url,
-      setting === 'false'
-        ? 'Sign-in is not configured.'
-        : 'Fixture configuration is invalid.',
+      new URL('/tests/browser.html', base).href,
+      'Sign in required',
     )
-    assert(await evaluate("!document.body.innerText.includes('Line Crew A')"))
+    await evaluate("window.harness.mount('loading')")
+    await loaded('Checking sign-in')
+    await evaluate("window.harness.mount('no-role')")
+    await loaded('No role assigned')
+    await evaluate("window.harness.mount('dev')")
+    await loaded('Development bypass roles are not accepted')
+    await evaluate("window.harness.mount('crew')")
+    await loaded('Stop-work alert active')
+    await hash(
+      '/supervisor/sites/site-fixture-b',
+      'outside the sites returned for your session',
+    )
+    assert(
+      await evaluate("!document.body.innerText.includes('Preview workspace')"),
+      'Live role selector leaked',
+    )
+    await hash('/crew/overview', 'Stop-work alert active')
+    await click('Inspect alert and acknowledge')
+    await loaded('Acknowledge alert')
+    await click('Acknowledge alert')
+    await loaded('Action recorded.')
+    assert(
+      await evaluate(
+        "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
+      ),
+    )
     results.push({
-      fixture_setting: setting,
-      status: 'explicit configuration/auth state; no silent samples',
+      alerts:
+        'published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified',
+    })
+    await evaluate("window.harness.mount('supervisor')")
+    await hash('/supervisor/overview', '5 backend-authorized locations')
+    await until(
+      () =>
+        evaluate(
+          "document.querySelectorAll('.leaflet-overlay-pane path.leaflet-interactive').length===5",
+        ),
+      'mock live map',
+    )
+    for (const [status, text] of [
+      [401, 'Session expired'],
+      [403, 'Permission denied'],
+      [503, 'service or database is unavailable'],
+    ]) {
+      await evaluate(`window.harness.mount('crew',${status})`)
+      await loaded(text)
+      assert(
+        await evaluate("!document.body.innerText.includes('Line Crew A')"),
+        'Error substituted fixture data',
+      )
+    }
+    await evaluate("window.harness.mount('logged-out')")
+    await loaded('Sign in required')
+    results.push({
+      auth: 'mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions',
+      api: 'mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation',
+      real_auth: 'not verified; tenant credentials unavailable',
+    })
+    for (const setting of ['false', 'typo']) {
+      const url = await offModeServer(setting)
+      await navigate(
+        url,
+        setting === 'false'
+          ? 'Sign-in is not configured.'
+          : 'Fixture configuration is invalid.',
+      )
+      assert(await evaluate("!document.body.innerText.includes('Line Crew A')"))
+      results.push({
+        fixture_setting: setting,
+        status: 'explicit configuration/auth state; no silent samples',
+      })
+    }
+  } else {
+    const response = await fetch(new URL('/tests/browser.html', base))
+    assert(
+      !(await response.text()).includes('id="auth-test"'),
+      'Test harness must not be published in production output',
+    )
+    results.push({
+      production:
+        'full demo lifecycle exercised from clean built bundle; mocked provider and compile-time mode tests are development-only',
     })
   }
   assert.equal(errors.length, 0, `Browser exceptions: ${errors.join(', ')}`)
@@ -594,7 +610,9 @@ try {
     'Unexpected backend API call',
   )
   const report = {
-    task: 'T032-T038 demo acceptance and mocked live integration (not real login/persistence)',
+    task: production
+      ? 'Clean production-bundle demo acceptance (not real login/persistence)'
+      : 'T032-T038 demo acceptance and mocked live integration (not real login/persistence)',
     checked_at: new Date().toISOString(),
     url: base.href,
     browser: 'Installed headless Edge/Chrome via CDP',
@@ -604,7 +622,7 @@ try {
     screenshots: '.shell-check/*.png (ignored)',
   }
   await writeFile(
-    join(output, 'acceptance.json'),
+    join(output, production ? 'production-acceptance.json' : 'acceptance.json'),
     JSON.stringify(report, null, 2) + '\n',
   )
   console.log(JSON.stringify(report, null, 2))

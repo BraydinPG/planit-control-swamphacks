@@ -148,5 +148,94 @@
     "Leaflet vendor cascade shrank zoom controls: increased override specificity; explicit >=44px check passes.",
     "After inherited T050 fixture addition, no-outlook test used a now-supported compact fixture: use genuinely unsupported reference plus verify supplied compact replay separately; all 23 pass.",
     "Mock role transition retained alert route: browser test explicitly navigates supervisor overview after role switch; final full workflow passes."
+  ],
+  "clean_frontend": {
+    "source_commit": "4a9e44f",
+    "provisioning": "fresh git archive of frontend only; no .env/node_modules/Python/model artifacts copied",
+    "npm_ci": "passed; 57 packages installed, 0 reported vulnerabilities",
+    "install_warning": "existing browser-tabs-lock Auth0 dependency postinstall not covered by allowScripts; install/build still passed",
+    "build": "passed; TypeScript and production assets",
+    "browser": {
+      "task": "Clean production-bundle demo acceptance (not real login/persistence)",
+      "checked_at": "2026-10-17T09:33:25.848Z",
+      "url": "http://127.0.0.1:5174/",
+      "browser": "Installed headless Edge/Chrome via CDP",
+      "results": [
+        {
+          "viewport": "1440x1000",
+          "primary_action_visible": true,
+          "overflow": false,
+          "nav_targets": ">=44px"
+        },
+        {
+          "viewport": "390x844",
+          "primary_action_visible": true,
+          "overflow": false,
+          "nav_targets": ">=44px"
+        },
+        {
+          "viewport": "320x740",
+          "primary_action_visible": true,
+          "overflow": false,
+          "nav_targets": ">=44px"
+        },
+        {
+          "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+        },
+        {
+          "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+          "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+          "ai": "prerecorded Gemini and deterministic fallback with citations",
+          "persistence": "local demo namespace only; no server writes",
+          "keyboard": "skip navigation and Tab to visible focused control passed"
+        },
+        {
+          "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+        },
+        {
+          "production": "full demo lifecycle exercised from clean built bundle; mocked provider and compile-time mode tests are development-only"
+        }
+      ],
+      "browser_exceptions": [],
+      "backend_api_requests": 0,
+      "screenshots": ".shell-check/*.png (ignored)"
+    }
+  },
+  "changed_files_relative_to_main": [
+    "AGENTS.md",
+    "PROJECT_CONTEXT.md",
+    "docs/CROSS_SCOPE_CHANGES.md",
+    "docs/FRONTEND_REDESIGN_HANDOFF.md",
+    "docs/INTEGRATION_STATUS.md",
+    "docs/frontend-acceptance.json",
+    "frontend/.env.example",
+    "frontend/INTEGRATION.md",
+    "frontend/SHELL.md",
+    "frontend/scripts/check-shell.mjs",
+    "frontend/scripts/export-demo-sources.py",
+    "frontend/src/App.tsx",
+    "frontend/src/api/contracts.ts",
+    "frontend/src/api/http-client.ts",
+    "frontend/src/application/LiveApplication.tsx",
+    "frontend/src/application/Provider.tsx",
+    "frontend/src/application/context.tsx",
+    "frontend/src/components/data/Advisory.tsx",
+    "frontend/src/components/data/AlertCard.tsx",
+    "frontend/src/components/data/Interaction.tsx",
+    "frontend/src/components/data/NoticeCard.tsx",
+    "frontend/src/components/data/SiteMap.tsx",
+    "frontend/src/components/data/Status.tsx",
+    "frontend/src/components/shell/AppShell.tsx",
+    "frontend/src/demo/client.ts",
+    "frontend/src/demo/generated/advisories.json",
+    "frontend/src/demo/generated/references.json",
+    "frontend/src/pages/ConnectedPages.tsx",
+    "frontend/src/styles/map.css",
+    "frontend/tests/browser-harness.tsx",
+    "frontend/tests/browser.html",
+    "frontend/tests/data.test.mjs",
+    "frontend/tests/status.test.mjs",
+    "frontend/vite.config.ts",
+    "tasks.md"
   ]
 }

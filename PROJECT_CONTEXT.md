@@ -9,6 +9,7 @@ Read this verified index first, then `AGENTS.md`, `spec.md`, `tasks.md` and rele
 - T031-T038 foundation/demo acceptance passed; T032-T038 checked with implementation/evidence in this checkpoint. T063-T068 remain unchecked, with exact dependencies in `docs/INTEGRATION_STATUS.md`.
 - Vite: http://localhost:5173/; interactive simulated crew/supervisor app, 55 map/list points, reporting/review/instruction flow and exact-site research advisory.
 - 23 focused frontend tests, lint/TypeScript/build and 1440/390/320 browser workflows passed. Current merged branch backend suite: 297 passed, one existing dependency deprecation. Earlier branch/export checks were 266/282 passed. See `docs/frontend-acceptance.json`.
+- Clean committed frontend export `4a9e44f`: npm ci/build and full static-bundle demo browser acceptance pass without local env/Python/ML artifacts. No whole-app/deployment acceptance claimed.
 - Actual health 200; protected site reads directly and via Vite proxy return 401. No real signed-in site data, report persistence, Auth0 tenant login or Gemini response was verified.
 - Local Auth0/Tiger Data settings and missing report/notice/Gemini routes block real integration. Published alert listing/acknowledgement is connected and mock-tested. No production deployment, bypass, model retraining or ML contract changes.
 

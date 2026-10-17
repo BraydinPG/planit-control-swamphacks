@@ -42,6 +42,8 @@ Required owner work: Rudra reviews the connected T048 client and implements rema
 
 The older T030 section below is a historical record of its original scope; the full transfer/delivery above supersedes its next-owner and unavailable-page statements.
 
+Reproduction checkpoint: `4a9e44f` records the T048 integration/current-main reconciliation. A clean committed frontend-only export passed npm ci/build and full production-bundle demo browser acceptance. The browser driver adds an explicit `--production` mode to skip development-only provider/configuration tests and verify the test harness is absent. No local settings, model artifacts or dependencies were copied into that export. `docs/frontend-acceptance.json` contains the exact final changed-file list and both development/production browser records.
+
 ## T030 — Cache assisting Nick, 2026-10-17
 
 Authorization: the user explicitly assigned T030 to Cache and stated, “Nick has given Cache permission to assist with frontend development.” Nick remains the owner and reviewer; this is not evidence that Nick has accepted the resulting PR. No merge is authorized without review.
