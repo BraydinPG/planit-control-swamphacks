@@ -31,7 +31,9 @@ export class HttpClient implements Client {
   constructor(
     base: string,
     headers: () => Promise<Record<string, string>>,
-    fetcher: typeof fetch = fetch,
+    // Wrapped, not bare `fetch`: calling it as `this.fetcher(...)` would throw "Illegal
+    // invocation" in browsers, which surfaced as "Network request failed".
+    fetcher: typeof fetch = (input, init) => fetch(input, init),
     timeout = 12000,
   ) {
     this.headers = headers
