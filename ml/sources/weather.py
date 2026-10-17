@@ -40,6 +40,7 @@ def build_archive_url(latitude: float, longitude: float, start_date: str, end_da
         "end_date": end.isoformat(),
         "hourly": ",".join(HOURLY_VARIABLES),
         "timezone": "UTC",
+        "wind_speed_unit": "ms",
     }
     return f"{ARCHIVE_API_URL}?{urlencode(params)}"
 

@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import tempfile
+import joblib
 import unittest
 from pathlib import Path
 
 from ml.train import (
+    conditional_logistic_survival,
+    conditional_logistic_survival_curve,
     conditional_km_survival,
+    conditional_quantile,
+    conditional_quantiles,
     fit_models,
     km_survival_at,
     load_models,
@@ -67,12 +72,37 @@ class SurvivalBaselineTests(unittest.TestCase):
         self.assertEqual(loaded.training_event_count, models.training_event_count)
         self.assertEqual(km_survival_at(loaded, 12), km_survival_at(models, 12))
 
+    def test_schema_one_artifact_loads_with_derived_sorted_durations(self) -> None:
+        events = [event(f"e{i}", f"ep{i}", duration) for i, duration in enumerate([2, 4, 8, 12, 20, 30] * 5)]
+        models = fit_models(events, minimum_events=1, minimum_episodes=1)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "old-model.joblib"
+            payload = {
+                "artifact_schema_version": 1,
+                **{key: value for key, value in models.__dict__.items() if key != "sorted_durations_hours"},
+            }
+            joblib.dump(payload, path)
+            loaded = load_models(path)
+        self.assertEqual(loaded.sorted_durations_hours, tuple(sorted(models.durations_hours)))
+        self.assertEqual(km_survival_at(loaded, 12), km_survival_at(models, 12))
+
     def test_fit_is_reproducible_for_identical_inputs(self) -> None:
         events = [event(f"e{i}", f"ep{i}", duration) for i, duration in enumerate([2, 4, 8, 12, 20, 30] * 5)]
         first = fit_models(events, minimum_events=1, minimum_episodes=1)
         second = fit_models(events, minimum_events=1, minimum_episodes=1)
         self.assertEqual(first.classifier.coef_.tolist(), second.classifier.coef_.tolist())
         self.assertEqual(first.classifier.intercept_.tolist(), second.classifier.intercept_.tolist())
+
+    def test_curve_reuse_matches_individual_horizons_and_quantiles(self) -> None:
+        events = [event(f"e{i}", f"ep{i}", duration) for i, duration in enumerate([2, 4, 8, 12, 20, 30, 48, 72] * 5)]
+        models = fit_models(events, minimum_events=1, minimum_episodes=1)
+        curve = conditional_logistic_survival_curve(models, 6.0, 4)
+        self.assertIsNotNone(curve)
+        for horizon in (6, 12, 24):
+            self.assertAlmostEqual(curve[horizon - 1], conditional_logistic_survival(models, 6.0, 4, horizon))
+        batched = conditional_quantiles(models, 6.0, 4, (0.1, 0.5, 0.9))
+        for quantile in (0.1, 0.5, 0.9):
+            self.assertEqual(batched[quantile], conditional_quantile(models, 6.0, 4, quantile))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Backend Integration Contract
 
-The audit base (`72e0b6d`) had no backend. A final fetch found `origin/main` at `2231ce074474fe96eed7656102b616684b9e0d57`, with Rudra's minimal FastAPI `/health` app, backend requirements/tests, and the Vite app moved under `frontend/`. That newer commit still has no API schemas, active-event source, event activation, site data, auth policy, score pipeline, or ML import. This `feature/cache-ml` branch remains based on `72e0b6d`; the newer main commit was inspected but not merged. This document defines the ML boundary only; it does not add a route or require a frontend change. Rudra remains the authority for event confirmation, role checks, final site score, deterministic alerts, and lightning timers.
+The accepted `feature/cache-ml` branch now includes Rudra's merged minimal FastAPI `/health` app and backend dependency/test scaffold. The backend still has no API schemas, active-event source, event activation, site data, auth policy, score pipeline, or ML import. This document defines the ML boundary only; it does not add a route or require a frontend change. Rudra remains the authority for event confirmation, role checks, final site score, deterministic alerts, and lightning timers.
 
 ## Primary callable
 
@@ -76,7 +76,7 @@ else:
 
 Train/backtest writes `ml/artifacts/active_event.joblib`, which is ignored and must be produced in the deployment build or installed through a trusted model-artifact process. Inference makes no network calls and does not train or simulate. Load only trusted artifacts from the matching model version. Missing/corrupt/unsupported artifacts return unavailable; the backend should retain existing deterministic behavior. Use a process-level backend cache if repeated disk loads are undesirable.
 
-The latest backend README starts Uvicorn with the working directory set to `backend/`; in that launch context the repository root is not automatically on `sys.path`. Before importing `ml.predict` from a future route, Rudra should either package/install `ml` or add the repository root to the backend process import path. The fresh-process import check currently runs from the repository root; no backend import has been tested because this branch does not contain the newer backend skeleton.
+The backend README starts Uvicorn from `backend/`; in that launch context the repository root is not automatically on `sys.path`. Before importing `ml.predict` from a future route, Rudra should either install the ML package or add the repository root to the backend process import path. The backend import has not been tested because no ML endpoint or event context exists yet.
 
 ## Message for Rudra
 

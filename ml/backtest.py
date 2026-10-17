@@ -4,6 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import multiprocessing
+import os
+import sys
+import time
+from concurrent.futures import ProcessPoolExecutor
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -13,71 +19,176 @@ from ml.events import read_noaa_detail_files
 from ml.evaluate import binary_metrics
 from ml.features import build_active_snapshots, split_events_by_episode, split_snapshots_by_episode
 from ml.predict import predict_active_event
+from ml.weather_features import deterministic_episode_sample
 from ml.train import (
     SurvivalModels,
-    conditional_km_survival,
-    conditional_logistic_survival,
-    conditional_quantile,
+    conditional_km_survival_horizons,
+    conditional_logistic_survival_curve,
     fit_models,
+    quantiles_from_survival_curve,
     save_models,
 )
 
+_WORKER_MODELS: SurvivalModels | None = None
+_THREADPOOL_LIMITER: Any = None
 
-def _survival_probability(models: SurvivalModels, snapshot: dict[str, Any], horizon: int,
-                          estimator: str) -> float | None:
+
+def _initialize_score_worker(models: SurvivalModels) -> None:
+    global _WORKER_MODELS, _THREADPOOL_LIMITER
+    from threadpoolctl import threadpool_limits
+
+    _WORKER_MODELS = models
+    _THREADPOOL_LIMITER = threadpool_limits(limits=1)
+
+
+def _score_snapshot(snapshot: dict[str, Any], models: SurvivalModels) -> dict[str, Any]:
     features = snapshot["features"]
-    if estimator == "logistic":
-        return conditional_logistic_survival(
-            models, float(features["elapsed_hours"]), int(features["start_month"]), float(horizon)
-        )
-    return conditional_km_survival(models, float(features["elapsed_hours"]), float(horizon))
+    elapsed = float(features["elapsed_hours"])
+    month = int(features["start_month"])
+    curve = conditional_logistic_survival_curve(models, elapsed, month)
+    km_horizons = conditional_km_survival_horizons(models, elapsed, (6, 12, 24))
+    quantiles = (
+        quantiles_from_survival_curve(curve, models.max_followup_hours - elapsed, (0.1, 0.5, 0.9))
+        if curve is not None else {quantile: None for quantile in (0.1, 0.5, 0.9)}
+    )
+    probabilities = {
+        horizon: curve[horizon - 1] if curve is not None and len(curve) >= horizon else None
+        for horizon in (6, 12, 24)
+    }
+    return {
+        "event_id": snapshot["event_id"],
+        "episode_id": str(snapshot["episode_id"]),
+        "remaining_hours": float(snapshot["labels"]["remaining_duration_hours"]),
+        "logistic_probabilities": probabilities,
+        "km_probabilities": km_horizons,
+        "quantiles": quantiles,
+    }
 
 
-def score_snapshots(snapshots: list[dict[str, Any]], models: SurvivalModels) -> dict[str, Any]:
+def _score_snapshot_chunk(snapshots: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if _WORKER_MODELS is None:
+        raise RuntimeError("score worker was not initialized with a model")
+    return [_score_snapshot(snapshot, _WORKER_MODELS) for snapshot in snapshots]
+
+
+def recommended_worker_count() -> int:
+    available = getattr(os, "process_cpu_count", lambda: None)() or os.cpu_count() or 1
+    return min(8, max(1, available))
+
+
+def _show_progress(label: str, completed: int, total: int, started_at: float | None = None,
+                   workers: int = 1) -> None:
+    if total <= 0:
+        return
+    percent = min(100, int(completed * 100 / total))
+    elapsed = max(0.0, time.perf_counter() - started_at) if started_at is not None else 0.0
+    rate = completed / elapsed if elapsed > 0 else 0.0
+    eta = (total - completed) / rate if rate > 0 else 0.0
+    sys.stderr.write(
+        f"\r{label}: {completed}/{total} ({percent}%) | {elapsed:.1f}s | "
+        f"{rate:.1f}/s | ETA {eta:.1f}s | workers {workers}"
+    )
+    if completed >= total:
+        sys.stderr.write("\n")
+    sys.stderr.flush()
+
+
+def _phase(message: str) -> None:
+    sys.stderr.write(f"\n[backtest] {message}\n")
+    sys.stderr.flush()
+
+
+def score_snapshots(snapshots: list[dict[str, Any]], models: SurvivalModels,
+                    progress_label: str | None = None, workers: int = 1) -> dict[str, Any]:
+    if workers < 1:
+        raise ValueError("workers must be at least 1")
     results: dict[str, Any] = {"logistic": {}, "kaplan_meier": {}, "duration": {}}
-    for estimator, output_key in (("logistic", "logistic"), ("km", "kaplan_meier")):
-        for horizon in (6, 12, 24):
-            probabilities: list[float] = []
-            outcomes: list[bool] = []
-            groups: list[str] = []
-            for snapshot in snapshots:
-                prediction = _survival_probability(models, snapshot, horizon, estimator)
-                if prediction is None:
-                    continue
-                probabilities.append(prediction)
-                outcomes.append(bool(snapshot["labels"][f"recorded_event_ongoing_{horizon}h"]))
-                groups.append(str(snapshot["episode_id"]))
-            results[output_key][f"{horizon}h"] = binary_metrics(probabilities, outcomes, groups)
-
+    horizons = (6, 12, 24)
+    paired = {
+        estimator: {horizon: ([], [], []) for horizon in horizons}
+        for estimator in ("logistic", "kaplan_meier")
+    }
     absolute_errors: list[float] = []
     covered: list[bool] = []
     coverage_count = 0
     example_candidates: list[dict[str, Any]] = []
-    for snapshot in snapshots:
-        features = snapshot["features"]
-        elapsed = float(features["elapsed_hours"])
-        month = int(features["start_month"])
-        remaining = float(snapshot["labels"]["remaining_duration_hours"])
-        median = conditional_quantile(models, elapsed, month, 0.5)
-        lower = conditional_quantile(models, elapsed, month, 0.1)
-        upper = conditional_quantile(models, elapsed, month, 0.9)
+    total = len(snapshots)
+    update_interval = max(1, total // 20)
+    started_at = time.perf_counter()
+    def rows_serial() -> list[dict[str, Any]]:
+        output: list[dict[str, Any]] = []
+        for index, snapshot in enumerate(snapshots, start=1):
+            output.append(_score_snapshot(snapshot, models))
+            if progress_label and (index % update_interval == 0 or index == total):
+                _show_progress(progress_label, index, total, started_at, workers=1)
+        return output
+
+    if workers == 1 or total <= 1:
+        scored_rows = rows_serial()
+    else:
+        chunk_size = max(1, math.ceil(total / (workers * 4)))
+        chunks = [snapshots[start:start + chunk_size] for start in range(0, total, chunk_size)]
+        actual_workers = min(workers, len(chunks))
+        scored_rows = []
+        completed = 0
+        with ProcessPoolExecutor(
+            max_workers=actual_workers,
+            mp_context=multiprocessing.get_context("spawn"),
+            initializer=_initialize_score_worker,
+            initargs=(models,),
+        ) as executor:
+            for chunk_rows in executor.map(_score_snapshot_chunk, chunks, chunksize=1):
+                scored_rows.extend(chunk_rows)
+                completed += len(chunk_rows)
+                if progress_label:
+                    _show_progress(progress_label, completed, total, started_at, workers=actual_workers)
+
+    # Preserve input order after process mapping, so error examples and reports are reproducible.
+    for snapshot, row in zip(snapshots, scored_rows):
+        remaining = row["remaining_hours"]
+        quantile_values = row["quantiles"]
+        median = quantile_values[0.5]
+        lower = quantile_values[0.1]
+        upper = quantile_values[0.9]
         if median is not None:
             absolute_errors.append(abs(median - remaining))
         if lower is not None and upper is not None:
             coverage_count += 1
             covered.append(lower <= remaining <= upper)
-        probability = conditional_logistic_survival(models, elapsed, month, 6)
+        for horizon in horizons:
+            observed = bool(snapshot["labels"][f"recorded_event_ongoing_{horizon}h"])
+            episode_id = row["episode_id"]
+            logistic_probability = row["logistic_probabilities"][horizon]
+            if logistic_probability is not None:
+                pred, labels, groups = paired["logistic"][horizon]
+                pred.append(logistic_probability)
+                labels.append(observed)
+                groups.append(episode_id)
+            km_probability = row["km_probabilities"][horizon]
+            if km_probability is not None:
+                pred, labels, groups = paired["kaplan_meier"][horizon]
+                pred.append(km_probability)
+                labels.append(observed)
+                groups.append(episode_id)
+        probability = row["logistic_probabilities"][6]
         if probability is not None:
             observed = bool(snapshot["labels"]["recorded_event_ongoing_6h"])
             example_candidates.append({
                 "event_id": snapshot["event_id"],
-                "episode_id": snapshot["episode_id"],
+                "episode_id": row["episode_id"],
                 "as_of_utc": snapshot["as_of_utc"],
                 "predicted_ongoing_6h": probability,
                 "observed_ongoing_6h": observed,
                 "absolute_probability_error": abs(probability - int(observed)),
             })
-    example_candidates.sort(key=lambda item: item["absolute_probability_error"], reverse=True)
+
+    for estimator, output_key in (("logistic", "logistic"), ("kaplan_meier", "kaplan_meier")):
+        for horizon in horizons:
+            result_predictions, result_outcomes, result_groups = paired[estimator][horizon]
+            results[output_key][f"{horizon}h"] = binary_metrics(
+                result_predictions, result_outcomes, result_groups
+            )
+    example_candidates.sort(key=lambda item: (-item["absolute_probability_error"], str(item["event_id"])))
     results["duration"] = {
         "median_remaining_time_mae_hours": sum(absolute_errors) / len(absolute_errors) if absolute_errors else None,
         "median_prediction_count": len(absolute_errors),
@@ -124,22 +235,63 @@ def _source_manifest() -> dict[str, Any] | None:
 
 def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
                  model_path: Path = MODEL_PATH, train_end_year: int = 2023,
-                 validation_year: int = 2024, test_year: int = 2025) -> dict[str, Any]:
+                 validation_year: int = 2024, test_year: int = 2025,
+                 show_progress: bool = True, workers: int = 1, smoke: bool = False,
+                 smoke_events_per_year: int = 20,
+                 report_filename: str = "backtest_metrics.json") -> dict[str, Any]:
+    timings: dict[str, float] = {}
+    stage_started = time.perf_counter()
+    if show_progress:
+        _phase(f"reading Flood rows from {len(detail_files)} NOAA archive(s)")
     events, source_counts = read_noaa_detail_files(detail_files, event_type=SUPPORTED_EVENT_TYPE)
+    timings["noaa_parse_seconds"] = time.perf_counter() - stage_started
+    full_event_count = len(events)
+    if smoke:
+        events = deterministic_episode_sample(events, per_year=smoke_events_per_year, seed=42)
+    if show_progress:
+        episode_count = len({event["episode_id"] for event in events})
+        scope = "smoke sample" if smoke else "full data"
+        _phase(f"normalized {len(events):,} {scope} event records across {episode_count:,} episodes")
+    stage_started = time.perf_counter()
     split_events = split_events_by_episode(
         events, train_end_year=train_end_year, validation_year=validation_year, test_year=test_year
     )
     all_snapshots = build_active_snapshots(events)
     split_snapshots = split_snapshots_by_episode(all_snapshots, split_events)
+    timings["snapshot_generation_seconds"] = time.perf_counter() - stage_started
+    if show_progress:
+        _phase(f"built {len(all_snapshots):,} active snapshots; fitting validation model")
     if not split_events["train"] or not split_events["validation"] or not split_events["test"]:
         raise ValueError("chronological backtest requires non-empty train, validation, and test episode groups")
 
+    stage_started = time.perf_counter()
     validation_model = fit_models(split_events["train"])
-    validation_scores = score_snapshots(split_snapshots["validation"], validation_model)
+    timings["validation_model_fit_seconds"] = time.perf_counter() - stage_started
+    if show_progress:
+        _phase("scoring validation snapshots")
+    stage_started = time.perf_counter()
+    validation_scores = score_snapshots(
+        split_snapshots["validation"], validation_model,
+        progress_label="validation snapshots" if show_progress else None,
+        workers=workers,
+    )
+    timings["validation_scoring_seconds"] = time.perf_counter() - stage_started
     final_training = split_events["train"] + split_events["validation"]
+    stage_started = time.perf_counter()
     final_model = fit_models(final_training)
-    final_test_scores = score_snapshots(split_snapshots["test"], final_model)
+    timings["final_model_fit_seconds"] = time.perf_counter() - stage_started
+    if show_progress:
+        _phase("scoring untouched test snapshots")
+    stage_started = time.perf_counter()
+    final_test_scores = score_snapshots(
+        split_snapshots["test"], final_model,
+        progress_label="test snapshots" if show_progress else None,
+        workers=workers,
+    )
+    timings["test_scoring_seconds"] = time.perf_counter() - stage_started
+    stage_started = time.perf_counter()
     save_models(final_model, model_path)
+    timings["artifact_save_seconds"] = time.perf_counter() - stage_started
 
     replay_snapshot = next((snapshot for snapshot in split_snapshots["test"]
                             if snapshot["features"]["elapsed_hours"] == 6.0), None)
@@ -166,13 +318,19 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
         }
 
     report = {
-        "validation_status": "REAL_HISTORICAL_BACKTEST",
+        "validation_status": "SMOKE_TEST_NOT_FINAL_VALIDATION" if smoke else "REAL_HISTORICAL_BACKTEST",
+        "smoke_test": {
+            "enabled": smoke,
+            "sampled_event_records": len(events) if smoke else None,
+            "available_full_event_records": full_event_count,
+            "per_year_episode_cap": smoke_events_per_year if smoke else None,
+            "seed": 42 if smoke else None,
+        },
         "source": "NOAA NCEI Storm Events details CSV",
         "event_type": SUPPORTED_EVENT_TYPE,
         "target": "conditional recorded-event persistence; NOAA regional event end, not site safety",
         "source_row_counts": source_counts,
-            "source_row_counts": source_counts,
-            "source_manifest": _source_manifest(),
+        "source_manifest": _source_manifest(),
         "split": {
             "train_years": f"<= {train_end_year}",
             "validation_year": validation_year,
@@ -194,6 +352,12 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
             "max_supported_age_hours": final_model.max_supported_age_hours,
             "weather_features_used": False,
         },
+        "execution": {
+            "workers_requested": workers,
+            "validation_scoring_workers": min(workers, max(1, len(split_snapshots["validation"]))),
+            "test_scoring_workers": min(workers, max(1, len(split_snapshots["test"]))),
+            "timings_seconds": timings,
+        },
         "held_out_replay": replay_result,
         "limitations": [
             "NOAA rows are county/zone or reported-point event intervals, not verified EIA site exposure.",
@@ -205,7 +369,9 @@ def run_backtest(detail_files: list[Path], *, output_dir: Path = REPORT_DIR,
         ],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
-    (output_dir / "backtest_metrics.json").write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")
+    if show_progress:
+        _phase("writing metrics and model artifact")
+    (output_dir / report_filename).write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")
     return report
 
 
@@ -217,14 +383,38 @@ def main() -> None:
     parser.add_argument("--train-end-year", type=int, default=2023)
     parser.add_argument("--validation-year", type=int, default=2024)
     parser.add_argument("--test-year", type=int, default=2025)
+    parser.add_argument("--workers", type=int, default=None,
+                        help=f"scoring processes (default: {recommended_worker_count()} from available CPUs)")
+    parser.add_argument("--smoke", action="store_true",
+                        help="run a deterministic small sample; metrics are not final validation")
+    parser.add_argument("--smoke-events-per-year", type=int, default=20)
     args = parser.parse_args()
     files = sorted(args.input_dir.glob("StormEvents_details-ftp_v1.0_d*.csv.gz"))
     if not files:
         raise SystemExit(f"No NOAA details archives found under {args.input_dir}; run ml.sources.noaa first.")
-    report = run_backtest(files, output_dir=args.output_dir, model_path=args.model_path,
+    workers = args.workers if args.workers is not None else recommended_worker_count()
+    if workers < 1 or workers > 20:
+        raise SystemExit("--workers must be between 1 and 20")
+    model_path = args.model_path
+    report_filename = "backtest_metrics.json"
+    if args.smoke:
+        if args.smoke_events_per_year < 20:
+            raise SystemExit("smoke mode needs at least 20 sampled episodes per year for model support")
+        if model_path == MODEL_PATH:
+            model_path = MODEL_PATH.with_name("active_event_smoke.joblib")
+        report_filename = "backtest_smoke_metrics.json"
+    report = run_backtest(files, output_dir=args.output_dir, model_path=model_path,
                           train_end_year=args.train_end_year, validation_year=args.validation_year,
-                          test_year=args.test_year)
-    print(json.dumps({"status": report["validation_status"], "test": report["out_of_time_test_2025_train_through_2024"]}, indent=2))
+                          test_year=args.test_year, workers=workers, smoke=args.smoke,
+                          smoke_events_per_year=args.smoke_events_per_year,
+                          report_filename=report_filename)
+    print(json.dumps({
+        "status": report["validation_status"],
+        "workers": workers,
+        "timings_seconds": report["execution"]["timings_seconds"],
+        "test": report["out_of_time_test_2025_train_through_2024"],
+        "report_filename": report_filename,
+    }, indent=2))
 
 
 if __name__ == "__main__":

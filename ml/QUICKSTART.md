@@ -12,10 +12,27 @@ $python = ".\ml\.venv\Scripts\python.exe"
 & $python -m pip install -r ml/requirements.txt
 & $python -m ml.sources.noaa --years 2021 2022 2023 2024 2025
 & $python -m ml.train --input-dir ml/data/raw --through-year 2024
-& $python -m ml.backtest --input-dir ml/data/raw --output-dir ml/reports
+& $python -m ml.backtest --input-dir ml/data/raw --output-dir ml/reports --workers 1
 & $python -m ml.monte_carlo --event-fixture ml/fixtures/active_flood.json --trials 5000 --seed 42
 & $python -m pytest ml/tests -q
 ```
+
+For a fast deterministic development check that cannot overwrite the final metrics or production artifact:
+
+```powershell
+& $python -m ml.backtest --smoke --smoke-events-per-year 20 --workers 1
+```
+
+The smoke report is explicitly labeled `SMOKE_TEST_NOT_FINAL_VALIDATION`, written to `ml/reports/backtest_smoke_metrics.json`, and its model artifact is `ml/artifacts/active_event_smoke.joblib`.
+
+To profile a bounded sample and compare process counts without running the full backtest:
+
+```powershell
+& $python -m ml.benchmark --events-per-year 20 --worker-counts 1 4 8 12 16 20
+```
+
+The benchmark reads the existing NOAA archives/model, only inspects already cached weather, reports timing/throughput/process-tree RSS and a cProfile summary, and writes `ml/reports/worker_benchmark.json`. It does not download weather or overwrite canonical metrics/artifacts. Avoid running it alongside another CPU-heavy job for uncontended timings.
+The full backtest command trains its validation model through 2023, evaluates 2024, then trains through 2024 and holds out all 2025 NOAA episode groups. It accepts `--workers N`; parallel scoring uses Windows-safe spawned processes with one BLAS thread each. `--workers 1` is the reproducible fallback. Use the benchmark before choosing a higher-throughput default.
 
 Use `py -3.11` or another supported Python 3.11+ runtime in the first command if Python 3.14 is unavailable. The archive downloader discovers current NOAA revision names from the official index, retries transient failures, enforces per-file byte limits, checks gzip integrity, and records SHA-256 hashes.
 
