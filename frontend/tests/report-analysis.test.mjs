@@ -276,3 +276,12 @@ test('present/absent is a pair of large choices, not a dropdown', () => {
   )
   assert(!html.includes('<select required'))
 })
+
+test('access mat deterioration is selectable and accepted when reading reports', () => {
+  const html = form('live')
+  assert(html.includes('value="access_mat_deterioration"'))
+  assert(text(html).includes('Access mat deterioration'))
+  const report = { ...detail.reports[0], category: 'access_mat_deterioration',
+    note: 'Mat 12: crew stage D, broken timber.' }
+  assert.equal(validateReport(report).note, report.note)
+})

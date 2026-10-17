@@ -15,8 +15,11 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel
 
+from app.demo.scenario import CURRENT_WEATHER, FORECAST
 from app.gemini.client import GeminiClient
 from app.gemini.species import word_species
+from app.rules.score import compute_score
+from app.rules.settings import RuleSettings
 from app.schemas import (
     Acknowledgement,
     Alert,
@@ -28,7 +31,6 @@ from app.schemas import (
     EventOutlook,
     EventOutlookCard,
     Evidence,
-    FactorContribution,
     HazardNotice,
     HazardScore,
     Observation,
@@ -66,28 +68,33 @@ def ahead(minutes: float) -> datetime:
 # ---- observations for the demo site: one per feed, covering every data state ----
 
 OBSERVATIONS = [
-    Observation(
-        id="obs-wx-1",
-        site_id=DEMO_SITE,
-        source="NWS",
-        hazard_type="weather",
-        value=94,
-        unit="°F",
-        label="Air temperature (station KTMB)",
-        lat=DEMO_LAT,
-        lon=DEMO_LON,
-        observed_at=ago(20),
-        data_state="observed",
-        fetched_at=ago(15),
-    ),
+    *[
+        Observation(
+            id=f"obs-wx-{index}",
+            site_id=DEMO_SITE,
+            source="NWS",
+            hazard_type="weather",
+            value=value,
+            unit=unit,
+            label=label,
+            source_ref="simulated-KTMB",
+            lat=DEMO_LAT,
+            lon=DEMO_LON,
+            observed_at=ago(20),
+            data_state="observed",
+            fetched_at=ago(15),
+        )
+        for index, (label, value, unit) in enumerate(CURRENT_WEATHER, start=1)
+    ],
     Observation(
         id="obs-fc-1",
         site_id=DEMO_SITE,
         source="NWS",
         hazard_type="forecast",
-        value=108,
+        value=next(value for _, label, value, _ in FORECAST if label == "Temperature"),
         unit="°F",
-        label="Forecast heat index, 3 PM",
+        label="Temperature",
+        source_ref="simulated-forecast-grid",
         lat=DEMO_LAT,
         lon=DEMO_LON,
         observed_at=ago(60),
@@ -166,83 +173,9 @@ OBSERVATIONS = [
     ),
 ]
 
-# ---- score factors ----
-
-F_LIGHTNING = FactorContribution(
-    factor="lightning",
-    label="Lightning stop-work active (simulated replay)",
-    contribution=3.0,
-    value=4.2,
-    unit="mi",
-    source="lightning-replay",
-    observed_at=ago(3),
-    data_state="simulated",
-    evidence_id="obs-ltg-2",
-)
-F_HEAT = FactorContribution(
-    factor="heat_index",
-    label="Forecast heat index above prototype threshold (103 °F)",
-    contribution=1.5,
-    value=108,
-    unit="°F",
-    source="NWS",
-    observed_at=ago(60),
-    data_state="forecast",
-    is_prototype=True,
-    evidence_id="obs-fc-1",
-)
-F_FLOOD = FactorContribution(
-    factor="flood",
-    label="Flood Watch in effect",
-    contribution=1.0,
-    value="Flood Watch",
-    source="NWS",
-    observed_at=ago(90),
-    data_state="observed",
-    is_prototype=True,
-    evidence_id="obs-flood-1",
-)
-F_MODEL = FactorContribution(
-    factor="model",
-    label="Model: 24 h weather-hazard likelihood",
-    contribution=1.6,
-    value=0.41,
-    source="model baseline-0.1",
-    observed_at=ago(30),
-    data_state="observed",
-    evidence_id="model-1",
-)
-F_REPORT = FactorContribution(
-    factor="crew_report",
-    label="Confirmed wildlife report (alligator near access road)",
-    contribution=0.5,
-    source="crew report",
-    observed_at=ago(140),
-    data_state="crew_reported",
-    evidence_id="report-wildlife-1",
-)
-F_MODEL_FALLBACK = FactorContribution(
-    factor="model",
-    label="Model unavailable: labeled fallback component",
-    contribution=2.5,
-    source="model fallback",
-    observed_at=ago(30),
-    data_state="unavailable",
-    evidence_id=None,
-)
-F_STALE_WX = FactorContribution(
-    factor="heat_index",
-    label="Heat index (stale: last NWS update 4 h ago)",
-    contribution=0.8,
-    value=99,
-    unit="°F",
-    source="NWS",
-    observed_at=ago(240),
-    data_state="stale",
-    is_prototype=True,
-)
-
-DEMO_FACTORS = [F_LIGHTNING, F_MODEL, F_HEAT, F_FLOOD, F_REPORT]
+# All agency-shaped readings here are synthetic. Preserve their illustrative origin
+# states, but never allow fixture readings to establish current live feed coverage.
+OBSERVATIONS = [o.model_copy(update={"simulated": True}) for o in OBSERVATIONS]
 
 # ---- alerts ----
 
@@ -547,100 +480,90 @@ EVENT_OUTLOOKS = [
 
 # ---- sites ----
 
-DEMO_SUMMARY = dict(
-    id=DEMO_SITE,
-    name="Demo: Everglades-style site (simulated scenario)",
-    lat=DEMO_LAT,
-    lon=DEMO_LON,
-    assigned_team=TEAM_A,
-    risk_score=7.6,
-    risk_level="high",
-    updated_at=ago(3),
-    active_alerts=2,
-    top_factors=DEMO_FACTORS[:3],
-    data_completeness=0.71,
-    model_version="baseline-0.1",
-)
-
-# Ordered as GET /api/sites returns them: assigned sites first, then risk_score descending.
-SITES = [
-    SiteSummary(**DEMO_SUMMARY),
-    SiteSummary(
-        id="site-fixture-b",
-        name="Fixture Site B (representative power plant)",
-        lat=26.10,
-        lon=-81.20,
-        assigned_team=TEAM_B,
-        risk_score=5.4,
-        risk_level="moderate",
-        updated_at=ago(30),
-        active_alerts=0,
-        top_factors=[F_MODEL_FALLBACK],
-        data_completeness=0.4,
-        model_version="fallback-0",
-    ),
-    SiteSummary(
-        id="site-fixture-c",
-        name="Fixture Site C (representative power plant)",
-        lat=27.95,
-        lon=-82.46,
-        assigned_team=TEAM_C,
-        risk_score=2.3,
-        risk_level="low",
-        updated_at=ago(240),
-        active_alerts=0,
-        top_factors=[F_STALE_WX],
-        data_completeness=0.55,
-        model_version="baseline-0.1",
-    ),
-    SiteSummary(
-        id="site-fixture-d",
-        name="Fixture Site D (representative power plant, no team)",
-        lat=28.54,
-        lon=-81.38,
-        assigned_team=None,
-        risk_score=6.1,
-        risk_level="high",
-        updated_at=ago(20),
-        active_alerts=0,
-        top_factors=[F_HEAT],
-        data_completeness=0.85,
-        model_version="baseline-0.1",
-    ),
-    SiteSummary(
-        id="site-fixture-e",
-        name="Fixture Site E (representative power plant, no team, feeds unavailable)",
-        lat=30.33,
-        lon=-81.66,
-        assigned_team=None,
-        risk_score=3.0,
-        risk_level="moderate",
-        updated_at=ago(400),
-        active_alerts=0,
-        top_factors=[],
-        data_completeness=0.0,
-        model_version="fallback-0",
-    ),
+SITE_INPUTS = [
+    (DEMO_SITE, "Demo: Everglades-style site (simulated scenario)", DEMO_LAT, DEMO_LON, TEAM_A),
+    ("site-fixture-b", "Fixture Site B (simulated; feeds unavailable)", 26.10, -81.20, TEAM_B),
+    ("site-fixture-c", "Fixture Site C (simulated; stale weather)", 27.95, -82.46, TEAM_C),
+    ("site-fixture-d", "Fixture Site D (simulated; no team)", 28.54, -81.38, None),
+    ("site-fixture-e", "Fixture Site E (simulated; feeds unavailable)", 30.33, -81.66, None),
 ]
+SITE_OBSERVATIONS = {
+    DEMO_SITE: OBSERVATIONS,
+    "site-fixture-b": [],
+    "site-fixture-c": [
+        Observation(
+            id="obs-stale-c",
+            site_id="site-fixture-c",
+            source="NWS",
+            hazard_type="weather",
+            value=99,
+            unit="°F",
+            label="Heat index",
+            lat=27.95,
+            lon=-82.46,
+            observed_at=ago(240),
+            fetched_at=ago(240),
+            data_state="stale",
+            simulated=True,
+        )
+    ],
+    "site-fixture-d": [
+        Observation(
+            id="obs-heat-d",
+            site_id="site-fixture-d",
+            source="NWS",
+            hazard_type="weather",
+            value=next(v for label, v, _ in CURRENT_WEATHER if label == "Heat index"),
+            unit="°F",
+            label="Heat index",
+            lat=28.54,
+            lon=-81.38,
+            observed_at=ago(20),
+            fetched_at=ago(15),
+            data_state="simulated",
+            simulated=True,
+        )
+    ],
+    "site-fixture-e": [],
+}
+# Use the approved declared defaults, not a developer's private scoring overrides.
+# model_construct uses the published defaults without reading environment variables.
+FIXTURE_RULES = RuleSettings.model_construct()
+SCORES: dict[str, HazardScore] = {}
+SITES = []
+for site_id, name, lat, lon, team in SITE_INPUTS:
+    site_alerts = [a for a in ALERTS if a.site_id == site_id and a.state == "active"]
+    score = compute_score(
+        site_id, SITE_OBSERVATIONS[site_id], site_alerts, REPORTS, NOW, settings=FIXTURE_RULES
+    )
+    SCORES[site_id] = score
+    SITES.append(
+        SiteSummary(
+            id=site_id,
+            name=name,
+            lat=lat,
+            lon=lon,
+            assigned_team=team,
+            risk_score=score.risk_score,
+            risk_level=score.risk_level,
+            updated_at=score.created_at,
+            active_alerts=len(site_alerts),
+            top_factors=sorted(score.factor_contributions, key=lambda f: -f.contribution)[:3],
+            data_completeness=score.data_completeness,
+            model_version=score.model_version,
+        )
+    )
+SITES.sort(key=lambda s: (s.assigned_team is None, -s.risk_score, s.data_completeness, s.name))
+DEMO_SUMMARY = next(s for s in SITES if s.id == DEMO_SITE).model_dump()
+DEMO_FACTORS = SCORES[DEMO_SITE].factor_contributions
 
 SITE_DETAIL = SiteDetail(
-    **DEMO_SUMMARY | {"top_factors": DEMO_FACTORS[:3]},
+    **DEMO_SUMMARY,
     location_type="power_plant",
     source="Simulated demo scenario (Everglades-style); not an EIA-860M record",
     region="South Florida",
     observations=OBSERVATIONS,
-    score=HazardScore(
-        site_id=DEMO_SITE,
-        risk_score=7.6,
-        risk_level="high",
-        factor_contributions=DEMO_FACTORS,
-        model_version="baseline-0.1",
-        model_is_fallback=False,
-        confidence=0.68,
-        data_completeness=0.71,
-        previous_score=5.9,
-        created_at=ago(3),
-    ),
+    score=SCORES[DEMO_SITE],
     alerts=[ALERT_LIGHTNING_ACTIVE, ALERT_FLOOD],
     reports=[REPORT_POLE_PENDING, REPORT_WILDLIFE_CONFIRMED],
     notices=NOTICES,
@@ -651,13 +574,35 @@ SITE_DETAIL = SiteDetail(
 # ---- briefings: one Gemini-generated, one deterministic fallback ----
 
 BRIEF_EVIDENCE = [
-    Evidence(id="obs-fc-1", kind="observation", label="Forecast heat index 108 °F"),
-    Evidence(id="obs-flood-1", kind="observation", label="Flood Watch"),
-    Evidence(id="alert-ltg-demo", kind="alert", label="Lightning stop-work (simulated)"),
-    Evidence(id="report-wildlife-1", kind="report", label="Confirmed wildlife report"),
+    *[
+        Evidence(id=f.evidence_id, kind="score_factor", label=f.label, observed_at=f.observed_at)
+        for f in DEMO_FACTORS
+        if f.contribution > 0
+    ],
+    Evidence(id="obs-fc-1", kind="observation", label="Simulated forecast temperature 95 °F"),
     Evidence(
         id="obs-fc-2", kind="observation", label="Forecast thunderstorm chance 70% after 14:00"
     ),
+]
+BRIEF_HAZARDS = [
+    BriefingHazard(
+        hazard={
+            "lightning": "Lightning stop-work (simulated)",
+            "heat_index": "Heat (simulated)",
+            "flood": "Flooding (simulated)",
+            "crew_report": "Wildlife (simulated confirmed report)",
+        }[f.factor],
+        points=f.contribution,
+        evidence_ids=[f.evidence_id],
+    )
+    for f in DEMO_FACTORS
+    if f.contribution > 0
+]
+BRIEF_UNKNOWNS = [
+    "Simulated fixture: no current live feed coverage. The index demonstrates "
+    f"{SCORES[DEMO_SITE].model_version} arithmetic, not verified current conditions.",
+    "Hurricane feed unavailable at generation time.",
+    "Earthquake data stale (last update 3 h ago).",
 ]
 WINDOW = dict(
     forecast_window_start=datetime(2026, 10, 18, 11, 0, tzinfo=UTC),
@@ -669,22 +614,14 @@ BRIEFINGS = [
         site_id=DEMO_SITE,
         **WINDOW,
         summary=(
-            "Tomorrow brings high heat and a continuing Flood Watch. Afternoon storms are "
-            "possible. Wildlife remains near the east access road."
+            "Simulated scenario: heat, a Flood Watch and a wildlife report at generation "
+            "time. Afternoon storms are a scenario forecast, not current conditions."
         ),
-        risk_level="high",
-        risk_score=7.6,
-        data_completeness=0.71,
-        # Points match the demo site's score factors; a forecast is not part of the score.
+        risk_level=SCORES[DEMO_SITE].risk_level,
+        risk_score=SCORES[DEMO_SITE].risk_score,
+        data_completeness=SCORES[DEMO_SITE].data_completeness,
         hazards=[
-            BriefingHazard(
-                hazard="Lightning stop-work (simulated)",
-                points=3.0,
-                evidence_ids=["alert-ltg-demo"],
-            ),
-            BriefingHazard(hazard="Heat", points=1.5, evidence_ids=["obs-fc-1"]),
-            BriefingHazard(hazard="Flooding", points=1.0, evidence_ids=["obs-flood-1"]),
-            BriefingHazard(hazard="Wildlife", points=0.5, evidence_ids=["report-wildlife-1"]),
+            *BRIEF_HAZARDS,
             BriefingHazard(
                 hazard="Afternoon thunderstorms", points=None, evidence_ids=["obs-fc-2"]
             ),
@@ -692,7 +629,9 @@ BRIEFINGS = [
         recommended_actions=[
             RecommendedAction(
                 action="Schedule heavy work before noon and plan water and shade breaks.",
-                evidence_ids=["obs-fc-1"],
+                evidence_ids=[
+                    next(f.evidence_id for f in DEMO_FACTORS if f.factor == "heat_index")
+                ],
             ),
             RecommendedAction(
                 action="Use the west gate; avoid the east access road.",
@@ -700,10 +639,7 @@ BRIEFINGS = [
             ),
         ],
         evidence=BRIEF_EVIDENCE,
-        unknowns=[
-            "Hurricane feed unavailable at generation time.",
-            "Earthquake data stale (last update 3 h ago).",
-        ],
+        unknowns=BRIEF_UNKNOWNS,
         generated_by="gemini",
         created_at=NOW,
     ),
@@ -712,21 +648,18 @@ BRIEFINGS = [
         site_id=DEMO_SITE,
         **WINDOW,
         summary="Gemini unavailable. Template briefing built from current site data.",
-        risk_level="high",
-        risk_score=7.6,
-        data_completeness=0.71,
-        hazards=[
-            BriefingHazard(hazard="Heat index 108 °F", points=1.5, evidence_ids=["obs-fc-1"]),
-            BriefingHazard(hazard="Flood Watch", points=1.0, evidence_ids=["obs-flood-1"]),
-        ],
+        risk_level=SCORES[DEMO_SITE].risk_level,
+        risk_score=SCORES[DEMO_SITE].risk_score,
+        data_completeness=SCORES[DEMO_SITE].data_completeness,
+        hazards=BRIEF_HAZARDS,
         recommended_actions=[
             RecommendedAction(
                 action="Review the active alerts and score factors before work starts.",
                 evidence_ids=["obs-fc-1", "obs-flood-1"],
             )
         ],
-        evidence=BRIEF_EVIDENCE[:2],
-        unknowns=["Hurricane feed unavailable.", "Earthquake data stale."],
+        evidence=BRIEF_EVIDENCE,
+        unknowns=BRIEF_UNKNOWNS,
         generated_by="fallback",
         created_at=NOW,
     ),

@@ -151,6 +151,23 @@ def test_fixture_distances() -> None:
 # ---- report persists ----
 
 
+def test_access_mat_report_preserves_crew_note_and_creates_potential_notice(h, client) -> None:
+    note = "Mat 12: crew stage D, broken timber at ramp entrance."
+    response = submit(client, category="access_mat_deterioration", note=note)
+    assert response.status_code == 201
+    report = response.json()
+    assert report["category"] == "access_mat_deterioration"
+    assert report["note"] == note
+    assert report["review_status"] == "pending"
+    [notice] = h.rows(db.HazardNotice)
+    assert notice.hazard_label == "access mat deterioration"
+    assert notice.radius_miles == 1.0
+    assert notice.status == "potential"
+    assert notice.instruction is None
+    detail = client.get("/api/sites/site-a", headers=supervisor()).json()
+    assert detail["reports"][0]["category"] == "access_mat_deterioration"
+
+
 def test_present_report_persists_as_pending_with_photo(h, client) -> None:
     response = submit(client)
     assert response.status_code == 201

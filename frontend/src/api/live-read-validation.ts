@@ -49,12 +49,124 @@ const outlook = (v: unknown) =>
     strings(v.limitations) &&
     v.advisory_notice ===
       'Advisory only. Does not change the score, clear alerts, or authorize work.')
-const FORECAST_KINDS = [
-  'historical_duration_research',
-  'official_event_forecast',
-  'official_aftershock_forecast',
-  'unavailable',
-]
+const nonnegative = (v: unknown) => finite(v) && v >= 0
+const nullableCount = (v: unknown) =>
+  v === null || (nonnegative(v) && Number.isInteger(v))
+const point = (v: Record<string, unknown>) =>
+  range(v.lat, -90, 90) && range(v.lon, -180, 180)
+const sourceURL = (v: unknown) => {
+  if (!text(v)) return false
+  try {
+    const url = new URL(v)
+    return url.protocol === 'https:' && !url.username && !url.password
+  } catch {
+    return false
+  }
+}
+const officialSource = (v: unknown, provider: 'NHC' | 'USGS') =>
+  record(v) &&
+  text(v.id) &&
+  v.provider === provider &&
+  sourceURL(v.url) &&
+  text(v.sha256) &&
+  /^[a-f0-9]{64}$/.test(v.sha256) &&
+  date(v.issued_at_utc) &&
+  date(v.retrieved_at_utc) &&
+  nullableDate(v.available_at_utc) &&
+  ['archive_capture', 'contemporaneous_capture'].includes(String(v.vintage))
+const stormPoint = (v: unknown) =>
+  record(v) &&
+  point(v) &&
+  date(v.valid_at_utc) &&
+  nonnegative(v.max_sustained_wind_kt) &&
+  nullableDuration(v.gust_kt) &&
+  nullableText(v.phase)
+
+/** Check the whole discriminated payload before the renderer reads nested fields. */
+function forecast(v: unknown): boolean {
+  if (!record(v)) return false
+  switch (v.kind) {
+    case 'historical_duration_research': {
+      const d = v.remaining_duration_hours
+      return (
+        text(v.target_definition) &&
+        text(v.model_version) &&
+        text(v.estimator) &&
+        text(v.model_card) &&
+        v.trend === 'unknown' &&
+        nullableCount(v.training_support_at_event_age) &&
+        Array.isArray(v.persistence) &&
+        v.persistence.every(
+          (p) =>
+            record(p) &&
+            Number.isInteger(p.horizon_hours) &&
+            nonnegative(p.horizon_hours) &&
+            range(p.recorded_event_ongoing_probability, 0, 1),
+        ) &&
+        record(d) &&
+        nullableDuration(d.p10) &&
+        nullableDuration(d.median) &&
+        nullableDuration(d.p90)
+      )
+    }
+    case 'official_event_forecast':
+      return (
+        text(v.cyclone_id) &&
+        text(v.storm_name) &&
+        text(v.provider_version) &&
+        officialSource(v.source, 'NHC') &&
+        date(v.next_advisory_at_utc) &&
+        stormPoint(v.initial_position) &&
+        Array.isArray(v.forecast_points) &&
+        v.forecast_points.every(stormPoint) &&
+        v.site_wind_forecast === null
+      )
+    case 'official_aftershock_forecast': {
+      const main = v.mainshock,
+        region = v.region
+      return (
+        record(main) &&
+        point(main) &&
+        text(main.event_id) &&
+        date(main.time_utc) &&
+        finite(main.magnitude) &&
+        text(v.provider_version) &&
+        officialSource(v.source, 'USGS') &&
+        officialSource(v.mainshock_source, 'USGS') &&
+        date(v.expires_at_utc) &&
+        record(region) &&
+        point(region) &&
+        finite(region.radius_km) &&
+        region.radius_km > 0 &&
+        region.interpretation ===
+          'provider_sequence_region_not_site_probability' &&
+        Array.isArray(v.windows) &&
+        v.windows.every(
+          (w) =>
+            record(w) &&
+            text(w.label) &&
+            date(w.start_utc) &&
+            date(w.end_utc) &&
+            Date.parse(w.end_utc) >= Date.parse(w.start_utc) &&
+            Array.isArray(w.bins) &&
+            w.bins.every(
+              (b) =>
+                record(b) &&
+                finite(b.magnitude_at_least) &&
+                range(b.probability_at_least_one, 0, 1) &&
+                nullableCount(b.count_p95_minimum) &&
+                nullableCount(b.count_p95_maximum),
+            ),
+        ) &&
+        v.earthquake_remaining_duration === null
+      )
+    }
+    case 'unavailable':
+      return text(v.reason_code) && text(v.reason) && strings(v.required_inputs)
+    default:
+      return false
+  }
+}
 const outlookCard = (v: unknown, id: string): v is EventOutlookCard =>
   record(v) &&
   text(v.event_id) &&
@@ -66,22 +178,63 @@ const outlookCard = (v: unknown, id: string): v is EventOutlookCard =>
   ) &&
   ['available', 'unavailable', 'not_applicable'].includes(String(v.status)) &&
   record(v.confirmation) &&
+  ['confirmed_active', 'historical_replay', 'unconfirmed', 'resolved'].includes(
+    String(v.confirmation.status),
+  ) &&
+  [
+    'independent_observation',
+    'confirmed_worksite_report',
+    'historical_record',
+    'hypothetical_activation',
+    'official_event_record',
+    'warning_only',
+    'none',
+  ].includes(String(v.confirmation.basis)) &&
+  nullableText(v.confirmation.source_id) &&
+  nullableDate(v.confirmation.confirmed_at_utc) &&
+  nullableDate(v.confirmation.available_at_utc) &&
   record(v.association) &&
+  text(v.association.site_id) &&
+  (v.association.site_id === id ||
+    // Archived demo cards retain their original EIA reference; never a live site link.
+    (v.association.method === 'reference_replay' &&
+      v.presentation !== 'current' &&
+      v.is_simulated === true)) &&
+  ['site_verified', 'regional_context', 'reference_replay', 'unknown'].includes(
+    String(v.association.method),
+  ) &&
+  nullableText(v.association.source_id) &&
+  text(v.association.description) &&
   date(v.as_of_utc) &&
+  nullableText(v.notice_id) &&
+  nullableDate(v.event_start_utc) &&
+  nullableDate(v.last_observation_at_utc) &&
+  nullableDate(v.last_forecast_issued_at_utc) &&
+  [
+    'rejected_for_forecast',
+    'accepted_for_research',
+    'issued_provider_product',
+  ].includes(String(v.evidence_status)) &&
   record(v.forecast) &&
-  FORECAST_KINDS.includes(String(v.forecast.kind)) &&
+  forecast(v.forecast) &&
   (v.status === 'available') === (v.forecast.kind !== 'unavailable') &&
-  (v.forecast.kind !== 'historical_duration_research' ||
-    (Array.isArray(v.forecast.persistence) &&
-      v.forecast.persistence.every(
-        (p) => record(p) && range(p.recorded_event_ongoing_probability, 0, 1),
-      ))) &&
-  (v.forecast.kind !== 'unavailable' || text(v.forecast.reason)) &&
   Array.isArray(v.evidence) &&
+  v.evidence.every(
+    (e) =>
+      record(e) &&
+      text(e.id) &&
+      text(e.source_id) &&
+      date(e.valid_time_utc) &&
+      date(e.available_at_utc),
+  ) &&
   strings(v.limitations) &&
   typeof v.is_simulated === 'boolean' &&
+  (v.presentation === 'current' ? !v.is_simulated : v.is_simulated) &&
+  typeof v.research_only === 'boolean' &&
   v.production_eligibility === false &&
-  v.site_hazard_probability === null
+  v.site_hazard_probability === null &&
+  v.advisory_notice ===
+    'Advisory only. Does not change the score, clear alerts, or authorize work.'
 /**
  * T050A cards are advisory: a malformed card becomes a visible "Prediction
  * unavailable" card instead of failing the whole site page. A backend without

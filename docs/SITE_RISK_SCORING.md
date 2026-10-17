@@ -218,10 +218,16 @@ coordinates, **not actual incidents, live monitoring or active work orders**.
 | Six independent high reports, same category | 3 | 1 | Two get 1.5 each; all six evidence IDs retained |
 | Extreme heat + flood + lightning + storm + quake + high report | 10 | 1 | Raw sum 12; saturated, not a probability |
 
-Existing frontend `site-detail.json` is also parsed and rescored: its archived
-illustrative 7.6 becomes 5.0 under qualified deterministic inputs. Existing frontend
-fixtures are left unchanged for Claude; their embedded illustrative model factors
-are not inputs to `compute_score`. This difference must not be called live parity.
+Existing frontend `site-detail.json` is also parsed and rescored. The original
+archived 7.6 fixture used obsolete illustrative model terms. The demo-fixture fix
+now calls `compute_score` in the canonical generator: **6.1 / 10 (high), rules-0.2**.
+Its points are lightning 3.0, simulated heat index 112 °F 1.11, Flood Watch 1.0 and
+confirmed-moderate wildlife 1.0; the approved algorithm rounds the total to one
+decimal. Weather values reuse T069's simulated inputs. Current live completeness
+is 0, explicitly incomplete. List/detail/both briefings agree; ML cards stay separate.
+The checked evaluation report reproduces this fixture comparison, not live parity.
+After updating, click **Reset demo** once to replace old browser-saved fixtures;
+this updates only `planit:frontend-demo:v1`, preserving Auth0 and other storage.
 
 No single default environmental factor dominates the whole index. Many categories
 can saturate it; one report category cannot grow without bound. Incomplete and

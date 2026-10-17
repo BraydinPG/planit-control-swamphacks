@@ -730,6 +730,7 @@ function AlertsPage({ id }: { id: string | null }) {
 const categories: Record<ReportCategory, string> = {
   broken_pole_downed_line: 'Broken pole / downed line',
   on_site_fire: 'On-site fire',
+  access_mat_deterioration: 'Access mat deterioration',
   wildlife: 'Wildlife',
   flooding: 'Flooding',
   other: 'Other',
@@ -737,6 +738,7 @@ const categories: Record<ReportCategory, string> = {
 const categoryIcon: Record<ReportCategory, IconName> = {
   broken_pole_downed_line: 'bolt',
   on_site_fire: 'spark',
+  access_mat_deterioration: 'layers',
   wildlife: 'pin',
   flooding: 'layers',
   other: 'doc',
@@ -1009,6 +1011,9 @@ export function ReportForm({ site }: { site: SiteSummary }) {
           rows={3}
           maxLength={1000}
           value={note}
+          placeholder={category === 'access_mat_deterioration'
+            ? 'Record the mat or section, your A-D stage (D: unusable), and visible damage.'
+            : undefined}
           onChange={(e) => setNote(e.target.value)}
         />
       </label>

@@ -27,6 +27,7 @@ const verdicts: Record<
 const categoryNames: Record<ReportCategory, string> = {
   broken_pole_downed_line: 'Broken pole / downed line',
   on_site_fire: 'On-site fire',
+  access_mat_deterioration: 'Access mat deterioration',
   wildlife: 'Wildlife',
   flooding: 'Flooding',
   other: 'Other',

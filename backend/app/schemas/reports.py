@@ -15,6 +15,7 @@ class ReportCategory(StrEnum):
 
     BROKEN_POLE_DOWNED_LINE = "broken_pole_downed_line"
     ON_SITE_FIRE = "on_site_fire"
+    ACCESS_MAT_DETERIORATION = "access_mat_deterioration"
     WILDLIFE = "wildlife"
     FLOODING = "flooding"
     OTHER = "other"
