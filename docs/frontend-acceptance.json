@@ -1,0 +1,250 @@
+{
+  "verified_at": "2026-10-17T09:30:03.326Z",
+  "implementation_base": "723a5b8294b1015d232551ad5664e6df761a8209",
+  "browser": {
+    "task": "T032-T038 demo acceptance and mocked live integration (not real login/persistence)",
+    "checked_at": "2026-10-17T09:30:03.326Z",
+    "url": "http://localhost:5173/",
+    "browser": "Installed headless Edge/Chrome via CDP",
+    "results": [
+      {
+        "viewport": "1440x1000",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "390x844",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "viewport": "320x740",
+        "primary_action_visible": true,
+        "overflow": false,
+        "nav_targets": ">=44px"
+      },
+      {
+        "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+      },
+      {
+        "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+        "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+        "ai": "prerecorded Gemini and deterministic fallback with citations",
+        "persistence": "local demo namespace only; no server writes",
+        "keyboard": "skip navigation and Tab to visible focused control passed"
+      },
+      {
+        "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+      },
+      {
+        "alerts": "published T048 HTTP adapter enabled; mocked Auth0 token/ack POST/shared refetch passed; real authenticated persistence not verified"
+      },
+      {
+        "auth": "mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions",
+        "api": "mocked HTTP 200/401/403/503 rendered; no demo fallback or live preview persona escalation",
+        "real_auth": "not verified; tenant credentials unavailable"
+      },
+      {
+        "fixture_setting": "false",
+        "status": "explicit configuration/auth state; no silent samples"
+      },
+      {
+        "fixture_setting": "typo",
+        "status": "explicit configuration/auth state; no silent samples"
+      }
+    ],
+    "browser_exceptions": [],
+    "backend_api_requests": 0,
+    "screenshots": ".shell-check/*.png (ignored)"
+  },
+  "commands": [
+    {
+      "command": "npm run lint",
+      "result": "passed"
+    },
+    {
+      "command": "npm run build",
+      "result": "passed; includes TypeScript"
+    },
+    {
+      "command": "node --test --test-concurrency=1 tests/status.test.mjs tests/data.test.mjs",
+      "passed": 23,
+      "failed": 0
+    },
+    {
+      "command": "python -m pytest backend/tests -q",
+      "source": "current branch based on 140d118",
+      "passed": 266,
+      "warnings": 1
+    },
+    {
+      "command": "python -m pytest backend/tests -q",
+      "source": "isolated main export at 2e79cb6",
+      "passed": 282,
+      "warnings": 1
+    },
+    {
+      "command": "python frontend/scripts/export-demo-sources.py",
+      "result": "50 exact reference IDs and 2 validated comprehensive 2.1 replay responses; no downloads/refit"
+    },
+    {
+      "command": "python -m pytest backend/tests -q",
+      "source": "current checkout incorporating main 723a5b8",
+      "passed": 297,
+      "warnings": 1
+    }
+  ],
+  "live_checks": [
+    {
+      "url": "http://localhost:5173/",
+      "status": 200,
+      "body": "Vite HTML received"
+    },
+    {
+      "url": "http://127.0.0.1:8000/health",
+      "status": 200,
+      "body": "{\"status\":\"ok\"}"
+    },
+    {
+      "url": "http://127.0.0.1:8000/api/sites",
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
+    },
+    {
+      "url": "http://127.0.0.1:8000/api/alerts?state=all",
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
+    },
+    {
+      "url": "http://localhost:5173/api/sites",
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
+    },
+    {
+      "url": "http://localhost:5173/api/alerts?state=all",
+      "status": 401,
+      "body": "{\"detail\":\"Sign in required\"}"
+    }
+  ],
+  "not_verified": [
+    "real Auth0 tenant login and roles",
+    "authenticated real site data",
+    "real report/photo/instruction/Gemini persistence",
+    "deployed permissions or worker safety"
+  ],
+  "export_sha256": {
+    "frontend/src/demo/generated/references.json": "db4b08ce88889475c12b652b4b147047fa905822baec8177c2200fa650b43e9d",
+    "frontend/src/demo/generated/advisories.json": "76df2458ebffde11a1141d8685a744cf32e0263cb33b6fc0e03df6b5fdca112f"
+  },
+  "implementation_commits": [
+    "140d118",
+    "3fbd98f",
+    "dc35458"
+  ],
+  "resolved_check_failures": [
+    "Initial small-phone alert action below fold: moved action before alert metadata; final three-viewport acceptance passes.",
+    "Leaflet vendor cascade shrank zoom controls: increased override specificity; explicit >=44px check passes.",
+    "After inherited T050 fixture addition, no-outlook test used a now-supported compact fixture: use genuinely unsupported reference plus verify supplied compact replay separately; all 23 pass.",
+    "Mock role transition retained alert route: browser test explicitly navigates supervisor overview after role switch; final full workflow passes."
+  ],
+  "clean_frontend": {
+    "source_commit": "4a9e44f",
+    "provisioning": "fresh git archive of frontend only; no .env/node_modules/Python/model artifacts copied",
+    "npm_ci": "passed; 57 packages installed, 0 reported vulnerabilities",
+    "install_warning": "existing browser-tabs-lock Auth0 dependency postinstall not covered by allowScripts; install/build still passed",
+    "build": "passed; TypeScript and production assets",
+    "browser": {
+      "task": "Clean production-bundle demo acceptance (not real login/persistence)",
+      "checked_at": "2026-10-17T09:33:25.848Z",
+      "url": "http://127.0.0.1:5174/",
+      "browser": "Installed headless Edge/Chrome via CDP",
+      "results": [
+        {
+          "viewport": "1440x1000",
+          "primary_action_visible": true,
+          "overflow": false,
+          "nav_targets": ">=44px"
+        },
+        {
+          "viewport": "390x844",
+          "primary_action_visible": true,
+          "overflow": false,
+          "nav_targets": ">=44px"
+        },
+        {
+          "viewport": "320x740",
+          "primary_action_visible": true,
+          "overflow": false,
+          "nav_targets": ">=44px"
+        },
+        {
+          "map": "55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional"
+        },
+        {
+          "crew": "assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction",
+          "supervisor": "55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction",
+          "ai": "prerecorded Gemini and deterministic fallback with citations",
+          "persistence": "local demo namespace only; no server writes",
+          "keyboard": "skip navigation and Tab to visible focused control passed"
+        },
+        {
+          "accessibility": "all ten demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked"
+        },
+        {
+          "production": "full demo lifecycle exercised from clean built bundle; mocked provider and compile-time mode tests are development-only"
+        }
+      ],
+      "browser_exceptions": [],
+      "backend_api_requests": 0,
+      "screenshots": ".shell-check/*.png (ignored)"
+    }
+  },
+  "changed_files_relative_to_main": [
+    "AGENTS.md",
+    "PROJECT_CONTEXT.md",
+    "docs/CROSS_SCOPE_CHANGES.md",
+    "docs/FRONTEND_REDESIGN_HANDOFF.md",
+    "docs/INTEGRATION_STATUS.md",
+    "docs/frontend-acceptance.json",
+    "frontend/.env.example",
+    "frontend/INTEGRATION.md",
+    "frontend/SHELL.md",
+    "frontend/scripts/check-shell.mjs",
+    "frontend/scripts/export-demo-sources.py",
+    "frontend/src/App.tsx",
+    "frontend/src/api/contracts.ts",
+    "frontend/src/api/http-client.ts",
+    "frontend/src/application/LiveApplication.tsx",
+    "frontend/src/application/Provider.tsx",
+    "frontend/src/application/context.tsx",
+    "frontend/src/components/data/Advisory.tsx",
+    "frontend/src/components/data/AlertCard.tsx",
+    "frontend/src/components/data/Interaction.tsx",
+    "frontend/src/components/data/NoticeCard.tsx",
+    "frontend/src/components/data/SiteMap.tsx",
+    "frontend/src/components/data/Status.tsx",
+    "frontend/src/components/shell/AppShell.tsx",
+    "frontend/src/demo/client.ts",
+    "frontend/src/demo/generated/advisories.json",
+    "frontend/src/demo/generated/references.json",
+    "frontend/src/pages/ConnectedPages.tsx",
+    "frontend/src/styles/map.css",
+    "frontend/tests/browser-harness.tsx",
+    "frontend/tests/browser.html",
+    "frontend/tests/data.test.mjs",
+    "frontend/tests/status.test.mjs",
+    "frontend/vite.config.ts",
+    "tasks.md"
+  ],
+  "publication": {
+    "branch": "feature/cache-frontend-workflows",
+    "base": "main",
+    "base_sha": "723a5b8294b1015d232551ad5664e6df761a8209",
+    "implementation_head": "88348675cf786d6fe8d094928b7c651940689475",
+    "pr": "https://github.com/BraydinPG/planit-control-swamphacks/pull/19",
+    "status_at_publication": "open",
+    "merged_by_agent": false
+  }
+}

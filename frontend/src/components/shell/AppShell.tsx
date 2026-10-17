@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { shellContext, shellMode } from '../../api/shell-fixtures'
 import { Icon, type IconName } from './Icon'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
@@ -53,8 +53,24 @@ const descriptions: Record<
   },
 }
 
-export function AppShell() {
-  const [route, setRoute] = useState(readRoute)
+export function AppShell({
+  children,
+  workspaceOverride,
+  controls,
+  message,
+  badge,
+}: {
+  children?: ReactNode
+  workspaceOverride?: Workspace
+  controls?: ReactNode
+  message?: string
+  badge?: string
+}) {
+  const [locationRoute, setRoute] = useState(readRoute)
+  const route = {
+    ...locationRoute,
+    workspace: workspaceOverride ?? locationRoute.workspace,
+  }
   const heading = useRef<HTMLHeadingElement>(null)
   const context = shellContext(shellMode)
   const isFixture = shellMode === 'fixture'
@@ -67,7 +83,8 @@ export function AppShell() {
   useEffect(() => {
     document.title = `${active.title} · PlanIT Control`
     heading.current?.focus({ preventScroll: true })
-  }, [active.title, route.workspace])
+    window.scrollTo(0, 0)
+  }, [active.title, route.workspace, locationRoute])
 
   function navigation(mobile = false) {
     return (
@@ -166,48 +183,52 @@ export function AppShell() {
           </div>
           <div className="flex shrink-0 items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900">
             <span className="size-1.5 rounded-full bg-amber-600" />
-            {isFixture ? 'Fixture mode' : 'No live data'}
+            {badge ?? (isFixture ? 'Fixture mode' : 'No live data')}
           </div>
         </div>
       </header>
       <main
         id="main-content"
         tabIndex={-1}
-        className="mx-auto max-w-7xl px-5 pb-28 pt-6 outline-none sm:px-8 sm:pt-8 lg:px-10 lg:pb-10"
+        className="mx-auto max-w-7xl min-w-0 [overflow-wrap:anywhere] px-5 pb-28 pt-6 outline-none sm:px-8 sm:pt-8 lg:px-10 lg:pb-10"
       >
         <div className="mb-7 flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
           <p className="max-w-xl text-xs leading-relaxed text-slate-600">
             <strong className="font-semibold text-slate-800">
-              {isFixture ? 'Demonstration workspace.' : 'No connected data.'}
+              {badge ??
+                (isFixture ? 'Demonstration workspace.' : 'No connected data.')}
             </strong>{' '}
-            {isFixture
-              ? 'Bundled sample data, not live conditions. Sign-in is not connected to this shell.'
-              : 'Live API and sign-in integration are not connected to this shell.'}
+            {message ??
+              (isFixture
+                ? 'Bundled sample data, not live conditions. Sign-in is not connected to this shell.'
+                : 'Live API and sign-in integration are not connected to this shell.')}
           </p>
-          <div className="flex shrink-0 flex-wrap items-center gap-3">
-            <span className="text-[11px] font-medium text-slate-500">
-              Preview workspace
-            </span>
-            <div
-              role="group"
-              aria-label="Preview workspace, not an authorization role"
-              className="flex rounded-lg border border-slate-200 bg-white p-1"
-            >
-              {(['crew', 'supervisor'] as const).map((workspace) => (
-                <button
-                  key={workspace}
-                  type="button"
-                  aria-pressed={route.workspace === workspace}
-                  onClick={() => {
-                    window.location.hash = `/${workspace}/overview`
-                  }}
-                  className={`min-h-11 rounded-md px-4 text-xs font-semibold capitalize transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${route.workspace === workspace ? 'bg-[#142a34] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'}`}
-                >
-                  {workspace}
-                </button>
-              ))}
+          {controls ?? (
+            <div className="flex shrink-0 flex-wrap items-center gap-3">
+              <span className="text-[11px] font-medium text-slate-500">
+                Preview workspace
+              </span>
+              <div
+                role="group"
+                aria-label="Preview workspace, not an authorization role"
+                className="flex rounded-lg border border-slate-200 bg-white p-1"
+              >
+                {(['crew', 'supervisor'] as const).map((workspace) => (
+                  <button
+                    key={workspace}
+                    type="button"
+                    aria-pressed={route.workspace === workspace}
+                    onClick={() => {
+                      window.location.hash = `/${workspace}/overview`
+                    }}
+                    className={`min-h-11 rounded-md px-4 text-xs font-semibold capitalize transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${route.workspace === workspace ? 'bg-[#142a34] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'}`}
+                  >
+                    {workspace}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="mb-7">
           <p className="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-teal-800">
@@ -230,38 +251,39 @@ export function AppShell() {
               : descriptions[route.page].description}
           </p>
         </div>
-        {route.page === 'overview' ? (
-          <WorkspaceOverview
-            workspace={route.workspace}
-            mode={shellMode}
-            context={context}
-          />
-        ) : (
-          <section
-            className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-10"
-            aria-labelledby="workspace-status"
-          >
-            <div className="mb-6 flex size-14 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
-              <Icon name={active.icon} className="size-7" />
-            </div>
-            <p className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-500">
-              Workspace foundation
-            </p>
-            <h2 id="workspace-status" className="mt-3 text-xl font-semibold">
-              This workspace is being connected
-            </h2>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600">
-              {descriptions[route.page].pending} No live{' '}
-              {active.title.toLowerCase()} are loaded in this shell.
-            </p>
-            <a
-              href={`#/${route.workspace}/overview`}
-              className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-lg bg-teal-800 px-5 text-sm font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+        {children ??
+          (route.page === 'overview' ? (
+            <WorkspaceOverview
+              workspace={route.workspace}
+              mode={shellMode}
+              context={context}
+            />
+          ) : (
+            <section
+              className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-10"
+              aria-labelledby="workspace-status"
             >
-              Back to overview <Icon name="arrow" className="size-4" />
-            </a>
-          </section>
-        )}
+              <div className="mb-6 flex size-14 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+                <Icon name={active.icon} className="size-7" />
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-[.16em] text-slate-500">
+                Workspace foundation
+              </p>
+              <h2 id="workspace-status" className="mt-3 text-xl font-semibold">
+                This workspace is being connected
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600">
+                {descriptions[route.page].pending} No live{' '}
+                {active.title.toLowerCase()} are loaded in this shell.
+              </p>
+              <a
+                href={`#/${route.workspace}/overview`}
+                className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-lg bg-teal-800 px-5 text-sm font-semibold text-white hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+              >
+                Back to overview <Icon name="arrow" className="size-4" />
+              </a>
+            </section>
+          ))}
         <footer className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-[11px] leading-relaxed text-slate-500 sm:flex-row sm:justify-between">
           <span>
             PlanIT Control <span className="px-1 text-slate-300">/</span> Shared

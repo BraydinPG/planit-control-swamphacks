@@ -1,5 +1,9 @@
 # Cross-scope changes
 
+Current delivery update (2026-10-17): PR #16 and the T031 checkpoint PR #17 merged during this run. Delivery is now `feature/cache-frontend-workflows` against main `723a5b8`; T032-T038 implementation `3fbd98f`, reviewed-main incorporation `dc35458`. Rudra's newly merged T048 is connected with an acknowledgement capability; report/hazard/AI routes remain unavailable. The canonical T050 type is inherited directly. Earlier branch/status statements below record their original checkpoints.
+
+Publication: [PR #19](https://github.com/BraydinPG/planit-control-swamphacks/pull/19), open/ready against main, implementation head `8834867`, with `4a9e44f` T048 integration and clean-export identity. This metadata follow-up records the exact review URL; no merge, reviewer acceptance, deployment or actual authenticated workflow is claimed. Shared-file changes are for Cache's authorized tasks; Rudra/Braydin should use the explicit owner actions in INTEGRATION_STATUS.
+
 ## Full frontend transfer — 2026-10-17
 
 The user explicitly transferred Nick's remaining frontend responsibilities to Cache and authorized the dependent T031-T038/T063-T068 chain. Prior contributions and PR #16 remain attributed and preserved. Cache owns frontend implementation/integration; Rudra retains canonical backend/API ownership and Braydin retains Auth0 internals, Gemini, database and deployment. Claude's future redesign requires a separate authorization.
@@ -9,6 +13,38 @@ Branch `feature/cache-functional-frontend` stacks on PR #16 head `84e3936`; PR #
 Planned scoped changes: frontend data access/demo store, reusable UI, pages, application composition, tests, run/redesign guides and task/context evidence. A Leaflet map dependency in the frontend manifest/lockfile is necessary for T035's geospatial map; this is a focused shared-file change under the explicit project authorization, for Rudra review. No backend/auth internals/Gemini/database/ML contract edit is planned. Every completed task must carry its passing checks; live integration remains unchecked until its actual prerequisites and acceptance pass.
 
 First verified milestone: T031 source-state/score/observation components in `frontend/src/components/data/Status.tsx`, checked by `frontend/tests/status.test.mjs` (three passed), frontend lint/build. All six canonical source states have text labels; null scores are not zero/low risk; legacy ML score components are withheld without payload mutation. `AGENTS.md`, `tasks.md` (remaining named owner transfer and T031 checkbox), `PROJECT_CONTEXT.md`, this log and `docs/INTEGRATION_STATUS.md` record authorization and scope. `frontend/package.json`/lockfile add only Leaflet 1.9.4 and matching type definitions for the forthcoming map; no backend/auth/ML contract change. Cache implements; Nick remains attributed for prior work. This checkpoint is the first commit of the stacked follow-on branch.
+
+## T032-T038 functional frontend delivery — 2026-10-17 UTC
+
+Cache implements under the explicit full frontend transfer, formerly Nick-owned. Before: T030 navigation plus isolated reference context. After: shared demo/HTTP view architecture with interactive crew and supervisor workflows, 55-point geographic map/list, canonical report/review/notices, existing-provider Auth0 integration, exact-site research advisory and explicit failure states. No real production report/write or authenticated session is simulated in live mode. T031 checkpoint: `140d118`. This verified implementation checks only T032-T038; T063-T068 remain unchecked because real dependencies are unavailable. PR publication references are appended after push.
+
+Exact changed paths in this milestone (all paths relative to repository root):
+
+| Files | Reason, contract/dependency, handoff |
+| --- | --- |
+| `frontend/src/App.tsx`, `frontend/src/components/shell/AppShell.tsx` | Compose the existing shell with shared demo/provider-backed real modes; preserve navigation and prior attribution. No independent Auth0 implementation. |
+| `frontend/src/api/contracts.ts`, `frontend/src/api/http-client.ts` | One client interface, canonical T050 SiteDetail and typed HTTP/multipart requests; T048 all-state list/acknowledgement, server Date display-clock estimate, disabled missing report/hazard/AI services, explicit errors/token timeout, no demo fallback. Rudra reviews capabilities after actual routes exist. |
+| `frontend/src/application/context.tsx`, `frontend/src/application/Provider.tsx`, `frontend/src/application/LiveApplication.tsx` | Existing Braydin provider/guard/token exports, role/subject session lifecycle, async resource cancellation, source refresh. Auth internals untouched; mocked roles are test-only. |
+| `frontend/src/demo/client.ts`, `frontend/src/demo/generated/references.json`, `frontend/src/demo/generated/advisories.json` | Isolated localStorage namespace and memory-only photos; canonical fixture-derived demo state; 50 verified EIA IDs and two validated ML 2.1 replay exports. No active job/live incident assertion or model modification. |
+| `frontend/src/pages/ConnectedPages.tsx` | T032-T037 shared crew/site/alert/report/review/map/briefing pages. Present/absent mandatory, note optional; confirmation/instruction isolated from score/alert authority. |
+| `frontend/src/components/data/AlertCard.tsx`, `NoticeCard.tsx`, `Interaction.tsx`, `SiteMap.tsx`, `Advisory.tsx` | Reusable display/actions, authoritative countdown display, potential/confirmed semantics, geographic map, provenance/unknown research output. |
+| `frontend/src/components/data/Status.tsx`, `frontend/tests/status.test.mjs` | Formatting of the prior T031 implementation/tests only; original source-state/null/legacy score behavior retained. |
+| `frontend/src/styles/map.css` | Vendor zoom overrides >=44px and focus treatment; no second styling framework. |
+| `frontend/scripts/export-demo-sources.py` | Offline checksum/schema validation and reproducible approved public exports; no retrieval/refit. |
+| `frontend/tests/data.test.mjs`, `frontend/tests/browser.html`, `frontend/tests/browser-harness.tsx`, `frontend/scripts/check-shell.mjs` | 23 unit/component checks and complete browser workflows, mocked existing provider/HTTP; not real Auth0 proof. Test HTML excluded from production build inputs. |
+| `frontend/vite.config.ts`, `frontend/.env.example` | Same-origin development /api proxy to existing FastAPI:8000; public configuration documentation, explicit bypass rejection. Production routing stays owner-controlled. |
+| `frontend/SHELL.md`, `frontend/INTEGRATION.md`, `docs/INTEGRATION_STATUS.md`, `docs/FRONTEND_REDESIGN_HANDOFF.md`, `docs/frontend-acceptance.json` | Run/fixture/live/blocked matrix, task acceptance, exact tests and modular visual handoff. |
+| `AGENTS.md`, `tasks.md`, `PROJECT_CONTEXT.md`, `docs/CROSS_SCOPE_CHANGES.md` | Accurate ownership/coordination, only verified T032-T038 boxes, short shared memory and this authorization/file log. No adjacent task acceptance changed. |
+
+The preceding checkpoint also changed `frontend/package.json` and `frontend/package-lock.json` for Leaflet 1.9.4 / @types/leaflet 1.9.21; this focused frontend dependency is explicitly recorded for Rudra review. Root manifests/locks, `frontend/src/auth/**`, `frontend/src/types/api.ts`, Rudra's generated `src/fixtures/*.json`, backend routes/security/DB/Gemini, deployment and ML source/contracts/artifacts remain unchanged.
+
+Final acceptance: 23 focused tests; lint and TypeScript/production build; installed headless Edge at 1440x1000/390x844/320x740; all ten destinations, map/list identity, team-first ordering, ack/reload/reset/explicit cleared payload, photo report without note, human review/confirm/send and crew instruction delivery; Gemini/fallback and exact-site ML advisory; missing/invalid config and mocked 200/401/403/503 plus T048 ack POST, keyboard/focus/44px controls. Merged-checkout backend tests: 297 passed, one pre-existing dependency warning. `docs/frontend-acceptance.json` records results; ignored screenshots were inspected. No ML behavior changed, so no retraining/backtest or scientific validation claim.
+
+Required owner work: Rudra reviews the connected T048 client and implements remaining protected report/notice persistence/routes; Braydin supplies true tenant/configuration, Tiger Data/assigned-site seeds, photo storage and server Gemini routes. Exact task IDs/acceptance and requests are in `docs/INTEGRATION_STATUS.md`. Nick's prior work is preserved; future Claude work can restyle presentation while keeping data/session/permission semantics and tests. Publishing this review PR does not authorize merge or deployment.
+
+The older T030 section below is a historical record of its original scope; the full transfer/delivery above supersedes its next-owner and unavailable-page statements.
+
+Reproduction checkpoint: `4a9e44f` records the T048 integration/current-main reconciliation. A clean committed frontend-only export passed npm ci/build and full production-bundle demo browser acceptance. The browser driver adds an explicit `--production` mode to skip development-only provider/configuration tests and verify the test harness is absent. No local settings, model artifacts or dependencies were copied into that export. `docs/frontend-acceptance.json` contains the exact final changed-file list and both development/production browser records.
 
 ## T030 — Cache assisting Nick, 2026-10-17
 
