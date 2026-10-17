@@ -90,6 +90,7 @@ export function initialDemo(): DemoSnapshot {
       reports: [],
       notices: [],
       event_outlook: null,
+      event_outlooks: [],
     }
   })
   details[assigned] = clone(detailJSON as SiteRecord)

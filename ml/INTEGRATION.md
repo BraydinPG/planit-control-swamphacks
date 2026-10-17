@@ -1,5 +1,18 @@
 # Backend integration contract
 
+## Independent multi-event outlook preview
+
+See [EVENT_OUTLOOKS.md](EVENT_OUTLOOKS.md) for `EventOutlookAdapter`, the internal
+`ml-event-outlooks-1.0.0` discriminated contract, six reused research models,
+archived issued NHC/USGS forecasts, 16-case offline preview and exact Rudra/Claude
+handoffs. This does not change existing callables, contracts 1.1/2.0/2.1 or
+canonical `SiteDetail.event_outlook`. T050A remains Rudra-owned and unchecked:
+Flash Flood needs actual event start, independent confirmation of continuous
+activity and site association; an NWS warning alone is insufficient. High Wind,
+Heavy Rain and Winter Storm remain controlled replays until trusted backend
+activation exists; heat remains restricted station replay. ML remains excluded
+from site scores, deterministic alerts, lightning timers and work authorization.
+
 ## Opt-in comprehensive advisory 2.1.0
 
 See [HAZARD_INTEGRATION.md](HAZARD_INTEGRATION.md) for the new `build_comprehensive_outlook`, explicit strict-2.0 conversion, three owner handoffs, 31 offline scenarios, 50 reconciled backend EIA identities, native NWS notices, trusted-report contracts and remaining authentication/feed gaps. [HAZARD_COVERAGE_AUDIT.md](HAZARD_COVERAGE_AUDIT.md) is the 146-hazard sign-off index. Existing callables and schemas below remain 2.0/1.1; no shared production API was changed.

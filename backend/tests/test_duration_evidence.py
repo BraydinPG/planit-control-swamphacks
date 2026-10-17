@@ -96,7 +96,9 @@ def add_notice(factory, status: str = "confirmed", label: str = "flooding") -> N
                 id=NOTICE_ID, hazard_label=label, source="crew_report", source_ref="report-1",
                 lat=40.0, lon=-75.0, radius_miles=5.0, radius_source="default", status=status,
                 created_at=EVENING - timedelta(hours=1), confirmed_by="auth0|sup",
-                confirmed_at=EVENING - timedelta(minutes=30), evidence=[],
+                confirmed_at=EVENING - timedelta(minutes=30),
+                evidence=[{"id": "start", "kind": "event_start", "label": "Flood began",
+                           "observed_at": (EVENING - timedelta(hours=2)).isoformat()}],
             )
         )  # fmt: skip
         session.commit()

@@ -1,0 +1,342 @@
+{
+  "$defs": {
+    "Association": {
+      "additionalProperties": false,
+      "properties": {
+        "site_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Site Id",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "site_verified",
+            "regional_context",
+            "reference_replay",
+            "unknown"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Id"
+        },
+        "description": {
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "site_id",
+        "method",
+        "description"
+      ],
+      "title": "Association",
+      "type": "object"
+    },
+    "Confirmation": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "confirmed_active",
+            "historical_replay",
+            "unconfirmed",
+            "resolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "independent_observation",
+            "confirmed_worksite_report",
+            "historical_record",
+            "hypothetical_activation",
+            "official_event_record",
+            "warning_only",
+            "none"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Id"
+        },
+        "confirmed_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmed At Utc"
+        },
+        "available_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Available At Utc"
+        }
+      },
+      "required": [
+        "status",
+        "basis"
+      ],
+      "title": "Confirmation",
+      "type": "object"
+    },
+    "EventInput": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "notice_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notice Id"
+        },
+        "event_name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Event Name",
+          "type": "string"
+        },
+        "event_type": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Event Type",
+          "type": "string"
+        },
+        "confirmation": {
+          "$ref": "#/$defs/Confirmation"
+        },
+        "association": {
+          "$ref": "#/$defs/Association"
+        },
+        "event_start_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Start Utc"
+        },
+        "event_definition": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Definition"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/ObservationRef"
+          },
+          "maxItems": 100,
+          "title": "Observations",
+          "type": "array"
+        },
+        "station_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Station Id"
+        },
+        "official_product_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Official Product Id"
+        }
+      },
+      "required": [
+        "event_id",
+        "event_name",
+        "event_type",
+        "confirmation",
+        "association"
+      ],
+      "title": "EventInput",
+      "type": "object"
+    },
+    "ObservationRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "valid_time_utc": {
+          "title": "Valid Time Utc",
+          "type": "string"
+        },
+        "available_at_utc": {
+          "title": "Available At Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "valid_time_utc",
+        "available_at_utc"
+      ],
+      "title": "ObservationRef",
+      "type": "object"
+    },
+    "ReferenceSite": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "inventory_vintage": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Inventory Vintage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lat",
+        "lon",
+        "id",
+        "name",
+        "source",
+        "inventory_vintage"
+      ],
+      "title": "ReferenceSite",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": "ml-event-outlooks-1.0.0",
+      "default": "ml-event-outlooks-1.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "site": {
+      "$ref": "#/$defs/ReferenceSite"
+    },
+    "as_of_utc": {
+      "title": "As Of Utc",
+      "type": "string"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/EventInput"
+      },
+      "maxItems": 32,
+      "title": "Events",
+      "type": "array"
+    }
+  },
+  "required": [
+    "site",
+    "as_of_utc",
+    "events"
+  ],
+  "title": "OutlookRequest",
+  "type": "object"
+}

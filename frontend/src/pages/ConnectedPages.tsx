@@ -32,6 +32,7 @@ import {
   LoadState,
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
+import { EventOutlooks } from '../components/data/EventOutlooks'
 import { NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
 import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
@@ -284,6 +285,7 @@ function SitePage({
           </section>
         </div>
       </div>
+      {!compact && <EventOutlooks cards={site.event_outlooks ?? []} />}
       <Suspense
         fallback={
           <p role="status" className="kicker">

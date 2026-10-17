@@ -42,6 +42,7 @@ export function createMockService() {
               data_completeness: 0,
               top_factors: [],
               event_outlook: null,
+              event_outlooks: [],
             }
       // A deliberately supplied server response, not a frontend score calculation.
       return {

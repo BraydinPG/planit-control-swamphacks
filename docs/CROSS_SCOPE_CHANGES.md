@@ -10,6 +10,32 @@ Explicit user decision (Braydin): live data for every real site, one frozen scri
 - `tests/test_refresh.py`: the demo site is never refreshed; one upsert stores a batch and keeps the last duplicate.
 
 Measured on a live round: the fetch phase is ~20 min for 256 sites. NWS weather and alerts are ~1 s per site; USGS flood gauges are the slowest, with occasional 503 responses. The NWS contact is set through `NWS_USER_AGENT` in each machine's uncommitted `.env`.
+## Multi-event ML integration handoff (Cache) - 2026-10-17
+
+Explicit user assignment: reuse existing qualified event models and build a typed
+multi-event preview in `ml/**`; propose API/component inputs without changing
+Rudra's contracts or Claude's UI. Branch `feature/cache-multi-event-outlooks`,
+started at main `ca99e64`; reviewed main `a7759c9` incorporated as `7c30618`
+after maintainers merged Rudra PR #38 and the report/map update. No unmerged dependency.
+
+- New ML adapter/schema, bounded official-product parsers, checksummed NHC/USGS
+  captures, verified local artifact reuse, 16-case static preview and tests.
+- Shared edit: `PROJECT_CONTEXT.md` gains this verified navigation/handoff entry;
+  this log records ownership. `tasks.md` and all teammate implementation files
+  are unchanged. Exact inputs, schemas, examples and acceptance proposals for
+  Rudra/Claude are in `ml/EVENT_OUTLOOKS.md` and `ml/fixtures/event_outlooks/`.
+- Final verification on updated main: 51 focused checks; ML/backend 1,024; 109 frontend
+  tests, lint/TypeScript/build pass. Offline browser at1440/390 renders16 cases/18
+  cards without external requests/exceptions. Clean tracked-source export with
+  existing pinned dependencies degrades honestly without artifacts, then restores
+  all six via verified local reuse and matches four canonical responses.
+- PR #39 is open against main (no dependency); implementation `9a77360`, hardening
+  `ef35343`, reviewed-main integration `7c30618`; final evidence:
+  `ml/reports/event_outlooks_verification.json`. No merge into main. The log
+  resolution retains the full incoming owner log; no teammate implementation edit.
+- No authenticated production integration, event activation feed, score/alert
+  change or newly validated local probability. T050A remains pending with Rudra;
+  source publication/retrieval and hypothetical activation are separately labeled.
 
 ## Report form and map cleanup (Braydin, for Cache/Rudra UI) — 2026-10-17
 
@@ -359,3 +385,13 @@ factors keep their points in briefing hazards; incomplete-evidence unknowns) and
 backend). Presentation helper `frontend/src/components/data/evidence.ts` and the site
 factor breakdown in `ConnectedPages.tsx` (Claude's redesign files). No schema, contract,
 weight or scorer change. Details: SITE_SCORING_INTEGRATION.md.
+
+### 2026-10-17 — Rudra/Claude: T050A multi-event outlooks (contract published)
+
+Explicit request to connect Cache's PR #39 adapter to the site API and UI. Additive contract
+`SiteDetail.event_outlooks` + `EvidenceKind.event_start` (docs/EVENT_OUTLOOKS_API.md); the
+singular `event_outlook` is kept. Focused edits outside Rudra's paths: frontend
+`live-read-validation.ts` (Codex: tolerant card checks), `demo/client.ts` and
+`tests/mock-service.ts` (default `event_outlooks: []`), new `EventOutlooks.tsx` and its
+placement on site detail (Claude). No `ml/**`, score, alert, auth or DB-schema change; notice
+evidence is existing JSON. Cache/Codex: please review the contract before live testing.

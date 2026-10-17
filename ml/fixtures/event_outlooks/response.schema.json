@@ -1,0 +1,1012 @@
+{
+  "$defs": {
+    "AftershockBin": {
+      "additionalProperties": false,
+      "properties": {
+        "magnitude_at_least": {
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Magnitude At Least",
+          "type": "number"
+        },
+        "probability_at_least_one": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability At Least One",
+          "type": "number"
+        },
+        "count_p95_minimum": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count P95 Minimum"
+        },
+        "count_p95_maximum": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count P95 Maximum"
+        }
+      },
+      "required": [
+        "magnitude_at_least",
+        "probability_at_least_one"
+      ],
+      "title": "AftershockBin",
+      "type": "object"
+    },
+    "AftershockRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "radius_km": {
+          "exclusiveMinimum": 0,
+          "maximum": 2000,
+          "title": "Radius Km",
+          "type": "number"
+        },
+        "interpretation": {
+          "const": "provider_sequence_region_not_site_probability",
+          "default": "provider_sequence_region_not_site_probability",
+          "title": "Interpretation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lat",
+        "lon",
+        "radius_km"
+      ],
+      "title": "AftershockRegion",
+      "type": "object"
+    },
+    "AftershockWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "start_utc": {
+          "title": "Start Utc",
+          "type": "string"
+        },
+        "end_utc": {
+          "title": "End Utc",
+          "type": "string"
+        },
+        "bins": {
+          "items": {
+            "$ref": "#/$defs/AftershockBin"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Bins",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "start_utc",
+        "end_utc",
+        "bins"
+      ],
+      "title": "AftershockWindow",
+      "type": "object"
+    },
+    "Association": {
+      "additionalProperties": false,
+      "properties": {
+        "site_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Site Id",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "site_verified",
+            "regional_context",
+            "reference_replay",
+            "unknown"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Id"
+        },
+        "description": {
+          "maxLength": 600,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "site_id",
+        "method",
+        "description"
+      ],
+      "title": "Association",
+      "type": "object"
+    },
+    "Confirmation": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "confirmed_active",
+            "historical_replay",
+            "unconfirmed",
+            "resolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "independent_observation",
+            "confirmed_worksite_report",
+            "historical_record",
+            "hypothetical_activation",
+            "official_event_record",
+            "warning_only",
+            "none"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Id"
+        },
+        "confirmed_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmed At Utc"
+        },
+        "available_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Available At Utc"
+        }
+      },
+      "required": [
+        "status",
+        "basis"
+      ],
+      "title": "Confirmation",
+      "type": "object"
+    },
+    "DurationForecast": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "historical_duration_research",
+          "default": "historical_duration_research",
+          "title": "Kind",
+          "type": "string"
+        },
+        "target_definition": {
+          "title": "Target Definition",
+          "type": "string"
+        },
+        "model_version": {
+          "title": "Model Version",
+          "type": "string"
+        },
+        "estimator": {
+          "title": "Estimator",
+          "type": "string"
+        },
+        "persistence": {
+          "items": {
+            "$ref": "#/$defs/Persistence"
+          },
+          "minItems": 1,
+          "title": "Persistence",
+          "type": "array"
+        },
+        "remaining_duration_hours": {
+          "$ref": "#/$defs/RemainingDuration"
+        },
+        "model_card": {
+          "title": "Model Card",
+          "type": "string"
+        },
+        "training_support_at_event_age": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Training Support At Event Age"
+        },
+        "trend": {
+          "const": "unknown",
+          "default": "unknown",
+          "title": "Trend",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_definition",
+        "model_version",
+        "estimator",
+        "persistence",
+        "remaining_duration_hours",
+        "model_card"
+      ],
+      "title": "DurationForecast",
+      "type": "object"
+    },
+    "EventOutlook": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "notice_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Notice Id"
+        },
+        "event_name": {
+          "title": "Event Name",
+          "type": "string"
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "confirmation": {
+          "$ref": "#/$defs/Confirmation"
+        },
+        "association": {
+          "$ref": "#/$defs/Association"
+        },
+        "as_of_utc": {
+          "title": "As Of Utc",
+          "type": "string"
+        },
+        "event_start_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Event Start Utc"
+        },
+        "last_observation_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Observation At Utc"
+        },
+        "last_forecast_issued_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Forecast Issued At Utc"
+        },
+        "evidence_status": {
+          "enum": [
+            "rejected_for_forecast",
+            "accepted_for_research",
+            "issued_provider_product"
+          ],
+          "title": "Evidence Status",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "available",
+            "unavailable",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "forecast": {
+          "discriminator": {
+            "mapping": {
+              "historical_duration_research": "#/$defs/DurationForecast",
+              "official_aftershock_forecast": "#/$defs/OfficialAftershockForecast",
+              "official_event_forecast": "#/$defs/OfficialEventForecast",
+              "unavailable": "#/$defs/UnavailableForecast"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DurationForecast"
+            },
+            {
+              "$ref": "#/$defs/OfficialEventForecast"
+            },
+            {
+              "$ref": "#/$defs/OfficialAftershockForecast"
+            },
+            {
+              "$ref": "#/$defs/UnavailableForecast"
+            }
+          ],
+          "title": "Forecast"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/ObservationRef"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "is_simulated": {
+          "title": "Is Simulated",
+          "type": "boolean"
+        },
+        "research_only": {
+          "title": "Research Only",
+          "type": "boolean"
+        },
+        "production_eligibility": {
+          "const": false,
+          "default": false,
+          "title": "Production Eligibility",
+          "type": "boolean"
+        },
+        "site_hazard_probability": {
+          "default": null,
+          "title": "Site Hazard Probability",
+          "type": "null"
+        }
+      },
+      "required": [
+        "event_id",
+        "notice_id",
+        "event_name",
+        "event_type",
+        "confirmation",
+        "association",
+        "as_of_utc",
+        "event_start_utc",
+        "last_observation_at_utc",
+        "last_forecast_issued_at_utc",
+        "evidence_status",
+        "status",
+        "forecast",
+        "evidence",
+        "limitations",
+        "is_simulated",
+        "research_only"
+      ],
+      "title": "EventOutlook",
+      "type": "object"
+    },
+    "Mainshock": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "event_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "time_utc": {
+          "title": "Time Utc",
+          "type": "string"
+        },
+        "magnitude": {
+          "maximum": 10,
+          "minimum": -2,
+          "title": "Magnitude",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon",
+        "event_id",
+        "time_utc",
+        "magnitude"
+      ],
+      "title": "Mainshock",
+      "type": "object"
+    },
+    "ObservationRef": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "valid_time_utc": {
+          "title": "Valid Time Utc",
+          "type": "string"
+        },
+        "available_at_utc": {
+          "title": "Available At Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "valid_time_utc",
+        "available_at_utc"
+      ],
+      "title": "ObservationRef",
+      "type": "object"
+    },
+    "OfficialAftershockForecast": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "official_aftershock_forecast",
+          "default": "official_aftershock_forecast",
+          "title": "Kind",
+          "type": "string"
+        },
+        "mainshock": {
+          "$ref": "#/$defs/Mainshock"
+        },
+        "provider_version": {
+          "title": "Provider Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceRecord"
+        },
+        "mainshock_source": {
+          "$ref": "#/$defs/SourceRecord"
+        },
+        "expires_at_utc": {
+          "title": "Expires At Utc",
+          "type": "string"
+        },
+        "region": {
+          "$ref": "#/$defs/AftershockRegion"
+        },
+        "windows": {
+          "items": {
+            "$ref": "#/$defs/AftershockWindow"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Windows",
+          "type": "array"
+        },
+        "earthquake_remaining_duration": {
+          "default": null,
+          "title": "Earthquake Remaining Duration",
+          "type": "null"
+        }
+      },
+      "required": [
+        "mainshock",
+        "provider_version",
+        "source",
+        "mainshock_source",
+        "expires_at_utc",
+        "region",
+        "windows"
+      ],
+      "title": "OfficialAftershockForecast",
+      "type": "object"
+    },
+    "OfficialEventForecast": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "official_event_forecast",
+          "default": "official_event_forecast",
+          "title": "Kind",
+          "type": "string"
+        },
+        "cyclone_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Cyclone Id",
+          "type": "string"
+        },
+        "storm_name": {
+          "title": "Storm Name",
+          "type": "string"
+        },
+        "provider_version": {
+          "title": "Provider Version",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceRecord"
+        },
+        "next_advisory_at_utc": {
+          "title": "Next Advisory At Utc",
+          "type": "string"
+        },
+        "initial_position": {
+          "$ref": "#/$defs/StormPoint"
+        },
+        "forecast_points": {
+          "items": {
+            "$ref": "#/$defs/StormPoint"
+          },
+          "maxItems": 30,
+          "minItems": 1,
+          "title": "Forecast Points",
+          "type": "array"
+        },
+        "site_wind_forecast": {
+          "default": null,
+          "title": "Site Wind Forecast",
+          "type": "null"
+        }
+      },
+      "required": [
+        "cyclone_id",
+        "storm_name",
+        "provider_version",
+        "source",
+        "next_advisory_at_utc",
+        "initial_position",
+        "forecast_points"
+      ],
+      "title": "OfficialEventForecast",
+      "type": "object"
+    },
+    "Persistence": {
+      "additionalProperties": false,
+      "properties": {
+        "horizon_hours": {
+          "maximum": 168,
+          "minimum": 1,
+          "title": "Horizon Hours",
+          "type": "integer"
+        },
+        "recorded_event_ongoing_probability": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Recorded Event Ongoing Probability",
+          "type": "number"
+        }
+      },
+      "required": [
+        "horizon_hours",
+        "recorded_event_ongoing_probability"
+      ],
+      "title": "Persistence",
+      "type": "object"
+    },
+    "ReferenceSite": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "source": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "inventory_vintage": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Inventory Vintage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lat",
+        "lon",
+        "id",
+        "name",
+        "source",
+        "inventory_vintage"
+      ],
+      "title": "ReferenceSite",
+      "type": "object"
+    },
+    "RemainingDuration": {
+      "additionalProperties": false,
+      "properties": {
+        "p10": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "P10"
+        },
+        "median": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Median"
+        },
+        "p90": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "P90"
+        }
+      },
+      "required": [
+        "p10",
+        "median",
+        "p90"
+      ],
+      "title": "RemainingDuration",
+      "type": "object"
+    },
+    "SourceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.-]{0,159}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "NHC",
+            "USGS"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "url": {
+          "maxLength": 700,
+          "title": "Url",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "issued_at_utc": {
+          "title": "Issued At Utc",
+          "type": "string"
+        },
+        "retrieved_at_utc": {
+          "title": "Retrieved At Utc",
+          "type": "string"
+        },
+        "available_at_utc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Available At Utc"
+        },
+        "vintage": {
+          "enum": [
+            "archive_capture",
+            "contemporaneous_capture"
+          ],
+          "title": "Vintage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "provider",
+        "url",
+        "sha256",
+        "issued_at_utc",
+        "retrieved_at_utc",
+        "vintage"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    },
+    "StormPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "valid_at_utc": {
+          "title": "Valid At Utc",
+          "type": "string"
+        },
+        "max_sustained_wind_kt": {
+          "maximum": 250,
+          "minimum": 0,
+          "title": "Max Sustained Wind Kt",
+          "type": "number"
+        },
+        "gust_kt": {
+          "anyOf": [
+            {
+              "maximum": 300,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gust Kt"
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phase"
+        }
+      },
+      "required": [
+        "lat",
+        "lon",
+        "valid_at_utc",
+        "max_sustained_wind_kt"
+      ],
+      "title": "StormPoint",
+      "type": "object"
+    },
+    "UnavailableForecast": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "unavailable",
+          "default": "unavailable",
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason_code": {
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "required_inputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Required Inputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "reason_code",
+        "reason"
+      ],
+      "title": "UnavailableForecast",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": "ml-event-outlooks-1.0.0",
+      "default": "ml-event-outlooks-1.0.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "site": {
+      "$ref": "#/$defs/ReferenceSite"
+    },
+    "as_of_utc": {
+      "title": "As Of Utc",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "available",
+        "partial",
+        "unavailable",
+        "not_applicable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "event_outlooks": {
+      "items": {
+        "$ref": "#/$defs/EventOutlook"
+      },
+      "title": "Event Outlooks",
+      "type": "array"
+    },
+    "work_authorization": {
+      "const": "outside_advisory_authority",
+      "default": "outside_advisory_authority",
+      "title": "Work Authorization",
+      "type": "string"
+    },
+    "affects_site_score": {
+      "const": false,
+      "default": false,
+      "title": "Affects Site Score",
+      "type": "boolean"
+    },
+    "affects_alerts_or_lightning_timer": {
+      "const": false,
+      "default": false,
+      "title": "Affects Alerts Or Lightning Timer",
+      "type": "boolean"
+    },
+    "unverified_worksite_hazards": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unverified Worksite Hazards",
+      "type": "array"
+    }
+  },
+  "required": [
+    "site",
+    "as_of_utc",
+    "status",
+    "event_outlooks"
+  ],
+  "title": "OutlookBatch",
+  "type": "object"
+}
