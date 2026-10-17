@@ -1,0 +1,133 @@
+{
+  "event_context": {
+    "event_id": "hypothetical-winter-storm:eia860m-IA-50932",
+    "event_type": "Winter Storm",
+    "event_status": "historical_replay",
+    "site_id": "eia860m-IA-50932",
+    "event_start_utc": "2026-10-17T01:18:48.564672+00:00",
+    "as_of_utc": "2026-10-17T07:18:48.564672Z",
+    "event_definition": "noaa_positive_continuous_recorded_interval",
+    "is_simulated": true,
+    "location": {
+      "lat": 41.573415,
+      "lon": -93.55774,
+      "region": "hypothetical activation, not a verified incident",
+      "spatial_match_quality": "region_only"
+    },
+    "confirmation": {
+      "source": "explicit hypothetical activation fixture",
+      "record_id": "fixture-activation-v1",
+      "confirmed_at": "2026-10-17T02:18:48.564672+00:00",
+      "available_at": "2026-10-17T02:18:48.564672+00:00",
+      "is_fixture": true
+    }
+  },
+  "site_context": {
+    "lat": 41.573415,
+    "lon": -93.55774,
+    "id": "eia860m-IA-50932",
+    "name": "Des Moines Wastewater Reclamation Fac",
+    "site_type": "representative_monitored_site",
+    "source": "EIA-860M August 2026; backend selection export",
+    "source_version": "b4b70abb4c217e8e2658c3bde7608a3d530e86a81279ccc572ced82a200e9f1c",
+    "is_fixture": false
+  },
+  "evidence": [],
+  "alerts": [
+    {
+      "id": "urn:oid:2.49.0.1.840.0.692330cf65e45ff4331b3b5379d1483d38d16efa.001.1",
+      "publisher": "NOAA NWS",
+      "event": "Freeze Warning",
+      "status": "Actual",
+      "message_type": "Update",
+      "sent": "2026-10-17T02:37:00Z",
+      "updated": "2026-10-17T02:37:00Z",
+      "effective": "2026-10-17T02:37:00Z",
+      "onset": "2026-10-17T06:00:00Z",
+      "expires": "2026-10-17T12:45:00Z",
+      "ends": "2026-10-17T14:00:00Z",
+      "available_at": "2026-10-17T07:18:13.524707Z",
+      "ingested_at": "2026-10-17T07:18:13.524707Z",
+      "source_version": "56f4b6dbeea8600bc6381559c9c98b302f792ce09f2a4fd515b69641fbe4bd8b",
+      "origin_url": "https://api.weather.gov/alerts",
+      "polygons": [],
+      "zone_ids": [
+        "https://api.weather.gov/zones/forecast/IAZ004",
+        "https://api.weather.gov/zones/forecast/IAZ005",
+        "https://api.weather.gov/zones/forecast/IAZ006",
+        "https://api.weather.gov/zones/forecast/IAZ007",
+        "https://api.weather.gov/zones/forecast/IAZ015",
+        "https://api.weather.gov/zones/forecast/IAZ016",
+        "https://api.weather.gov/zones/forecast/IAZ017",
+        "https://api.weather.gov/zones/forecast/IAZ023",
+        "https://api.weather.gov/zones/forecast/IAZ024",
+        "https://api.weather.gov/zones/forecast/IAZ025",
+        "https://api.weather.gov/zones/forecast/IAZ026",
+        "https://api.weather.gov/zones/forecast/IAZ027",
+        "https://api.weather.gov/zones/forecast/IAZ028",
+        "https://api.weather.gov/zones/forecast/IAZ033",
+        "https://api.weather.gov/zones/forecast/IAZ034",
+        "https://api.weather.gov/zones/forecast/IAZ035",
+        "https://api.weather.gov/zones/forecast/IAZ036",
+        "https://api.weather.gov/zones/forecast/IAZ037",
+        "https://api.weather.gov/zones/forecast/IAZ038",
+        "https://api.weather.gov/zones/forecast/IAZ039",
+        "https://api.weather.gov/zones/forecast/IAZ044",
+        "https://api.weather.gov/zones/forecast/IAZ045",
+        "https://api.weather.gov/zones/forecast/IAZ046",
+        "https://api.weather.gov/zones/forecast/IAZ047",
+        "https://api.weather.gov/zones/forecast/IAZ048",
+        "https://api.weather.gov/zones/forecast/IAZ049",
+        "https://api.weather.gov/zones/forecast/IAZ050",
+        "https://api.weather.gov/zones/forecast/IAZ057",
+        "https://api.weather.gov/zones/forecast/IAZ058",
+        "https://api.weather.gov/zones/forecast/IAZ059",
+        "https://api.weather.gov/zones/forecast/IAZ060",
+        "https://api.weather.gov/zones/forecast/IAZ061",
+        "https://api.weather.gov/zones/forecast/IAZ062",
+        "https://api.weather.gov/zones/forecast/IAZ070",
+        "https://api.weather.gov/zones/forecast/IAZ071",
+        "https://api.weather.gov/zones/forecast/IAZ072",
+        "https://api.weather.gov/zones/forecast/IAZ073",
+        "https://api.weather.gov/zones/forecast/IAZ074",
+        "https://api.weather.gov/zones/forecast/IAZ075",
+        "https://api.weather.gov/zones/forecast/IAZ081",
+        "https://api.weather.gov/zones/forecast/IAZ082",
+        "https://api.weather.gov/zones/forecast/IAZ083",
+        "https://api.weather.gov/zones/forecast/IAZ084",
+        "https://api.weather.gov/zones/forecast/IAZ085",
+        "https://api.weather.gov/zones/forecast/IAZ086",
+        "https://api.weather.gov/zones/forecast/IAZ092",
+        "https://api.weather.gov/zones/forecast/IAZ093",
+        "https://api.weather.gov/zones/forecast/IAZ094",
+        "https://api.weather.gov/zones/forecast/IAZ095",
+        "https://api.weather.gov/zones/forecast/IAZ096"
+      ],
+      "query_site_id": "eia860m-IA-50932",
+      "query_point": {
+        "lat": 41.5734,
+        "lon": -93.5577
+      },
+      "query_url": "https://api.weather.gov/alerts/active?point=41.5734,-93.5577&status=actual",
+      "references": [
+        "urn:oid:2.49.0.1.840.0.d92e566b954b78ba5596cbffad3ab589827da2ec.001.1"
+      ],
+      "severity": "Severe",
+      "certainty": "Likely",
+      "urgency": "Expected",
+      "is_fixture": false
+    }
+  ],
+  "reports": [],
+  "context_signals": [],
+  "lightning_replay": [],
+  "source_states": [
+    {
+      "provider": "NOAA NWS point alerts",
+      "state": "current",
+      "attempted": true,
+      "last_success_at": "2026-10-17T07:18:13.524707Z",
+      "reason": "1 notices; 0 parse errors; no absence/safety inference"
+    }
+  ]
+}

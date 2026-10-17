@@ -16,6 +16,14 @@
 - Current push starts from `origin/main` at `f4ee557`; PR #9 branch is preserved.
 - Initial checkpoint: 62 worker tests pass; no long ML jobs or uncommitted work recovered.
 - Main includes Rudra's NWS weather/flood ingestion; Cache additions stay in `ml/`.
+- Hazard checkpoint: 128 focused tests pass (66 new + 62 preserved worker checks).
+- New opt-in 2.1.0 composer adds native notices, controlled report contracts and worksite unknowns.
+- 146 hazard entries crosswalk all 54 raw NOAA labels and 18 FEMA groups; no new models.
+- Offline rehearsal: 31 scenarios, 50 reconciled backend-selected EIA identities, no network.
+- New captures: 553 national NWS notices, all 50 point queries successful (11 notice records).
+- Actual replay coverage: two sites with local weather, ten with qualified official notices.
+- Gauge/site transfers, trusted live reports/assets and local US-site ShakeMap remain unavailable.
+- Implementation checkpoint is ready to push; final full-suite/docs/PR work remains.
 - Review handoff names Rudra/Nick/Braydin dependencies; no merge into main is authorized here.
 
 ## Mission and boundaries
@@ -57,6 +65,10 @@
 - `ml/train.py`, `features.py`, `backtest.py`: shared duration core, grouped cutoffs.
 - `ml/monte_carlo.py`: offline sampling; production inference does not import it.
 - `ml/worker/schema.py`: WorkerOutlookRequest/WorkerOutlook, combined contract 2.0.0.
+- `ml/worker/comprehensive.py`: build_comprehensive_outlook; opt-in 2.1, 2.0 callable unchanged.
+- `ml/worker/comprehensive_schema.py`: ComprehensiveRequest/Outlook; explicit to_legacy adapter.
+- `ml/hazard_registry.json`, `ml/HAZARD_COVERAGE_AUDIT.md`: per-hazard maturity and sign-off.
+- `ml/hazard_rehearsal.py`: disconnected scenarios + 50-site acceptance, models provisioned separately.
 - `ml/worker/combined.py`: build_worker_outlook, build_for_backend_site, explanation_context.
 - `ml/worker/evidence.py`, `spatial.py`, `impacts.py`: as-of/unit/geometry gates and Layer B.
 - Site condition probabilities/confidence are null; no learned site target is validated.
