@@ -55,7 +55,7 @@ OutlookService = Annotated[EventOutlookService, Depends(get_event_outlook_servic
 @router.get("", response_model=list[SiteSummary])
 def list_sites(user: AuthenticatedUser, session: DbSession) -> list[SiteSummary]:
     query = select(db.Site).options(selectinload(db.Site.assigned_team))
-    visible = _visible_site_ids(session, user)
+    visible = visible_site_ids(session, user)
     if visible is not None:
         query = query.where(db.Site.id.in_(visible))
     sites = session.scalars(query).all()
@@ -79,7 +79,7 @@ def get_site(
     now: Now,
     outlooks: OutlookService,
 ) -> SiteDetail:
-    visible = _visible_site_ids(session, user)
+    visible = visible_site_ids(session, user)
     if visible is not None and site_id not in visible:
         raise HTTPException(status_code=403, detail="This site is not assigned to your team")
     site = session.scalar(
@@ -122,7 +122,7 @@ def _event_outlook(
     return None
 
 
-def _visible_site_ids(session: Session, user: CurrentUser) -> set[str] | None:
+def visible_site_ids(session: Session, user: CurrentUser) -> set[str] | None:
     """Sites the caller may read: None means every site."""
     if user.can(roles.READ_ALL_SITES):
         return None
@@ -245,6 +245,11 @@ def load_active_alerts(session: Session, site_id: str) -> list[Alert]:
         .where(db.Alert.site_id == site_id, db.Alert.state == AlertState.ACTIVE)
         .order_by(db.Alert.triggered_at.desc())
     ).all()
+    return alert_schemas(session, list(rows))
+
+
+def alert_schemas(session: Session, rows: list[db.Alert]) -> list[Alert]:
+    """Alert rows as API objects, each with its acknowledgements."""
     acks: dict[str, list[Acknowledgement]] = {}
     if rows:
         for ack in session.scalars(
