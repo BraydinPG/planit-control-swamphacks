@@ -2,6 +2,13 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Demo score and prediction failure fixes - 2026-10-17
+- Explicit Cache bug-fix assignment on `feature/cache-demo-score-prediction-fixes`, based on fetched main `0a0d5c8` (PR43/team/species work preserved). Authorized Rudra-path changes are in `docs/CROSS_SCOPE_CHANGES.md`; no scoring algorithm/weights, ML, Auth0, DB configuration or canonical schema changes.
+- `backend/scripts/generate_fixtures.py` calls existing `compute_score`: Everglades **6.1/10 high, rules-0.2**, from simulated lightning 3.0 + heat 1.11 + Flood Watch 1.0 + confirmed wildlife 1.0, rounded by the scorer. T069 weather inputs reused; no ML term. List/detail/both briefings agree; live completeness 0 is explicitly incomplete. See `docs/SITE_RISK_SCORING.md`.
+- Six outlook cards retain replay/historical/unavailable meanings and original EIA reference provenance. Frontend validates nested forecasts before rendering; backend contains conversion failures per event. Missing/duplicate outputs remain visible unavailable cards; score/alerts stay intact.
+- After updating, click **Reset demo** once at http://localhost:5177/ to replace old saved fixtures. It updates only `planit:frontend-demo:v1`. Browser reset/reload preserves a synthetic Auth0 storage sentinel; 6.1 and all six cards pass at 1440/390/320. No real session or remote data changed.
+- Verification: 865 backend, 297 ML + 10 diagnostic and 150 frontend tests pass; backend Ruff/format, frontend lint/TypeScript/build and Edge demo/mock checks pass. Six pinned artifacts and 16 offline preview cases verify. Existing Starlette and bundle-size warnings remain. No task checkboxes changed; signed-in Tiger Data/Auth0 acceptance remains separate.
+
 ## Site species context - 2026-10-17
 - Rudra branch `feature/rudra-species-context`: `GET /api/sites/{id}/species` for team sites only. USFWS IPaC (federal ESA listings whose range overlaps a 1 km square; regional context, never a sighting), USFWS critical habitat (final/proposed, clipped to 6 km, drawn on `SiteMap`), curated cited encounter guidance (`pending_review`), crew wildlife reports kept separate. Gemini only rewords facts; ungrounded lines fall back to a template.
 - Water moccasin is not federally listed, so IPaC never returns it; responses say so instead of inventing a row. State status unknown. No DB changes; in-memory 24 h cache.

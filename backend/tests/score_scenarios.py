@@ -493,7 +493,8 @@ def evaluation():
             path="frontend/src/fixtures/site-detail.json",
             archived_illustrative_score=detail.risk_score,
             recomputed_index=fixture_score.risk_score,
-            note="Archived illustrative display fixtures are unchanged; not rules-0.2 live scores.",
+            note="Simulated rules-0.2 fixture recomputed with the same algorithm; "
+            "not a live score or operational validation.",
         ),
         canonical_examples=examples,
     )
