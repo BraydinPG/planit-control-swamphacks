@@ -89,7 +89,7 @@ function NoticeWorkflow({
             setNotice(response.notice)
           }}
         >
-          Confirm potential hazard
+          Confirm for your organization
         </Action>
       )}
       {persona === 'supervisor' &&
@@ -97,8 +97,8 @@ function NoticeWorkflow({
         notice.confirmed_by !== principalId &&
         !notice.instruction_sent_at && (
           <p className="rounded-xl border border-dashed border-line-strong px-3 py-2.5 text-sm text-ink-2">
-            Only the supervisor who confirmed this hazard can send its
-            instruction.
+            Only the supervisor who confirmed this hazard for your
+            organization can send its instruction.
           </p>
         )}
       {persona === 'supervisor' &&
@@ -252,7 +252,7 @@ function InstructionEditor({
         disabled={!instruction.trim() || instruction.trim().length > 500}
         run={async () => sent(await client.instruct(notice.id, instruction))}
       >
-        Send approved instruction
+        Send to your organization's teams
       </Action>
     </div>
   )

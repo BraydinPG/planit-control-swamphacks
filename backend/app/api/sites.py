@@ -46,6 +46,7 @@ from app.schemas import (
     TeamRef,
 )
 from app.security import AuthenticatedUser, CurrentUser, membership_for, roles
+from app.services.notice_views import assessment_for, notice_view
 
 router = APIRouter(prefix="/api/sites", tags=["sites"])
 
@@ -362,35 +363,27 @@ def report_schema(r: db.CrewReport) -> CrewReport:
 def load_notices(
     session: Session, site: db.Site, *, viewer: CurrentUser | None = None
 ) -> list[HazardNotice]:
-    """Notices whose radius covers the site. Notices store coordinates, not a site ID."""
+    """Notices whose radius covers the site, as the site's organization assessed them.
+
+    Notices store coordinates, not a site ID. Each organization confirms for itself, so a
+    notice reads "confirmed" (with that organization's instruction) only once the site's
+    own organization confirmed it. A site without a team shows the viewer's organization.
+    """
     rows = session.scalars(
         select(db.HazardNotice).order_by(db.HazardNotice.created_at.desc())
     ).all()
     covering = [n for n in rows if _miles(site.lat, site.lon, n.lat, n.lon) <= n.radius_miles][
         :NOTICE_LIMIT
     ]
+    team = site.assigned_team
+    if team is not None:
+        organization_id = team.organization_id
+    else:
+        membership = membership_for(session, viewer) if viewer else None
+        organization_id = membership.organization_id if membership else None
     return [
-        HazardNotice(
-            id=n.id,
-            hazard_label=n.hazard_label,
-            source=n.source,
-            source_ref=n.source_ref,
-            lat=n.lat,
-            lon=n.lon,
-            radius_miles=n.radius_miles,
-            radius_source=n.radius_source,
-            status=n.status,
-            created_at=_aware(n.created_at),
-            confirmed_by=n.confirmed_by,
-            confirmed_at=_aware(n.confirmed_at) if n.confirmed_at else None,
-            suggested_instruction=(
-                n.suggested_instruction
-                if viewer and viewer.role == "supervisor" and viewer.sub == n.confirmed_by
-                else None
-            ),
-            instruction=n.instruction,
-            instruction_sent_at=_aware(n.instruction_sent_at) if n.instruction_sent_at else None,
-            evidence=n.evidence or [],
+        notice_view(
+            n, assessment_for(session, n.id, organization_id), viewer.sub if viewer else None
         )
         for n in covering
     ]

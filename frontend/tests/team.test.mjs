@@ -438,3 +438,86 @@ test('report photos load as an authorized blob from the live API', async () => {
   assert.equal(blob.size, 3)
   assert.deepEqual(calls, ['GET /api/reports/r%201/photo Bearer t'])
 })
+
+test('supervisors remove a member (demo and live)', async () => {
+  const demo = new DemoClient(() => 'supervisor', storage())
+  const [team] = (await demo.team()).teams
+  const [member] = team.members
+  await demo.removeMember(team.id, member.user_id)
+  const after = (await demo.team()).teams.find((t) => t.id === team.id)
+  assert.ok(!after.members.some((m) => m.user_id === member.user_id))
+  await assert.rejects(
+    () => demo.removeMember(team.id, member.user_id),
+    (e) => e.status === 404,
+  )
+  const calls = []
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(`${options.method} ${new URL(url).pathname}`)
+      return new Response(null, { status: 204 })
+    },
+  )
+  await api.removeMember('team-a', 'auth0|abc')
+  assert.deepEqual(calls, ['DELETE /api/teams/team-a/members/auth0%7Cabc'])
+})
+
+test('supervisor keys: create, list, revoke, and redeem (demo and live)', async () => {
+  const demo = new DemoClient(() => 'supervisor', storage())
+  const key = await demo.createSupervisorInvite()
+  assert.match(key.code, /^[A-Z2-9]{4}-[A-Z2-9]{4}$/)
+  assert.deepEqual(
+    (await demo.supervisorInvites()).map((k) => k.code),
+    [key.code],
+  )
+  await demo.revokeSupervisorInvite(key.code)
+  assert.deepEqual(await demo.supervisorInvites(), [])
+  await assert.rejects(
+    () => new DemoClient(() => 'crew', storage()).createSupervisorInvite(),
+    (e) => e.status === 403,
+  )
+  await assert.rejects(
+    () => demo.becomeSupervisor('ABCD-2345', 'X'),
+    (e) => e.status === 409,
+  )
+  const calls = []
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(
+        `${options.method ?? 'GET'} ${new URL(url).pathname} ${options.body ?? ''}`,
+      )
+      const path = new URL(url).pathname
+      if (path === '/api/onboarding/supervisor')
+        return Response.json({
+          role: 'supervisor',
+          organization_id: 'org:1',
+          organization_name: 'Gulf Line Co',
+          team_id: null,
+          team_name: null,
+          site_id: null,
+        })
+      if (options.method === 'DELETE')
+        return new Response(null, { status: 204 })
+      const invite = {
+        code: 'ABCD-2345',
+        created_at: '2026-10-18T00:00:00Z',
+        expires_at: '2026-10-25T00:00:00Z',
+      }
+      return Response.json(options.method === 'POST' ? invite : [invite])
+    },
+  )
+  assert.equal((await api.createSupervisorInvite()).code, 'ABCD-2345')
+  assert.equal((await api.supervisorInvites()).length, 1)
+  await api.revokeSupervisorInvite('ABCD-2345')
+  const account = await api.becomeSupervisor('abcd2345', 'Gulf Line Co')
+  assert.equal(account.organization_name, 'Gulf Line Co')
+  assert.deepEqual(calls, [
+    'POST /api/supervisor-invites ',
+    'GET /api/supervisor-invites ',
+    'DELETE /api/supervisor-invites/ABCD-2345 ',
+    'POST /api/onboarding/supervisor {"code":"abcd2345","organization_name":"Gulf Line Co"}',
+  ])
+})

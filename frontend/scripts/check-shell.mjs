@@ -436,10 +436,27 @@ try {
   const noticeId = await evaluate(
     "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
   )
+  await until(
+    () => evaluate(`document.querySelector('[data-report-id="${reportId}"]')!==null`),
+    'submitted demo photo report appears',
+  )
+  assert(
+    await evaluate("!document.body.innerText.includes('Review worksite notice') && !document.body.innerText.includes('Confirm potential hazard') && document.body.innerText.includes('Awaiting supervisor confirmation')"),
+    'Crew sees pending status without notice review or confirmation actions',
+  )
   assert(await evaluate("!document.body.innerText.includes('Confirm report')"))
   await reload('Reported present')
+  assert(
+    await evaluate("!document.body.innerText.includes('Review worksite notice')"),
+    'Reload must not expose the supervisor review link to crew',
+  )
   await click('Supervisor')
   await loaded('Needs your attention')
+  await hash('/supervisor/reports', 'Reported present')
+  assert(
+    await evaluate(`document.querySelector('[data-report-id="${reportId}"] a')?.getAttribute('href')==='#/supervisor/sites/site-demo-everglades'`),
+    'Supervisor retains the pending photo report notice review link',
+  )
   // The supervisor Overview lists what needs a decision; the map and list are on Worksites.
   await hash('/supervisor/sites', '55 locations')
   await until(
@@ -887,10 +904,18 @@ try {
       await evaluate("getComputedStyle(document.querySelector('[data-brand]')).backgroundColor==='rgba(0, 0, 0, 0)'&&document.querySelector('[data-brand]').getBoundingClientRect().width<=240"),
       'Sign-in logo stays transparent and smaller in dark mode',
     )
+    const signInAppearance = "(()=>{const panel=document.querySelector('[aria-labelledby=access-panel-title]');const button=panel.querySelector('button');const logo=panel.querySelector('[data-brand]');return {panelBackground:getComputedStyle(panel).backgroundColor,panelText:getComputedStyle(panel).color,buttonBackground:getComputedStyle(button).backgroundColor,buttonText:getComputedStyle(button).color,logoBackground:getComputedStyle(logo).backgroundColor,logoFilter:getComputedStyle(logo.querySelector('img')).filter}})()"
+    const darkPreferenceAppearance = await evaluate(signInAppearance)
+    assert.equal(darkPreferenceAppearance.panelBackground, 'rgb(255, 255, 255)', 'Original navy logo stays on a light sign-in panel even with dark OS preference')
+    assert.equal(darkPreferenceAppearance.logoBackground, 'rgba(0, 0, 0, 0)')
+    assert.equal(darkPreferenceAppearance.logoFilter, 'none', 'No recoloring, white halo or contrast plate is added to the logo')
+    assert.notEqual(darkPreferenceAppearance.panelText, darkPreferenceAppearance.panelBackground)
+    assert.notEqual(darkPreferenceAppearance.buttonText, darkPreferenceAppearance.buttonBackground)
     await screenshot('logo-sign-in-dark')
     await send('Emulation.setEmulatedMedia', {
       features: [{ name: 'prefers-color-scheme', value: 'light' }],
     })
+    assert.deepEqual(await evaluate(signInAppearance), darkPreferenceAppearance, 'Sign-in surface, text and button remain consistent with either OS preference')
     await screenshot('logo-sign-in-light')
     await evaluate('window.harness.reset()')
     await evaluate("window.harness.mount('loading')")
@@ -1025,10 +1050,22 @@ try {
     const created = await evaluate('window.harness.snapshot().reports[0]')
     assert.equal(created.review_status, 'pending')
     const mockNotice = created.notice_id
+    await until(
+      () => evaluate(`document.querySelector('[data-report-id="${created.id}"]')!==null`),
+      'submitted mock-live photo report appears',
+    )
+    assert(
+      await evaluate("!document.body.innerText.includes('Review worksite notice') && !document.body.innerText.includes('Confirm potential hazard') && document.body.innerText.includes('Awaiting supervisor confirmation')"),
+      'Live crew photo report must not offer supervisor notice review',
+    )
     await evaluate("window.harness.mount('supervisor')")
     await hash(
       '/supervisor/sites/site-demo-everglades',
       'Hazards and supervisor instructions',
+    )
+    assert(
+      await evaluate(`document.querySelector('[data-report-id="${created.id}"] a')?.getAttribute('href')==='#/supervisor/sites/site-demo-everglades'`),
+      'Live supervisor retains the photo report notice review link',
     )
     assert(
       await evaluate(

@@ -1056,17 +1056,18 @@ export function ReportForm({ site }: { site: SiteSummary }) {
                 className="size-16 shrink-0 rounded-lg object-cover ring-1 ring-line-strong"
               />
             )}
-            <p className="min-w-0 text-sm text-ink-2">
-              {photo.name} selected · {Math.ceil(photo.size / 1024)} KB. Allowed
+            <p className="min-w-0 flex-1 text-sm text-ink-2">
+              <span className="break-all">{photo.name}</span> selected · {Math.ceil(photo.size / 1024)} KB. Allowed
               JPEG/PNG/WebP, maximum 5 MB.
             </p>
             <button
               type="button"
-              className={control}
+              className={`${control} w-20 shrink-0 px-2! text-xs! leading-tight [overflow-wrap:normal]`}
+              aria-label="Remove image"
               disabled={busy}
               onClick={() => choosePhoto(null)}
             >
-              Remove image
+              <span className="whitespace-nowrap">Remove<br />{' '}image</span>
             </button>
           </div>
         )}
@@ -1464,12 +1465,14 @@ function ReportCard({ report, compact = false }: { report: CrewReport; compact?:
           <p className="min-w-0 flex-1">
             Awaiting supervisor confirmation in the worksite's hazard notices.
           </p>
-          <a
-            className={control}
-            href={`#/${persona}/sites/${encodeURIComponent(report.site_id)}`}
-          >
-            Review worksite notice
-          </a>
+          {persona === 'supervisor' && (
+            <a
+              className={control}
+              href={`#/supervisor/sites/${encodeURIComponent(report.site_id)}`}
+            >
+              Review worksite notice
+            </a>
+          )}
         </div>
       )}
       <p className="text-sm text-muted">

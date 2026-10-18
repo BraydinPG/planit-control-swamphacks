@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 
-from pydantic import field_validator
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.security.roles import DEFAULT_ROLES_CLAIM
@@ -16,6 +16,10 @@ class AuthSettings(BaseSettings):
     auth0_roles_claim: str = DEFAULT_ROLES_CLAIM
     # Local-only development bypass. Never enable in a deployed environment.
     dev_auth_bypass: bool = False
+    # Machine-to-machine app for the Auth0 Management API, with only read:roles and
+    # create:role_members. Used to give a new supervisor their role (auth/SETUP.md).
+    auth0_mgmt_client_id: str | None = None
+    auth0_mgmt_client_secret: SecretStr | None = None
 
     @field_validator("auth0_domain", "auth0_audience", mode="before")
     @classmethod
@@ -32,6 +36,15 @@ class AuthSettings(BaseSettings):
     @property
     def configured(self) -> bool:
         return bool(self.auth0_domain and self.auth0_audience)
+
+    @property
+    def management_configured(self) -> bool:
+        return bool(
+            self.auth0_domain
+            and self.auth0_mgmt_client_id
+            and self.auth0_mgmt_client_secret
+            and self.auth0_mgmt_client_secret.get_secret_value()
+        )
 
     @property
     def issuer(self) -> str:

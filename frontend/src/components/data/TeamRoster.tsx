@@ -9,6 +9,7 @@ import type {
 } from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { ApiError } from '../../api/contracts'
+import { useAuth } from '../../auth'
 import { formatTimestamp } from '../../presentation/display'
 import { Icon } from '../shell/Icon'
 import {
@@ -34,10 +35,22 @@ export function TeamPage() {
   const { client } = useApplication()
   const result = useResource(
     'team',
-    useCallback(() => Promise.all([client.team(), client.sites()]), [client]),
+    useCallback(async () => {
+      // A supervisor account without an organization starts one with a key.
+      if (!(await client.me()).organization_id)
+        return { linked: false as const }
+      const [org, sites] = await Promise.all([client.team(), client.sites()])
+      return { linked: true as const, org, sites }
+    }, [client]),
   )
   if (!result.data) return <LoadState error={result.error} />
-  const [org, sites] = result.data
+  if (!result.data.linked)
+    return (
+      <div className="pc-enter mx-auto max-w-md">
+        <StartOrganization />
+      </div>
+    )
+  const { org, sites } = result.data
   // A site has at most one team, so new or moved teams pick from sites without one.
   const taken = new Set(org.teams.map((t) => t.site_id))
   const free = sites.filter((s) => !s.assigned_team && !taken.has(s.id))
@@ -53,7 +66,167 @@ export function TeamPage() {
           No teams in this organization yet. Add one above.
         </p>
       )}
+      <SupervisorKeys />
     </div>
+  )
+}
+
+/** One-use keys that let a new account become a supervisor of its own organization. */
+function SupervisorKeys() {
+  const { client } = useApplication()
+  const keys = useResource(
+    'supervisor-invites',
+    useCallback(() => client.supervisorInvites(), [client]),
+  )
+  const change = useTeamChange()
+  return (
+    <section className={`${card} space-y-3 p-5`} aria-labelledby="sup-keys">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="kicker" id="sup-keys">
+            Invite a supervisor
+          </p>
+          <p className="text-sm text-muted">
+            A key lets one new account start its own organization as a
+            supervisor. Each key works once and expires after 7 days.
+          </p>
+        </div>
+        <button
+          type="button"
+          className={control}
+          disabled={change.busy}
+          onClick={() => void change.run(() => client.createSupervisorInvite())}
+        >
+          New supervisor key
+        </button>
+      </div>
+      {keys.data?.length ? (
+        <ul
+          className="divide-y divide-line"
+          aria-label="Active supervisor keys"
+        >
+          {keys.data.map((k) => (
+            <li
+              key={k.code}
+              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
+            >
+              <span className="font-mono text-lg font-bold tracking-[0.15em]">
+                {k.code}
+              </span>
+              <span className="text-sm text-muted">
+                Expires {day(k.expires_at)}
+              </span>
+              <button
+                type="button"
+                className={control}
+                disabled={change.busy}
+                onClick={() =>
+                  void change.run(() => client.revokeSupervisorInvite(k.code))
+                }
+                aria-label={`Revoke supervisor key ${k.code}`}
+              >
+                Revoke
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : keys.error ? (
+        <LoadState error={keys.error} />
+      ) : (
+        <p className="text-sm text-ink-2">No active supervisor keys.</p>
+      )}
+      {change.message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {change.message}
+        </p>
+      )}
+    </section>
+  )
+}
+
+/** Redeem a supervisor key and name the new organization, then sign in again so the
+ * new role reaches this browser. */
+function StartOrganization() {
+  const { client } = useApplication()
+  const auth = useAuth()
+  const [code, setCode] = useState('')
+  const [name, setName] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+  async function submit(event: FormEvent) {
+    event.preventDefault()
+    if (busy) return
+    setBusy(true)
+    setMessage('')
+    try {
+      await client.becomeSupervisor(code, name.trim())
+      await auth.login({ returnTo: window.location.pathname })
+    } catch (e) {
+      setMessage(
+        e instanceof ApiError && e.detail
+          ? e.detail
+          : e instanceof Error
+            ? e.message
+            : 'Supervisor sign-up is unavailable',
+      )
+      setBusy(false)
+    }
+  }
+  return (
+    <form
+      onSubmit={submit}
+      aria-label="Start an organization"
+      className={`${card} space-y-4 p-5`}
+    >
+      <div>
+        <p className="kicker mb-1">Supervisor</p>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Start an organization
+        </h2>
+        <p className="mt-1 text-sm text-ink-2">
+          Use the supervisor key another supervisor gave you, then name your
+          organization. You'll add teams and sites next.
+        </p>
+      </div>
+      <label className={labelText}>
+        Supervisor key
+        <input
+          className={`${field} min-h-14 text-center font-mono text-2xl font-bold uppercase tracking-[0.2em]`}
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          maxLength={9}
+          placeholder="XXXX-XXXX"
+          required
+        />
+      </label>
+      <label className={labelText}>
+        Organization name
+        <input
+          className={field}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={80}
+          required
+        />
+      </label>
+      <button
+        type="submit"
+        className={primary + big}
+        disabled={
+          busy || !name.trim() || code.replace(/[^A-Za-z0-9]/g, '').length !== 8
+        }
+      >
+        {busy ? 'Setting up…' : 'Become a supervisor'}
+      </button>
+      {message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {message}
+        </p>
+      )}
+    </form>
   )
 }
 
@@ -326,6 +499,79 @@ function ManageTeam({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
   )
 }
 
+/** One crew member, with a two-step Remove (they can rejoin with a new code). */
+function MemberRow({ team, member }: { team: TeamRoster; member: TeamMember }) {
+  const { client } = useApplication()
+  const { busy, message, run } = useTeamChange()
+  const [confirming, setConfirming] = useState(false)
+  return (
+    <li className="space-y-2 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-semibold [overflow-wrap:anywhere]">
+            {display(member)}
+          </p>
+          {member.name && member.email && (
+            <p className="truncate text-sm text-ink-2">{member.email}</p>
+          )}
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-3">
+          <span className="text-sm text-muted">
+            {member.joined_at
+              ? `Joined ${day(member.joined_at)}`
+              : 'Added by admin'}
+          </span>
+          {!confirming && (
+            <button
+              type="button"
+              className={control}
+              onClick={() => setConfirming(true)}
+              aria-label={`Remove ${display(member)} from ${team.name}`}
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+      {confirming && (
+        <div
+          role="group"
+          aria-label={`Confirm removing ${display(member)}`}
+          className="flex flex-wrap items-center gap-3 rounded-xl border border-line-strong p-3"
+        >
+          <p className="min-w-0 flex-1 text-sm">
+            Remove {display(member)} from {team.name}? Their reports stay on
+            record, and they can rejoin with a new join code.
+          </p>
+          <button
+            type="button"
+            className={primary}
+            disabled={busy}
+            onClick={() =>
+              void run(() => client.removeMember(team.id, member.user_id))
+            }
+          >
+            {busy ? 'Removing…' : 'Remove'}
+          </button>
+          <button
+            type="button"
+            className={control}
+            disabled={busy}
+            onClick={() => setConfirming(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      {message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {message}
+        </p>
+      )}
+    </li>
+  )
+}
+
 function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
   const { client } = useApplication()
   return (
@@ -365,22 +611,7 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           aria-label={`${team.name} members`}
         >
           {team.members.map((m) => (
-            <li
-              key={m.user_id}
-              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
-            >
-              <div className="min-w-0">
-                <p className="font-semibold [overflow-wrap:anywhere]">
-                  {display(m)}
-                </p>
-                {m.name && m.email && (
-                  <p className="truncate text-sm text-ink-2">{m.email}</p>
-                )}
-              </div>
-              <span className="shrink-0 text-sm text-muted">
-                {m.joined_at ? `Joined ${day(m.joined_at)}` : 'Added by admin'}
-              </span>
-            </li>
+            <MemberRow key={m.user_id} team={team} member={m} />
           ))}
         </ul>
       ) : (
@@ -489,47 +720,61 @@ export function JoinTeam() {
     }
   }
   return (
-    <form
-      onSubmit={submit}
-      aria-label="Join your team"
-      className={`${card} mx-auto max-w-md space-y-4 p-5`}
-    >
-      <div>
-        <p className="kicker mb-1">Join your team</p>
-        <h2 className="text-2xl font-bold tracking-tight">
-          Enter your join code
-        </h2>
-        <p className="mt-1 text-sm text-ink-2">
-          Your supervisor gives you an 8-character code, like ABCD-2345.
+    <div className="pc-enter space-y-4">
+      <div className="mx-auto max-w-3xl">
+        <h1 className="text-2xl font-bold tracking-tight">
+          Welcome to FORESITE
+        </h1>
+        <p className="mt-1 text-ink-2">
+          Choose how you'll use it. Crew join a team with a join code;
+          supervisors start their own organization with a supervisor key.
         </p>
       </div>
-      <label className={labelText}>
-        Join code
-        <input
-          className={`${field} min-h-14 text-center font-mono text-2xl font-bold uppercase tracking-[0.2em]`}
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          autoComplete="off"
-          autoCapitalize="characters"
-          spellCheck={false}
-          maxLength={9}
-          placeholder="XXXX-XXXX"
-          required
-        />
-      </label>
-      <button
-        type="submit"
-        className={primary + big}
-        disabled={busy || code.replace(/[^A-Za-z0-9]/g, '').length !== 8}
-      >
-        {busy ? 'Joining…' : 'Join team'}
-      </button>
-      {message && (
-        <p role="alert" className="text-sm font-semibold text-stop-text">
-          {message}
-        </p>
-      )}
-    </form>
+      <div className="mx-auto grid max-w-3xl gap-4 @3xl:grid-cols-2">
+        <form
+          onSubmit={submit}
+          aria-label="Join your team"
+          className={`${card} space-y-4 p-5`}
+        >
+          <div>
+            <p className="kicker mb-1">Crew member</p>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Enter your join code
+            </h2>
+            <p className="mt-1 text-sm text-ink-2">
+              Your supervisor gives you an 8-character code, like ABCD-2345.
+            </p>
+          </div>
+          <label className={labelText}>
+            Join code
+            <input
+              className={`${field} min-h-14 text-center font-mono text-2xl font-bold uppercase tracking-[0.2em]`}
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              autoComplete="off"
+              autoCapitalize="characters"
+              spellCheck={false}
+              maxLength={9}
+              placeholder="XXXX-XXXX"
+              required
+            />
+          </label>
+          <button
+            type="submit"
+            className={primary + big}
+            disabled={busy || code.replace(/[^A-Za-z0-9]/g, '').length !== 8}
+          >
+            {busy ? 'Joining…' : 'Join team'}
+          </button>
+          {message && (
+            <p role="alert" className="text-sm font-semibold text-stop-text">
+              {message}
+            </p>
+          )}
+        </form>
+        <StartOrganization />
+      </div>
+    </div>
   )
 }
 

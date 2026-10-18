@@ -8,7 +8,7 @@ Tiger Data and identity on Auth0. Crew photos go to Vultr Object Storage.
 |---|---|
 | Server | Vultr Cloud Compute `foresite`, Atlanta, shared CPU, 2 vCPU / 4 GB, Ubuntu 24.04 |
 | Firewall | Vultr group `foresite-web` (22, 80, 443) plus ufw on the server |
-| Address | `https://64-177-53-1.sslip.io` (sslip.io name for the IP; add a custom domain below) |
+| Address | `https://foresiteoperations.org` and `www.` (GoDaddy A/CNAME records, set up by Cache); `https://64-177-53-1.sslip.io` stays as a backup |
 | Photos | Vultr Object Storage `foresite-photos` (Atlanta), private bucket `foresite-photos` |
 | Backend | `/srv/foresite/app`, venv `/srv/foresite/venv` (Python 3.14 via uv), unit `foresite-api` |
 | Frontend | `/srv/foresite/frontend` (Vite build, live API, same origin) |

@@ -161,7 +161,7 @@ Adapter rules:
 - `POST /api/hazards/{id}/instruction`
 - `GET /api/sites/{id}/briefing`
 - `GET /api/briefings`
-- `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `PATCH /api/organization`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}` (team onboarding and management)
+- `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `PATCH /api/organization`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}`, `DELETE /api/teams/{id}/members/{user_id}`, `POST /api/onboarding/supervisor`, `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}` (team onboarding and management)
 - `GET /api/sites/{id}/species` (read-only species context for team sites; see `docs/SPECIES_CONTEXT.md`)
 
 These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Rudra consumes these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
@@ -278,7 +278,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Store and serve the final score from Cache's risk algorithm (T051A) through `services/scoring.py` and the site routes. The conditional ML outlook stays out of the score.
 - Implement crew reports, review state, acknowledgements, and audit events. Store photos through your photo storage helper in `backend/app/storage/` (T052): Vultr Object Storage when configured, and a private local directory in development. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
 - Call Braydin’s radius function for that notice. If it reports Gemini unresponsive or an invalid radius, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate. Do not call Gemini from route or rule files.
-- Let any supervisor who received the notice confirm the hazard. Call Braydin’s instruction function, let the confirming supervisor edit the suggestion, and send that final text to every team inside the stored radius.
+- Each organization inside the radius assesses the notice for itself (`notice_assessments`): a notified supervisor confirms for their own organization, edits Braydin's suggested instruction, and sends it to that organization's teams inside the stored radius. Only the reporting organization's confirmation confirms the crew report.
 - The reporting organization’s supervisor still reviews a report that no hazard is present. Gemini enrichment stays a suggestion until that review.
 - Own all FastAPI routes, including Gemini routes and router registration. Import Braydin’s Auth0 dependencies and protect routes according to the role policy in `spec.md`.
 - Add seed/demo data, health check, focused backend tests, and README.
@@ -298,12 +298,13 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 | Read all sites, assigned teams, and the full map | No | Yes |
 | Review a report that no hazard is present | No | Own organization only |
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
-| Confirm a potential hazard from a received notice | No | Any notified supervisor |
-| Edit and send the instruction for that hazard | No | The confirming supervisor |
+| Confirm a potential hazard from a received notice | No | A notified supervisor, for their own organization |
+| Edit and send the instruction for that hazard | No | The supervisor who confirmed it for their organization (reaches only its teams) |
 | Read organization-wide briefings | Own organization only | Own organization only |
-| Join a team with a join code | Only when on no team yet | No (linked by an administrator) |
+| Join a team with a join code | Only when on no team yet | No |
+| Start an organization with a supervisor key | Only when in no organization yet (becomes its supervisor) | Create and revoke keys |
 | See the team roster; create and revoke join codes | No | Own organization only |
-| Add, rename, move, or remove teams | No | Own organization only |
+| Add, rename, move, or remove teams; remove a team member | No | Own organization only |
 
 The backend is the authority for permissions. Frontend guards improve UX but do not replace API checks.
 
@@ -335,7 +336,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 - Crew can report a broken electrical pole, downed line, or on-site fire. These hazards come only from crew reports.
 - Crew can acknowledge alerts and submit a photo report that says whether a hazard is present.
 - A detected hazard or a crew member marking a hazard present sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius.
-- Any notified supervisor can confirm it. Teams inside that radius then receive the instruction that supervisor accepted or edited.
+- Each notified organization's supervisor confirms it for their organization. That organization's teams inside the radius then receive the instruction that supervisor accepted or edited.
 - A supervisor sees the full map and every location with its assigned team, occupied locations first, and makes the final call on that organization’s reports that no hazard is present.
 - A confirmed flood shows its expected remaining duration to crew and supervisors in plain words, labeled as an estimate, never an all-clear.
 - Gemini briefings cite supplied evidence, state unknowns, validate against schemas, and fall back safely. Gemini never explains or interprets the hazard score.

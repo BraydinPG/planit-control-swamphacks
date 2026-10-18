@@ -58,6 +58,17 @@ LIMITS = [
     "remain unverified.",
 ]
 UNIDENTIFIED_FLOOD = "Flooding (category not identified)"
+# NOAA event types in Cache's registry (ml/reports/multidisaster/registry.json) that a
+# notice can name directly. The adapter decides whether each is supported.
+WEATHER_EVENT_TYPES = (
+    "High Wind",
+    "Strong Wind",
+    "Heavy Rain",
+    "Winter Storm",
+    "Ice Storm",
+    "Heavy Snow",
+    "Heat Index Exceedance",
+)
 _ID = re.compile(r"[^A-Za-z0-9:_.-]")
 
 
@@ -154,6 +165,10 @@ def _classify(
             source.source_ref if source and source.hazard_type == HazardType.EARTHQUAKE else None
         )
         return "Earthquake", quake
+    # Weather events the multi-event models cover keep their exact NOAA names.
+    for name in WEATHER_EVENT_TYPES:
+        if label == name.casefold():
+            return name, None
     return notice.hazard_label.strip().capitalize() or "Unknown hazard", None
 
 

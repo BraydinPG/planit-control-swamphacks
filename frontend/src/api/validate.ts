@@ -6,6 +6,7 @@ import type {
   HazardNotice,
   HazardConfirmResponse,
   JoinCode,
+  SupervisorInvite,
   OrganizationTeams,
   TeamRoster,
   SiteSpeciesContext,
@@ -72,6 +73,17 @@ export function validateJoinCode(v: unknown): JoinCode {
   )
     throw new ApiError(502, 'Invalid join code response')
   return v as unknown as JoinCode
+}
+export function validateSupervisorInvite(v: unknown): SupervisorInvite {
+  if (
+    !record(v) ||
+    !text(v.code) ||
+    !codeShape.test(v.code) ||
+    !date(v.created_at) ||
+    !date(v.expires_at)
+  )
+    throw new ApiError(502, 'Invalid supervisor key response')
+  return v as unknown as SupervisorInvite
 }
 export function validateTeamRoster(v: unknown): TeamRoster {
   if (

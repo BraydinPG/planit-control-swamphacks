@@ -13,6 +13,7 @@ import type {
   CrewReport,
   HazardNotice,
   JoinCode,
+  SupervisorInvite,
   OrganizationTeams,
   ReportCreate,
   ReportReview,
@@ -527,6 +528,33 @@ export class DemoClient implements Client {
     for (const t of this.roster.teams)
       t.join_codes = t.join_codes.filter((c) => c.code !== code)
   }
+  private invites: SupervisorInvite[] = []
+  async supervisorInvites() {
+    this.supervisor()
+    const now = this.now()
+    return clone(this.invites.filter((i) => Date.parse(i.expires_at) > now))
+  }
+  async createSupervisorInvite() {
+    this.supervisor()
+    const now = this.now()
+    const invite: SupervisorInvite = {
+      code: joinCode(),
+      created_at: new Date(now).toISOString(),
+      expires_at: new Date(now + 7 * 24 * 3600 * 1000).toISOString(),
+    }
+    this.invites.unshift(invite)
+    return clone(invite)
+  }
+  async revokeSupervisorInvite(code: string) {
+    this.supervisor()
+    this.invites = this.invites.filter((i) => i.code !== code)
+  }
+  async becomeSupervisor(): Promise<Account> {
+    throw new ApiError(
+      409,
+      'Simulated demo: preview accounts already have an organization. Supervisor keys work with a live sign-in.',
+    )
+  }
   private freeSite(siteId: string | null | undefined, teamId: string | null) {
     if (!siteId) return null
     const site = this.state.sites.find((s) => s.id === siteId)
@@ -584,6 +612,13 @@ export class DemoClient implements Client {
         detail: "Move or remove this team's members first.",
       })
     this.roster.teams = this.roster.teams.filter((t) => t.id !== id)
+  }
+  async removeMember(teamId: string, userId: string) {
+    this.supervisor()
+    const team = this.roster.teams.find((t) => t.id === teamId)
+    if (!team || !team.members.some((m) => m.user_id === userId))
+      throw new ApiError(404, "That person isn't on this team")
+    team.members = team.members.filter((m) => m.user_id !== userId)
   }
   async join(): Promise<Account> {
     throw new ApiError(
