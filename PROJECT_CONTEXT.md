@@ -223,8 +223,8 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Verification on the tree merged with main 5d42c9c: 175 frontend tests, lint, TypeScript/build, full `check-shell.mjs` (1440/390/320, no browser exceptions) and 954 backend tests pass.
 
 ## Alert notifications and titles - 2026-10-18
-- User-authorized (Rudra): a top-right notification appears when an alert starts (red; orange for heat) with a View alerts link, and a green "<title> is over" notification when the server clears it (auto-dismisses after 10 s). `AlertNotifier` polls `client.alerts()` every 30 s and on each refresh, and remembers announced alerts in sessionStorage so reloads don't repeat them. It only reports server state; it never clears or creates an alert.
-- Titles: lightning reads "Stop work alert - Lightning" with the strike distance and time; other rules read "<Event> advisory" (`presentation/alerts.ts`). Heat advisories use orange (`--pc-warn`) on the card and notification; all other alerts keep the shared red.
+- Removed (user-authorized, Rudra): the top-right alert start/end pop-up notifications (`AlertNotifier`) are gone. Alerts show only on the alert cards and the Alerts page.
+- Titles: lightning reads "Stop work alert - Lightning" with the strike distance and time; other rules read "<Event> advisory" (`presentation/alerts.ts`). Heat advisories use orange (`--pc-warn`) on the card; all other alerts keep the shared red.
 - Verification: 177 frontend tests, lint, TypeScript/build and full `check-shell.mjs` (new end/start notification steps; 1440/390/320, no browser exceptions) pass.
 ## Always-dark theme - 2026-10-18
 - User-authorized (Rudra): the whole site, sign-in included, is always dark (no toggle, no OS switch). `frontend/src/index.css` holds one dark `--pc-*` palette with `color-scheme: dark`; text tokens pass 4.5:1 on bg/surface/surface-2. New tokens: `accent-fill` (+hover) and `ok-fill` carry white text; `accent` and `ok` are the bright text/border colors; `control`/`control-hover` for secondary buttons. Use `bg-ok-fill`/`bg-accent-fill` under white text, never `bg-ok`/`bg-accent`.
