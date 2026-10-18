@@ -53,6 +53,7 @@ import { RiskBadge, RiskShape } from '../components/data/Risk'
 import { LocationSearch } from '../components/data/LocationSearch'
 import { evidenceOf } from '../components/data/evidence'
 import { Masonry } from '../components/data/Masonry'
+import { CountUp } from '../components/data/CountUp'
 import { Icon, type IconName } from '../components/shell/Icon'
 import {
   displayLabel,
@@ -343,7 +344,7 @@ function Stat({
       <RiskShape kind={shape} className="mt-1.5 size-4" />
       <span className="leading-tight">
         <span className="block text-3xl font-bold tabular-nums tracking-tight">
-          {value}
+          <CountUp value={value} />
         </span>
         <span className="text-sm text-ink-2">{label}</span>
         {onToggle && (
