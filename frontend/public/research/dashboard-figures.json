@@ -1,0 +1,507 @@
+{
+  "schema_version": "dashboard-figures-1",
+  "visible_figures": 12,
+  "original_figures_unchanged": [
+    "monte-carlo",
+    "backtest",
+    "data-sources"
+  ],
+  "dashboard_sha256": "69b1182a468ffb32e03afb7f7355dd6992b1342320cbdab2182f7931f12c3124",
+  "holdout_sha256": "7ce188d87eb5599ffaf0bf61f1ba3442108d449a50267feb9b956a574644201e",
+  "source_hashes": [
+    {
+      "path": "ml/reports/purged_v2/backtest_metrics.json",
+      "sha256": "6d618257306e1ed0afc40f8214b3e3d458ac357e5bb7e5c3b0994d9147b5a430"
+    },
+    {
+      "path": "ml/reports/purged_v2/monte_carlo_summary.json",
+      "sha256": "b9e04609bb19b593a32c45c1c833df39a44eccd177bcb8aafa1d7e901c204bee"
+    },
+    {
+      "path": "ml/reports/purged_v2/benchmark.json",
+      "sha256": "e9ef8885d9de6d120bbbd081afc2fd4382a4126b49b2ab187fe46a72b2f6e072"
+    },
+    {
+      "path": "ml/reports/multidisaster/registry.json",
+      "sha256": "2f3e3d5ff209a5d23110ab115df503885b7337781e90ac081a2c8c0e73f71571"
+    },
+    {
+      "path": "ml/reports/multidisaster/examples.json",
+      "sha256": "d5b0ce4c4d98a3c55984787b78888bfe814254263eb968347d90901bde523b95"
+    },
+    {
+      "path": "ml/reports/multidisaster/runtime_checks.json",
+      "sha256": "7c23cbe0c1138eaa8b0e60ce2675f074ad7eb504bbb22e5bb0d524b6ff90c0e3"
+    },
+    {
+      "path": "ml/fixtures/active_flood.json",
+      "sha256": "21ee3e5cfa7b59a19a5d9abec4feaf2fc3fd53050d4dbc8d45ae0e389b7ef9ed"
+    },
+    {
+      "path": "ml/train.py",
+      "sha256": "7d7cc00bfbc3fafbe3851e9691b13b5ca266661a710848002f1f279a89ed1433"
+    },
+    {
+      "path": "ml/monte_carlo.py",
+      "sha256": "47b67dcf13fb047f9972c7e1c6ce991dbec5b6e88876f196a0e3fc1331a8f5a9"
+    },
+    {
+      "path": "ml/reports/multidisaster/flash_flood.json",
+      "sha256": "23ffe42c295c8dd3137722daf04c55ae89ee6d24d468dea1dfd5e701285f8814"
+    },
+    {
+      "path": "ml/reports/multidisaster/high_wind.json",
+      "sha256": "3382893c0e4e4a18f89069f41d05be233acdcbc8493d8749bed6a11ace8d7ffd"
+    },
+    {
+      "path": "ml/reports/multidisaster/heavy_rain.json",
+      "sha256": "ab6b6cca4a9b08848cfd4b1df636658bc119cd1ac625c79c06688d36307df3fb"
+    },
+    {
+      "path": "ml/reports/multidisaster/winter_storm.json",
+      "sha256": "a07742d0f535bbeefc763a3f3a3cd5ba5f58869c5aa0ebe20aca4f6a8a87b4bc"
+    },
+    {
+      "path": "ml/reports/multidisaster/heat_index_exceedance.json",
+      "sha256": "b656b4377f8a20eee3079cfbf7d523c04869c0532fbec0d2ea4b291d2e5263da"
+    },
+    {
+      "path": "ml/features.py",
+      "sha256": "e8266f21e96d6e0eb8f5e8be1c694e7d1d576923ebeefe8c80970edd3afcb161"
+    },
+    {
+      "path": "ml/events.py",
+      "sha256": "666c417d2729903ff715f9c6b297c78d6865512b2ec048409b86bbeb336d3ebf"
+    },
+    {
+      "path": "ml/backtest.py",
+      "sha256": "e06ffe2373ada1f5d7e652da8361c365a01b3d5173d5011c6c981667db107e4e"
+    },
+    {
+      "path": "ml/reports/source_manifest.json",
+      "sha256": "54fdeb6e2c1f865603702d7ffb516eb026617e028596fecab7346755d4ecb5ab"
+    },
+    {
+      "path": "ml/model_reference.json",
+      "sha256": "93a7385abc8d5d0966bb7d6182eb0ae259a6c4e3e8f4dc3e621ff99957f51a4c"
+    },
+    {
+      "path": "ml/reports/multidisaster/strong_wind.json",
+      "sha256": "75f04918e7e8bf5e0e14f6591ab2f3252f3b2441ca8fce4a44427f234b243454"
+    },
+    {
+      "path": "ml/reports/multidisaster/ice_storm.json",
+      "sha256": "6f4a0334cb34b4a6c9d8cf450bfd588799987153459bbd5a3bc85227e78faa5e"
+    },
+    {
+      "path": "ml/reports/multidisaster/heavy_snow.json",
+      "sha256": "380add68cf3fd597311e5809506b2067abd19667b1293d2a899746ac05c119fb"
+    },
+    {
+      "path": "ml/reports/multidisaster/hurricane_trend.json",
+      "sha256": "f796bb64f0f0cb97e443a5efb7f08b829bdcb6b83823224618b1d46fc74c683b"
+    }
+  ],
+  "figures": [
+    {
+      "file": "cohort.svg",
+      "sha256": "d5dae9046d0ac79a8dfe1f9a95af0d5cf94d98b0d5314134c37d65791861fb1d"
+    },
+    {
+      "file": "cohort-mobile.svg",
+      "sha256": "0b30afe7234e99eba54dafe196f8c43dd79a16cd47c717ad17298e4cf81a1f1e"
+    },
+    {
+      "file": "survival.svg",
+      "sha256": "7eec050ebb2d467b4f2327f22019f1a9cd7b662a125ff69b605d4c20f07c1c36"
+    },
+    {
+      "file": "survival-mobile.svg",
+      "sha256": "70e21b15ac2c9c1e3f6cc2a7829d7a19cd51e5053f8f6e1ed10f3f9d56b9b9d1"
+    },
+    {
+      "file": "duration-distribution.svg",
+      "sha256": "d4fc889e0223568fe617c5e8644ea06cb375c14b5ab89bab50ebb651cc1df495"
+    },
+    {
+      "file": "duration-distribution-mobile.svg",
+      "sha256": "9c47ee25280dfecd205cdf8e3d0171c2087eda5ef95164c5f126e0f8e407244f"
+    },
+    {
+      "file": "sample-paths.svg",
+      "sha256": "67b06354ce3d750a5b56f1f8d99929427fb45bf9b55f0f7310b5d005c0216c0d"
+    },
+    {
+      "file": "sample-paths-mobile.svg",
+      "sha256": "b2396002ce124e1deb28450e07208b28de5d379afa187af6de10d4efeb93459c"
+    },
+    {
+      "file": "convergence.svg",
+      "sha256": "c2e2d688b4f740d1595be5127e16e9891398286c0a1e39b7327ea5056e91888a"
+    },
+    {
+      "file": "convergence-mobile.svg",
+      "sha256": "846e340a236b5bd6364ec3023b2a36fc2d84ef72a769233aeb2a0d4527a8955a"
+    },
+    {
+      "file": "brier-test.svg",
+      "sha256": "10775e970bebbb079a57f7f7a467fc7da9cee7b4836d6287cdb643ab3bb03607"
+    },
+    {
+      "file": "brier-test-mobile.svg",
+      "sha256": "5b8c02f4fd5e442940538d8f3bf0c38e2af0b646b67d3e7a265b49681a1c0f46"
+    },
+    {
+      "file": "calibration.svg",
+      "sha256": "f1953c57e6368869441a723578b913e5c4bfecc4f34d3e8d318b0b9f888415a8"
+    },
+    {
+      "file": "calibration-mobile.svg",
+      "sha256": "dbb214472395ef5a67b12e04d003af4e8ff20586015e8e92f6a786de78a0bf6b"
+    },
+    {
+      "file": "duration-errors.svg",
+      "sha256": "2ba7197edbd6b45737771593c920b45f3848a037f7eac8b3304556706dbf07bf"
+    },
+    {
+      "file": "duration-errors-mobile.svg",
+      "sha256": "9359f3b5d68bba8263b18fc73b7d493f27fef8b24debbdc3c0e96b8a47473c3b"
+    },
+    {
+      "file": "multi-disaster.svg",
+      "sha256": "51903ca4223fe4afd7a9f6006f3620a599107c802e7c3c2a680340e6a950b9a0"
+    },
+    {
+      "file": "multi-disaster-mobile.svg",
+      "sha256": "81fc44580112751c1fefccd014638ec50bf9b01e65f5b3fe5cff970694f3cbba"
+    },
+    {
+      "file": "calibration-kaplan_meier-6.svg",
+      "sha256": "848a9c3b5444d07fb21e63832a6121093fa82a0e76cfe5a031d9b31f7ca87dc5"
+    },
+    {
+      "file": "calibration-kaplan_meier-6-mobile.svg",
+      "sha256": "5e27e010a4cfb6d7e45ce26949d366ea491d970d9e1f29ca683d125de0dfaa2e"
+    },
+    {
+      "file": "calibration-kaplan_meier-12.svg",
+      "sha256": "e128468abf84c788b338c128c8059e671687b4f25396dda215faac5f79313027"
+    },
+    {
+      "file": "calibration-kaplan_meier-12-mobile.svg",
+      "sha256": "8b0c694f0de410102a1e90810f449d0f5cb1107dd9aa6a1f053519562b7a37a8"
+    },
+    {
+      "file": "calibration-kaplan_meier-24.svg",
+      "sha256": "f1953c57e6368869441a723578b913e5c4bfecc4f34d3e8d318b0b9f888415a8"
+    },
+    {
+      "file": "calibration-kaplan_meier-24-mobile.svg",
+      "sha256": "dbb214472395ef5a67b12e04d003af4e8ff20586015e8e92f6a786de78a0bf6b"
+    },
+    {
+      "file": "calibration-logistic-6.svg",
+      "sha256": "04ce67175c2f2958c47069fe74d6f3bf6586596c0fc80ae65608094e9938c1dd"
+    },
+    {
+      "file": "calibration-logistic-6-mobile.svg",
+      "sha256": "ac8202bcc656c16198e15e11249f4912dae3148ddf157718cbc7025f07770503"
+    },
+    {
+      "file": "calibration-logistic-12.svg",
+      "sha256": "c87a0995dda5ab23242ceb8ca59095bb35417fc57c8ae68f8949f4a3e8f55fdd"
+    },
+    {
+      "file": "calibration-logistic-12-mobile.svg",
+      "sha256": "0a806ddea22f3c91bd661d717446a4504d6a5b7015204a2ed2d5e91ff283f528"
+    },
+    {
+      "file": "calibration-logistic-24.svg",
+      "sha256": "fa4e80672fade6b90f424a5c0310eb91a6bb9f4b78c6fde371d545a01af4cc51"
+    },
+    {
+      "file": "calibration-logistic-24-mobile.svg",
+      "sha256": "5d7a6637bb462c507f1eb196e11dca5a9aa26250600bfd1ab684c9425d8fd576"
+    },
+    {
+      "file": "duration-errors-kaplan_meier-linear.svg",
+      "sha256": "2d61f40a50b3bbf425479c25774d43025ec0e786c1b845ff6119ecc8d6f4b242"
+    },
+    {
+      "file": "duration-errors-kaplan_meier-linear-mobile.svg",
+      "sha256": "74e622058597d12c7d22034876ba60a899bf13125114baf2ed3bdba5169dd0cb"
+    },
+    {
+      "file": "duration-errors-kaplan_meier-log.svg",
+      "sha256": "2ba7197edbd6b45737771593c920b45f3848a037f7eac8b3304556706dbf07bf"
+    },
+    {
+      "file": "duration-errors-kaplan_meier-log-mobile.svg",
+      "sha256": "9359f3b5d68bba8263b18fc73b7d493f27fef8b24debbdc3c0e96b8a47473c3b"
+    },
+    {
+      "file": "duration-errors-logistic-linear.svg",
+      "sha256": "4654a871ddc4ea17d0cffdee94a1d0fbf97595b5f3dc790d467ea0b4d2c4b6a4"
+    },
+    {
+      "file": "duration-errors-logistic-linear-mobile.svg",
+      "sha256": "340bf38ad333bc388f5b1b8825f60b2c15a0deacf9843ea35908fe0065901ec8"
+    },
+    {
+      "file": "duration-errors-logistic-log.svg",
+      "sha256": "9bb222f3c47dad2bd23538d06c3de096c8efb4a2eaa9f0abe3d6ea657495ce29"
+    },
+    {
+      "file": "duration-errors-logistic-log-mobile.svg",
+      "sha256": "bcd3161c562b66c5db328ca29b8fa973e52e92764fa95e8ede48a6197980a43b"
+    }
+  ],
+  "provenance": {
+    "cohort": {
+      "kind": "Historical records and filtering",
+      "source": "ml/reports/purged_v2/backtest_metrics.json",
+      "cohort": "2021–2025 Flood intervals",
+      "data_kind": "historical_record_and_split_counts",
+      "model_version": null,
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "sample_size": 10310,
+      "prediction_horizons_hours": null
+    },
+    "survival": {
+      "kind": "Analytical and sampled survival",
+      "source": "ml/reports/purged_v2/monte_carlo_summary.json",
+      "cohort": "Synthetic Flood replay, seed 42, 5000 draws",
+      "data_kind": "fitted_probabilities_and_seeded_monte_carlo_draws",
+      "model_version": "noaa-flood-pooled-logistic-v2",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "sample_size": 5000,
+      "displayed_draws": 5000,
+      "seed": 42,
+      "event_age_hours": 6,
+      "remaining_model_horizon_hours": 162,
+      "modeled_total_age_limit_hours": 168,
+      "censoring": "172 draws unresolved at 162h; true maximum unknown",
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598"
+    },
+    "duration-distribution": {
+      "kind": "Actual regenerated MC duration draws",
+      "source": "ml/monte_carlo.py",
+      "cohort": "5000 seeded draws; unresolved included in quantile denominator",
+      "data_kind": "fitted_probabilities_and_seeded_monte_carlo_draws",
+      "model_version": "noaa-flood-pooled-logistic-v2",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "sample_size": 5000,
+      "displayed_draws": 5000,
+      "seed": 42,
+      "event_age_hours": 6,
+      "remaining_model_horizon_hours": 162,
+      "modeled_total_age_limit_hours": 168,
+      "censoring": "172 draws unresolved at 162h; true maximum unknown",
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598"
+    },
+    "sample-paths": {
+      "kind": "First 60 sampled event-end timelines",
+      "source": "ml/monte_carlo.py",
+      "cohort": "First 60 of the same 5000 draws, no outcome selection",
+      "data_kind": "fitted_probabilities_and_seeded_monte_carlo_draws",
+      "model_version": "noaa-flood-pooled-logistic-v2",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "sample_size": 5000,
+      "displayed_draws": 60,
+      "seed": 42,
+      "event_age_hours": 6,
+      "remaining_model_horizon_hours": 162,
+      "modeled_total_age_limit_hours": 168,
+      "censoring": "172 draws unresolved at 162h; true maximum unknown",
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598"
+    },
+    "convergence": {
+      "kind": "Nested-prefix sampling estimates",
+      "source": "ml/monte_carlo.py",
+      "cohort": "N=100/500/1000/2500/5000, 95% Wilson MC intervals",
+      "data_kind": "fitted_probabilities_and_seeded_monte_carlo_draws",
+      "model_version": "noaa-flood-pooled-logistic-v2",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "sample_size": 5000,
+      "displayed_draws": 5000,
+      "seed": 42,
+      "event_age_hours": 6,
+      "remaining_model_horizon_hours": 162,
+      "modeled_total_age_limit_hours": 168,
+      "censoring": "172 draws unresolved at 162h; true maximum unknown",
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598"
+    },
+    "brier-test": {
+      "kind": "Inspected 2025 evaluation",
+      "source": "ml/reports/purged_v2/backtest_metrics.json",
+      "cohort": "3539 snapshots, 567 reporting episodes; trained through 2024",
+      "data_kind": "fitted_predictions_compared_with_recorded_historical_endpoints",
+      "model_version": "KM baseline and logistic comparison from noaa-flood-pooled-logistic-v2 artifact",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "prediction_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "test_snapshots": 3539,
+      "test_reporting_episodes": 567,
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598",
+      "censoring": "Unidentified duration bounds remain null; repeated snapshots are dependent"
+    },
+    "calibration": {
+      "kind": "Predicted versus recorded outcomes",
+      "source": "ml/reports/purged_v2/backtest_metrics.json",
+      "cohort": "Separate 2024 validation and 2025 inspected test bins",
+      "data_kind": "fitted_predictions_compared_with_recorded_historical_endpoints",
+      "model_version": "KM baseline and logistic comparison from noaa-flood-pooled-logistic-v2 artifact",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "prediction_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "test_snapshots": 3539,
+      "test_reporting_episodes": 567,
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598",
+      "censoring": "Unidentified duration bounds remain null; repeated snapshots are dependent",
+      "validation_snapshots": 4053,
+      "validation_reporting_episodes": 583
+    },
+    "duration-errors": {
+      "kind": "All-snapshot recorded-duration comparison",
+      "source": "ml/backtest.py",
+      "cohort": "3539 inspected 2025 snapshots; fixed approved artifact, no refit",
+      "data_kind": "fitted_predictions_compared_with_recorded_historical_endpoints",
+      "model_version": "KM baseline and logistic comparison from noaa-flood-pooled-logistic-v2 artifact",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "prediction_horizons_hours": [
+        6,
+        12,
+        24
+      ],
+      "test_snapshots": 3539,
+      "test_reporting_episodes": 567,
+      "artifact_sha256": "2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598",
+      "censoring": "Unidentified duration bounds remain null; repeated snapshots are dependent"
+    },
+    "multi-disaster": {
+      "kind": "Six distinct retrospective targets",
+      "source": "ml/reports/multidisaster/registry.json",
+      "cohort": "Category-specific 2025 evaluation; no cross-target ranking",
+      "data_kind": "offline_research",
+      "model_version": "see target-specific source",
+      "constraints": "No operational validation or work authorization; full data/sources in dashboard.json",
+      "targets": [
+        {
+          "name": "Flood",
+          "source": "ml/reports/purged_v2/backtest_metrics.json",
+          "artifact_version": "noaa-flood-pooled-logistic-v2",
+          "selected_estimator": "kaplan_meier",
+          "horizons_hours": [
+            6,
+            12,
+            24
+          ],
+          "sample_support": {
+            "records": 6245,
+            "groups": 1787,
+            "snapshots": 10558
+          },
+          "test_snapshots": 3539,
+          "test_groups": 567
+        },
+        {
+          "name": "Flash Flood",
+          "source": "ml/reports/multidisaster/flash_flood.json",
+          "artifact_version": "active-flash_flood-pooled-logistic-v1",
+          "selected_estimator": "kaplan_meier",
+          "horizons_hours": [
+            1,
+            3,
+            6
+          ],
+          "sample_support": {
+            "records": 10696,
+            "groups": 3067,
+            "snapshots": 11186
+          },
+          "test_snapshots": 5041,
+          "test_groups": 880
+        },
+        {
+          "name": "High Wind",
+          "source": "ml/reports/multidisaster/high_wind.json",
+          "artifact_version": "active-high_wind-pooled-logistic-v1",
+          "selected_estimator": "kaplan_meier",
+          "horizons_hours": [
+            6,
+            12,
+            24
+          ],
+          "sample_support": {
+            "records": 9520,
+            "groups": 2227,
+            "snapshots": 17756
+          },
+          "test_snapshots": 6952,
+          "test_groups": 580
+        },
+        {
+          "name": "Heavy Rain",
+          "source": "ml/reports/multidisaster/heavy_rain.json",
+          "artifact_version": "active-heavy_rain-pooled-logistic-v1",
+          "selected_estimator": "kaplan_meier",
+          "horizons_hours": [
+            1,
+            3,
+            6
+          ],
+          "sample_support": {
+            "records": 2206,
+            "groups": 602,
+            "snapshots": 5751
+          },
+          "test_snapshots": 821,
+          "test_groups": 103
+        },
+        {
+          "name": "Winter Storm",
+          "source": "ml/reports/multidisaster/winter_storm.json",
+          "artifact_version": "active-winter_storm-pooled-logistic-v1",
+          "selected_estimator": "kaplan_meier",
+          "horizons_hours": [
+            6,
+            12,
+            24
+          ],
+          "sample_support": {
+            "records": 8874,
+            "groups": 1415,
+            "snapshots": 33295
+          },
+          "test_snapshots": 9629,
+          "test_groups": 398
+        },
+        {
+          "name": "Heat Index Exceedance",
+          "source": "ml/reports/multidisaster/heat_index_exceedance.json",
+          "artifact_version": "active-heat_index_exceedance-pooled-logistic-v1",
+          "selected_estimator": "logistic",
+          "horizons_hours": [
+            1,
+            3,
+            6
+          ],
+          "sample_support": {
+            "records": 1666,
+            "groups": 265,
+            "snapshots": 4391
+          },
+          "test_snapshots": 1116,
+          "test_groups": 59
+        }
+      ]
+    }
+  },
+  "matplotlib": "3.10.7"
+}

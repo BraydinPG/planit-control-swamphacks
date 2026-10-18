@@ -1,134 +1,198 @@
-# Landing-page research showcase
+# Public Data & Research page
 
-Verified 2026-10-18. Branch `feature/cache-landing-research-evidence` starts from
-main `a824964`. The attached prompt initially requested an unmerged PR; the latest
-user follow-up explicitly authorizes merging the verified PR into main.
-Main `748056b` was reconciled in `bdec23b` without conflicts, retaining teammates'
-report-photo spacing and seeded demo-analysis changes. Final frontend checks pass
-on the combined tree; these upstream changes are not part of this PR's diff.
+[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91) is verified; the subsequent user follow-up authorizes merge.
 
-The new section immediately follows the hero/statistics:
-**Built on Real Data. Tested with Real Simulations.** It presents four source cards,
-three short method explanations, three report-backed charts and a decision-authority
-statement. The existing hero, product features, brand, animation JavaScript,
-demo/sign-in links and application workflows are unchanged.
+Verified 2026-10-18. Branch `feature/cache-dedicated-data-page`, initially based on
+main `61ec526`. This corrects PR89: research lives at **`/data.html`**, an independent
+public document. The homepage keeps its original hero, four statistics, three
+features, brand, fog/lightning effects and demo/sign-in destinations. Public
+navigation now includes Home and Data with an active-page indicator.
 
-## Claims and their sources
+The advanced-dashboard addendum initially requested no automatic merge. The user's
+subsequent request explicitly authorizes merging PR91 after verification. Main
+`b16bef4` was reconciled in `8bcb6d0`; the later `c951ae0` briefing update was
+reconciled in `cf24867`, both without conflicts. The frontend tree is identical to
+verified implementation `0b1269b`; all 12 additional upstream backend demo checks
+pass, with one existing dependency deprecation warning. Commit/PR attribution is
+in Git history and the PR description.
 
-The [existing headline-statistic audit](LANDING_PREDICTIVE_MESSAGING.md) still applies.
-The export reads these six versioned inputs, recording their SHA-256 hashes in
-[evidence.json](../frontend/public/research/evidence.json):
+## What runs
 
-Source hashes use UTF-8 text normalized to LF, matching the Git content on Windows
-and Linux. Figure hashes cover the actual exported bytes; an asset-local
-`.gitattributes` preserves LF for generated SVGs/JSON in clean Windows checkouts.
+`landing.html` and `data.html` share `public-site.css` and the original atmosphere
+JavaScript extracted verbatim into `public-atmosphere.js`. Homepage research markup,
+research CSS and research downloads are removed. Data-only CSS and read-only
+`data-research.js` select committed results; neither accesses sessions, requests an
+API token, calls the backend nor performs inference. There is no second application
+or router. Both documents retain existing Sign In destinations.
 
-| Input | Values used and interpretation |
-| --- | --- |
-| [Flood backtest](../ml/reports/purged_v2/backtest_metrics.json) | `source_row_counts.rows_total`: **349,030** NOAA Storm Events rows. `validation_2024_train_through_2023`: **4,053** snapshots / **583** reporting episodes at every displayed horizon. Default estimator: **Kaplan–Meier**. Production eligibility remains false. |
-| [Station coverage](../ml/reports/multidisaster/station_coverage.json) | Sum of `stations.*.source_rows`: **122,270** hourly source measurements at three evaluated stations. Source volume includes records outside final eligible training/evaluation cohorts. |
-| [NHC coverage](../ml/reports/multidisaster/hurdat_coverage.json) | `full_archive.track_points`: **55,524** Atlantic historical track points. Full-archive post-analysis best tracks, not operational issue-time forecasts or local worksite winds. |
-| [EIA coverage](../ml/reports/worker_outlook/eia_coverage.json) | `selected_research_locations`: **50** representative mapped infrastructure locations, not verified active work orders or universal live coverage. |
-| [Monte Carlo summary](../ml/reports/purged_v2/monte_carlo_summary.json) | **5,000** draws, seed **42**, simulated Flood replay as of **2024-09-10T16:00:00Z**, model `noaa-flood-pooled-logistic-v2`. This archived experiment is separate from the selected KM default. |
-| [Target registry](../ml/reports/multidisaster/registry.json) | Six research-eligible duration targets remain: Flood, Flash Flood, High Wind, Heavy Rain, Winter Storm and restricted Heat Index Exceedance. The exporter checks the count; no eligibility changes. |
+Normal `npm ci` / `npm run build` serves all committed assets. No Python, model
+artifact, secret, research backend or provider is required to view Data. The default
+figures and numerical tables also work with JavaScript disabled. If static JSON is
+unavailable, selectors stay disabled with a visible explanation; figures remain.
 
-The historical inventory sums to **526,824** mixed records and measurements. It is
-not a count of independent training examples. The live-evidence note describes the
-separate existing NWS/NHC/USGS layer, with varying coverage/freshness and explicit
-unknown inputs; it does not assert a current connection or use live data in these charts.
+The existing Caddy configuration serves actual public files before its SPA fallback.
+Vite production preview verifies the built documents locally; this run does not
+claim a deployed Vultr acceptance check. Workspace/auth/backend routes are unchanged.
 
-## What the charts show
+## Twelve figures and exact provenance
 
-1. **Monte Carlo consistency:** zero-to-100% grouped bars compare analytical
-   persistence with sampled ongoing proportions. Largest absolute difference is
-   **0.4031657295 percentage points**, displayed as **0.40 percentage points**.
-   The chart is labeled an archived simulated replay, not a current forecast or
-   independent evidence of predictive skill.
-2. **Historical validation:** zero-based Brier-error bars compare KM with logistic
-   on the same 2024 validation snapshots, with training through 2023. Whiskers use
-   the saved **95% episode-bootstrap intervals / 500 resamples**. KM's lower errors
-   at all three horizons explain keeping the simpler baseline. Overlapping intervals
-   do not establish statistical superiority. This was a selection cohort, not a
-   fresh untouched holdout; calibration and duration errors remain limitations.
-3. **Source scale:** zero-based count bars compare the three historical inventories.
-   The units/processes differ; the bars measure volume, never model accuracy or
-   current site exposure. The separate EIA card is excluded from this count scale.
+All charts are Matplotlib SVGs with separately laid-out phone variants, descriptive
+alternatives, numerical tables, source links and lazy loading. The original six SVGs
+and `research/evidence.json` remain byte-identical. Nine new figures plus saved
+selector variants add 38 SVG files. [The figure ledger](../frontend/public/research/dashboard-figures.json)
+records hashes, model/artifact version, cohort, horizons, support and censoring.
+[Dashboard data](../frontend/public/research/dashboard.json) records normalized hashes
+for every saved input report. It preserves precise values rather than rounded UI text.
 
-Displayed table values below are rounded to six decimals. The downloadable JSON
-retains the original values and bootstrap intervals.
+| Figure | Source and method | Meaning / limitations |
+| --- | --- | --- |
+| 1. Historical source scale | Original `data-sources.svg`; Flood backtest, station coverage and HURDAT coverage reports | 349,030 NOAA rows, 122,270 hourly station source measurements, 55,524 post-analysis track points. Different populations and units, never independent training examples. |
+| 2. Flood cohort construction and chronology | `cohort.svg`; `ml/reports/purged_v2/backtest_metrics.json` counts and split | 11,571 Flood rows, 10,322 valid intervals, 10,310 eligible after 12 boundary records are purged. Eligible interval counts by year; whole reporting episodes remain grouped. |
+| 3. Monte Carlo versus analytical persistence | Original `monte-carlo.svg`; saved `monte_carlo_summary.json` | 5,000 draws, seed 42, logistic synthetic Flood replay, age 6h and September start. Analytical versus sampled ongoing probability at 6/12/24h, not observed predictive skill. |
+| 4. Full conditional survival curve | `survival.svg`; exact approved-artifact curve and regenerated draws | Every remaining hour0-162, white analytical and red empirical persistence. Unresolved tail is retained. No observed survival cohort is invented. |
+| 5. Sampled duration distribution | `duration-distribution.svg`; same raw 5,000 draws | Six-hour bins for 4,828 resolved draws; quantiles use the full sample including 172 unresolved. Resolution time is an event-record proxy. |
+| 6. Sample event-end timelines | `sample-paths.svg`; first 60 draws in their original seeded order | Constant ongoing state until sampled end, arrow for unresolved. These are end-time samples, not physical intensity or location trajectories. |
+| 7. Monte Carlo convergence | `convergence.svg`; nested prefixes N = 100/500/1,000/2,500/5,000 | 6/12/24h ongoing proportions versus analytical references; 95% Wilson binomial intervals for conditional i.i.d. simulation indicators. Prefixes share draws. Bands do not represent model or real-world forecast uncertainty. |
+| 8. 2024 validation Brier comparison | Original `backtest.svg`; purged Flood backtest | 4,053 snapshots / 583 reporting episodes; fitted through 2023. KM has lower Brier at all 3 horizons and remains selected. Saved95% episode-bootstrap intervals / 500 resamples. |
+| 9. Later 2025 Brier comparison | `brier-test.svg`; same saved report, distinct test population | 3,539 snapshots / 567 episodes; fitted through 2024. Logistic has lower Brier at all 3 horizons here. This previously inspected period does not reverse the validation-based selection or become a new untouched holdout. |
+| 10. Probability reliability | `calibration.svg` and saved model/horizon variants; same report | Separate 2024/2025 panels. Mean predicted persistence versus recorded ongoing frequency in saved bins; dot sizes show count. Tables update to the selected model/horizon. No independent-snapshot confidence intervals are invented. |
+| 11. Historical duration and absolute error | `duration-errors.svg` and model/log variants; approved artifact rescoring through existing `ml/backtest.py` | All 3,539 inspected 2025 snapshots/567 episodes, recorded remaining hours versus predicted median and absolute-error histogram. Original 6 Brier values and both MAEs reproduce. Repeated snapshots remain dependent; unknown interval bounds stay null. |
+| 12. Six-target comparison | `multi-disaster.svg`; Flood report and `ml/reports/multidisaster/{flash_flood,high_wind,heavy_rain,winter_storm,heat_index_exceedance}.json` | Selected-estimator2025 Brier with saved group-bootstrap intervals. Category/horizon/period controls expose genuine saved support, calibration and limits. Different target prevalences, horizons and cohorts prevent a cross-disaster ranking. |
 
-| Horizon | Analytical ongoing | Simulated ongoing | KM validation Brier | Logistic validation Brier |
+The displayed chronology is Historical Data -> Statistical Models -> Monte Carlo
+-> Historical Backtesting -> Multi-Disaster Research -> Evidence & Limitations.
+The benchmark is an additional numerical table, not a padded thirteenth chart:
+`ml/reports/purged_v2/benchmark.json` reports a bounded 161-snapshot comparison with
+1/4/8/12 workers, matching outputs and interference caveats. One worker was retained.
+It is not a live-feed latency or full-backtest speed claim.
+
+## Exact observed, fitted and sampled quantities
+
+Source inventory totals 526,824 heterogeneous rows/measurements; 50 EIA research
+locations are reference points, not active work orders or universally monitored sites.
+The [existing headline audit](LANDING_PREDICTIVE_MESSAGING.md) still applies.
+
+| Remaining horizon | Analytical model probability | Seeded sampled ongoing proportion | 2024 KM Brier | 2024 logistic Brier |
 | --- | ---: | ---: | ---: | ---: |
-| 6h | 0.619922 | 0.623000 | 0.211733 | 0.216986 |
-| 12h | 0.447168 | 0.451200 | 0.232385 | 0.242210 |
-| 24h | 0.281102 | 0.282000 | 0.224849 | 0.239856 |
+| 6h | 0.6199216839402608 | 0.6230 | 0.21173329753360257 | 0.21698641660285573 |
+| 12h | 0.44716834270464595 | 0.4512 | 0.23238483052498485 | 0.2422101837000786 |
+| 24h | 0.2811015423152757 | 0.2820 | 0.2248488040017392 | 0.2398562677050223 |
 
-Each chart has a descriptive image alternative, a native expandable data table
-and original-report links. Dedicated desktop/mobile SVG exports preserve label
-sizes and proportions. Source hashes and figure hashes make the displayed evidence
-inspectable. No charting library, runtime data fetch, simulation controls or new
-runtime JavaScript is introduced. Three images total **71,385 bytes** on desktop
-or **71,261 bytes** on mobile, before compression; images are lazy-loaded.
+MC minimum resolved 1h, p10 = 2h, median 10h, p90 = 73h. Maximum resolved within the
+162h remaining model horizon is 162h; 172/5,000 draws remain unresolved. The total
+modeled event-age limit is 168h with 6h already elapsed. **The true upper tail and
+maximum possible disaster duration are unknown.** Largest analytical/sampled
+horizon difference is 0.4031657295 percentage points, displayed 0.40.
 
-## Reproduce or inspect
+Historical recorded remaining duration ranges 0.0166667-743.983333h in the inspected
+2025 cohort. Logistic median MAE 40.7117358953h; KM 41.2644061411h. Predicted median
+ranges 3-47h and 5-44h respectively. 1,696 logistic and 1,635 KM snapshots have at least
+one unidentified interval bound; CSV uses empty/null, never zero, for those bounds.
+Long recorded events are retained and shown with optional log scatter axes.
 
-Normal `npm ci` / `npm run build` uses the committed HTML, SVGs and JSON. Python,
-credentials, network access and model artifacts are unnecessary to serve the section.
-To regenerate from saved reports, use an isolated plotting environment from repo root:
+These are recorded administrative event intervals, not measured worksite exposure.
+Historical archive revisions and fixed-offset timestamps do not establish original
+issue-time availability. Only 6/12/24h Flood research results are shown. Flash Flood,
+Heavy Rain and restricted Heat Index Exceedance use 1/3/6h; High Wind and Winter Storm
+use 6/12/24h. Heat research covers the evaluated 3 stations and incomplete 2025 archive,
+not national worker heat exposure. Each target's exact limits are selectable.
+
+Strong Wind, Ice Storm and Heavy Snow remain disabled. The separate hurricane
+wind-change experiment uses post-analysis tracks and is not a duration or operational
+wind-field forecast. No artifact, selection criterion, training split, model gate,
+score weight or alert rule is changed. Neither ML nor Gemini can authorize work.
+
+## Exports and reproduction
+
+Committed public downloads:
+
+- `dashboard.json`: report extraction, exact curves, counts, saved results and 5,000 draws.
+- `dashboard-figures.json`: 38 new figure hashes, provenance and input hashes.
+- `monte-carlo-draws.csv`: every seeded end-time draw, including unresolved cases.
+- `backtest-comparison.csv`: model/horizon/period metrics for all six qualified targets.
+- `flood-holdout.json` / `.csv`: all 3539 historical snapshot predictions, IDs,
+  recorded endpoints and both estimators' duration quantiles. These are public NOAA
+  record IDs, not worker or private account data. Full holdout is download-only and
+  is not loaded by page selectors.
+
+From repo root, check saved exports with ordinary Python (stdlib only):
+
+```powershell
+python frontend/scripts/export-research-dashboard.py --check
+```
+
+Regenerate figures in the existing isolated plotting environment, or provision it:
 
 ```powershell
 python -m venv frontend/.shell-check/landing-plots
 $plotPython = Join-Path $PWD 'frontend/.shell-check/landing-plots/Scripts/python.exe'
 & $plotPython -m pip install -r frontend/scripts/landing-research-requirements.txt
-& $plotPython frontend/scripts/prepare-landing-research.py
+& $plotPython frontend/scripts/prepare-data-dashboard.py
+& $plotPython frontend/scripts/prepare-data-dashboard.py --check
+# Established command now delegates to the expanded Data document:
 & $plotPython frontend/scripts/prepare-landing-research.py --check
 ```
 
-The generator uses Matplotlib **3.10.7** and pinned plotting dependencies (verified
-with Python **3.14.5**). It reads
-only saved reports, renders deterministic SVGs, writes the public JSON and replaces
-the marked research section in `landing.html`. `--check` verifies byte-identical
-figures/data and the generated HTML without writing. No raw archive, model load,
-training, Monte Carlo rerun, provider call or ML change occurs. SVG font outlines
-avoid client-font differences; accessible labels/tables accompany the artwork.
-Edit the generator's section template for content, and landing CSS for presentation.
-Update source/figure exports together if an audited source changes.
+Optional from-artifact reproduction requires the approved pinned ML environment,
+trusted existing `ml/artifacts/provisioned_v2/active_event.joblib` and original
+checksummed NOAA cache; [existing provisioning](../ml/EVENT_OUTLOOKS.md) applies.
+No training or download is performed by this exporter:
 
-Open `http://localhost:5177/landing.html#lab-title` on the existing functional demo
-server (or the origin printed by Vite). Normal live deployment serves this same public
-page. No external Auth0, database or deployment acceptance is claimed.
+```powershell
+& $MlPython frontend/scripts/export-research-dashboard.py --with-model-samples --archive-dir 'C:\path\to\approved\ml\data\raw' --check
+```
 
-## Verified checks and review evidence
+Approved Flood SHA-256:
+`2d33812b2d238bfa0ad18665f0b447c5d0d6925c1398c763814d4e5889067598`.
+The command verifies archive hashes, reconstructs the existing episode-purged test
+snapshots, calls the fitted scorer without fitting, and asserts all 6 saved Briers
+and both duration MAEs. Without raw data/artifacts, committed exports still render.
+Input hashes normalize UTF-8/LF; local `.gitattributes` preserves generated byte hashes.
 
-- **198** frontend tests pass: `node --test tests/*.test.mjs` from `frontend/`.
-- `npm.cmd run lint` and `npm.cmd run build` pass, including TypeScript. A separate
-  explicit-fixture production build passes. Existing bundle/plugin-timing advisories remain.
-- New Python exporter: Ruff check/format and `--check` pass. Independent inspection
-  confirms all six source hashes and six SVG hashes match the current files.
-  An isolated replica with CRLF source reports also reproduces the exports exactly.
-- Edge/CDP development and built-demo smoke checks pass at **1440/768/390/320px**:
-  all three SVGs decode with the correct mobile/desktop variant and aspect ratio;
-  figures have captions, tables/values/source counts match, and text does not clip
-  or overflow, including open data disclosures. Desktop/mobile screenshots were
-  visually inspected, including full-size mobile Monte Carlo and backtest cards.
-- Existing headline/statistics/logo and 44px demo/sign-in controls remain; reduced
-  motion, short-screen fallback fonts, count-up and actual demo navigation pass.
-  No browser exceptions, console errors or actual backend API calls.
-- Hero and product-section markup and the animation JavaScript match the base.
-  Backend/ML tests are not rerun because no code, artifacts or inputs there changed.
+## Verification and review
 
-[Desktop section](landing-research/desktop.png) ·
-[Mobile section](landing-research/mobile.png) ·
-[Mobile Monte Carlo card](landing-research/monte-carlo-mobile.png) ·
-[Mobile backtest card](landing-research/backtest-mobile.png).
+- 198 frontend tests, lint, TypeScript and production build pass. Existing SPA chunk
+warning remains; this page adds no app bundle dependency or chart library.
+- 7 existing Monte Carlo/backtest-performance tests pass. From-artifact export check
+reproduces all 5,000 draws and 3,539 historical snapshots; static and figure checks pass.
+- Edge checks at 1440/768/390/320 verify both documents, all 12 figures, mobile SVG variants,
+active/keyboard links, direct access/reload/history, supported horizon/model/log
+controls, missing-JSON and script-disabled fallback, no clipping/overflow/exceptions
+and zero backend API calls. Homepage loads no research assets. Existing demo CTA works.
+- Synthetic local/session storage sentinels survive navigation; this is not a claim of
+real Auth0 account acceptance. Auth code and authenticated app entry are untouched.
+- Production live/default and explicit fixture builds are checked independently.
 
-Intentionally excluded: invented raw simulation paths/histograms (the saved summary
-contains no raw trials), site injury/safety probabilities, an exact clearance countdown,
-universal hazard/coverage claims, unsupported performance improvements, operational
-certification, and claims that the previously inspected 2025 Flood test is a fresh
-holdout. Nothing changes the 0–10 index, alert state, model gates or human authority.
+Run focused browser acceptance against an owned Vite instance:
 
-Rudra: preserve this generated section and its qualifiers during frontend maintenance.
-Braydin: normal static-asset publication is sufficient after review; no configuration
-or service change is required. The latest user follow-up requests merging after
-verification; the PR link/commit can be recovered from this document's Git history.
+```powershell
+cd frontend
+node --test tests/*.test.mjs
+npm run lint
+npm run build
+node scripts/check-public-pages.mjs http://localhost:5177/ --fixtures
+```
+
+[Homepage desktop](screenshots/data-page-home-desktop.png) / [phone](screenshots/data-page-home-mobile.png).
+[Complete Data desktop](screenshots/data-page-desktop.png) / [phone](screenshots/data-page-mobile.png).
+[Data phone introduction](screenshots/data-page-mobile-top.png).
+Full phone capture uses compositor-sized tiles joined without editing content.
+
+## Handoff and limits
+
+Rudra: preserve `/data.html` as a real public document, the public Home/Data/Sign In
+header, generated markers and research labels. Use the exporter to change chart
+content; do not paste it back into the homepage or app layout. PR90's unrelated
+briefing-picker changes are preserved when reconciling latest main.
+Braydin: no tenant, database or deployment change required by this PR. Auth entry is
+still `/?signin`; no credentials or session writes are introduced.
+Cache: future exports must keep exact source/model hashes, original preserved assets,
+selection gates and unknown/censored semantics.
+
+No intensity/location trajectories, worker-injury probabilities, nationally valid
+heat exposure or local hazard probability can be added from these saved intervals.
+Those need appropriate historical time series/site outcome labels and independent
+validation. Original vintages/QC limitations remain. More ambitious physical tracks
+or conditional joint hazards need qualified sources and validation rather than
+decorative simulated paths. The existing charts cover all twelve supported figures;
+there is no claim of universal hazard prediction or operational clearance.

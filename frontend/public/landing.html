@@ -10,51 +10,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/public-site.css">
 <style>
-:root{
-  --ink:#07090c;
-  --bone:#eef0f2;
-  --mute:#8b95a3;
-  --line:rgba(238,240,242,.14);
-  --signal:#e5162f;
-  --volt:#cfe0ff;
-  --display:"Archivo", "Arial Narrow", sans-serif;
-  --mono:"JetBrains Mono", ui-monospace, monospace;
-  --ease:cubic-bezier(.2,.7,0,1);
-  --hdr:64px;
-  --gutter:max(clamp(16px,4vw,64px), calc((100vw - 1760px) / 2));
-}
-*{box-sizing:border-box}
-html,body{min-height:100%}
-html{background:var(--ink);color:var(--bone);-webkit-font-smoothing:antialiased}
-body{margin:0;font:400 clamp(15px,1.05vw,18px)/1.55 var(--display);font-variation-settings:"wdth" 100;background:var(--ink)}
-::selection{background:var(--signal);color:#fff}
-a{color:inherit}
-p,h1{text-wrap:pretty}
-:focus-visible{outline:2px solid var(--volt);outline-offset:3px}
 
-/* ——— Layers ——— */
-#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
-#bolt{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}
-.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.07;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation:grain 1s steps(6) infinite}
-@keyframes grain{0%{background-position:0 0}20%{background-position:-48px 32px}40%{background-position:32px -64px}60%{background-position:-64px -16px}80%{background-position:48px 48px}}
-main,header{position:relative;z-index:3}
-
-/* ——— Chrome ——— */
-.top{position:fixed;top:0;left:0;right:0;z-index:50;height:var(--hdr);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 var(--gutter);background:var(--ink);border-bottom:1px solid var(--line);color:var(--bone)}
-.brand{display:flex;align-items:center;min-height:44px;text-decoration:none}
-.brand img{display:block;width:clamp(124px,12vw,156px);height:auto;max-width:100%}
-.signin{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;font:600 15px/1 var(--display);text-decoration:none;color:#fff;background:var(--signal);border:1px solid var(--signal);transition:background .25s,color .25s,border-color .25s}
-.signin svg,.cta-btn svg{width:16px;height:16px;transition:transform .25s var(--ease)}
-.signin:hover{background:#fff;border-color:#fff;color:var(--signal)}
-.signin:hover svg,.cta-btn:hover svg{transform:translateX(3px)}
 
 .kicker{font:500 12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.16em;color:var(--mute)}
 .kicker em{font-style:normal;color:var(--bone)}
 
-/* The hero keeps the dramatic first screen; research/features continue below. */
+/* The hero leads into the concise product features below. */
 .hero{min-height:100svh;display:grid;grid-template-rows:1fr auto;padding:var(--hdr) var(--gutter) 0}
 .hero-copy{align-self:center;min-width:0;width:100%;container-type:inline-size;padding:clamp(12px,3vh,40px) 0}
 .hero h1{margin:clamp(12px,2.2vh,24px) 0 clamp(16px,2.8vh,30px);font-weight:900;text-transform:uppercase;line-height:.88;letter-spacing:-.01em;white-space:nowrap;font-size:min(230px,13.4cqi,19vh);font-variation-settings:"wdth" 62;text-shadow:0 10px 60px rgba(0,0,0,.55)}
@@ -91,79 +54,8 @@ main,header{position:relative;z-index:3}
 .feature + .feature{border-left:1px solid var(--line);padding-left:clamp(18px,2.8vw,40px)}
 .feature h3{margin:0 0 12px;font:600 12px/1.5 var(--mono);letter-spacing:.09em;color:var(--bone)}
 .feature p{margin:0;font-size:16px;line-height:1.65;color:rgba(238,240,242,.74)}
-.research{margin-top:24px;max-width:100ch;font-size:14px;line-height:1.7;color:rgba(238,240,242,.74)}
-.research summary{min-height:44px;display:list-item;align-content:center;cursor:pointer;font-weight:600;color:var(--bone)}
-.research p{margin:12px 0}
-.research a{text-decoration:underline;text-underline-offset:3px}
-.research ul{margin:12px 0;padding-left:20px}
-.research li + li{margin-top:8px}
-/* Repository-backed research showcase. Figures are exported SVGs, not live forecasts. */
-.lab{padding:clamp(48px,7vw,104px) var(--gutter);border-top:1px solid var(--line);background:linear-gradient(160deg,rgba(25,12,16,.96),rgba(9,11,15,.98) 45%);overflow-wrap:break-word}
-.lab-heading{max-width:1050px;margin-bottom:36px}
-.lab-eyebrow,.lab-source-type{margin:0 0 14px;font:500 11px/1.5 var(--mono);letter-spacing:.12em;color:#c0c5ce;text-transform:uppercase}
-.lab h2{margin:0 0 24px;font-size:clamp(36px,5vw,76px);font-weight:850;line-height:1.08;letter-spacing:-.035em;text-wrap:balance;scroll-margin-top:calc(var(--hdr) + 24px)}
-.lab h2 span{font-weight:250;color:rgba(238,240,242,.86)}
-.lab-intro{max-width:76ch;margin:0;font-size:clamp(17px,1.3vw,20px);line-height:1.65;color:#c2c6cd}
-.lab-scope{margin:16px 0 0;font-size:14px;line-height:1.6;color:#c0c5ce}
-.lab-sources{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(255,255,255,.025)}
-.lab-sources article{min-width:0;padding:24px}
-.lab-sources article + article{border-left:1px solid var(--line)}
-.lab-sources strong{display:block;font-size:clamp(28px,3vw,44px);font-weight:800;line-height:1.2;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.lab-sources h3{margin:12px 0 6px;font-size:16px;line-height:1.4;font-weight:650}
-.lab-sources article > p:last-child{margin:0;font-size:14px;line-height:1.65;color:#b7bcc5}
-.lab-source-type{min-height:32px;margin-bottom:12px;font-size:10px}
-.lab-feed-note{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 7px;margin:18px 0 0;font-size:14px;line-height:1.8;color:#b7bcc5}
-.lab-feed-note strong{color:var(--bone);font-weight:550}
-.lab-status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#c0c5ce;align-self:center}
-.lab-methods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin:40px 0}
-.lab-methods article{display:flex;gap:14px;min-width:0}
-.lab-methods article > span{font:500 12px/1.6 var(--mono);color:#ff6479;padding-top:2px}
-.lab-methods h3{font-size:17px;line-height:1.5;margin:0 0 8px;font-weight:650}
-.lab-methods p{font-size:14px;line-height:1.7;margin:0;color:#b7bcc5}
-.lab-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
-.lab-chart{min-width:0;margin:0;padding:clamp(18px,2.5vw,32px);border:1px solid #35353d;border-radius:22px;background:linear-gradient(140deg,rgba(255,255,255,.045),rgba(255,255,255,.015));box-shadow:0 12px 48px rgba(0,0,0,.12)}
-.lab-chart h3{margin:0 0 16px;font-size:clamp(25px,2.6vw,36px);line-height:1.15;letter-spacing:-.025em;font-weight:700;text-wrap:balance}
-.lab-chart p{font-size:15px;line-height:1.7;color:#bec3cc;margin:0 0 18px}
-.lab-chart picture{display:block;min-width:0}
-.lab-chart img{display:block;width:100%;height:auto;aspect-ratio:7/3.7;object-fit:contain}
-.lab-chart figcaption{font-size:13px;line-height:1.7;color:#b7bcc5;margin:8px 0 0}
-.lab-monte{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(24px,4vw,56px);border-color:#683039;background:radial-gradient(ellipse at top left,rgba(229,22,47,.09),transparent 65%),rgba(255,255,255,.025)}
-.lab-chart-story,.lab-chart-visual{min-width:0;margin:0}
-.lab-chart-story h3{font-size:clamp(28px,3.6vw,48px)}
-.lab-chart .lab-eyebrow{font-size:10px;line-height:1.6;color:#c0c5ce;margin-bottom:14px}
-.lab-chart p.lab-callout{padding-left:16px;border-left:2px solid #ff4760;margin:24px 0}
-.lab-callout strong{display:block;font-size:clamp(22px,2.1vw,30px);font-weight:700;color:var(--bone);line-height:1.3}
-.lab-callout span{display:block;font-size:12px;line-height:1.6;color:#c0c5ce;margin-top:6px}
-.lab-chart p.lab-caveat{font-size:13px;line-height:1.7;margin-bottom:0}
-.lab-values{margin-top:16px;border-top:1px solid var(--line);font-size:13px;color:#c0c5ce}
-.lab-values summary{display:list-item;min-height:44px;align-content:center;cursor:pointer;font-weight:600;color:var(--bone)}
-.lab-values table{border-collapse:collapse;table-layout:fixed;width:100%;margin:10px 0 16px;font-size:12px;font-variant-numeric:tabular-nums;text-align:left;overflow-wrap:anywhere}
-.lab-values caption{text-align:left;color:#c0c5ce;padding-bottom:10px}
-.lab-values th,.lab-values td{padding:10px 4px;border-bottom:1px solid var(--line);vertical-align:top}
-.lab-values th{font-weight:600;color:var(--bone)}
-.lab-values p{font-size:13px;margin:0}
-.lab-values a,.lab-trust a{text-decoration:underline;text-underline-offset:4px}
-.lab-trust{margin-top:32px;padding:clamp(22px,3vw,38px);border-left:2px solid #ff4760;background:rgba(255,255,255,.025);border-radius:0 16px 16px 0}
-.lab-trust h3{margin:0 0 12px;font-size:clamp(25px,3vw,36px);line-height:1.2;letter-spacing:-.02em;font-weight:650}
-.lab-trust > p:not(.lab-eyebrow){max-width:90ch;margin:0;font-size:16px;line-height:1.7;color:#bec3cc}
-.lab-trust a{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:12px;font-size:14px;line-height:1.6}
-@media (max-width:1050px){
-  .lab-sources{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .lab-sources article:nth-child(3){border-left:0}
-  .lab-sources article:nth-child(n+3){border-top:1px solid var(--line)}
-  .lab-source-type{min-height:0}
-  .lab-charts{grid-template-columns:1fr}
-  .lab-monte{grid-template-columns:1fr}
-  .lab-chart-story{max-width:70ch}
-}
-@media (max-width:600px){
-  .lab-sources{grid-template-columns:1fr}
-  .lab-sources article + article{border-left:0;border-top:1px solid var(--line)}
-  .lab-methods{grid-template-columns:1fr;gap:24px;margin:32px 0}
-  .lab-sources article{padding:20px}
-  .lab-chart img{aspect-ratio:3.7/3.5}
-  .lab-chart h3{text-wrap:pretty}
-}
+
+
 @media (max-width:700px){
   .hero h1 .thin{font-size:.66em}
   .features{grid-template-columns:1fr}
@@ -201,6 +93,7 @@ main,header{position:relative;z-index:3}
   <a class="brand" href="/landing.html" aria-label="FORESITE home">
     <img src="/foresite-wordmark.png?v=daaf5322" width="768" height="166" alt="" decoding="async" draggable="false">
   </a>
+  <nav class="public-nav" aria-label="Public website"><a class="public-link" href="/landing.html" aria-current="page">Home</a><a class="public-link" href="/data.html">Data</a></nav>
   <a class="signin" href="/?signin">Sign In<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </header>
 
@@ -225,58 +118,6 @@ main,header{position:relative;z-index:3}
     </ul>
   </section>
 
-<!-- research-evidence:start -->
-  <section class="lab" aria-labelledby="lab-title">
-    <div class="lab-heading">
-      <p class="lab-eyebrow">THE SCIENCE BEHIND THE OUTLOOK</p>
-      <h2 id="lab-title">Built on Real Data.<br><span>Tested with Real Simulations.</span></h2>
-      <p class="lab-intro">Official environmental data. Historically evaluated models. Thousands of simulated outcomes. FORESITE brings these together to help teams understand disruption—not just detect it.</p>
-      <p class="lab-scope">Research estimates for certain already-active hazards. Decision support, with uncertainty kept visible.</p>
-    </div>
-
-    <div class="lab-sources" aria-label="Historical data and infrastructure sources">
-      <article><p class="lab-source-type">NOAA STORM EVENTS</p><strong>349,030</strong><h3>Recorded storm events</h3><p>2021–2025 records provide reported event intervals for duration research.</p></article>
-      <article><p class="lab-source-type">NOAA STATION WEATHER</p><strong>122,270</strong><h3>Hourly measurements</h3><p>Three evaluated stations support observed heat-index episode research.</p></article>
-      <article><p class="lab-source-type">NHC HURDAT2</p><strong>55,524</strong><h3>Historical track points</h3><p>Post-analysis Atlantic best tracks. Historical context, not issued forecasts.</p></article>
-      <article><p class="lab-source-type">EIA INFRASTRUCTURE</p><strong>50</strong><h3>Mapped reference locations</h3><p>Representative power plants, not proof of active crews or complete live coverage.</p></article>
-    </div>
-    <p class="lab-feed-note"><span class="lab-status-dot" aria-hidden="true"></span><strong>Live evidence is a separate layer.</strong> NWS, NHC and USGS observations and issued products add timestamped context. Coverage and freshness vary; missing inputs stay unknown.</p>
-
-    <div class="lab-methods" aria-label="How the research works">
-      <article><span aria-hidden="true">01</span><div><h3>Backtest against history.</h3><p>Group related episodes, separate time periods, and compare statistical models with simpler survival baselines.</p></div></article>
-      <article><span aria-hidden="true">02</span><div><h3>Explore uncertainty.</h3><p>Monte Carlo draws sample model-implied durations. Many possible outcomes replace a single exact future.</p></div></article>
-      <article><span aria-hidden="true">03</span><div><h3>Keep the evidence visible.</h3><p>Supported horizons, source provenance and limitations accompany each outlook. Unsupported predictions stay unavailable.</p></div></article>
-    </div>
-
-    <div class="lab-charts">
-      <div class="lab-chart lab-monte" role="group" aria-labelledby="lab-mc-title">
-        <div class="lab-chart-story"><p class="lab-eyebrow">01 / MONTE CARLO CONSISTENCY</p><h3 id="lab-mc-title">One model.<br>5,000 possible outcomes.</h3><p>In this saved flood replay, 5,000 seeded draws closely reproduce the model’s own persistence probabilities at 6, 12 and 24 hours.</p><p class="lab-callout"><strong>0.40 percentage points</strong><span>largest analytical–sampling difference</span></p><p class="lab-caveat">A consistency check—not proof of forecast accuracy. Archived 2024-09-10 replay using the logistic research model, not a current worksite forecast.</p></div>
-        <figure class="lab-chart-visual" aria-labelledby="lab-mc-title">
-          <picture><source media="(max-width: 600px)" width="370" height="350" srcset="/research/monte-carlo-mobile.svg?v=d44a06aef8"><img src="/research/monte-carlo.svg?v=e596ad3d5e" alt="Grouped bars compare analytical persistence with simulated ongoing proportions at 6, 12 and 24 hours, on a zero to 100 percent scale." width="700" height="370" loading="lazy" decoding="async"></picture>
-          <figcaption>Probability the recorded Flood event remains ongoing. 5,000 draws · seed 42. Offline research only.
-          <details class="lab-values"><summary>Exact values and experiment</summary><table><caption>Ongoing probability · archived simulated replay</caption><thead><tr><th>Horizon</th><th>Analytical</th><th>Simulated</th></tr></thead><tbody><tr><th scope="row">6h</th><td>0.619922</td><td>0.623000</td></tr><tr><th scope="row">12h</th><td>0.447168</td><td>0.451200</td></tr><tr><th scope="row">24h</th><td>0.281102</td><td>0.282000</td></tr></tbody></table><p><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/monte_carlo_summary.json">Original experiment JSON</a> · Model: noaa-flood-pooled-logistic-v2. No raw trial paths are shown.</p></details></figcaption>
-        </figure>
-      </div>
-
-      <figure class="lab-chart" aria-labelledby="lab-backtest-title">
-        <p class="lab-eyebrow">02 / HISTORICAL VALIDATION</p><h3 id="lab-backtest-title">Test the model. Keep the better baseline.</h3><p>On the 2024 Flood validation cohort, the simpler Kaplan–Meier survival baseline had lower Brier error at all three horizons. It remains the selected default.</p>
-        <picture><source media="(max-width: 600px)" width="370" height="350" srcset="/research/backtest-mobile.svg?v=20a391df22"><img src="/research/backtest.svg?v=a1b0be8b96" alt="Grouped Brier-error bars compare the Kaplan–Meier baseline and logistic model at 6, 12 and 24 hours. The baseline has lower error at every horizon; whiskers show 95 percent episode-bootstrap intervals." width="700" height="370" loading="lazy" decoding="async"></picture>
-        <figcaption>Trained through 2023; 4,053 validation snapshots from 583 reporting episodes. Whiskers: 95% episode-bootstrap intervals, 500 resamples. Lower Brier error is better.
-        <details class="lab-values"><summary>Exact values and evaluation</summary><table><caption>2024 validation Brier error</caption><thead><tr><th>Horizon</th><th>KM baseline</th><th>Logistic</th></tr></thead><tbody><tr><th scope="row">6h</th><td>0.211733</td><td>0.216986</td></tr><tr><th scope="row">12h</th><td>0.232385</td><td>0.242210</td></tr><tr><th scope="row">24h</th><td>0.224849</td><td>0.239856</td></tr></tbody></table><p><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/backtest_metrics.json">Full metrics, intervals and splits</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVALUATION.md">Evaluation limitations</a>. This is the model-selection cohort, not a new untouched holdout. Calibration and duration error still limit use; retrospective evaluation is not operational safety validation.</p></details></figcaption>
-      </figure>
-
-      <figure class="lab-chart" aria-labelledby="lab-data-title">
-        <p class="lab-eyebrow">03 / SOURCE SCALE</p><h3 id="lab-data-title">A traceable data foundation.</h3><p>526,824 historical records and measurements across three source inventories. Different units and reporting processes—not independent training examples.</p>
-        <picture><source media="(max-width: 600px)" width="370" height="350" srcset="/research/data-sources-mobile.svg?v=83efb2926b"><img src="/research/data-sources.svg?v=0a477d967a" alt="Horizontal bars show 349,030 NOAA Storm Events records, 122,270 station measurements, and 55,524 NHC historical track points on a shared zero-based count scale." width="700" height="370" loading="lazy" decoding="async"></picture>
-        <figcaption>Source volume, not forecast accuracy. These inventories include records outside the final eligible model cohorts; the NHC count covers the full historical archive.
-        <details class="lab-values"><summary>Exact counts and source reports</summary><table><caption>Historical source inventories</caption><thead><tr><th>Dataset</th><th>Records / measurements</th></tr></thead><tbody><tr><th scope="row">NOAA Storm Events</th><td>349,030</td></tr><tr><th scope="row">Station measurements</th><td>122,270</td></tr><tr><th scope="row">NHC track points</th><td>55,524</td></tr></tbody></table><p><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/backtest_metrics.json">NOAA rows</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/station_coverage.json">Station coverage</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/hurdat_coverage.json">NHC archive</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/worker_outlook/eia_coverage.json">EIA locations</a></p></details></figcaption>
-      </figure>
-    </div>
-
-    <div class="lab-trust"><p class="lab-eyebrow">MODELS INFORM. PEOPLE DECIDE.</p><h3>Prediction is not permission.</h3><p>Statistical models estimate uncertainty. Deterministic rules raise alerts and calculate the separate 0–10 index. Supervisors make operational decisions. Neither ML nor Gemini can declare a site safe, authorize work or clear an alert.</p><a href="/research/evidence.json">Inspect the chart data and source hashes <span aria-hidden="true">↗</span></a></div>
-  </section>
-<!-- research-evidence:end -->
-
   <section class="intelligence" aria-labelledby="intelligence-title">
     <h2 id="intelligence-title">MORE THAN A WEATHER DASHBOARD.</h2>
     <div class="features">
@@ -293,209 +134,10 @@ main,header{position:relative;z-index:3}
         <p>Crews report hazards that sensors cannot detect. Supervisors review evidence, coordinate teams, and make informed safety decisions.</p>
       </article>
     </div>
-    <details class="research">
-      <summary>Research scope and sources</summary>
-      <p>The figures describe retrospective research and representative infrastructure locations. Models estimate persistence for certain already-active events. Their outlooks support human review; deterministic rules control alerts and the separate 0–10 hazard index.</p>
-      <ul>
-        <li><strong>526,824 mixed records and measurements:</strong> 349,030 NOAA Storm Events records, 122,270 hourly station measurements and 55,524 NHC historical track points. These are source inventories, not independent training examples. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/DISASTER_COVERAGE.md">Data coverage</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/hurdat_coverage.json">NHC archive counts</a>.</li>
-        <li><strong>Six research duration targets:</strong> Flood, Flash Flood, High Wind, Heavy Rain, Winter Storm and Heat Index Exceedance. Heat-index research is restricted to the evaluated stations. Retrospective evaluations do not establish operational safety certification. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVENT_OUTLOOKS.md">Target scope</a>.</li>
-        <li><strong>5,000 Monte Carlo draws:</strong> one seeded, offline flood-model distribution-consistency experiment. Historical backtesting evaluates predictive skill; sampling agreement alone does not. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVALUATION.md">Evaluation and limitations</a>.</li>
-        <li><strong>50 mapped reference locations:</strong> representative EIA infrastructure sites, with no implication of active crews or complete live coverage at each location. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/worker_outlook/eia_coverage.json">Location provenance</a>.</li>
-      </ul>
-      <p>Gemini summarizes supplied evidence and suggests actions for review. Supervisors retain decision authority. Neither predictions nor AI suggestions authorize work or clear an alert.</p>
-    </details>
   </section>
 
 </main>
 
-<script>
-(() => {
-'use strict';
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const $ = s => document.querySelector(s);
-
-/* ================= WebGL red fog ================= */
-const sky = $('#sky');
-const gl = sky.getContext('webgl', {antialias:false, premultipliedAlpha:false});
-const S = { flash:0, strike:[0,.3], tint:[.95,.12,.16], mouse:[0,0], mt:[0,0], density:.85 };
-// the pointer's wake through the fog: recent path samples, faded over about a second
-const W = { trail:[], last:null, pos:new Float32Array(64), dir:new Float32Array(32) };
-let draw = () => {};
-const initSky = () => { // builds the fog shader; runs again if the browser drops and restores the WebGL context
-  const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
-  const fs = `precision highp float;
-  uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uFlash;uniform vec2 uStrike;uniform vec3 uTint;uniform float uDensity;
-  // the pointer's wake: the gas parts along its path and drags slightly forward, then closes back in (no darkening)
-  // (a copy of frontend/src/components/shell/fogWake.ts)
-  uniform vec4 uWake[16];uniform vec2 uWakeDir[16];
-  vec3 wake(vec2 p){
-    vec2 disp=vec2(0.);float cut=0.;
-    for(int i=0;i<16;i++){
-      vec4 t=uWake[i];
-      if(t.z<.001) continue;
-      vec2 d=p-t.xy, v=uWakeDir[i], n=vec2(-v.y,v.x);
-      float along=dot(d,v), across=dot(d,n);
-      float k=exp(-across*across/.000064-along*along/.000256)*t.z;
-      disp+=(n*across*175.+v*.6)*k; // parts smoothly to either side, drags slightly forward
-      cut+=k;
-    }
-    // cursor-sized band; averaged, not summed, and kept to ~0.3% of screen height so the fog never folds into rings
-    return vec3(disp*.003/max(1.,cut),clamp(cut,0.,1.));
-  }
-  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
-    return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
-  float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);for(int i=0;i<5;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}
-  void main(){
-    vec2 uv=gl_FragCoord.xy/uRes;
-    vec2 p=(gl_FragCoord.xy-.5*uRes)/uRes.y;
-    float t=uTime*.03;
-    // low, rolling fog: stretched sideways and drifting slowly
-    vec3 wk=wake(p);
-    vec2 cp=(p-wk.xy)*vec2(.8,1.3);
-    vec2 q=vec2(fbm(cp*1.3+vec2(t,0.)),fbm(cp*1.3+vec2(5.2,1.3)-t));
-    vec2 r=vec2(fbm(cp*1.3+3.2*q+vec2(1.7,9.2)+t*1.4),fbm(cp*1.3+3.2*q+vec2(8.3,2.8)-t*1.1));
-    float f=fbm(cp*1.1+3.*r+uMouse*.15);
-    float fog=smoothstep(.2,.95,f)*(.55+.6*(1.-uv.y*.6))*uDensity*1.5;
-    float edge=smoothstep(.45,.75,f)-smoothstep(.75,1.,f);
-    // the fog itself stays close to black between strikes
-    vec3 col=mix(vec3(.012,.004,.005),uTint*.13,fog);
-    col+=uTint*edge*.025;
-    col+=uTint*.012*exp(-length(p-uMouse)*2.4)*fog*6.;
-    col+=uTint*.035*smoothstep(.6,0.,uv.y);
-    // lightning lights the fog from behind: brightest near the strike, carried by the fog's density and folds
-    float d=length(p-uStrike);
-    float reach=exp(-d*1.5)*1.5+.12;
-    float lit=uFlash*reach*(.02+fog*1.1+edge*.8);
-    col+=mix(uTint,vec3(1.,.8,.84),.3)*lit*.75;
-    // a soft glow hanging around the bolt itself, so the light clearly comes from the strike
-    col+=mix(uTint,vec3(1.,.85,.9),.5)*uFlash*exp(-d*3.2)*(.18+fog*.5);
-    col*=1.-.55*pow(length(uv-.5)*1.25,2.2);
-    col+=(h(gl_FragCoord.xy+fract(uTime))-.5)*.025;
-    gl_FragColor=vec4(max(col,0.),1.);
-  }`;
-  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
-  const pr = gl.createProgram();
-  gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  const U = {}; ['uRes','uTime','uMouse','uFlash','uStrike','uTint','uDensity','uWake','uWakeDir'].forEach(k => U[k] = gl.getUniformLocation(pr,k));
-  const RES = .5; // render at half resolution; the softness reads as atmosphere
-  const size = () => { sky.width = Math.round(innerWidth*RES); sky.height = Math.round(innerHeight*RES); gl.viewport(0,0,sky.width,sky.height); };
-  size(); addEventListener('resize', size);
-  draw = (t) => {
-    gl.uniform2f(U.uRes, sky.width, sky.height); gl.uniform1f(U.uTime, t);
-    gl.uniform2f(U.uMouse, S.mouse[0], S.mouse[1]); gl.uniform1f(U.uFlash, S.flash);
-    gl.uniform2f(U.uStrike, S.strike[0], S.strike[1]); gl.uniform3fv(U.uTint, S.tint); gl.uniform1f(U.uDensity, S.density);
-    gl.uniform4fv(U.uWake, W.pos); gl.uniform2fv(U.uWakeDir, W.dir);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  };
-};
-if (gl) {
-  initSky();
-  sky.addEventListener('webglcontextlost', e => { e.preventDefault(); draw = () => {}; });
-  sky.addEventListener('webglcontextrestored', initSky);
-} else { sky.style.background = 'radial-gradient(ellipse at 50% 100%, #2a060b, #07090c 70%)'; }
-
-// moving the pointer slices a short-lived wake through the fog (off under reduced motion)
-addEventListener('pointermove', e => {
-  S.mt = [(e.clientX - innerWidth/2)/innerHeight, -(e.clientY - innerHeight/2)/innerHeight];
-  if (reduce) return;
-  const [x, y] = S.mt, now = performance.now();
-  if (!W.last) { W.last = { x, y }; return; }
-  // samples at a fixed ~5px step along the path, all the same strength, so the wake looks
-  // the same at any pointer speed; a still pointer adds nothing
-  let dx = x - W.last.x, dy = y - W.last.y, dist = Math.hypot(dx, dy);
-  if (dist < .006) return;
-  dx /= dist; dy /= dist;
-  for (; dist >= .006; dist -= .006) {
-    W.last = { x:W.last.x + dx*.006, y:W.last.y + dy*.006 };
-    W.trail.push({ x:W.last.x, y:W.last.y, dx, dy, born:now });
-  }
-  while (W.trail.length > 16) W.trail.shift();
-}, {passive:true});
-function updateWake(now){
-  W.pos.fill(0); W.dir.fill(0);
-  W.trail.forEach((s, i) => { W.pos.set([s.x, s.y, Math.exp(-(now - s.born)/700)*.9, 0], i*4); W.dir.set([s.dx, s.dy], i*2); });
-}
-
-/* ================= Bolt overlay ================= */
-const bc = $('#bolt'), bx = bc.getContext('2d');
-let bolts = [];
-const sizeBolt = () => { const d = Math.min(devicePixelRatio||1, 2); bc.width = innerWidth*d; bc.height = innerHeight*d; bx.setTransform(d,0,0,d,0,0); };
-sizeBolt(); addEventListener('resize', sizeBolt);
-function path(x0,y0,x1,y1,disp,out){
-  if (disp < 3) { out.push([x1,y1]); return; }
-  const mx = (x0+x1)/2 + (Math.random()-.5)*disp, my = (y0+y1)/2 + (Math.random()-.5)*disp*.3;
-  path(x0,y0,mx,my,disp/2,out); path(mx,my,x1,y1,disp/2,out);
-}
-function makeBolt(x, yEnd){
-  const segs = []; const main = [[x + (Math.random()-.5)*160, -20]];
-  path(main[0][0], -20, x, yEnd, 220, main); segs.push({pts:main, w:1.6});
-  for (let i = 0; i < 3; i++) {
-    const k = Math.floor(main.length*(.15 + Math.random()*.6)); const [sx,sy] = main[k];
-    const br = [[sx,sy]]; path(sx, sy, sx + (Math.random()-.5)*300, sy + 80 + Math.random()*200, 90, br); segs.push({pts:br, w:1});
-  }
-  bolts.push({segs, born:performance.now()});
-}
-function drawBolts(now){
-  bx.clearRect(0,0,innerWidth,innerHeight);
-  bolts = bolts.filter(b => now - b.born < 700);
-  for (const b of bolts) {
-    const age = Math.max(0, (now - b.born)/700);
-    const flick = (age < .12 || (age > .2 && age < .3) || (age > .38 && age < .45)) ? 1 : .25;
-    const a = (1-age)*flick;
-    for (const s of b.segs) {
-      bx.beginPath(); s.pts.forEach(([x,y],i) => i ? bx.lineTo(x,y) : bx.moveTo(x,y));
-      bx.strokeStyle = `rgba(255,190,200,${a*.22})`; bx.lineWidth = s.w*5; bx.shadowBlur = 18; bx.shadowColor = '#ff5a6e'; bx.stroke();
-      bx.strokeStyle = `rgba(255,255,255,${a*.8})`; bx.lineWidth = s.w; bx.shadowBlur = 0; bx.stroke();
-    }
-  }
-}
-
-/* ================= Random lightning ================= */
-// a strike lands somewhere across the sky every few seconds; sometimes a second one follows close behind
-function strike(strong){
-  const x = innerWidth*(.08 + Math.random()*.84);
-  const near = strong || Math.random() < .4;
-  S.flash = near ? .85 : .5;
-  S.flicker = performance.now();
-  const yEnd = innerHeight*(.45 + Math.random()*.4);
-  S.strike = [(x - innerWidth/2)/innerHeight, .5 - yEnd*.5/innerHeight]; // light centred halfway down the bolt
-  if (!reduce) makeBolt(x, yEnd);
-}
-const schedule = () => {
-  if (!document.hidden) { strike(); if (Math.random() < .3) setTimeout(strike, 180 + Math.random()*420); }
-  setTimeout(schedule, 3200 + Math.random()*5200);
-};
-setTimeout(schedule, 1400);
-
-/* ================= Stats count up once on load ================= */
-document.querySelectorAll('.stats b').forEach((el, i) => {
-  const to = +el.dataset.to, suf = el.dataset.suffix || '', unit = el.dataset.unit, t0 = performance.now() + 900 + i*120, D = reduce ? 1 : 1400;
-  const put = v => { el.textContent = v.toLocaleString("en-US") + suf; if (unit) { const s = document.createElement('small'); s.textContent = unit; el.append(s); } };
-  put(reduce ? to : 0);
-  const tick = now => { const k = Math.min(1, Math.max(0, (now - t0)/D)), e = 1 - Math.pow(1 - k, 4); put(Math.round(to*e)); if (k < 1) requestAnimationFrame(tick); };
-  if (!reduce) requestAnimationFrame(tick);
-  setTimeout(() => put(to), 900 + i*120 + D + 300); // lands on the real value even if animation frames are paused
-});
-
-/* ================= Main loop ================= */
-const t0 = performance.now();
-function frame(now){
-  S.flash *= .93; // the glow lingers in the fog a moment after the bolt
-  // the fog flickers with the bolt's own return strokes during its first half second
-  const age = now - (S.flicker || -1e9);
-  if (age < 450 && Math.random() < .25) S.flash = Math.min(.9, S.flash + .2);
-  updateWake(now);
-  S.mouse[0] += (S.mt[0] - S.mouse[0]) * .05; S.mouse[1] += (S.mt[1] - S.mouse[1]) * .05;
-  draw(reduce ? 12 : (now - t0)/1000);
-  drawBolts(now);
-  requestAnimationFrame(frame);
-}
-requestAnimationFrame(frame);
-})();
-</script>
+<script src="/public-atmosphere.js" defer></script>
 </body>
 </html>
