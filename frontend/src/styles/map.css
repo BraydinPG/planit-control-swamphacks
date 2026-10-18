@@ -26,6 +26,11 @@
 .map-shell .leaflet-popup-content-wrapper {
   border-radius: 12px;
 }
+/* Always-dark theme: darken the light OpenStreetMap tiles only. Markers,
+   outlines, popups and controls are not filtered. */
+.map-shell .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
 
 .map-shell.leaflet-container .leaflet-control-zoom a,
 .map-shell .leaflet-popup-content-wrapper,

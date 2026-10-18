@@ -69,9 +69,11 @@ their existing minimum sizes.
   presentation-only optional prop on RequireRole; embedded guards in the development
   sign-in-check page omit duplicate logos because that page has its own full logo.
   Authentication conditions, actions, context and tokens are unchanged.
-  These panels and their controls stay light even when the device prefers dark mode,
-  matching the application's light theme and retaining readable original navy artwork.
-  The logo itself stays transparent without a backing plate, outline or color filter.
+  Since 2026-10-18 the whole application, including these panels, is always dark
+  (user decision). The logo artwork is unchanged: it stays transparent without a
+  backing plate, outline or color filter, so the navy lettering has low contrast on
+  the dark surfaces. That trade-off was accepted; any light logo variant needs a new
+  approved asset.
 - Both HTML entrypoints reference cyclone favicons. Main metadata includes the
   full-logo social image. The tab title remains exactly **FORESITE**.
 

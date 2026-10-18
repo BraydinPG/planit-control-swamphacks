@@ -75,7 +75,7 @@ function AccessPanel({ title, children, showBrand }: { title: string; children: 
   return (
     <section
       aria-labelledby="access-panel-title"
-      className="mx-auto my-8 flex max-w-md flex-col items-center gap-4 rounded-lg border-0 bg-white p-6 text-center text-lg text-neutral-950 shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
+      className="mx-auto my-8 flex max-w-md flex-col items-center gap-4 rounded-lg border border-line bg-surface p-6 text-center text-lg text-ink shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
     >
       {showBrand && <Brand variant="full" />}
       <h2 id="access-panel-title" className="text-2xl font-semibold">
@@ -91,7 +91,7 @@ function ActionButton({ onClick, children }: { onClick: () => void; children: Re
     <button
       type="button"
       onClick={onClick}
-      className="min-h-11 min-w-11 self-center rounded-md bg-neutral-900 px-5 py-2 text-lg font-semibold text-white hover:bg-neutral-700 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      className="min-h-11 min-w-11 self-center rounded-md bg-accent-fill px-5 py-2 text-lg font-semibold text-white hover:bg-accent-fill-hover focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-focus"
     >
       {children}
     </button>
@@ -100,7 +100,7 @@ function ActionButton({ onClick, children }: { onClick: () => void; children: Re
 
 function ErrorText({ message }: { message: string }) {
   return (
-    <p role="alert" className="font-medium text-red-800">
+    <p role="alert" className="font-medium text-stop-text">
       <span aria-hidden="true">⚠ </span>
       {message}
     </p>

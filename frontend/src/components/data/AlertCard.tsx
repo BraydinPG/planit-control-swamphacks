@@ -108,7 +108,7 @@ function Acknowledged({ big = false }: { big?: boolean }) {
       role="status"
       className={`flex items-center gap-3 rounded-2xl border-2 border-ok bg-ok/10 px-4 text-ok ${big ? 'min-h-[72px]' : 'min-h-14'}`}
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok text-white">
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok-fill text-white">
         <Icon name="check" className="size-5" />
       </span>
       <span>
