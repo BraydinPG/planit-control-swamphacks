@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type {
   DurationForecast,
   EventOutlookCard,
@@ -31,11 +31,21 @@ const kindText: Record<EventOutlookCard['forecast']['kind'], string> = {
   unavailable: 'Prediction unavailable',
 }
 
-export function EventOutlooks({ cards }: { cards: EventOutlookCard[] }) {
+/** `tiles` uses the crew Weather and conditions layout; the default keeps full cards. */
+export function EventOutlooks({
+  cards,
+  tiles = false,
+}: {
+  cards: EventOutlookCard[]
+  tiles?: boolean
+}) {
   return (
     <section className="space-y-3" aria-labelledby="event-outlooks-title">
       <div>
-        <h2 id="event-outlooks-title" className="text-lg font-bold">
+        <h2
+          id="event-outlooks-title"
+          className={`text-lg font-bold ${tiles ? 'tracking-tight @lg:text-xl' : ''}`}
+        >
           Event outlooks
         </h2>
         <p className="text-sm text-ink-2">
@@ -43,7 +53,9 @@ export function EventOutlooks({ cards }: { cards: EventOutlookCard[] }) {
           work.
         </p>
       </div>
-      {cards.length ? (
+      {cards.length && tiles ? (
+        <OutlookTiles cards={cards} />
+      ) : cards.length ? (
         <div className="grid items-start gap-3 @3xl:grid-cols-2">
           {cards.map((card) => (
             <OutlookCard key={card.event_id} card={card} />
@@ -102,75 +114,212 @@ function OutlookCard({ card }: { card: EventOutlookCard }) {
         title="How was this estimated?"
         label={`${card.event_type}: how was this estimated?`}
       >
-        <p className="font-semibold">{card.event_name}</p>
-        <dl className="divide-y divide-line rounded-xl bg-surface-2">
-          <Row label="Event start">
-            {card.event_start_utc ? (
-              <Timestamp value={card.event_start_utc} />
-            ) : (
-              'Unknown; warning times are not event starts.'
-            )}
-          </Row>
-          {card.last_forecast_issued_at_utc && (
-            <Row label="Forecast issued">
-              <Timestamp value={card.last_forecast_issued_at_utc} />
-            </Row>
+        <OutlookEvidence card={card} />
+      </Details>
+    </article>
+  )
+}
+
+/** The evidence behind one outlook; shared by full cards and crew tiles. */
+function OutlookEvidence({ card }: { card: EventOutlookCard }) {
+  const f = card.forecast
+  return (
+    <>
+      <p className="font-semibold">{card.event_name}</p>
+      <dl className="divide-y divide-line rounded-xl bg-surface-2">
+        <Row label="Event start">
+          {card.event_start_utc ? (
+            <Timestamp value={card.event_start_utc} />
+          ) : (
+            'Unknown; warning times are not event starts.'
           )}
-          {card.last_observation_at_utc && (
-            <Row label="Latest local evidence">
-              <Timestamp value={card.last_observation_at_utc} />
-            </Row>
-          )}
-          <Row label="Confirmation">
-            {displayLabel(card.confirmation.status)} ·{' '}
-            {displayLabel(card.confirmation.basis)}
+        </Row>
+        {card.last_forecast_issued_at_utc && (
+          <Row label="Forecast issued">
+            <Timestamp value={card.last_forecast_issued_at_utc} />
           </Row>
-        </dl>
-        <p>{card.association.description}</p>
-        {f.kind === 'historical_duration_research' && <DurationDetails f={f} />}
-        {f.kind === 'official_event_forecast' && <StormDetails f={f} />}
-        {f.kind === 'official_aftershock_forecast' && (
-          <AftershockDetails f={f} />
         )}
-        {f.kind === 'unavailable' && (
-          <>
-            <p>{f.reason}</p>
-            {f.required_inputs.length > 0 && (
-              <div>
-                <h4 className="font-semibold">Missing requirements</h4>
-                <ul className="list-disc space-y-1 pl-5">
-                  {f.required_inputs.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </>
+        {card.last_observation_at_utc && (
+          <Row label="Latest local evidence">
+            <Timestamp value={card.last_observation_at_utc} />
+          </Row>
         )}
-        {card.evidence.length > 0 && (
-          <div>
-            <h4 className="font-semibold">Evidence records</h4>
-            <ul className="space-y-2">
-              {card.evidence.map((e) => (
-                <li key={e.id}>
-                  <span className="font-mono">{e.id}</span> · {e.source_id}
-                  <br />
-                  Valid <Timestamp value={e.valid_time_utc} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <Row label="Confirmation">
+          {displayLabel(card.confirmation.status)} ·{' '}
+          {displayLabel(card.confirmation.basis)}
+        </Row>
+      </dl>
+      <p>{card.association.description}</p>
+      {f.kind === 'historical_duration_research' && <DurationDetails f={f} />}
+      {f.kind === 'official_event_forecast' && <StormDetails f={f} />}
+      {f.kind === 'official_aftershock_forecast' && (
+        <AftershockDetails f={f} />
+      )}
+      {f.kind === 'unavailable' && (
+        <>
+          <p>{f.reason}</p>
+          {f.required_inputs.length > 0 && (
+            <div>
+              <h4 className="font-semibold">Missing requirements</h4>
+              <ul className="list-disc space-y-1 pl-5">
+                {f.required_inputs.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+      {card.evidence.length > 0 && (
         <div>
-          <h4 className="font-semibold">Limitations</h4>
-          <ul className="list-disc space-y-1 pl-5">
-            {card.limitations.map((l, i) => (
-              <li key={i}>{l}</li>
+          <h4 className="font-semibold">Evidence records</h4>
+          <ul className="space-y-2">
+            {card.evidence.map((e) => (
+              <li key={e.id}>
+                <span className="font-mono">{e.id}</span> · {e.source_id}
+                <br />
+                Valid <Timestamp value={e.valid_time_utc} />
+              </li>
             ))}
           </ul>
         </div>
+      )}
+      <div>
+        <h4 className="font-semibold">Limitations</h4>
+        <ul className="list-disc space-y-1 pl-5">
+          {card.limitations.map((l, i) => (
+            <li key={i}>{l}</li>
+          ))}
+        </ul>
+      </div>
+    </>
+  )
+}
+
+const tileLimit = 4
+
+// Same shape as the crew Weather and conditions pane: compact tiles, a
+// View more toggle past four, then one shared disclosure for the evidence.
+function OutlookTiles({ cards }: { cards: EventOutlookCard[] }) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div className="@container space-y-2 rounded-2xl border border-line bg-surface p-3">
+      <ul className="grid gap-2 @md:grid-cols-2">
+        {(expanded ? cards : cards.slice(0, tileLimit)).map((card) => (
+          <OutlookTile key={card.event_id} card={card} />
+        ))}
+      </ul>
+      {cards.length > tileLimit && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          data-outlook-more
+          className="inline-flex min-h-11 items-center rounded-xl bg-surface-2 px-4 py-2 text-sm font-semibold text-ink"
+          onClick={() => setExpanded((value) => !value)}
+        >
+          {expanded ? 'View less' : `View more (${cards.length - tileLimit})`}
+        </button>
+      )}
+      <Details title="How each outlook was estimated">
+        <ul className="divide-y divide-line text-sm">
+          {cards.map((card) => (
+            <li key={card.event_id} className="space-y-2 py-2 leading-relaxed">
+              <p className="font-semibold text-ink">
+                {displayLabel(card.event_type)}
+              </p>
+              <p className="font-medium">
+                {displayLabel(card.association.method, 'Site link unknown')}
+              </p>
+              <OutlookEvidence card={card} />
+            </li>
+          ))}
+        </ul>
       </Details>
-    </article>
+    </div>
+  )
+}
+
+function tileReading(f: EventOutlookCard['forecast']): {
+  value: string
+  unit: string
+  note: string
+} {
+  if (f.kind === 'historical_duration_research') {
+    const d = f.remaining_duration_hours
+    return {
+      value: hours(d.median),
+      unit: 'remaining',
+      note:
+        (d.p10 !== null && d.p90 !== null
+          ? `Likely ${hours(d.p10)} to ${hours(d.p90)}. `
+          : 'Range partly unknown. ') + 'Not a time to resume work.',
+    }
+  }
+  if (f.kind === 'official_event_forecast')
+    return {
+      value: String(f.initial_position.max_sustained_wind_kt),
+      unit: 'knots at issue',
+      note: `${f.storm_name}. Local wind and event end time are unknown.`,
+    }
+  if (f.kind === 'official_aftershock_forecast') {
+    const window = f.windows[0]
+    const bin = window?.bins[0]
+    return bin
+      ? {
+          value: percent(bin.probability_at_least_one),
+          unit: `chance of M${bin.magnitude_at_least}+`,
+          note: `${window.label} · sequence region, not this worksite.`,
+        }
+      : { value: 'Unknown', unit: '', note: 'Sequence region, not this worksite.' }
+  }
+  return {
+    value: 'Prediction unavailable',
+    unit: '',
+    note: `${outlookUnavailableLabel(f.reason_code)} No probability is substituted.`,
+  }
+}
+
+function OutlookTile({ card }: { card: EventOutlookCard }) {
+  const f = card.forecast
+  const reading = tileReading(f)
+  const missing = f.kind === 'unavailable'
+  return (
+    <li
+      data-outlook-id={card.event_id}
+      aria-label={`${card.event_type} outlook`}
+      className="flex min-w-0 flex-col gap-1.5 rounded-xl bg-surface-2 p-3"
+    >
+      <p className="text-sm font-semibold text-ink-2 [overflow-wrap:anywhere]">
+        {displayLabel(card.event_type)}
+      </p>
+      <p
+        className={`text-xl font-bold leading-snug tracking-tight tabular-nums [overflow-wrap:anywhere] ${missing ? 'text-muted' : ''}`}
+      >
+        {reading.value}{' '}
+        <span className="text-sm font-semibold text-muted">{reading.unit}</span>
+      </p>
+      <p className="text-sm text-ink-2">{reading.note}</p>
+      <p className="flex flex-wrap gap-1.5">
+        <span
+          className={`chip border ${card.presentation === 'current' ? 'border-line-strong text-ink-2' : 'border-dotted border-sim text-sim'}`}
+        >
+          {presentationText[card.presentation]}
+        </span>
+        {f.kind !== 'unavailable' && (
+          <span className="chip border border-line-strong text-ink-2">
+            {kindText[f.kind]}
+          </span>
+        )}
+      </p>
+      {card.presentation === 'historical_example' && (
+        <p className="text-xs font-semibold text-sim">
+          Archived agency forecast, not a current prediction.
+        </p>
+      )}
+      <p className="mt-auto text-xs text-muted">
+        As of <Timestamp value={card.as_of_utc} />
+      </p>
+    </li>
   )
 }
 

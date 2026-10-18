@@ -88,7 +88,8 @@ async function loaded(text) {
   await until(
     () =>
       evaluate(
-        `document.readyState === 'complete' && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
+        // Confirmed hazards keep instructions behind View more; open them to read.
+        `(document.querySelectorAll('[aria-label="Confirmed hazards"] details:not([open])').forEach(d=>{d.open=true}), document.readyState === 'complete') && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
       ),
     text,
   )
@@ -338,7 +339,7 @@ try {
       `Overflow at ${width}`,
     )
     const bounds = await evaluate(
-      "(()=>{const a=Array.from(document.querySelectorAll('a')).find(e=>e.textContent.includes('View alert'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
+      "(()=>{const a=Array.from(document.querySelectorAll('main h2')).find(e=>e.textContent.includes('Stop-work alert active'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
     )
     assert(
       bounds.top >= 0 && bounds.bottom <= height - 64,
@@ -356,6 +357,8 @@ try {
       nav_targets: '>=44px',
     })
     await hash('/crew/sites', 'Score factors and evidence')
+    // Crew outlook tiles show four; expand to count every outlook.
+    await evaluate("document.querySelector('[data-outlook-more][aria-expanded=false]')?.click()")
     assert(
       await evaluate(`(()=>{
       const score=document.querySelector('[aria-label="Site score"]');
@@ -373,7 +376,7 @@ try {
     await screenshot(`demo-score-${name}`)
     await hash('/crew/overview', 'Stop-work alert active')
   }
-  await click('View alert')
+  await click('Alerts')
   await loaded('Acknowledging does not clear the alert')
   await click('Acknowledge in demo')
   await loaded('Action recorded.')
@@ -508,6 +511,8 @@ try {
     map: '55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional',
   })
   await click('Flood advisory replay')
+  // The advisory body sits behind its View more disclosure.
+  await disclose('View more')
   await loaded('Simulated research replay')
   await disclose('Research replay and source assessments')
   await disclose('Location and source')
@@ -522,7 +527,7 @@ try {
   )
   assert(
     await evaluate(
-      `document.querySelector('[data-report-id="${reportId}"]').innerText.includes('Awaiting supervisor confirmation') && !document.querySelector('[data-report-id="${reportId}"] button')`,
+      `document.querySelector('[data-report-id="${reportId}"]').innerText.includes('supervisor confirmation of the hazard notice') && !document.querySelector('[data-report-id="${reportId}"] button')`,
     ),
     'Present report must use its notice, not absent-review controls',
   )
@@ -632,7 +637,7 @@ try {
                       : '55 locations'
                   : page === 'sites'
                     ? 'Score factors and evidence'
-                    : 'View alert',
+                    : 'Hazards and supervisor instructions',
         )
         if (persona === 'supervisor' && page === 'sites')
           await until(
@@ -936,7 +941,7 @@ try {
     await hash('/crew/overview', 'Stop-work alert active')
     assert(await evaluate("document.querySelector('header button').textContent.trim()==='Sign out' && !document.body.innerText.includes('Authenticated API') && !document.body.innerText.includes('Connected mode.')"))
     await evaluate('window.harness.alertWindow(90)')
-    await click('View alert')
+    await click('Alerts')
     await loaded('Acknowledge alert')
     const ticking = await evaluate("document.querySelector('[role=timer]').textContent")
     await until(async () => (await evaluate("document.querySelector('[role=timer]').textContent")) !== ticking, 'live countdown ticks')
@@ -1074,7 +1079,7 @@ try {
     await until(
       () =>
         evaluate(
-          `document.querySelector('[data-report-id="${absentId}"]').innerText.includes('Confirmed')`,
+          `document.querySelector('[data-report-id="${absentId}"]').textContent.includes('Confirmed')`,
         ),
       'mock absent reviewed',
     )

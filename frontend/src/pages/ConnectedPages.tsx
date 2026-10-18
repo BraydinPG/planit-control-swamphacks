@@ -178,157 +178,105 @@ function SitePage({
     (persona === 'supervisor' &&
       n.confirmed_by === principalId &&
       !n.instruction_sent_at)
-  const actions = (
-    <div className="space-y-3">
-      {!compact && (
-      <div className="grid gap-3 @lg:grid-cols-2">
-        <a className={primary + big} href={`#/${persona}/reports`}>
-          <Icon name="camera" className="size-6" />
-          Report a hazard
-        </a>
-        <a className={control + big} href={`#/${persona}/briefings`}>
-          <Icon name="briefings" className="size-6" />
-          View briefing
-        </a>
-      </div>
-      )}
-      <button
-        type="button"
-        className={control + ' w-full border-dashed @lg:w-auto'}
-        onClick={refresh}
-      >
-        <Icon name="refresh" className="size-4" />
-        Refresh worksite
-      </button>
+  const refreshButton = (
+    <button
+      type="button"
+      className={control + ' w-full border-dashed @lg:w-auto'}
+      onClick={refresh}
+    >
+      <Icon name="refresh" className="size-4" />
+      Refresh worksite
+    </button>
+  )
+  const score = <ScorePanel site={site} demo={client.mode === 'demo'} />
+  const header = (
+    <div>
+      <h2 className="text-xl font-bold leading-tight tracking-tight">
+        {site.name}
+      </h2>
+      <p className="text-sm text-muted">
+        {site.assigned_team?.name ?? 'No team assigned'}
+      </p>
     </div>
   )
-  return (
-    <div className="pc-enter space-y-5">
-      {compact && (
-        <div>
-          <h2 className="text-xl font-bold leading-tight tracking-tight">
-            {site.name}
-          </h2>
-          <p className="text-sm text-muted">
-            {site.assigned_team?.name ?? 'No team assigned'}
-          </p>
-        </div>
-      )}
-      {compact && active[0] && <AlertCard alert={active[0]} />}
-      {compact && active.length > 1 && (
-        <a href={`#/${persona}/alerts`} className={control}>
-          View all {active.length} active alerts
-        </a>
-      )}
-      {compact && !active.length && (
+  const locationDetails = (
+    <Details title="Location and source">
+      <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 break-words text-sm text-muted">
+        <span className="inline-flex items-center gap-1">
+          <Icon name="pin" className="size-3.5" />
+          {site.id} · {site.lat}, {site.lon}
+        </span>
+        <span>{site.source}</span>
+      </p>
+    </Details>
+  )
+  const conditions = (
+    <section className="space-y-3">
+      <SectionHead title="Weather and conditions" />
+      <Observations rows={site.observations} />
+    </section>
+  )
+  const factors = (
+    <details className={`${card} group`}>
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 text-base font-bold">
+        Score factors and evidence
+        <Icon
+          name="back"
+          className="size-5 -rotate-90 transition-transform group-open:rotate-90"
+        />
+      </summary>
+      <div className="border-t border-line px-5 pb-2">
+        {/* The full stored breakdown; top_factors is the list's top three only. */}
+        <Factors
+          factors={site.score?.factor_contributions ?? site.top_factors}
+        />
+      </div>
+    </details>
+  )
+  const hazards = (
+    <section className={`${card} space-y-3 border border-line p-3`}>
+      <SectionHead title="Hazards and supervisor instructions" />
+      {site.notices.length ? (
+        <>
+          {site.notices.filter(needsAction).map((n) => (
+            <NoticeCard key={n.id} notice={n} outlook={site.event_outlook} />
+          ))}
+          <ConfirmedHazards
+            notices={site.notices.filter((n) => !needsAction(n))}
+            outlook={site.event_outlook}
+          />
+        </>
+      ) : (
         <Empty>
-          No active alerts reported. Worksite conditions still require
-          verification.
+          No notices supplied. Local electrical, structural and access
+          conditions remain unverified.
         </Empty>
       )}
-      <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
-        <div className="space-y-5 @3xl:col-span-7">
-          {compact && actions}
-          {!compact && (
-          <section className={`${card} p-5`}>
-            <p className="kicker mb-1.5">
-              {displayLabel(site.location_type, 'Worksite')}
-            </p>
-            {!compact && (
-              <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
-            )}
-            <p className={compact ? 'text-ink-2' : 'mt-1 text-ink-2'}>
-              {compact
-                ? (site.region ?? 'Region not supplied')
-                : `${site.assigned_team?.name ?? 'No team assigned'} · ${site.region ?? 'Region not supplied'}`}
-            </p>
-            <Details title="Location and source">
-              <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 break-words text-sm text-muted">
-                <span className="inline-flex items-center gap-1">
-                  <Icon name="pin" className="size-3.5" />
-                  {site.id} · {site.lat}, {site.lon}
-                </span>
-                <span>{site.source}</span>
-              </p>
-            </Details>
-          </section>
-          )}
-          {!compact && actions}
-          <ScorePanel site={site} demo={client.mode === 'demo'} />
-          <section className="space-y-3">
-            <SectionHead title="Weather and conditions" />
-            <Observations rows={site.observations} />
-          </section>
-          <details className={`${card} group`}>
-            <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 text-base font-bold">
-              Score factors and evidence
-              <Icon
-                name="back"
-                className="size-5 -rotate-90 transition-transform group-open:rotate-90"
-              />
-            </summary>
-            <div className="border-t border-line px-5 pb-2">
-              {/* The full stored breakdown; top_factors is the list's top three only. */}
-              <Factors
-                factors={site.score?.factor_contributions ?? site.top_factors}
-              />
-            </div>
-          </details>
-        </div>
-        <div className="space-y-5 @3xl:col-span-5">
-          {!compact && (
-            <section className="space-y-3">
-              <SectionHead title="Alerts" />
-              {site.alerts.length ? (
-                site.alerts.map((a) => (
-                  <AlertCard key={a.id} alert={a} detail />
-                ))
-              ) : (
-                <Empty>No alert record supplied for this site.</Empty>
-              )}
-            </section>
-          )}
-          <section className={`${card} space-y-3 border border-line p-3`}>
-            <SectionHead title="Hazards and supervisor instructions" />
-            {site.notices.length ? (
-              <>
-                {site.notices.filter(needsAction).map((n) => (
-                  <NoticeCard
-                    key={n.id}
-                    notice={n}
-                    outlook={site.event_outlook}
-                  />
-                ))}
-                <ConfirmedHazards
-                  notices={site.notices.filter((n) => !needsAction(n))}
-                  outlook={site.event_outlook}
-                />
-              </>
-            ) : (
-              <Empty>
-                No notices supplied. Local electrical, structural and access
-                conditions remain unverified.
-              </Empty>
-            )}
-          </section>
-        </div>
-      </div>
-      {/* Full width so reports sit side by side on wide screens. */}
-      <section className={`${card} space-y-3 border border-line p-3`}>
-        <SectionHead title="Reports at this site" />
-        {site.reports.length ? (
-          <Masonry
-            label="Reports at this site"
-            items={site.reports.map((r) => ({
-              key: r.id,
-              node: <ReportCard report={r} compact />,
-            }))}
-          />
-        ) : (
-          <Empty>No reports supplied.</Empty>
-        )}
-      </section>
-      {!compact && <EventOutlooks cards={site.event_outlooks ?? []} />}
+    </section>
+  )
+  const reports = (
+    // Full width so reports sit side by side on wide screens.
+    <section className={`${card} space-y-3 border border-line p-3`}>
+      <SectionHead title="Reports at this site" />
+      {site.reports.length ? (
+        <Masonry
+          label="Reports at this site"
+          items={site.reports.map((r) => ({
+            key: r.id,
+            node: <ReportCard report={r} compact />,
+          }))}
+        />
+      ) : (
+        <Empty>No reports supplied.</Empty>
+      )}
+    </section>
+  )
+  const context = (
+    <>
+      <EventOutlooks
+        cards={site.event_outlooks ?? []}
+        tiles={persona === 'crew'}
+      />
       {/* Read-only regional context for team sites; never feeds score or alerts. */}
       {site.assigned_team && <SpeciesSection site={site} />}
       <Suspense
@@ -340,6 +288,107 @@ function SitePage({
       >
         <Advisory site={site} demo={client.mode === 'demo'} />
       </Suspense>
+    </>
+  )
+
+  // Crew home: what needs attention now. The evidence lives on My worksite.
+  if (compact)
+    return (
+      <div className="pc-enter space-y-5">
+        {header}
+        {active[0] && <AlertCard alert={active[0]} />}
+        {active.length > 1 && (
+          <a href={`#/${persona}/alerts`} className={control}>
+            View all {active.length} active alerts
+          </a>
+        )}
+        {!active.length && (
+          <Empty>
+            No active alerts reported. Worksite conditions still require
+            verification.
+          </Empty>
+        )}
+        {hazards}
+        <div className="flex flex-wrap gap-3">
+          <a
+            className={control + ' w-full @lg:w-auto'}
+            href={`#/${persona}/sites/${encodeURIComponent(site.id)}`}
+          >
+            <Icon name="sites" className="size-4" />
+            Full worksite details
+          </a>
+          {refreshButton}
+        </div>
+      </div>
+    )
+
+  // Crew worksite: score breakdown, conditions, reports and context. Alerts,
+  // hazards and instructions stay on Home; reporting and briefings have tabs.
+  if (persona === 'crew')
+    return (
+      <div className="pc-enter space-y-5">
+        <div>
+          {header}
+          <p className="mt-1 text-sm text-ink-2">
+            {displayLabel(site.location_type, 'Worksite')} ·{' '}
+            {site.region ?? 'Region not supplied'}
+          </p>
+          {locationDetails}
+        </div>
+        {score}
+        {factors}
+        {conditions}
+        {reports}
+        {context}
+        {refreshButton}
+      </div>
+    )
+
+  return (
+    <div className="pc-enter space-y-5">
+      <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
+        <div className="space-y-5 @3xl:col-span-7">
+          <section className={`${card} p-5`}>
+            <p className="kicker mb-1.5">
+              {displayLabel(site.location_type, 'Worksite')}
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
+            <p className="mt-1 text-ink-2">
+              {`${site.assigned_team?.name ?? 'No team assigned'} · ${site.region ?? 'Region not supplied'}`}
+            </p>
+            {locationDetails}
+          </section>
+          <div className="space-y-3">
+            <div className="grid gap-3 @lg:grid-cols-2">
+              <a className={primary + big} href={`#/${persona}/reports`}>
+                <Icon name="camera" className="size-6" />
+                Report a hazard
+              </a>
+              <a className={control + big} href={`#/${persona}/briefings`}>
+                <Icon name="briefings" className="size-6" />
+                View briefing
+              </a>
+            </div>
+            {refreshButton}
+          </div>
+          {score}
+          {conditions}
+          {factors}
+        </div>
+        <div className="space-y-5 @3xl:col-span-5">
+          <section className="space-y-3">
+            <SectionHead title="Alerts" />
+            {site.alerts.length ? (
+              site.alerts.map((a) => <AlertCard key={a.id} alert={a} detail />)
+            ) : (
+              <Empty>No alert record supplied for this site.</Empty>
+            )}
+          </section>
+          {hazards}
+        </div>
+      </div>
+      {reports}
+      {context}
     </div>
   )
 }
@@ -908,7 +957,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
               {matGrades.map(([grade, hint]) => (
                 <label
                   key={grade}
-                  className={`relative flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-line px-2 py-2 text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${grade === 'A' ? absentChoice : presentChoice}`}
+                  className={`relative flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-line px-2 py-2 text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${matChoice}`}
                 >
                   <input
                     type="radio"
@@ -920,10 +969,14 @@ export function ReportForm({ site }: { site: SiteSummary }) {
                     onChange={() => setCondition(grade)}
                     className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
                   />
-                  <span className="text-xl font-bold">{grade}</span>
-                  {hint && (
-                    <span className="text-sm font-semibold">{hint}</span>
-                  )}
+                  <span className="text-xl font-bold leading-tight">{grade}</span>
+                  {/* Every grade keeps the hint line so the letters align. */}
+                  <span
+                    aria-hidden={!hint}
+                    className="min-h-5 text-sm font-semibold leading-5"
+                  >
+                    {hint}
+                  </span>
                 </label>
               ))}
             </div>
@@ -1133,10 +1186,10 @@ export function ReportForm({ site }: { site: SiteSummary }) {
     </form>
   )
 }
-// T034B access mat grades. No approved rubric defines the letters, so only D's
-// meaning ("unusable") is shown.
+// T034B access mat grades. Only the ends of the scale are named: A is perfect,
+// D is unusable.
 const matGrades: [MatCondition, string][] = [
-  ['A', ''],
+  ['A', 'Perfect'],
   ['B', ''],
   ['C', ''],
   ['D', 'Unusable'],
@@ -1146,6 +1199,8 @@ const presentChoice =
   'has-checked:border-stop has-checked:bg-stop has-checked:text-white'
 const absentChoice =
   'has-checked:border-ink has-checked:bg-ink has-checked:text-bg'
+// Every mat grade highlights the same way; the letter carries the meaning.
+const matChoice = absentChoice
 const locationChip = {
   closed: 'No location',
   locating: 'Finding your location…',
