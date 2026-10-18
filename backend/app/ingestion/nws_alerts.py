@@ -33,12 +33,10 @@ class NwsFloodAlertFeed:
 
     def fetch(self, sites: list[SiteLike], now: datetime) -> list[Observation]:
         """Ingestion interface. Failures fall back to stale or unavailable per site."""
-        return [o for site in sites for o in self.cache.refresh(site, now, self.fetch_site)]
+        return self.cache.refresh_many(sites, now, self.fetch_site)
 
     def fetch_site(self, site: SiteLike, now: datetime) -> list[Observation]:
-        payload = self.client.get_json(
-            "/alerts/active", params={"point": f"{site.lat:.4f},{site.lon:.4f}"}
-        )
+        payload = self.client.active_alerts(site, now)
         features = payload.get("features")
         if not isinstance(features, list):
             raise FeedError("NWS alerts response has no features list")

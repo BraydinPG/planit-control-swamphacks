@@ -38,7 +38,7 @@ class NwsWeatherFeed:
 
     def fetch(self, sites: list[SiteLike], now: datetime) -> list[Observation]:
         """Ingestion interface. Failures fall back to stale or unavailable per site."""
-        return [o for site in sites for o in self.cache.refresh(site, now, self.fetch_site)]
+        return self.cache.refresh_many(sites, now, self.fetch_site)
 
     def fetch_site(self, site: SiteLike, now: datetime) -> list[Observation]:
         """Fresh readings for one site. Raises `FeedError` if NWS gives nothing usable."""
@@ -52,7 +52,7 @@ class NwsWeatherFeed:
     def _latest_observation(
         self, site: SiteLike, point: dict[str, Any], now: datetime
     ) -> list[Observation]:
-        stations = self.client.get_json(_require(point, "observationStations")).get("features")
+        stations = self.client.stations(_require(point, "observationStations")).get("features")
         if not stations:
             raise FeedError("NWS point has no observation stations")
         # Nearby stations often report null values, so try the closest few in order.

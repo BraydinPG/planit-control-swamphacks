@@ -48,7 +48,9 @@ def test_nws_tropical_warnings_become_observations() -> None:
     [warning] = by_source(observations, "NWS")
     assert warning.value == "Hurricane Warning"
     assert warning.valid_at is not None
-    assert "Hurricane Warning" in nws.requests[0].url.params["event"]
+    requests = [r for r in nws.requests if r.url.path == "/alerts/active"]
+    assert len(requests) == 1 and requests[0].url.params["point"] == "25.7600,-80.4900"
+    assert "event" not in requests[0].url.params  # Shared payload, filtered locally.
     [none] = by_source(observations, "NHC")
     assert none.value is None and none.label == "No active NHC storms within 300 mi"
 
