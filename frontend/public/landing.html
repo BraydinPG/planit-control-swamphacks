@@ -4,8 +4,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FORESITE</title>
-<meta name="description" content="FORESITE combines live worksite monitoring, field reports and historically backtested models to estimate how certain ongoing hazards may persist. See the risk. Plan beyond the alert.">
+<!-- public-metadata:start -->
+<title>FORESITE | Intelligent Worksite Operations</title>
+<meta name="description" content="FORESITE connects environmental evidence, explainable hazard evaluation, historically evaluated duration research and human-led worksite decisions.">
+<link rel="canonical" href="https://foresiteoperations.org/landing.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FORESITE">
+<meta property="og:title" content="FORESITE | Intelligent Worksite Operations">
+<meta property="og:description" content="FORESITE connects environmental evidence, explainable hazard evaluation, historically evaluated duration research and human-led worksite decisions.">
+<meta property="og:url" content="https://foresiteoperations.org/landing.html">
+<meta property="og:image" content="https://foresiteoperations.org/foresite-social.png">
+<meta property="og:image:alt" content="FORESITE — Intelligent Worksite Operations">
+<meta name="twitter:card" content="summary_large_image">
+<!-- public-metadata:end -->
 <link rel="icon" type="image/x-icon" href="/foresite-favicon.ico?v=daaf5322">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,13 +98,14 @@
 <canvas id="bolt" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 
-<header class="top">
-  <a class="brand" href="/landing.html" aria-label="FORESITE home" aria-current="page">
-    <img src="/foresite-wordmark.png?v=daaf5322" width="768" height="166" alt="" decoding="async" draggable="false">
-  </a>
-  <nav class="public-nav" aria-label="Public website"><a class="public-link" href="/platform.html">Platform</a><a class="public-link" href="/data.html">Data</a><a class="public-link" href="/case-study.html">Case Study</a></nav>
+<!-- public-header:start -->
+<header class="top" data-nav-open="false">
+  <a class="brand" href="/landing.html" aria-label="FORESITE home" aria-current="page"><img src="/foresite-wordmark.png?v=daaf5322" width="768" height="166" alt="" decoding="async" draggable="false"></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="public-menu" aria-label="Open navigation" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  <nav class="public-nav" id="public-menu" aria-label="Public website"><a class="public-link" href="/platform.html">Platform</a><a class="public-link" href="/data.html">Data</a><a class="public-link" href="/about.html">About</a></nav>
   <a class="signin" href="/?signin">Sign In<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </header>
+<!-- public-header:end -->
 
 <main>
   <section class="hero" aria-labelledby="h1">
@@ -111,7 +123,7 @@
       <li><b data-to="526" data-suffix="K+">526K+</b><span>Historical weather records analyzed</span></li>
       <li><b data-to="6">6</b><span>Backtested event-duration targets</span></li>
       <li><b data-to="5000">5,000</b><span>Monte Carlo simulations</span></li>
-      <li><b data-to="50" data-suffix="+">50+</b><span>Mapped infrastructure locations</span></li>
+      <li><b data-to="250">250</b><span>Mapped infrastructure locations</span></li>
     </ul>
   </section>
 
@@ -134,7 +146,15 @@
   </section>
 
 </main>
+<!-- public-footer:start -->
+<footer class="public-footer">
+  <div class="footer-identity"><a class="footer-brand" href="/landing.html" aria-label="FORESITE home"><img src="/foresite-wordmark.png?v=daaf5322" width="768" height="166" alt="" loading="lazy"></a><p>Intelligent Worksite Operations</p><span>A SwampHacks 2026 project.</span></div>
+  <nav class="footer-groups" aria-label="Footer resources"><div><h2>Explore</h2><a href="/landing.html">Home</a><a href="/platform.html">Platform</a><a href="/data.html">Data</a></div><div><h2>Resources</h2><a href="/about.html#resources">Documentation</a><a href="https://github.com/BraydinPG/planit-control-swamphacks">GitHub <span aria-hidden="true">↗</span></a></div><div><h2>FORESITE</h2><a href="/about.html">About</a><a href="/about.html#safety">Safety &amp; transparency</a><a href="/about.html#data-handling">Data handling</a></div></nav>
+  <div class="footer-note"><span>Evidence informs. People decide.</span><span>Advisory context does not authorize work or clear an alert.</span></div>
+</footer>
+<!-- public-footer:end -->
 
+<script src="/public-navigation.js" defer></script>
 <script src="/public-atmosphere.js" defer></script>
 </body>
 </html>

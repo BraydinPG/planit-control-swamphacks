@@ -12,8 +12,6 @@ const output = join(root, '.shell-check')
 const base = new URL(process.argv[2] ?? 'http://localhost:5177/')
 assert(['localhost', '127.0.0.1', '[::1]'].includes(base.hostname) && base.protocol === 'http:' && !base.username && !base.password)
 const fixtures = process.argv.includes('--fixtures')
-const captureFixtures = process.argv.includes('--capture-fixtures')
-assert(!captureFixtures || fixtures, 'Capture only the explicitly simulated fixture app')
 const profile = join(output, `public-pages-${Date.now()}`)
 await mkdir(profile, { recursive: true })
 const browser = spawn(process.env.SHELL_BROWSER ?? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', [
@@ -42,10 +40,13 @@ async function evaluate(expression) {
   return result.result.value
 }
 async function loaded(path) {
-  const heading = path === '/data.html' ? '#data-title' : path === '/platform.html' ? '#platform-title' : path === '/case-study.html' ? '#case-title' : '.hero h1'
+  const heading = path === '/data.html' ? '#data-title' : path === '/platform.html' ? '#platform-title' : path === '/about.html' ? '#about-title' : '.hero h1'
   await until(() => evaluate(`location.pathname===${JSON.stringify(path)}&&document.readyState==='complete'&&!!document.querySelector(${JSON.stringify(heading)})`), path)
   await evaluate('document.fonts.ready')
   await until(() => evaluate("document.querySelector('.brand img').complete&&document.querySelector('.brand img').naturalWidth>0"), 'logo')
+}
+async function openNavigation() {
+  await evaluate("(()=>{const t=document.querySelector('.menu-toggle');if(t?.getClientRects().length&&t.getAttribute('aria-expanded')==='false')t.click()})()")
 }
 async function shot(name, full = true) {
   await evaluate('scrollTo(0,0)')
@@ -66,7 +67,7 @@ async function shot(name, full = true) {
 }
 const storage = "JSON.stringify([Object.entries(localStorage).sort(),Object.entries(sessionStorage).sort()])"
 const layout = `(()=>{
-  const links=Array.from(document.querySelectorAll('header a')),rects=links.map(e=>e.getBoundingClientRect());
+  const links=Array.from(document.querySelectorAll('header a,header button')).filter(e=>e.getClientRects().length),rects=links.map(e=>e.getBoundingClientRect());
   const clipped=Array.from(document.querySelectorAll('main h1,main h2,main h3,main h4,main p,main li,main td,main th')).flatMap(e=>{const range=document.createRange();range.selectNodeContents(e);return Array.from(range.getClientRects()).filter(r=>r.width&&(r.left< -1||r.right>document.documentElement.clientWidth+1)).map(()=>e.textContent)});
   return {overflow:document.documentElement.scrollWidth>innerWidth,clipped,headerFits:rects.every(r=>r.left>=0&&r.right<=document.documentElement.clientWidth&&r.width>=44&&r.height>=44),headerOverlaps:rects.some((a,i)=>rects.some((b,j)=>j>i&&Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1))};
 })()`
@@ -101,7 +102,7 @@ try {
   assert.equal(Object.values(benchmarkAfter.http_requests).reduce((a, b) => a + b, 0), 578)
   assert.deepEqual(benchmarkBefore.observation_sha256_by_feed, benchmarkAfter.observation_sha256_by_feed)
   assert.equal(benchmarkBefore.site_score_sha256, benchmarkAfter.site_score_sha256)
-  for (const path of ['/landing.html', '/platform.html', '/data.html', '/case-study.html', '/public-site.css', '/platform.css', '/platform.js', '/data.css', '/case-study.css', '/case-study.js', '/case-study/crew-overview.webp', '/case-study/supervisor-notice.webp']) {
+  for (const path of ['/landing.html', '/platform.html', '/data.html', '/about.html', '/public-site.css', '/public-navigation.js', '/about.css', '/foresite-social.png', '/platform.css', '/platform.js', '/data.css']) {
     const response = await fetch(new URL(path, base))
     assert.equal(response.status, 200, path)
     if (path === '/data.html') {
@@ -119,12 +120,13 @@ try {
     const home = await evaluate(layout)
     assert(!home.overflow && !home.clipped.length && home.headerFits && !home.headerOverlaps, JSON.stringify({ width, home }))
     assert(await evaluate("document.querySelector('header a[aria-current=page]').getAttribute('href')==='/landing.html'"))
-    assert(await evaluate("document.querySelector('.top .brand').getAttribute('href')==='/landing.html'&&Array.from(document.querySelectorAll('.top .public-nav a')).map(a=>a.textContent).join(',')==='Platform,Data,Case Study'&&!Array.from(document.querySelectorAll('.top a')).some(a=>a.textContent.trim()==='Home')"))
+    assert(await evaluate("document.querySelector('.top .brand').getAttribute('href')==='/landing.html'&&Array.from(document.querySelectorAll('.top .public-nav a')).map(a=>a.textContent).join(',')==='Platform,Data,About'&&!Array.from(document.querySelectorAll('.top a')).some(a=>a.textContent.trim()==='Home')"))
     assert(await evaluate("!document.querySelector('.lab')&&!document.querySelector('link[href=\"/data.css\"]')&&!document.querySelector('img[src*=\"/research/\"]')&&document.querySelectorAll('.feature').length===3&&document.querySelector('h1').textContent==='SEE THE RISK.PLAN BEYOND THE ALERT.'"))
-    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.stats b')).map(e=>e.textContent)"), ['526K+', '6', '5,000', '50+'])
+    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.stats b')).map(e=>e.textContent)"), ['526K+', '6', '5,000', '250'])
     assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.signin,.cta-btn')).map(e=>e.getAttribute('href'))"), ['/?signin', '/?demo#/crew/overview'])
-    assert(!requests.slice(requestStart).some(p => p.startsWith('/research/') || p.startsWith('/case-study/') || ['/data.css', '/platform.css', '/platform.js', '/case-study.css', '/case-study.js'].includes(p)), 'Homepage loads no research, Platform or Case Study assets')
+    assert(!requests.slice(requestStart).some(p => p.startsWith('/research/') || ['/data.css', '/platform.css', '/platform.js'].includes(p)), 'Homepage loads no research or Platform assets')
     await shot(`public-home-${width}`)
+    await openNavigation()
     await evaluate("document.querySelector('header a[href=\"/data.html\"]').focus()")
     assert(await evaluate("document.activeElement.matches('a[href=\"/data.html\"]')"))
     await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
@@ -165,6 +167,7 @@ try {
     await loaded('/landing.html')
     await evaluate("document.querySelector('header a[href=\"/data.html\"]').click()"); await loaded('/data.html')
     await evaluate("document.querySelector('.brand').click()"); await loaded('/landing.html')
+    await openNavigation()
     await evaluate("document.querySelector('.top a[href=\"/platform.html\"]').focus()")
     await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
     await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
@@ -217,58 +220,65 @@ try {
     await evaluate("document.querySelector('.top a[href=\"/platform.html\"]').click()"); await loaded('/platform.html')
     await evaluate("document.querySelector('.top .brand').click()"); await loaded('/landing.html')
     assert.equal(await evaluate(storage), originalStorage)
-    await evaluate("document.querySelector('.top a[href=\"/case-study.html\"]').focus()")
+    await openNavigation()
+    await evaluate("document.querySelector('.top a[href=\"/about.html\"]').focus()")
     await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
     await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
-    await loaded('/case-study.html')
-    await send('Page.reload'); await loaded('/case-study.html')
-    await until(() => evaluate("document.body.classList.contains('case-interactive')"), 'scenario controls')
-    assert(await evaluate("document.body.innerText.includes('Simulated scenario — not live worksite conditions.')&&document.querySelectorAll('.stage-panel').length===7&&document.querySelector('.top a[aria-current=page]').getAttribute('href')==='/case-study.html'&&!document.querySelector('#root')"))
-    const caseStudy = await evaluate(layout)
-    assert(!caseStudy.overflow && !caseStudy.clipped.length && caseStudy.headerFits && !caseStudy.headerOverlaps, JSON.stringify({ width, caseStudy }))
-    await shot(`public-case-study-${width}`); await shot(`public-case-study-top-${width}`, false)
-    for (let stage = 1; stage <= 7; stage++) {
-      await evaluate(`document.querySelector('[data-stage="${stage}"]').click()`)
-      for (const persona of ['crew', 'supervisor']) {
-        await evaluate(`document.querySelector('[data-perspective="${persona}"]').click()`)
-        assert(await evaluate(`(()=>{const panel=document.querySelector('#stage-${stage}');return !panel.hidden&&document.querySelectorAll('.stage-panel:not([hidden])').length===1&&panel.querySelector('[data-view=${persona}]').hidden===false&&document.querySelector('[data-perspective=${persona}]').getAttribute('aria-pressed')==='true'})()`), `Scenario ${width}px / stage ${stage} / ${persona}`)
-        const stageLayout = await evaluate(layout)
-        assert(!stageLayout.overflow && !stageLayout.clipped.length, JSON.stringify({ width, stage, persona, stageLayout }))
-        for (const path of await evaluate(`Array.from(document.querySelectorAll('#stage-${stage} img')).map(e=>e.getAttribute('src'))`)) {
-          await evaluate(`document.querySelector('img[src="${path}"]').scrollIntoView({block:'center'})`)
-          assert(await until(() => evaluate(`document.querySelector('img[src="${path}"]').complete&&document.querySelector('img[src="${path}"]').naturalWidth>0`), 'authentic screenshot'))
-        }
+    await loaded('/about.html')
+    await send('Page.reload'); await loaded('/about.html')
+    const about = await evaluate(layout)
+    assert(!about.overflow && !about.clipped.length && about.headerFits && !about.headerOverlaps, JSON.stringify({ width, about }))
+    assert(await evaluate("document.querySelectorAll('.team-card').length===4&&document.querySelectorAll('.resource-card').length===8&&document.querySelector('.top a[aria-current=page]').getAttribute('href')==='/about.html'&&!document.querySelector('#root')&&document.body.innerText.includes('BUILT TO')&&document.body.innerText.includes('legally complete privacy policy')"))
+    assert(await evaluate("!document.querySelector('a[href*=\"case-study\"]')&&document.querySelectorAll('.public-footer .footer-groups>div').length===3&&getComputedStyle(document.querySelector('.core-ring')).animationName==='none'"))
+    const footerMarkup = await evaluate("document.querySelector('.public-footer').innerHTML")
+    const footerStyle = await evaluate("['.footer-identity p','.footer-groups h2','.footer-groups a'].map(s=>{const e=document.querySelector(s),c=getComputedStyle(e);return [c.fontSize,c.lineHeight,c.marginTop,c.marginBottom]})")
+    assert(footerMarkup.includes('/about.html#resources') && footerMarkup.includes('/about.html#safety'))
+    assert(await evaluate("document.title==='About & Documentation | FORESITE'&&document.querySelector('meta[property=\"og:url\"]').content==='https://foresiteoperations.org/about.html'&&document.querySelector('link[rel=canonical]').href==='https://foresiteoperations.org/about.html'"))
+    if (width <= 700) {
+      assert(await evaluate("document.querySelector('.menu-toggle').getAttribute('aria-expanded')==='false'&&!document.querySelector('.public-nav').getClientRects().length"))
+      await evaluate("document.querySelector('.menu-toggle').focus()")
+      await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' })
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
+      assert(await evaluate("document.querySelector('.menu-toggle').getAttribute('aria-expanded')==='true'&&document.activeElement.getAttribute('href')==='/platform.html'"))
+      const menuLayout = await evaluate(layout)
+      assert(!menuLayout.overflow && menuLayout.headerFits && !menuLayout.headerOverlaps, JSON.stringify({ width, menuLayout }))
+      await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 })
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 })
+      assert(await evaluate("document.activeElement.matches('.menu-toggle')&&document.activeElement.getAttribute('aria-expanded')==='false'"))
+      await openNavigation()
+      for (const href of ['/data.html', '/about.html', '/?signin', '#team']) {
+        await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 })
+        await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 })
+        assert.equal(await evaluate("document.activeElement.getAttribute('href')"), href, 'Natural menu tab order exits into page content')
       }
-      if ([2, 3, 5].includes(stage)) {
-        await evaluate("document.querySelector('#scenario').scrollIntoView({block:'start'})")
-        const picture = await send('Page.captureScreenshot', { format: 'png' })
-        await writeFile(join(output, `public-case-study-stage-${stage}-${width}.png`), Buffer.from(picture.data, 'base64'))
-      }
+      assert(await evaluate("document.querySelector('.menu-toggle').getAttribute('aria-expanded')==='false'"), 'Tabbing outside closes the non-modal disclosure')
+      await openNavigation()
+      await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: 5, y: 280, button: 'left', clickCount: 1 })
+      await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: 5, y: 280, button: 'left', clickCount: 1 })
+      assert(await evaluate("document.querySelector('.menu-toggle').getAttribute('aria-expanded')==='false'"))
     }
-    assert(await evaluate("document.querySelector('#stage-next').disabled&&document.querySelector('[data-demo-link]').getAttribute('href')==='/?demo#/supervisor/overview'"))
-    await evaluate("document.querySelector('#stage-prev').focus()")
-    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' })
-    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
-    const previousStage = await evaluate("({shown:!document.querySelector('#stage-6').hidden,focus:document.activeElement.id,text:document.querySelector('#stage-6').innerText})")
-    assert(previousStage.shown && previousStage.focus === 'stage-title-6' && previousStage.text.includes('does not reuse them as site predictions'), JSON.stringify(previousStage))
-    await evaluate("document.querySelector('[data-stage=\"2\"]').click()")
-    assert(await evaluate("document.querySelector('#stage-2').innerText.includes('7.9')&&document.querySelector('#stage-2').innerText.includes('7.91')&&document.querySelector('#stage-2').innerText.includes('rules-0.2')&&document.querySelector('#stage-2').innerText.includes('Zero verified live coverage.')"))
-    await send('Page.reload'); await loaded('/case-study.html')
-    await until(() => evaluate("!document.querySelector('#stage-2').hidden"), 'deep-linked stage after reload')
-    await evaluate("document.querySelector('.case-source details').open=true")
-    const sourceLayout = await evaluate(layout)
-    assert(!sourceLayout.overflow && !sourceLayout.clipped.length)
-    assert.equal(await evaluate(storage), originalStorage, 'Case Study preserves Auth0 and app storage')
-    assert(await evaluate("getComputedStyle(document.querySelector('.site-pulse')).animationName==='none'"))
-    assert(await evaluate("Array.from(document.querySelectorAll('.stage-nav a,.perspective-picker button,.stage-controls button')).filter(e=>e.getClientRects().length).every(e=>{const r=e.getBoundingClientRect();return r.width>=44&&r.height>=44})"), 'Scenario controls retain 44px targets')
-    await evaluate("document.querySelector('.top a[href=\"/platform.html\"]').click()"); await loaded('/platform.html')
-    await evaluate("document.querySelector('.top a[href=\"/case-study.html\"]').click()"); await loaded('/case-study.html')
-    await evaluate("document.querySelector('.top .brand').click()"); await loaded('/landing.html')
-    results.push({ width, home, data, platform, caseStudy, scenarioStages: 7, scenarioPerspectives: 2, componentReferences: 27, separateDocuments: true, reload: true, history: true, sessionStoragePreserved: true })
+    for (const id of ['team', 'resources', 'safety', 'data-handling']) {
+      await evaluate(`document.querySelector('#${id}').scrollIntoView({block:'start'})`)
+      const section = await evaluate(layout)
+      assert(!section.overflow && !section.clipped.length, JSON.stringify({ width, id, section }))
+    }
+    assert.equal(await evaluate(storage), originalStorage, 'About/navigation preserve application and Auth0 storage')
+    await evaluate("document.querySelector('.public-footer').scrollIntoView({block:'end'})")
+    await until(() => evaluate("Array.from(document.querySelectorAll('main img,footer img')).every(i=>i.complete&&i.naturalWidth>0)"), 'About images and footer logo')
+    await shot(`public-about-${width}`); await shot(`public-about-top-${width}`, false)
+    await evaluate("document.querySelector('#team').scrollIntoView({block:'start'})")
+    const teamShot = await send('Page.captureScreenshot', { format: 'png' })
+    await writeFile(join(output, `public-about-team-${width}.png`), Buffer.from(teamShot.data, 'base64'))
+    for (const path of ['/landing.html', '/platform.html', '/data.html']) {
+      await send('Page.navigate', { url: new URL(path, base).href }); await loaded(path)
+      assert.equal(await evaluate("document.querySelector('.public-footer').innerHTML"), footerMarkup, 'Identical shared footer')
+      assert.deepEqual(await evaluate("['.footer-identity p','.footer-groups h2','.footer-groups a'].map(s=>{const e=document.querySelector(s),c=getComputedStyle(e);return [c.fontSize,c.lineHeight,c.marginTop,c.marginBottom]})"), footerStyle, 'Consistent footer typography and spacing across pages')
+    }
+    results.push({ width, home, data, platform, about, mobileMenu: true, sharedFooter: true, componentReferences: 27, separateDocuments: true, reload: true, history: true, sessionStoragePreserved: true })
   }
   // Direct access has no preceding homepage or app initialization requirement.
   await send('Page.navigate', { url: new URL('/data.html', base).href }); await loaded('/data.html')
-  assert(await evaluate("Array.from(document.scripts).every(s=>['/@vite/client','/public-atmosphere.js','/data-research.js'].some(path=>s.src.endsWith(path)))&&!document.querySelector('#root')&&!location.hash&&!location.search&&document.querySelector('#sky')&&document.querySelector('#bolt')"))
+  assert(await evaluate("Array.from(document.scripts).every(s=>['/@vite/client','/public-atmosphere.js','/public-navigation.js','/data-research.js'].some(path=>s.src.endsWith(path)))&&!document.querySelector('#root')&&!location.hash&&!location.search&&document.querySelector('#sky')&&document.querySelector('#bolt')"))
   // A missing static research JSON disables controls while preserving figures and tables.
   await send('Network.setBlockedURLs', { urls: ['*/research/dashboard.json'] })
   await send('Page.reload'); await loaded('/data.html')
@@ -284,8 +294,10 @@ try {
   assert(await evaluate("document.querySelectorAll('.component-reference article').length===27&&document.querySelector('.layer-picker').hidden"))
   await evaluate("document.querySelector('.component-reference').open=true")
   assert(await evaluate("document.querySelector('#component-monte-carlo').textContent.includes('does not execute for every live request')"))
-  await send('Page.navigate', { url: new URL('/case-study.html', base).href }); await loaded('/case-study.html')
-  assert(await evaluate("document.querySelectorAll('.stage-panel:not([hidden])').length===7&&document.querySelector('.scenario-toolbar').hidden&&document.querySelector('#stage-5').innerText.includes('west gate')&&document.querySelector('#stage-6').innerText.includes('explicitly synthetic')"), 'All seven static stages remain readable without JS')
+  await send('Page.navigate', { url: new URL('/about.html', base).href }); await loaded('/about.html')
+  assert(await evaluate("document.querySelectorAll('.team-card').length===4&&document.querySelectorAll('.resource-card').length===8&&document.querySelector('.menu-toggle').hidden&&document.querySelector('.public-nav').getClientRects().length>0"), 'No-JS visitors retain the complete About page and navigation')
+  const staticAbout = await evaluate(layout)
+  assert(!staticAbout.overflow && !staticAbout.clipped.length && staticAbout.headerFits && !staticAbout.headerOverlaps)
   await send('Page.navigate', { url: new URL('/platform.html', base).href }); await loaded('/platform.html')
   await send('Emulation.setScriptExecutionDisabled', { value: false })
   // Normal motion retains the shared storm atmosphere and diagram flow.
@@ -306,44 +318,12 @@ try {
   await delay(150)
   assert(await evaluate(`window.__publicRafCount>${beforeResizeRaf}`), 'Reduced-motion sky redraws after resizing')
   assert(await evaluate("getComputedStyle(document.querySelector('#lane-analysis')).display!=='none'&&document.querySelector('[data-layer=analysis]').getAttribute('aria-pressed')==='true'&&document.querySelector('#component-detail-title').textContent==='Offline Monte Carlo'"), 'Selected component survives desktop-to-phone resize')
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] })
-  await send('Page.navigate', { url: new URL('/case-study.html#stage-5', base).href }); await loaded('/case-study.html')
-  await until(() => evaluate("!document.querySelector('#stage-5').hidden"), 'direct stage access')
-  assert(await evaluate("getComputedStyle(document.querySelector('.site-pulse')).animationName==='site-pulse'"))
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
-  assert(await evaluate("getComputedStyle(document.querySelector('.site-pulse')).animationName==='none'&&getComputedStyle(document.querySelector('#stage-5')).animationName==='none'"))
-  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false })
-  assert(await evaluate("!document.querySelector('#stage-5').hidden"), 'Scenario selection survives resize')
+  await send('Page.navigate', { url: new URL('/case-study.html', base).href }); await loaded('/about.html')
+  assert(await evaluate("location.pathname==='/about.html'"), 'Retired Case Study redirects to About instead of starting the app')
   if (fixtures) {
     await send('Page.navigate', { url: new URL('/platform.html', base).href }); await loaded('/platform.html')
     await evaluate("document.querySelector('.platform-button[href*=\"demo\"]').click()")
     await until(() => evaluate("location.search==='?demo'&&location.hash==='#/crew/overview'&&document.body.innerText.includes('Simulated demo')"), 'Platform uses existing demo entry')
-    if (captureFixtures) {
-      // Use a new browser profile, the real React fixture view and no mutation API.
-      await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 2, mobile: false })
-      await evaluate('document.fonts.ready')
-      await until(() => evaluate("!!document.querySelector('[data-crew-alerts]')&&document.body.innerText.includes('4.2 mi')"), 'actual crew screenshot')
-      await evaluate('scrollTo(0,0)')
-      const crew = await send('Page.captureScreenshot', { format: 'webp', quality: 88 })
-      await writeFile(join(root, 'public/case-study/crew-overview.webp'), Buffer.from(crew.data, 'base64'))
-      await evaluate("location.hash='/supervisor/sites/site-demo-everglades'")
-      await until(() => evaluate("!!document.querySelector('[data-notice-id=notice-wildlife-1]')&&document.body.innerText.includes('7.9')"), 'actual supervisor screenshot')
-      const instruction = await evaluate("(()=>{const e=document.querySelector('[data-notice-id=notice-wildlife-1]');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height,scale:1}})()")
-      assert(await evaluate("document.querySelector('[data-notice-id=notice-wildlife-1]').innerText.includes('Avoid the east access road. Use the west gate until wildlife control clears it.')"))
-      const supervisor = await send('Page.captureScreenshot', { format: 'webp', quality: 88, captureBeyondViewport: true, clip: instruction })
-      await writeFile(join(root, 'public/case-study/supervisor-notice.webp'), Buffer.from(supervisor.data, 'base64'))
-      const fixtureHashes = {}, imageHashes = {}
-      for (const path of ['src/fixtures/site-detail.json', 'src/fixtures/reports.json', 'src/fixtures/hazard-notices.json']) fixtureHashes[path] = createHash('sha256').update((await readFile(join(root, path), 'utf8')).replaceAll('\r\n', '\n')).digest('hex')
-      for (const path of ['crew-overview.webp', 'supervisor-notice.webp']) imageHashes[path] = createHash('sha256').update(await readFile(join(root, 'public/case-study', path))).digest('hex')
-      await writeFile(join(root, 'public/case-study/capture-provenance.json'), JSON.stringify({
-        capture: 'Installed Edge CDP: actual React app, fixture build, new isolated browser profile',
-        fixture_as_of_utc: '2026-10-17T18:00:00Z',
-        viewport_css_pixels: { width: 1440, height: 1000, device_scale_factor: 2 },
-        crew_route: '/?demo#/crew/overview', supervisor_route: '/?demo#/supervisor/sites/site-demo-everglades',
-        supervisor_crop: '[data-notice-id=notice-wildlife-1]',
-        backend_requests: 0, mutations: 0, fixture_hash_encoding: 'UTF-8, CRLF normalized to LF', fixture_sha256: fixtureHashes, image_sha256: imageHashes,
-      }, null, 2) + '\n')
-    }
     await send('Page.navigate', { url: base.href }); await loaded('/landing.html')
     await send('Page.navigate', { url: new URL('/landing.html', base).href }); await loaded('/landing.html')
     await evaluate("document.querySelector('.cta-btn').click()")
@@ -353,7 +333,7 @@ try {
   assert.deepEqual(unexpected, [])
   assert(!requests.some(p => p.startsWith('/api/')), 'No actual backend calls')
   await writeFile(join(output, 'public-pages-acceptance.json'), JSON.stringify({ results, errors, apiRequests: 0, fixtures }, null, 2))
-  console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), publicPages: 4, scenarioStages: 7, scenarioPerspectives: 2, architectureComponents: 27, keyboardAndMouse: true, reducedAndNormalMotion: true, figures: 12, originalChartAssetsPreserved: 6, savedSelectors: true, missingJsonFallback: true, scriptDisabledFallback: true, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))
+  console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), publicPages: 4, aboutProfiles: 4, documentationCards: 8, locationCopy: 250, retiredCaseStudy: true, mobileMenu: true, sharedFooter: true, metadata: true, architectureComponents: 27, keyboardAndMouse: true, reducedAndNormalMotion: true, figures: 12, originalChartAssetsPreserved: 6, savedSelectors: true, missingJsonFallback: true, scriptDisabledFallback: true, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))
 } finally {
   if (ws?.readyState === WebSocket.OPEN) { await send('Browser.close').catch(() => {}); ws.close() }
   browser.kill()

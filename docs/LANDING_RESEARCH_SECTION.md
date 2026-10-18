@@ -6,7 +6,7 @@ Verified 2026-10-18. Branch `feature/cache-dedicated-data-page`, initially based
 main `61ec526`. This corrects PR89: research lives at **`/data.html`**, an independent
 public document. The homepage keeps its original hero, four statistics, three
 features, brand, fog/lightning effects and demo/sign-in destinations. Public
-navigation uses the logo as the Home link, followed by Platform, Data, Case Study and Sign In. Data retains its active-page indicator.
+navigation uses the logo as the Home link, followed by Platform, Data, About and Sign In. Data retains its active-page indicator.
 
 The advanced-dashboard addendum initially requested no automatic merge. The user's
 subsequent request explicitly authorizes merging PR91 after verification. Main
@@ -22,7 +22,7 @@ At the user's request, the generated Data page no longer displays the
 "Evaluation includes saying no" panel or its separate hurricane-experiment paragraph.
 The supporting research reports, disabled-model gates and all twelve figures remain
 unchanged. Both public headers omit the Home text button; the accessible FORESITE
-logo returns to `/landing.html`. The subsequent Platform-page addition uses a deliberate two-row phone header for Platform, Data and Case Study, with the logo still serving as Home.
+logo returns to `/landing.html`. The subsequent Platform-page addition uses a deliberate two-row phone header for Platform, Data and About, with the logo still serving as Home.
 Screenshots below record the original PR91 layout before this small cleanup.
 
 ## What runs
@@ -192,7 +192,7 @@ Full phone capture uses compositor-sized tiles joined without editing content.
 
 ## Handoff and limits
 
-Rudra: preserve `/data.html` as a real public document, the public logo-to-Home/Platform/Data/Case Study/Sign In
+Rudra: preserve `/data.html` as a real public document, the public logo-to-Home/Platform/Data/About/Sign In
 header, generated markers and research labels. Use the exporter to change chart
 content; do not paste it back into the homepage or app layout. PR90's unrelated
 briefing-picker changes are preserved when reconciling latest main.

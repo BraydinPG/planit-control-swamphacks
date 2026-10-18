@@ -1,3 +1,27 @@
+## Public About, resources and navigation (Cache for Rudra) - 2026-10-18 10:05 UTC
+
+Explicit user authorization, branch `feature/cache-about-public-completion`, base
+main `5b27687`. The later user message removes Case Study, overriding the attached
+five-page requirement; the direct message authorizes merge after checks. No task
+checkbox changes. Public mapped-location copy/animation changes from 50+ to the
+user's current figure of 250; archived research counts remain unchanged.
+
+Adds `public/about.{html,css}`, common `public-navigation.js`, canonical static
+chrome generator and four public-document tests. Updates the four public
+headers/footers and SEO metadata, existing public browser harness and coordination
+guides. Removes Case Study content/script/CSS/captures and scenario-only tests;
+keeps only a noindex old-URL redirect and archived source notes. See
+[source audit and handoff](PUBLIC_WEBSITE.md) for team attribution, data-handling
+sources, all resource destinations and files requiring future ownership.
+
+Initial base checks: 203 frontend tests, lint/TypeScript, both production modes
+and Edge at 1440/768/390/320 pass; 14 GitHub resource links HTTP 200. No own app,
+backend/auth/DB, model/scoring, canonical-contract/fixture, dependency, task-state
+or deployment changes. Latest teammate main `66902bd` is queued for reconciliation
+and final checks before publishing. Rudra supplies the final Devpost URL; formal
+privacy/terms/retention/provider disclosures need team review. No invented legal
+policy, biographies or operational-acceptance claims.
+
 ## Public Everglades Case Study (Cache for Rudra) - 2026-10-18 09:48 UTC
 
 [PR #94](https://github.com/BraydinPG/planit-control-swamphacks/pull/94), verified implementation `6e1fcbd`; merge authorized by the user.
