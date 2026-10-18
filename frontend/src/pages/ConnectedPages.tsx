@@ -238,7 +238,7 @@ function SitePage({
     </details>
   )
   const hazards = (
-    <section className={`${card} space-y-3 border border-line p-3`}>
+    <section className={`${card} min-w-0 space-y-3 border border-line p-3`}>
       <SectionHead title="Hazards and supervisor instructions" />
       <SiteHazards key={site.id} site={site} />
     </section>
@@ -290,8 +290,13 @@ function SitePage({
             </a>
           </div>
         </div>
-        <div className="space-y-5">
-          <div className="min-w-0 space-y-5" data-crew-alerts>
+        {/* Wide screens: alerts and hazards each take half. While every hazard row is
+            collapsed, both columns stretch to the same height. */}
+        <div
+          className="grid gap-5 lg:grid-cols-2 lg:items-start lg:[&:not(:has([data-hazard-row][open]))]:items-stretch"
+          data-crew-attention
+        >
+          <div className="grid min-w-0" data-crew-alerts>
             {top.length > 0 && <AlertCard alerts={top} />}
             {!active.length && (
               <Empty>

@@ -4,6 +4,7 @@ import { Icon, type IconName } from './Icon'
 import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
 import { useVividStorm } from './stormLevel'
+import { LANDING_PATH } from '../../application/landing'
 
 export type Workspace = 'crew' | 'supervisor'
 export type ShellPage =
@@ -181,9 +182,10 @@ export function AppShell({
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]`}
         >
           <div className="flex min-w-0 items-center gap-4 xl:gap-6">
+            {/* On every page the logo goes back to the landing page. */}
             <a
-              href={`#/${route.workspace}/overview`}
-              aria-label={`FORESITE ${route.workspace} home`}
+              href={LANDING_PATH}
+              aria-label="FORESITE home page"
               className="inline-flex min-h-11 shrink-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               <Brand variant="compact" className="w-28 sm:w-32" decorative />

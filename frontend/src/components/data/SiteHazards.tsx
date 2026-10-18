@@ -5,6 +5,7 @@ import { Details } from './Details'
 import { RiskShape } from './Risk'
 import { Status, Timestamp } from './Status'
 import { NoticeCard } from './NoticeCard'
+import { Icon } from '../shell/Icon'
 
 /** One hazard row holds its alerts, score evidence, confirmations and instructions. */
 export function SiteHazards({ site }: { site: SiteRecord }) {
@@ -24,8 +25,14 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
       </div>
       <ul className="divide-y divide-line">
         {hazards.map((hazard) => (
-          <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0 space-y-2.5 p-4">
-            <h4 className="text-lg font-bold">{hazard.label}</h4>
+          <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0">
+            {/* Open by default so instructions are seen; each row collapses on its own. */}
+            <details open data-hazard-row className="group/hazard">
+            <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+              <h4 className="text-lg font-bold">{hazard.label}</h4>
+              <Icon name="back" className="size-5 shrink-0 -rotate-90 transition-transform group-open/hazard:rotate-90" />
+            </summary>
+            <div className="space-y-2.5 px-4 pb-4">
             {hazard.alerts.map((alert) => (
               <div key={alert.id} className="space-y-1 text-sm">
                 <p className="font-semibold">Active {alert.rule === 'heat' ? 'advisory' : 'alert'} · {alert.event_label}</p>
@@ -61,6 +68,8 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
               ))}
               <p className="text-sm text-muted">Source evidence does not confirm unmeasured worksite conditions. Alerts and supervisor instructions still apply.</p>
             </Details>
+            </div>
+            </details>
           </li>
         ))}
       </ul>

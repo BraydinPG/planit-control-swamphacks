@@ -370,6 +370,11 @@ try {
         navCenterError:Math.abs(nav.left+nav.width/2-document.documentElement.clientWidth/2),
         mobileNav:visible(document.querySelector('nav[aria-label="Mobile workspace"]')),
         fullWidthStack:instructions.top>=alerts.bottom && Math.abs(instructions.left-alerts.left)<2 && Math.abs(instructions.width-alerts.width)<2,
+        halves:Math.abs(instructions.top-alerts.top)<2 && Math.abs(instructions.width-alerts.width)<2 && instructions.left>=alerts.right && alerts.width>main.width*0.45,
+        logoHref:document.querySelector('header a[aria-label="FORESITE home page"]')?.getAttribute('href'),
+        collapsedHeights:(()=>{const rows=[...document.querySelectorAll('[data-hazard-row]')];rows.forEach(r=>{r.open=false});
+          const a=document.querySelector('[data-crew-alerts]').getBoundingClientRect().height,h=document.querySelector('[data-crew-alerts]').nextElementSibling.getBoundingClientRect().height;
+          rows.forEach(r=>{r.open=true});return {rows:rows.length,error:Math.abs(a-h)}})(),
         supervisorTeamLink:!!document.querySelector('a[href="#/crew/team"]')};
     })()`)
     assert.equal(layout.desktopNav, width >= 1024)
@@ -378,7 +383,12 @@ try {
     if (width >= 1024) assert(layout.navCenterError < 1, 'Desktop navigation is centered')
     if (width >= 1024) assert(layout.mainWidth > 600 && layout.mainWidth <= 1440)
     else assert(layout.mainWidth <= 512)
-    assert(layout.fullWidthStack, 'Overview stacks full-width alerts above hazard information')
+    assert.equal(layout.logoHref, '/landing.html', 'Header logo returns to the landing page')
+    if (width >= 1024) {
+      assert(layout.halves, 'Overview puts alerts and hazards side by side, half each')
+      assert(layout.collapsedHeights.rows > 0, 'Hazard rows are collapsible')
+      assert(layout.collapsedHeights.error < 1, 'Collapsed hazards match the alert height')
+    } else assert(layout.fullWidthStack, 'Phones stack alerts above hazard information')
     assert(
       await evaluate('document.documentElement.scrollWidth <= innerWidth'),
       `Overflow at ${width}`,
