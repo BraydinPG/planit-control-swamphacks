@@ -1,5 +1,7 @@
 # Public Data & Research page
 
+[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91) is open for review; verified implementation `0b1269b`.
+
 Verified 2026-10-18. Branch `feature/cache-dedicated-data-page`, initially based on
 main `61ec526`. This corrects PR89: research lives at **`/data.html`**, an independent
 public document. The homepage keeps its original hero, four statistics, three

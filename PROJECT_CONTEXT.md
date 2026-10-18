@@ -3,6 +3,7 @@
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
 ## Public Data & Research dashboard - 2026-10-18
+- [PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91) is open for review; verified implementation `0b1269b`, base main `b16bef4`. Working branch `feature/cache-dedicated-data-page`.
 - Explicit user scope, `feature/cache-dedicated-data-page` from main `61ec526`: separate public `/data.html`; homepage research removed while original hero/stats/features, brand and atmosphere remain. Shared public CSS/atmosphere, consistent Home/Data/Sign In; no app/auth/backend/deployment changes. Latest addendum explicitly requests **no automatic merge**, superseding the earlier merge follow-up.
 - Twelve report-backed figures: historical scale/cohorts; five MC views; separate 2024/2025 Brier, calibration and historical duration; six-target comparison. Read-only model/horizon/period/log selectors, static fallback and CSV downloads. Original six SVGs/evidence.json byte-identical. [Chart/source/method guide and screenshots](docs/LANDING_RESEARCH_SECTION.md).
 - Approved artifact SHA and original archive hashes verified: seed42 reproduces all 5,000 draws; 3,539 snapshots/567 episodes reproduce all six saved 2025 Flood Briers and both duration MAEs without refitting. The 2025 period remains previously inspected; KM selection/gates and unknown/censored bounds remain. No physical trajectories, local injury probabilities or work clearance.

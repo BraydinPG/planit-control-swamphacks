@@ -1,5 +1,8 @@
 ## Public Data & Research dashboard (Cache for Rudra) - 2026-10-18
 
+[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91), open for review. Verified implementation `0b1269b`;
+main `b16bef4` incorporated without conflicts.
+
 User-authorized correction/expansion of PR89, `feature/cache-dedicated-data-page`,
 initial base main `61ec526`. Independent `/data.html` and Data-only styles/controls;
 shared public CSS and verbatim extracted atmosphere. Home keeps hero/stats/features,
