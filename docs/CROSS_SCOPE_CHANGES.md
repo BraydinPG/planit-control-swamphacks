@@ -43,6 +43,11 @@ coordinates external Universal Login imagery. Vultr owner performs the normal fr
 release with committed assets; no backend/migration/config/secret/DNS/workflow changes.
 No task check-off, real-account acceptance, automatic merge or deployment.
 
+Published [PR53](https://github.com/BraydinPG/planit-control-swamphacks/pull/53),
+**Integrate Official FORESITE Logo and Branding Assets**, open against main;
+tested implementation `4508e9d`, base `991c52f`. Later main `6aa528b` contains
+deployment-only work with no overlap; no deployment files edited in this PR.
+
 ## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
 
 Explicit task-specific user authorization permits focused ingestion/refresh edits.

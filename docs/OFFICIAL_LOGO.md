@@ -1,5 +1,8 @@
 # Official FORESITE logo integration
 
+Review: [PR53](https://github.com/BraydinPG/planit-control-swamphacks/pull/53),
+tested implementation `4508e9d`; open against main, no automatic merge/deployment.
+
 The approved source is the supplied blue cyclone inside the O of **FORESITE**, with
 the tagline **INTELLIGENT WORKSITE OPERATIONS**. No replacement icon or redraw.
 Branch `feature/cache-official-foresite-logo` starts at main `991c52f`, after the
