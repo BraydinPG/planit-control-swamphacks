@@ -138,6 +138,8 @@ def view(clock: dict, now: datetime) -> dict:
                 for c in d["event_outlooks"]
                 if c["notice_id"]  # the others are archived examples with fixed dates
             ),
+            # T050 flood outlook, from the stand-in model, so it doesn't need model files.
+            "flood_outlook": d["event_outlook"] and d["event_outlook"]["status"],
             "reports": sorted(
                 (r["id"], r["review_status"], age(r["created_at"])) for r in d["reports"]
             ),
@@ -187,7 +189,10 @@ def test_demo_pages_stay_as_seeded_for_days(demo, at) -> None:
         assert timedelta(0) <= shifts[site_id] <= timedelta(minutes=5), site_id
     assert {s for s in DEMO_SITES if page[s]["alerts"]} == STOP_WORK_SITES
     flood = [c for c in page["demo-flood"]["outlooks"] if c[0] == "demo-anomaly-flood"]
-    assert [c[2] for c in flood] == ["available"]
+    assert [c[2] for c in flood] == [
+        c[2] for c in seeded["demo-flood"]["outlooks"] if c[0] == "demo-anomaly-flood"
+    ]
+    assert page["demo-flood"]["flood_outlook"] == seeded["demo-flood"]["flood_outlook"] == "ok"
     [seeded_flood] = [c for c in seeded["demo-flood"]["outlooks"] if c[0] == "demo-anomaly-flood"]
     assert flood[0][3] == seeded_flood[3] - shifts["demo-flood"]  # "began 6 h ago" holds
 
