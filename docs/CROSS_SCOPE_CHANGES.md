@@ -1365,3 +1365,7 @@ The user wanted the landing page's demo button to open the live demo sites with 
 ### 2026-10-18 — Braydin: briefings picker no longer overflows at tablet width (user request; Rudra's frontend)
 
 **For Rudra:** in `components/shell/AppShell.tsx` the title block beside the page-actions slot is `min-w-0 flex-1` instead of `min-w-0 shrink-0`, so its description wraps and the 24rem Briefings picker stays on the page at 768px. `check-shell.mjs` now passes in full, including `Page overflow: 768/supervisor/briefings`.
+
+### 2026-10-18 — Braydin: About page team cards credit what each person built (user request; Cache's public page)
+
+**For Cache:** `frontend/public/about.html` team cards now describe each person's work from the git history instead of the ownership map and task IDs; the `team-reference` "Documented: … T0xx" lines are removed. Notably the responsive app shell (T030) is credited to Cache, who committed it, and Nick's card adds the landing page, storm/fog backdrop and header navigation. `check-public-pages.mjs` passes.
