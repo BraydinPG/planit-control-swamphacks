@@ -139,12 +139,12 @@ const $ = s => document.querySelector(s);
 /* ================= WebGL red fog ================= */
 const sky = $('#sky');
 const gl = sky.getContext('webgl', {antialias:false, premultipliedAlpha:false});
-const S = { flash:0, strike:[0,.3], tint:[.95,.12,.16], mouse:[0,0], mt:[0,0], density:.85 };
+const S = { flash:0, strike:[0,.3], tint:[.95,.12,.16], mouse:[0,0], mt:[0,0], density:.85, cur:[0,0], push:[0,0] };
 let draw = () => {};
 const initSky = () => { // builds the fog shader; runs again if the browser drops and restores the WebGL context
   const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
   const fs = `precision highp float;
-  uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uFlash;uniform vec2 uStrike;uniform vec3 uTint;uniform float uDensity;
+  uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uFlash;uniform vec2 uStrike;uniform vec3 uTint;uniform float uDensity;uniform vec2 uCursor;uniform vec2 uPush;
   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
   float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
     return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
@@ -154,7 +154,9 @@ const initSky = () => { // builds the fog shader; runs again if the browser drop
     vec2 p=(gl_FragCoord.xy-.5*uRes)/uRes.y;
     float t=uTime*.03;
     // low, rolling fog: stretched sideways and drifting slowly
-    vec2 cp=p*vec2(.8,1.3);
+    // the pointer drags the nearby fog along its path with a slight swirl, then it settles
+    vec2 dc=p-uCursor;float near=exp(-dot(dc,dc)/.03);
+    vec2 cp=(p-(uPush+vec2(-dc.y,dc.x)*length(uPush)*2.)*near)*vec2(.8,1.3);
     vec2 q=vec2(fbm(cp*1.3+vec2(t,0.)),fbm(cp*1.3+vec2(5.2,1.3)-t));
     vec2 r=vec2(fbm(cp*1.3+3.2*q+vec2(1.7,9.2)+t*1.4),fbm(cp*1.3+3.2*q+vec2(8.3,2.8)-t*1.1));
     float f=fbm(cp*1.1+3.*r+uMouse*.15);
@@ -182,7 +184,7 @@ const initSky = () => { // builds the fog shader; runs again if the browser drop
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-  const U = {}; ['uRes','uTime','uMouse','uFlash','uStrike','uTint','uDensity'].forEach(k => U[k] = gl.getUniformLocation(pr,k));
+  const U = {}; ['uRes','uTime','uMouse','uFlash','uStrike','uTint','uDensity','uCursor','uPush'].forEach(k => U[k] = gl.getUniformLocation(pr,k));
   const RES = .5; // render at half resolution; the softness reads as atmosphere
   const size = () => { sky.width = Math.round(innerWidth*RES); sky.height = Math.round(innerHeight*RES); gl.viewport(0,0,sky.width,sky.height); };
   size(); addEventListener('resize', size);
@@ -190,6 +192,7 @@ const initSky = () => { // builds the fog shader; runs again if the browser drop
     gl.uniform2f(U.uRes, sky.width, sky.height); gl.uniform1f(U.uTime, t);
     gl.uniform2f(U.uMouse, S.mouse[0], S.mouse[1]); gl.uniform1f(U.uFlash, S.flash);
     gl.uniform2f(U.uStrike, S.strike[0], S.strike[1]); gl.uniform3fv(U.uTint, S.tint); gl.uniform1f(U.uDensity, S.density);
+    gl.uniform2f(U.uCursor, S.cur[0], S.cur[1]); gl.uniform2f(U.uPush, S.push[0], S.push[1]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 };
@@ -199,8 +202,15 @@ if (gl) {
   sky.addEventListener('webglcontextrestored', initSky);
 } else { sky.style.background = 'radial-gradient(ellipse at 50% 100%, #2a060b, #07090c 70%)'; }
 
+// moving the pointer pushes the fog near it (capped small, off under reduced motion); the push fades each frame
+let seen = false;
 addEventListener('pointermove', e => {
   S.mt = [(e.clientX - innerWidth/2)/innerHeight, -(e.clientY - innerHeight/2)/innerHeight];
+  if (seen && !reduce) {
+    S.push[0] += (S.mt[0] - S.cur[0])*.35; S.push[1] += (S.mt[1] - S.cur[1])*.35;
+    const len = Math.hypot(S.push[0], S.push[1]); if (len > .035) { S.push[0] *= .035/len; S.push[1] *= .035/len; }
+  }
+  seen = true; S.cur = S.mt.slice();
 }, {passive:true});
 
 /* ================= Bolt overlay ================= */
@@ -271,6 +281,7 @@ function frame(now){
   // the fog flickers with the bolt's own return strokes during its first half second
   const age = now - (S.flicker || -1e9);
   if (age < 450 && Math.random() < .25) S.flash = Math.min(.9, S.flash + .2);
+  S.push[0] *= .95; S.push[1] *= .95;
   S.mouse[0] += (S.mt[0] - S.mouse[0]) * .05; S.mouse[1] += (S.mt[1] - S.mouse[1]) * .05;
   draw(reduce ? 12 : (now - t0)/1000);
   drawBolts(now);

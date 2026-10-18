@@ -189,8 +189,11 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
             <option value="organization">Organization briefings</option>
           </select>
         </label>
-        <p className="flex items-start gap-2 text-sm text-ink-2">
-          <Icon name="clock" className="mt-0.5 size-4 shrink-0" />
+        {/* Beside the dropdown: centred between it and the right edge, and top to bottom.
+            The half-gap shift (gap-4 / 2) centres it on the space between the dropdown and
+            the edge, not on its grid cell, which starts after the column gap. */}
+        <p className="flex items-start gap-2 text-sm text-ink-2 @lg:-translate-x-2 @lg:items-center @lg:self-center @lg:justify-self-center">
+          <Icon name="clock" className="mt-0.5 size-4 shrink-0 @lg:mt-0" />
           <span>
             Briefings are scheduled for 6 PM, in the worksite's local time.
             Organization briefings require permission.
