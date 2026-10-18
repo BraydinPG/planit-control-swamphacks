@@ -156,11 +156,34 @@ export function createMockService() {
           mat_condition: form.get('mat_condition') || null,
           site_distance_miles: null,
           enrichment: null,
-          notice_id: present ? `mock-notice-${service.reports.length}` : null,
+          // Nothing is sent until the supervisor accepts the report.
+          notice_id: null,
           created_at: '2026-10-17T19:00:00Z',
         }
         service.reports.unshift(report)
-        if (report.notice_id)
+        return Response.json(report, { status: 201 })
+      }
+      if (parts[2] === 'reports' && parts[4] === 'review') {
+        if (role !== 'supervisor') return new Response('', { status: 403 })
+        const report = service.reports.find((r) => r.id === id)
+        if (!report) return new Response('', { status: 404 })
+        if (report.organization_id !== 'mock-org')
+          return new Response('', { status: 403 })
+        if (report.review_status !== 'pending')
+          return new Response('', { status: 409 })
+        const input = JSON.parse(String(options?.body))
+        const accepted = input.decision === 'confirmed'
+        report.review_status = input.decision
+        report.reviewed_by = 'mock-supervisor'
+        report.reviewed_at = '2026-10-17T20:00:00Z'
+        report.confirmed_category = accepted
+          ? (input.category ?? report.category)
+          : null
+        report.confirmed_severity = accepted ? (input.severity ?? null) : null
+        if (accepted && report.hazard_present) {
+          // Accepting sends the notice, confirmed for this organization, with the
+          // supervisor's Gemini draft (radius: the mocked default).
+          report.notice_id = `mock-notice-${report.id}`
           service.notices.unshift({
             id: report.notice_id,
             hazard_label: 'broken pole / downed line',
@@ -170,11 +193,11 @@ export function createMockService() {
             lon: report.lon,
             radius_miles: 1,
             radius_source: 'default',
-            status: 'potential',
-            confirmed_by: null,
-            confirmed_at: null,
-            created_at: report.created_at,
-            suggested_instruction: null,
+            status: 'confirmed',
+            confirmed_by: 'mock-supervisor',
+            confirmed_at: report.reviewed_at,
+            created_at: report.reviewed_at,
+            suggested_instruction: service.draft,
             instruction: null,
             instruction_sent_at: null,
             evidence: [
@@ -186,26 +209,8 @@ export function createMockService() {
               },
             ],
           })
-        return Response.json(report, { status: 201 })
-      }
-      if (parts[2] === 'reports' && parts[4] === 'review') {
-        if (role !== 'supervisor') return new Response('', { status: 403 })
-        const report = service.reports.find((r) => r.id === id)
-        if (!report) return new Response('', { status: 404 })
-        if (report.organization_id !== 'mock-org')
-          return new Response('', { status: 403 })
-        if (report.hazard_present || report.review_status !== 'pending')
-          return new Response('', { status: 409 })
-        const input = JSON.parse(String(options?.body))
-        report.review_status = input.decision
-        report.reviewed_by = 'mock-supervisor'
-        report.reviewed_at = '2026-10-17T20:00:00Z'
-        report.confirmed_category =
-          input.decision === 'confirmed'
-            ? (input.category ?? report.category)
-            : null
-        report.confirmed_severity =
-          input.decision === 'confirmed' ? (input.severity ?? null) : null
+          service.confirmed = true
+        }
         return Response.json(report)
       }
       if (parts[2] === 'hazards') {

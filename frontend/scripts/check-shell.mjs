@@ -1054,6 +1054,24 @@ try {
     await hash('/crew/overview', 'Stop work alert - Lightning')
     await alertCardLoaded()
     assert(await evaluate("document.querySelector('header button').textContent.trim()==='Sign out' && !document.body.innerText.includes('Authenticated API') && !document.body.innerText.includes('Connected mode.')"))
+    // Polling: coming back to the tab reloads the data with no refresh; a failed poll
+    // leaves what is on screen.
+    const sitesFetched = () =>
+      evaluate("window.harness.requests.filter(r=>r==='GET /api/sites').length")
+    const before = await sitesFetched()
+    await evaluate("window.dispatchEvent(new Event('focus'))")
+    await until(async () => (await sitesFetched()) > before, 'focus reloads live data')
+    await evaluate('window.harness.setStatus(503)')
+    const failing = await sitesFetched()
+    await evaluate("window.dispatchEvent(new Event('focus'))")
+    await until(async () => (await sitesFetched()) > failing, 'failed poll was attempted')
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    assert(
+      await evaluate("document.body.innerText.includes('Stop work alert - Lightning') && !document.body.innerText.includes('service or database is unavailable')"),
+      'A failed background poll keeps the page as it was',
+    )
+    await evaluate('window.harness.setStatus(200)')
+    results.push({ polling: 'focus reloads live data; a failed poll keeps the page' })
     await evaluate('window.harness.alertWindow(90)')
     await click('Alerts')
     // Lightning and the severe thunderstorm share tier 2: one merged card, one button.
@@ -1061,7 +1079,15 @@ try {
     const ticking = await evaluate("document.querySelector('[role=timer]').textContent")
     await until(async () => (await evaluate("document.querySelector('[role=timer]').textContent")) !== ticking, 'live countdown ticks')
     await click('Acknowledge all 2 alerts')
-    await loaded('Action recorded.')
+    // Wait for the acknowledgements themselves: "Action recorded." can be replaced by the
+    // acknowledged card before it is read, now that pages also reload on their own.
+    await until(
+      () =>
+        evaluate(
+          "['alert-ltg-demo','alert-svr-tstorm-demo'].every(id=>window.harness.requests.includes('POST /api/alerts/'+id+'/acknowledge'))",
+        ),
+      'acknowledgements sent',
+    )
     assert(
       await evaluate(
         "['alert-ltg-demo','alert-svr-tstorm-demo'].every(id=>window.harness.requests.includes('POST /api/alerts/'+id+'/acknowledge')) && !window.harness.requests.some(r=>r.includes('alert-flood-demo/acknowledge'))",
@@ -1165,29 +1191,26 @@ try {
     await loaded('Report successful')
     const created = await evaluate('window.harness.snapshot().reports[0]')
     assert.equal(created.review_status, 'pending')
-    const mockNotice = created.notice_id
+    assert.equal(created.notice_id, null, 'Nothing is sent before review')
     await until(
       () => evaluate(`document.querySelector('[data-report-id="${created.id}"]')!==null`),
       'submitted mock-live photo report appears',
     )
     assert(
-      await evaluate("!document.body.innerText.includes('Review worksite notice') && !document.body.innerText.includes('Confirm potential hazard') && document.body.innerText.includes('Awaiting supervisor confirmation')"),
-      'Live crew photo report must not offer supervisor notice review',
+      await evaluate("!document.body.innerText.includes('Accept and notify nearby organizations') && document.body.innerText.includes('Awaiting your supervisor')"),
+      'Live crew photo report must not offer supervisor review',
     )
     await evaluate("window.harness.mount('supervisor')")
     await hash(
       '/supervisor/sites/site-demo-everglades',
       'Hazards and supervisor instructions',
     )
+    // Compact report cards keep their review under "View more"; open it to act and read.
+    const acceptButton = (reportId) =>
+      `(document.querySelectorAll('[data-report-id="${reportId}"] details').forEach(d=>{d.open=true}), Array.from(document.querySelectorAll('[data-report-id="${reportId}"] button')).find(b=>b.textContent.trim()==='Accept and notify nearby organizations'))`
     assert(
-      await evaluate(`document.querySelector('[data-report-id="${created.id}"] a')?.getAttribute('href')==='#/supervisor/sites/site-demo-everglades'`),
-      'Live supervisor retains the photo report notice review link',
-    )
-    assert(
-      await evaluate(
-        `!document.querySelector('[data-report-id="${created.id}"] button')`,
-      ),
-      'Present report has no absent-review action',
+      await evaluate(`!!${acceptButton(created.id)}`),
+      'Live supervisor can accept the present report on its card',
     )
     await evaluate(
       `document.querySelector('[data-report-id="${absentId}"] button').click()`,
@@ -1199,25 +1222,21 @@ try {
         ),
       'mock absent reviewed',
     )
-    assert(
-      await evaluate(
-        `document.querySelector('[data-notice-id="${mockNotice}"]').innerText.includes('No instruction: supervisor confirmation is pending')`,
-      ),
-    )
     await evaluate('window.harness.settings({denyMutation:true})')
-    await evaluate(
-      `document.querySelector('[data-notice-id="${mockNotice}"] button').click()`,
-    )
+    await evaluate(`${acceptButton(created.id)}.click()`)
     await loaded('Permission denied')
-    assert(
-      await evaluate(
-        `!document.querySelector('[data-notice-id="${mockNotice}"] textarea')`,
-      ),
+    assert.equal(
+      await evaluate('window.harness.snapshot().reports.find(r=>r.id==='+JSON.stringify(created.id)+').notice_id'),
+      null,
+      'A refused acceptance sends nothing',
     )
     await evaluate('window.harness.settings({denyMutation:false})')
-    await evaluate(
-      `document.querySelector('[data-notice-id="${mockNotice}"] button').click()`,
+    await evaluate(`${acceptButton(created.id)}.click()`)
+    await until(
+      () => evaluate('!!window.harness.snapshot().reports.find(r=>r.id==='+JSON.stringify(created.id)+').notice_id'),
+      'accepting sends the notice',
     )
+    const mockNotice = await evaluate('window.harness.snapshot().reports.find(r=>r.id==='+JSON.stringify(created.id)+').notice_id')
     await loaded('Suggested instruction')
     assert(
       await evaluate(
@@ -1274,9 +1293,7 @@ try {
     await attachMockPhoto()
     await click('Submit report')
     await loaded('Report successful')
-    const manualId = await evaluate(
-      'window.harness.snapshot().reports[0].notice_id',
-    )
+    const manualReport = await evaluate('window.harness.snapshot().reports[0].id')
     await evaluate(
       "window.harness.settings({manual:true}); window.harness.mount('supervisor')",
     )
@@ -1284,9 +1301,13 @@ try {
       '/supervisor/sites/site-demo-everglades',
       'Hazards and supervisor instructions',
     )
-    await evaluate(
-      `document.querySelector('[data-notice-id="${manualId}"] button').click()`,
+    await until(() => evaluate(`!!${acceptButton(manualReport)}`), 'second report reviewable')
+    await evaluate(`${acceptButton(manualReport)}.click()`)
+    await until(
+      () => evaluate('!!window.harness.snapshot().reports[0].notice_id'),
+      'accepting the second report sends its notice',
     )
+    const manualId = await evaluate('window.harness.snapshot().reports[0].notice_id')
     await loaded('Write an instruction for the crew')
     assert(
       await evaluate(
@@ -1316,7 +1337,7 @@ try {
     )
     results.push({
       reports:
-        'MOCK HTTP ONLY: present/photo and absent/no-photo, 401/403/409/422/503 submission failures, absent review, notice confirmation/draft/edit/send, manual fallback, reload/crew delivery, server score refresh and competing owner all pass',
+        'MOCK HTTP ONLY: present/photo and absent/no-photo, 401/403/409/422/503 submission failures, absent review, accept-and-notify (refused, then accepted with draft/edit/send), manual fallback, reload/crew delivery, server score refresh and competing owner all pass',
       alerts:
         'Mock server state and acknowledgement preserved; no ML/React score or alert engine',
     })

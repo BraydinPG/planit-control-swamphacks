@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { Client, Persona } from '../api/contracts'
 import type { DemoClient } from '../demo/client'
 
@@ -7,6 +7,8 @@ export interface Application {
   persona: Persona
   principalId: string | null
   revision: number
+  /** Bumped by background polling; a failed poll keeps the data already shown. */
+  poll?: number
   refresh: () => void
 }
 export const ApplicationContext = createContext<Application | null>(null)
@@ -26,7 +28,8 @@ export function useRoute() {
   return route
 }
 export function useResource<T>(key: string, load: () => Promise<T>) {
-  const { revision } = useApplication()
+  const { revision, poll = 0 } = useApplication()
+  const seenRevision = useRef(revision)
   const [state, setState] = useState<{
     key: string
     data: T | null
@@ -34,6 +37,9 @@ export function useResource<T>(key: string, load: () => Promise<T>) {
   }>({ key: '', data: null, error: null })
   useEffect(() => {
     let current = true
+    // Only a poll changed: a failure leaves the current data on screen.
+    const background = seenRevision.current === revision
+    seenRevision.current = revision
     Promise.resolve()
       .then(load)
       .then((data) => {
@@ -41,17 +47,23 @@ export function useResource<T>(key: string, load: () => Promise<T>) {
       })
       .catch((error) => {
         if (current)
-          setState({
-            key,
-            data: null,
-            error:
-              error instanceof Error ? error.message : 'Service unavailable',
-          })
+          setState((previous) =>
+            background && previous.key === key && previous.data !== null
+              ? previous
+              : {
+                  key,
+                  data: null,
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : 'Service unavailable',
+                },
+          )
       })
     return () => {
       current = false
     }
-  }, [key, revision, load])
+  }, [key, revision, poll, load])
   return state.key === key ? state : { key, data: null, error: null }
 }
 export function demoClient(client: Client) {

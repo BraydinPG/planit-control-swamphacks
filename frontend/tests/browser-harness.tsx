@@ -56,6 +56,10 @@ const controls = {
     alert.latest_event_at = new Date(Date.now() - 1000).toISOString()
     alert.state = state
   },
+  /** Answer every request with this status, without remounting (polling checks). */
+  setStatus(code: number) {
+    status = code
+  },
   reset() {
     service = createMockService()
     sessionStorage.removeItem(testKey)

@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
@@ -57,7 +58,38 @@ export function SiteMap({
   // The connection on which the basemap failed; a reconnect tries again.
   const [failedOn, setFailedOn] = useState<number | null>(null)
   const hidden = connection < 0 || failedOn === connection
+  // Background polling hands over new arrays with the same content. Rebuild the map only
+  // when what it draws changes, and keep the reader's zoom and position while the shown
+  // sites stay the same (a filter change refits).
+  const latest = useRef({ sites, select, habitat })
+  // Declared before the map effect, so it runs first after each render.
   useEffect(() => {
+    latest.current = { sites, select, habitat }
+  })
+  const shownIds = sites.map((s) => s.id).join('|')
+  const drawn = useMemo(
+    () =>
+      JSON.stringify([
+        sites.map((s) => [
+          s.id,
+          s.name,
+          s.lat,
+          s.lon,
+          s.risk_level,
+          !!s.assigned_team,
+          evidenceOf(s),
+        ]),
+        (habitat ?? []).map((a) => [a.id, a.status, !!a.geometry]),
+      ]),
+    [sites, habitat],
+  )
+  const lastView = useRef<{
+    ids: string
+    center: L.LatLng
+    zoom: number
+  } | null>(null)
+  useEffect(() => {
+    const { sites, habitat } = latest.current
     if (hidden || !container.current || !sites.length) return
     const bounds = L.latLngBounds(
       sites.map((s) => [s.lat, s.lon] as [number, number]),
@@ -82,11 +114,16 @@ export function SiteMap({
     const usView = view === 'contiguous-us'
     const map = usView
       ? // fine zoom steps let the lower 48 fill the frame instead of snapping a level out
-        L.map(container.current, { scrollWheelZoom: false, zoomSnap: 0.1 }).fitBounds(
-          CONTIGUOUS_US,
-          { padding: [6, 6] },
+        L.map(container.current, {
+          scrollWheelZoom: false,
+          zoomSnap: 0.1,
+        }).fitBounds(CONTIGUOUS_US, { padding: [6, 6] })
+      : L.map(container.current, { scrollWheelZoom: false }).fitBounds(
+          bounds.pad(0.15),
         )
-      : L.map(container.current, { scrollWheelZoom: false }).fitBounds(bounds.pad(0.15))
+    const kept = lastView.current
+    if (kept && kept.ids === shownIds)
+      map.setView(kept.center, kept.zoom, { animate: false })
     outlines.forEach((layer) => layer.addTo(map))
     for (let lon = -180; lon <= 180; lon += 30)
       L.polyline(
@@ -108,7 +145,7 @@ export function SiteMap({
       const button = document.createElement('button')
       button.textContent = s.name
       button.className = 'min-h-11 px-2 py-2 font-semibold text-ink underline'
-      button.onclick = () => select(s.id)
+      button.onclick = () => latest.current.select(s.id)
       L.circleMarker([s.lat, s.lon], {
         radius: s.assigned_team ? 9 : 5,
         // Light outline on the dark map; assigned sites get the heavier ring.
@@ -140,9 +177,14 @@ export function SiteMap({
       })
       .addTo(map)
     return () => {
+      lastView.current = {
+        ids: shownIds,
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      }
       map.remove()
     }
-  }, [sites, select, habitat, hidden, connection, view])
+  }, [drawn, shownIds, hidden, connection, view])
   if (hidden) return null
   return (
     <section
