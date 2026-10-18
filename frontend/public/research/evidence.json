@@ -1,0 +1,231 @@
+{
+  "scope": "archived_research_not_live_forecast_or_safety_validation",
+  "sources": [
+    {
+      "path": "ml/reports/purged_v2/backtest_metrics.json",
+      "sha256": "a17221cfb339cb4d5c66d0ed7d70dc8250e3eccb40931d7e41471753e730d8c1"
+    },
+    {
+      "path": "ml/reports/purged_v2/monte_carlo_summary.json",
+      "sha256": "8e8175193f79049bbf421aaf9af199eec6ca86c43338e67c48aa788cad0919e4"
+    },
+    {
+      "path": "ml/reports/multidisaster/station_coverage.json",
+      "sha256": "2abf05d0fe21283416b066679ae6acfc09203e2245437f36fc6aa6d2f573bed4"
+    },
+    {
+      "path": "ml/reports/multidisaster/hurdat_coverage.json",
+      "sha256": "658371a635173c96eab6e677753d3abce08fe981947d1aa99425fad5eb2c011f"
+    },
+    {
+      "path": "ml/reports/worker_outlook/eia_coverage.json",
+      "sha256": "8947d87663ae38349b7624862e5089b7dd01194d1a5b2c21f46a6b7d94ae52a0"
+    },
+    {
+      "path": "ml/reports/multidisaster/registry.json",
+      "sha256": "36381d1b277c04383dbb42298687b6dfddf7c58ea975601581a5226ebe9ff047"
+    }
+  ],
+  "datasets": [
+    {
+      "name": "NOAA Storm Events",
+      "count": 349030
+    },
+    {
+      "name": "Station measurements",
+      "count": 122270
+    },
+    {
+      "name": "NHC track points",
+      "count": 55524
+    }
+  ],
+  "total_records_and_measurements": 526824,
+  "reference_sites": 50,
+  "research_targets": [
+    "High Wind",
+    "Flash Flood",
+    "Heavy Rain",
+    "Winter Storm",
+    "Heat Index Exceedance",
+    "Flood"
+  ],
+  "monte_carlo": {
+    "trials": 5000,
+    "seed": 42,
+    "analytical_ongoing_probability": {
+      "6h": 0.6199216839402608,
+      "12h": 0.44716834270464595,
+      "24h": 0.2811015423152757
+    },
+    "simulated_ongoing_proportion": {
+      "6h": 0.623,
+      "12h": 0.4512,
+      "24h": 0.282
+    },
+    "absolute_probability_error": {
+      "6h": 0.0030783160597391834,
+      "12h": 0.004031657295354041,
+      "24h": 0.0008984576847242964
+    },
+    "remaining_duration_hours": {
+      "p10": 2.0,
+      "median": 10.0,
+      "p90": 73.0,
+      "unresolved_beyond_simulation_horizon_count": 172,
+      "unresolved_beyond_simulation_horizon_probability": 0.0344
+    },
+    "raw_trajectories_included": false,
+    "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+    "model_version": "noaa-flood-pooled-logistic-v2",
+    "scope": "offline_internal_only",
+    "event_id": "fixture-flood-001",
+    "event_type": "Flood",
+    "as_of_utc": "2024-09-10T16:00:00Z",
+    "is_simulated": true
+  },
+  "backtest": {
+    "period": "2024 validation; trained through 2023",
+    "split": {
+      "train_years": "<= 2023",
+      "validation_year": 2024,
+      "test_year": 2025,
+      "grouping": "NOAA EPISODE_ID; intact episodes assigned by earliest start, with entire episodes crossing fit/selection cutoffs purged",
+      "train": {
+        "event_record_count": 6245,
+        "episode_count": 1787,
+        "snapshot_count": 10558,
+        "event_year_counts": {
+          "2021": 1876,
+          "2022": 1746,
+          "2023": 2623
+        }
+      },
+      "validation": {
+        "event_record_count": 2161,
+        "episode_count": 583,
+        "snapshot_count": 4053,
+        "event_year_counts": {
+          "2024": 2161
+        }
+      },
+      "test": {
+        "event_record_count": 1904,
+        "episode_count": 567,
+        "snapshot_count": 3539,
+        "event_year_counts": {
+          "2025": 1904
+        }
+      },
+      "excluded_events": 12,
+      "excluded_episode_count": 8
+    },
+    "rows": [
+      {
+        "horizon": "6h",
+        "kaplan_meier": {
+          "brier_score": 0.21173329753360257,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.19977733227856284,
+            "upper_95": 0.2242185830703282
+          }
+        },
+        "logistic": {
+          "brier_score": 0.21698641660285573,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.201419285637734,
+            "upper_95": 0.23271011598032143
+          }
+        }
+      },
+      {
+        "horizon": "12h",
+        "kaplan_meier": {
+          "brier_score": 0.23238483052498485,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.2187646471557787,
+            "upper_95": 0.2452115066924527
+          }
+        },
+        "logistic": {
+          "brier_score": 0.2422101837000786,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.23069172636110166,
+            "upper_95": 0.25291165291347406
+          }
+        }
+      },
+      {
+        "horizon": "24h",
+        "kaplan_meier": {
+          "brier_score": 0.2248488040017392,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.2022834824478991,
+            "upper_95": 0.24874605821421933
+          }
+        },
+        "logistic": {
+          "brier_score": 0.2398562677050223,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.21523953574108803,
+            "upper_95": 0.2661406906767194
+          }
+        }
+      }
+    ]
+  },
+  "figure_generator": {
+    "path": "frontend/scripts/prepare-landing-research.py",
+    "matplotlib": "3.10.7"
+  },
+  "figures": [
+    {
+      "file": "monte-carlo.svg",
+      "sha256": "eba7ddaaa42b33b7fcea9f2d7fb5bceb386713627628faeb5475b32b1cf7c9e0"
+    },
+    {
+      "file": "monte-carlo-mobile.svg",
+      "sha256": "6afdc84e6f429b15fcbe8810a3f669cbdde9e5f54cd2394a79ea8e48246f1027"
+    },
+    {
+      "file": "backtest.svg",
+      "sha256": "7bf06069866b40d8f47859dc04c43f6e93abbe187856a8fc8af42c9ac54d3285"
+    },
+    {
+      "file": "backtest-mobile.svg",
+      "sha256": "39f1cdd0c47b1d3631568b53e10f84f1bdbefe7bf57370cf28c2a2900ca177e8"
+    },
+    {
+      "file": "data-sources.svg",
+      "sha256": "53b4321653b09ef031b51058cc63bb25d5c20823261d105ed341eb2cc9d31b4d"
+    },
+    {
+      "file": "data-sources-mobile.svg",
+      "sha256": "f0748b8978c3b926f1f87cc1cff6d1875725670db85b8b8b6e2066ce7dfaa03b"
+    }
+  ]
+}
