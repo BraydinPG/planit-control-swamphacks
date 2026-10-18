@@ -19,7 +19,9 @@ Failure handling:
 
 Demo sites (`location_type="demo_site"`, the T069 seed) are skipped: live feeds never
 overwrite their scripted, simulated scenario, which `python -m app.demo` controls. Every
-other site gets live data.
+other site gets live data. Beside the live loop, `run_forever` keeps the demo sites looking
+current by sliding their times forward (`app.demo.freshen`); a failure there never touches
+the live round.
 
 The background loop starts from the FastAPI lifespan only when `FEED_REFRESH_ENABLED` is
 true (off by default). For a one-shot refresh: `python -m app.services.refresh`.
@@ -32,6 +34,7 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
+from contextlib import suppress
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -331,10 +334,21 @@ def observation_row(o: Observation) -> db.Observation:
 async def run_forever(stop: asyncio.Event) -> None:
     """Refresh, wait `FEED_REFRESH_SECONDS`, repeat until `stop` is set."""
     from app.db import get_session
+    from app.demo import freshen
 
     interval = get_ingestion_settings().feed_refresh_seconds
     cancel = Event()
+    # Its own task: a long live round never lets the demo's lightning timers run out.
+    demo = asyncio.create_task(freshen.run_forever(stop, interval))
+    try:
+        await _live_rounds(stop, interval, cancel, get_session)
+    finally:
+        demo.cancel()
+        with suppress(asyncio.CancelledError):
+            await demo
 
+
+async def _live_rounds(stop: asyncio.Event, interval: float, cancel: Event, get_session) -> None:
     def once() -> RefreshResult:
         with get_session() as session:
             return refresh_all(session, datetime.now(UTC), cancel=cancel)

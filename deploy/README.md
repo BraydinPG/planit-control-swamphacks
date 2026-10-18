@@ -100,6 +100,22 @@ ssh root@SERVER 'journalctl -u foresite-api -f'      # backend log (feed rounds,
 ssh root@SERVER 'systemctl status foresite-api caddy'
 ```
 
+## Demo sites stay current
+
+Live feeds skip demo sites (`location_type="demo_site"`). Beside the feed loop, the server
+slides every demo site forward in time every `FEED_REFRESH_SECONDS` (`app/demo/freshen.py`):
+readings, lightning timers, notices, confirmations, crew reports and acknowledgements all
+move by the same amount, so the pages read as just seeded ("strike 6 min ago", stop-work
+still counting down, never "Stale"), and scores stay the same. Real sites are never touched.
+It runs with the feed loop, so only where `FEED_REFRESH_ENABLED=true`.
+
+- Seed or reset the demo from a laptop:
+  `cd backend && PYTHONPATH=.. .venv/bin/python -m app.demo anomalies`. Reseeding clears the
+  anomaly sites' briefings until the next 6 PM run.
+- Slide once by hand: `python -m app.demo freshen`.
+- Log lines: `demo_freshened` (sites moved, minutes) and `demo_freshen_failed` (one site rolled
+  back; the live feed round is unaffected).
+
 ## Tear down after the hackathon
 
 Destroy the instance and the Object Storage subscription in Vultr (stopped servers still

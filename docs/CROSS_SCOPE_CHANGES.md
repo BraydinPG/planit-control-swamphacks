@@ -1,3 +1,23 @@
+## Demo sites slide forward in time (Braydin, touching Rudra's refresh loop) - 2026-10-18
+
+Explicit user request: keep the demo sites looking freshly seeded on the server, with no
+laptop. Live feeds still skip them; nothing about real sites changes.
+
+- New `backend/app/demo/freshen.py` (`keep_demo_fresh`, `python -m app.demo freshen`): per
+  demo site, moves readings and alerts (delete and reinsert on the hypertables, ids kept),
+  acknowledgements, crew reports, the site's notices and their evidence, and every
+  organization's assessments by `now` minus the newest reading's `fetched_at`; past events
+  never move past `now`. Then rescores the site (same score). Briefings and audit events are
+  left alone. One site's failure rolls back only that site.
+- `backend/app/services/refresh.py` (Rudra): `run_forever` starts the slide as its own task
+  every `FEED_REFRESH_SECONDS`, so a long live round can't let the demo's lightning timers
+  run out, and a slide failure never reaches the live round. The live loop body is unchanged
+  (moved into `_live_rounds`).
+- `backend/app/demo/__main__.py`: new `freshen` command.
+- Tests: `backend/tests/test_demo_freshen.py` (pages unchanged after 2 h, 30 h, 7 days; real
+  sites untouched; idempotent with constant row counts; testers' rows survive; failure
+  isolation). 963 backend tests pass. Checked on Tiger Data in a rolled-back transaction.
+
 ## Replacement white/cyan logo (Cache for Rudra and Braydin) - 2026-10-18
 
 Explicit user request replaces logos everywhere in the app and removes the supplied

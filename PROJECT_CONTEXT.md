@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Demo sites stay current on the server - 2026-10-18
+- Braydin request: `app/demo/freshen.py` slides every `demo_site` forward in time every `FEED_REFRESH_SECONDS`, as its own task beside the live loop in `refresh.run_forever` (server only, `FEED_REFRESH_ENABLED`). Readings, lightning alerts, acknowledgements, crew reports, notices/evidence and assessments move together; past events cap at `now`; scores are rescored unchanged. Real sites, briefings and audit events untouched. Manual: `python -m app.demo freshen`.
+- 963 backend tests pass (new `tests/test_demo_freshen.py`); TimescaleDB delete/reinsert checked in a rolled-back transaction. Cross-scope note in `docs/CROSS_SCOPE_CHANGES.md`; operations in `deploy/README.md`.
+
 ## Replacement white FORESITE artwork - 2026-10-18
 - Explicit user request replaces active logo variants with the supplied white-letter/cyan-cyclone artwork and genuine transparency. User approved an exact pixel cutout after two imagegen drafts introduced artifacts; neither generated draft is used. Committed source: `frontend/branding/foresite-logo-source.png`; canonical cutout: `frontend/public/foresite-logo.png` (visible foreground RGB preserved, alpha-only extraction).
 - `frontend/scripts/prepare-brand-assets.py` deterministically provisions full/compact/cyclone/favicon/touch/social assets and their hash manifest from the pinned source. Cache version `daaf5322`; existing display sizes and accessible links retained. Incorporated main `0605e7b` preserves Rudra's always-dark theme and alert notifications; no auth/surface/style changes relative to main are needed for the white logo.
