@@ -1,6 +1,6 @@
 ## Public About, resources and navigation (Cache for Rudra) - 2026-10-18 10:05 UTC
 
-Explicit user authorization, branch `feature/cache-about-public-completion`, base
+Explicit user authorization, branch `feature/cache-about-resources`, base
 main `5b27687`. The later user message removes Case Study, overriding the attached
 five-page requirement; the direct message authorizes merge after checks. No task
 checkbox changes. Public mapped-location copy/animation changes from 50+ to the
@@ -14,11 +14,14 @@ keeps only a noindex old-URL redirect and archived source notes. See
 [source audit and handoff](PUBLIC_WEBSITE.md) for team attribution, data-handling
 sources, all resource destinations and files requiring future ownership.
 
-Initial base checks: 203 frontend tests, lint/TypeScript, both production modes
-and Edge at 1440/768/390/320 pass; 14 GitHub resource links HTTP 200. No own app,
+Final clean isolated checks: npm ci, 203 frontend tests, lint/TypeScript, both
+production modes and Edge at 1440/768/390/320 pass; 14 GitHub links HTTP 200.
+Keyboard Tab/Enter/Escape, focus restoration, outside click, static fallback,
+identical footer typography, metadata and retired-URL checks pass with no
+clipping/exceptions/API calls. No own app,
 backend/auth/DB, model/scoring, canonical-contract/fixture, dependency, task-state
-or deployment changes. Latest teammate main `66902bd` is queued for reconciliation
-and final checks before publishing. Rudra supplies the final Devpost URL; formal
+or deployment changes. Latest main `be2bceb` is preserved in an isolated publication worktree
+(`C:\Users\cache\planit-control-public-about`); original worktrees are untouched. Rudra supplies the final Devpost URL; formal
 privacy/terms/retention/provider disclosures need team review. No invented legal
 policy, biographies or operational-acceptance claims.
 

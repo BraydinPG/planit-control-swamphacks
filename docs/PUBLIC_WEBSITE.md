@@ -5,7 +5,10 @@ public navigation/footer and metadata, change mapped-location copy to **250**,
 and **remove Case Study**. The user's later removal instruction supersedes the
 attachment's five-page navigation and Case Study resource request. The direct
 message authorizes merge after verification, superseding its original merge hold.
-Branch: `feature/cache-about-public-completion`, base main `5b27687`.
+Branch: `feature/cache-about-resources`, latest base main `be2bceb`. The initial
+public-site checkpoint was created from `5b27687`; only that scoped commit was
+carried into the isolated publication worktree, preserving the latest teammate UI.
+`C:\Users\cache\planit-control-functional` and its running server are left untouched.
 
 ## Current public documents
 
@@ -36,7 +39,7 @@ HTML. The built documents remain complete without JS or a backend; no runtime
 HTML fetch or second app/server is introduced.
 
 ```powershell
-Set-Location C:\Users\cache\planit-control-functional\frontend
+Set-Location C:\Users\cache\planit-control-public-about\frontend
 node scripts/prepare-public-chrome.mjs
 node scripts/prepare-public-chrome.mjs --check
 ```
@@ -104,7 +107,7 @@ retention, certification, guaranteed-safety or independent-operational-skill cla
 Existing Node 24, frontend dependencies and installed Edge; no service credentials:
 
 ```powershell
-Set-Location C:\Users\cache\planit-control-functional\frontend
+Set-Location C:\Users\cache\planit-control-public-about\frontend
 node scripts/prepare-public-chrome.mjs --check
 node --test tests/*.test.mjs
 npm.cmd run lint
@@ -124,11 +127,27 @@ Keep other checkouts, environment files, servers and browser sessions untouched.
 
 ## Team handoff
 
-Initial feature verification at base `5b27687`: 203 frontend tests, lint,
-TypeScript, development and live/fixture production public-browser checks pass
-at 1440/768/390/320 with no exceptions, clipping or API requests. The existing
-SPA chunk-size warning remains. Teammate main `66902bd` is being reconciled and
-the final combined tree will be checked before publication.
+Final verification in the clean isolated worktree, based on main `be2bceb` and
+public commit `4b54fe4` (scoped cherry-pick of `9a04e08`):
+
+- Fresh `npm ci --no-audit --no-fund`: 57 packages installed; no environment files
+  copied or service credentials used. npm reported the existing unapproved
+  `browser-tabs-lock` postinstall warning; no script approvals or dependency
+  changes were made.
+- **203 frontend tests** passed, including four public-document/resource checks.
+- Lint, explicit public/tooling lint, TypeScript and deterministic chrome checks pass.
+- Both live and fixture Vite production builds and Edge public acceptance pass at
+  1440/768/390/320: four documents, mobile keyboard/focus/Tab/outside click,
+  consistent footer styles, metadata, no-JS, motion, direct/reload/history,
+  retired URL and existing Data/Platform/demo entry. Zero clipping, exceptions
+  or API requests. Existing SPA chunk-size warning remains.
+- Fourteen external GitHub destinations returned 200; local links, assets and
+  fragments resolve. Research assets, app source, backend, ML and task states
+  exactly match main; no teammates' files are included in this PR.
+
+Review captures: [Desktop](screenshots/about-desktop.webp),
+[Mobile](screenshots/about-mobile.webp). Full PNGs and team-section captures
+remain in `frontend/.shell-check/public-about-*.png` (ignored).
 
 Cache's explicit public-site scope touches public HTML/CSS/JS, the existing public
 browser harness, static-document tests, shared-chrome generator and coordination
