@@ -115,7 +115,7 @@ export function AppShell({
         className={
           mobile
             ? `grid ${visible.length > 5 ? 'grid-cols-6 gap-0.5' : 'grid-cols-5 gap-1.5'}`
-            : 'space-y-1'
+            : 'space-y-4'
         }
       >
         {visible.map((item) => {
@@ -128,7 +128,7 @@ export function AppShell({
               className={
                 mobile
                   ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-xs leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
-                  : `flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
+                  : `flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
               }
             >
               <Icon

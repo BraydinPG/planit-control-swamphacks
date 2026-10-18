@@ -206,7 +206,8 @@ export class HttpClient implements Client {
         if (
           report.site_id !== input.site_id ||
           report.hazard_present !== input.hazard_present ||
-          report.category !== input.category
+          report.category !== input.category ||
+          report.mat_condition !== (input.mat_condition ?? null)
         )
           throw new ApiError(
             502,

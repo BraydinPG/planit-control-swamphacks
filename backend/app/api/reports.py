@@ -39,7 +39,14 @@ from app.api.sites import DbSession, report_schema, visible_site_ids
 from app.db import models as db
 from app.gemini import GeminiClient, get_gemini_client
 from app.gemini.report_analysis import run_report_analysis
-from app.schemas import CrewReport, LocationSource, ReportCategory, ReportCreate, ReportReview
+from app.schemas import (
+    CrewReport,
+    LocationSource,
+    MatCondition,
+    ReportCategory,
+    ReportCreate,
+    ReportReview,
+)
 from app.security import (
     AuthenticatedUser,
     CurrentUser,
@@ -89,6 +96,7 @@ def submit_report(
     note: Annotated[str | None, Form()] = None,
     location_source: Annotated[LocationSource, Form()] = LocationSource.SITE,
     location_accuracy_m: Annotated[float | None, Form()] = None,
+    mat_condition: Annotated[MatCondition | None, Form()] = None,
     photo: Annotated[UploadFile | None, File()] = None,
 ) -> CrewReport:
     try:
@@ -101,6 +109,7 @@ def submit_report(
             note=note or None,
             location_source=location_source,
             location_accuracy_m=location_accuracy_m,
+            mat_condition=mat_condition,
         )
     except ValidationError as exc:
         raise HTTPException(
@@ -144,6 +153,7 @@ def submit_report(
         now,
         location_source=form.location_source,
         location_accuracy_m=form.location_accuracy_m,
+        mat_condition=form.mat_condition,
     )
     # T060: Gemini's analysis runs after the response, so the crew member never waits on it.
     background.add_task(

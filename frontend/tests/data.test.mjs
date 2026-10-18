@@ -34,14 +34,31 @@ const assigned = 'site-demo-everglades'
 test('demo accepts access mat deterioration and preserves the crew assessment', async () => {
   const client = new DemoClient(() => 'crew', storage())
   const report = await client.submit({ site_id: assigned,
-    category: 'access_mat_deterioration', hazard_present: true,
+    category: 'access_mat_deterioration', hazard_present: true, mat_condition: 'D',
     lat: 25.76, lon: -80.49, note: 'Mat 12: crew stage D.' })
   assert.equal(report.category, 'access_mat_deterioration')
+  assert.equal(report.mat_condition, 'D')
   assert.equal(report.note, 'Mat 12: crew stage D.')
   assert.equal(report.review_status, 'pending')
   const notice = (await client.site(assigned)).notices.find(n => n.id === report.notice_id)
   assert.equal(notice.status, 'potential')
   assert.equal(notice.instruction, null)
+})
+
+test('access mat grade A is absent with no notice; mismatched grades are rejected', async () => {
+  const client = new DemoClient(() => 'crew', storage())
+  const base = { site_id: assigned, lat: 25.76, lon: -80.49 }
+  const a = await client.submit({ ...base, category: 'access_mat_deterioration',
+    hazard_present: false, mat_condition: 'A' })
+  assert.equal(a.mat_condition, 'A')
+  assert.equal(a.notice_id, null)
+  for (const bad of [
+    { category: 'access_mat_deterioration', hazard_present: true },
+    { category: 'access_mat_deterioration', hazard_present: true, mat_condition: 'A' },
+    { category: 'access_mat_deterioration', hazard_present: false, mat_condition: 'C' },
+    { category: 'wildlife', hazard_present: true, mat_condition: 'B' },
+  ])
+    await assert.rejects(() => client.submit({ ...base, ...bad }), (e) => e.status === 422)
 })
 
 test('unapproved fixture model scores cannot determine demonstration ranking', async () => {

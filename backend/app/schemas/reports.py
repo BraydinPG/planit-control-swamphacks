@@ -41,6 +41,19 @@ class LocationSource(StrEnum):
     PIN = "pin"  # a point the crew member placed on the map
 
 
+class MatCondition(StrEnum):
+    """The crew's A-D grade for an access mat report (T034B). D means unusable.
+
+    No approved grading rubric exists, so the letters carry no thresholds. Grade A is
+    recorded as no hazard present; B, C and D as hazard present.
+    """
+
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+
+
 class AnalysisVerdict(StrEnum):
     """Whether the supplied data backs up the crew member's report."""
 
@@ -109,6 +122,9 @@ class CrewReport(Schema):
         default=None, description="Null for reports filed before T053A."
     )
     location_accuracy_m: float | None = None
+    mat_condition: MatCondition | None = Field(
+        default=None, description="The crew's A-D grade; access mat reports only."
+    )
     site_distance_miles: float | None = Field(
         default=None, description="Backend-computed distance from the report to its site."
     )
@@ -139,11 +155,27 @@ class ReportCreate(Schema):
     location_accuracy_m: float | None = Field(
         default=None, ge=0, description="Device accuracy radius. Only with location_source=device."
     )
+    mat_condition: MatCondition | None = Field(
+        default=None,
+        description="Required for access_mat_deterioration and only accepted there. "
+        "A means hazard_present is false; B, C and D mean it is true.",
+    )
 
     @model_validator(mode="after")
     def accuracy_only_from_the_device(self) -> "ReportCreate":
         if self.location_accuracy_m is not None and self.location_source != LocationSource.DEVICE:
             raise ValueError("location_accuracy_m is only accepted with location_source=device")
+        return self
+
+    @model_validator(mode="after")
+    def mat_condition_matches_category(self) -> "ReportCreate":
+        is_mat = self.category == ReportCategory.ACCESS_MAT_DETERIORATION
+        if is_mat and self.mat_condition is None:
+            raise ValueError("mat_condition (A-D) is required for access mat reports")
+        if not is_mat and self.mat_condition is not None:
+            raise ValueError("mat_condition is only accepted for access mat reports")
+        if is_mat and self.hazard_present != (self.mat_condition != MatCondition.A):
+            raise ValueError("Grade A is hazard absent; grades B, C and D are hazard present")
         return self
 
 

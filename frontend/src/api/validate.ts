@@ -226,6 +226,10 @@ export function validateReport(v: unknown, id?: string): CrewReport {
       ['device', 'site', 'pin'].includes(String(v.location_source))
     ) ||
     !nullableDistance(v.location_accuracy_m) ||
+    !(
+      v.mat_condition === null ||
+      ['A', 'B', 'C', 'D'].includes(String(v.mat_condition))
+    ) ||
     !nullableDistance(v.site_distance_miles) ||
     !(v.enrichment === null || analysis(v.enrichment))
   )
