@@ -216,3 +216,8 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Confirmed hazards show the name only; instruction, duration and source sit behind View more (user choice). A supervisor who did not confirm sees who can send the instruction. Static species caveat banner removed (per-row label and sources disclosure remain). Mat grades align, A = "Perfect", all grades select in black. Every active alert uses one red; `--pc-stop` softened to #c0262d (white text 5.9:1).
 - `check-shell.mjs` follows the current UI: no View alert link, disclosures opened before reading, compact report cards. Its 320 px crew primary-action check now passes.
 - Verification on the tree merged with main 5d42c9c: 175 frontend tests, lint, TypeScript/build, full `check-shell.mjs` (1440/390/320, no browser exceptions) and 954 backend tests pass.
+
+## Alert notifications and titles - 2026-10-18
+- User-authorized (Rudra): a top-right notification appears when an alert starts (red; orange for heat) with a View alerts link, and a green "<title> is over" notification when the server clears it (auto-dismisses after 10 s). `AlertNotifier` polls `client.alerts()` every 30 s and on each refresh, and remembers announced alerts in sessionStorage so reloads don't repeat them. It only reports server state; it never clears or creates an alert.
+- Titles: lightning reads "Stop work alert - Lightning" with the strike distance and time; other rules read "<Event> advisory" (`presentation/alerts.ts`). Heat advisories use orange (`--pc-warn`) on the card and notification; all other alerts keep the shared red.
+- Verification: 177 frontend tests, lint, TypeScript/build and full `check-shell.mjs` (new end/start notification steps; 1440/390/320, no browser exceptions) pass.

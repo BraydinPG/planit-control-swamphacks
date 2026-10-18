@@ -84,6 +84,16 @@ async function evaluate(expression) {
   assert(!result.exceptionDetails, JSON.stringify(result.exceptionDetails))
   return result.result.value
 }
+// The lightning alert card itself, not the top-right notification that names it.
+async function alertCardLoaded(text = 'Stop work alert - Lightning') {
+  await until(
+    () =>
+      evaluate(
+        `Array.from(document.querySelectorAll('[data-alert-id] h2')).some(e=>e.textContent.includes(${JSON.stringify(text)}))`,
+      ),
+    'alert card ' + text,
+  )
+}
 async function loaded(text) {
   await until(
     () =>
@@ -330,8 +340,9 @@ try {
     })
     await navigate(
       new URL('#/crew/overview', base).href,
-      'Stop-work alert active',
+      'Stop work alert - Lightning',
     )
+    await alertCardLoaded()
     await checkBranding()
     await screenshot(name)
     assert(
@@ -339,7 +350,7 @@ try {
       `Overflow at ${width}`,
     )
     const bounds = await evaluate(
-      "(()=>{const a=Array.from(document.querySelectorAll('main h2')).find(e=>e.textContent.includes('Stop-work alert active'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
+      "(()=>{const a=Array.from(document.querySelectorAll('main h2')).find(e=>e.textContent.includes('Stop work alert - Lightning'));const r=a.getBoundingClientRect();return {top:r.top,bottom:r.bottom}})()",
     )
     assert(
       bounds.top >= 0 && bounds.bottom <= height - 64,
@@ -374,7 +385,8 @@ try {
       'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',
     )
     await screenshot(`demo-score-${name}`)
-    await hash('/crew/overview', 'Stop-work alert active')
+    await hash('/crew/overview', 'Stop work alert - Lightning')
+    await alertCardLoaded()
   }
   await click('Alerts')
   await loaded('Acknowledging does not clear the alert')
@@ -397,8 +409,28 @@ try {
   )
   await click('Replay server-cleared payload')
   await loaded('Server reports cleared')
+  // The server-cleared alert raises a green end notification, and its start notice goes away.
+  await until(
+    () =>
+      evaluate(
+        "document.querySelector('[data-alert-notice=end]')?.textContent.includes('Stop work alert - Lightning is over') && !document.querySelector('[data-alert-notice=start]')",
+      ),
+    'alert end notification',
+  )
   await click('Replay additional qualifying strike')
-  await loaded('Stop-work alert active')
+  await alertCardLoaded()
+  // A strike after clearance starts a new alert period: a new red start notification.
+  await until(
+    () =>
+      evaluate(
+        "document.querySelectorAll('[data-alert-notice=start]').length===1 && document.querySelector('[data-alert-notice=start]').textContent.includes('Stop work alert - Lightning') && document.querySelector('[data-alert-notice=start] a').getAttribute('href')==='#/crew/alerts'",
+      ),
+    'alert start notification',
+  )
+  assert(
+    await evaluate('document.documentElement.scrollWidth <= innerWidth'),
+    'Alert notifications must not overflow',
+  )
   const demoReportOpened = performance.now()
   await hash('/crew/reports', 'Report a hazard')
   await choose('presence', 'present')
@@ -929,7 +961,7 @@ try {
     await evaluate("window.harness.mount('dev')")
     await loaded('Development bypass roles are not accepted')
     await evaluate("window.harness.mount('crew')")
-    await loaded('Stop-work alert active')
+    await alertCardLoaded()
     await hash(
       '/supervisor/sites/site-fixture-b',
       'not available to your account',
@@ -938,7 +970,8 @@ try {
       await evaluate("!document.body.innerText.includes('Preview workspace')"),
       'Live role selector leaked',
     )
-    await hash('/crew/overview', 'Stop-work alert active')
+    await hash('/crew/overview', 'Stop work alert - Lightning')
+    await alertCardLoaded()
     assert(await evaluate("document.querySelector('header button').textContent.trim()==='Sign out' && !document.body.innerText.includes('Authenticated API') && !document.body.innerText.includes('Connected mode.')"))
     await evaluate('window.harness.alertWindow(90)')
     await click('Alerts')
