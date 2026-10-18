@@ -1,3 +1,27 @@
+## Crew desktop layout (Cache for Rudra) - 2026-10-18
+
+Explicit user authorization: expand crew for PC while retaining the approved mobile
+design. `feature/cache-crew-desktop-layout`, base main `8744aa8`; logo PR71 merged
+separately under the same instruction after integrating PR72 and rechecking acceptance.
+
+`AppShell.tsx` adds desktop crew navigation from 1024px and content up to 1440px;
+`ConnectedPages.tsx` pairs alerts/instructions and score/conditions from 1280px, with
+desktop report/briefing shortcuts. `index.css` corrects its obsolete phone-only comment.
+Existing `check-shell.mjs` adds desktop assertions and reads current canonical fixture
+values: its old 6.1/six-visible-card constants conflicted with main's 7.9 and hidden
+unavailable-card policy. No application data/scoring/prediction policy changes.
+
+Before/after Edge: five crew pages across eight widths, identical visible mobile/tablet
+geometry at 320/390/768. Verified 178 frontend tests, lint, TypeScript, default/live and
+explicit-demo builds, development and built-demo browser suites (all eleven destinations,
+reports/review/instructions, alert persistence, keyboard flow, error states, mocked roles).
+The missing-auth browser check now requests a protected deep link, since bare URLs open
+the new public landing page. No exceptions or actual backend calls; existing bundle-size
+warning remains. Backend and real-service acceptance were not rerun or claimed.
+[Review guide](CREW_RESPONSIVE_LAYOUT.md). Rudra reviews/maintains these frontend files.
+No other worktree/server, backend, auth, schema, scoring/ML, environment or task-state
+changes. T063-T068 real-service acceptance remains pending its own checks.
+
 ## Landing + hosted-login logo handoff (Cache for Rudra and Braydin) - 2026-10-18
 
 Explicit user request covers the new HTML front door and a normal navy logo for the

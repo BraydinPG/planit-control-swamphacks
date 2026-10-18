@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Crew desktop workspace - 2026-10-18
+- Explicit user authorization: merged [PR71](https://github.com/BraydinPG/planit-control-swamphacks/pull/71) as `8744aa8` after incorporating PR72 and passing 178 frontend tests, lint, TypeScript/build and landing browser checks. Auth0 logo owner action remains in [auth/BRANDING.md](auth/BRANDING.md).
+- `feature/cache-crew-desktop-layout` starts at that merged main. Crew retains its original layout below 1024px; larger screens gain desktop navigation and a bounded 1440px workspace. From 1280px, Home pairs alerts/instructions and My Worksite pairs score/conditions. [Layout and checks](docs/CREW_RESPONSIVE_LAYOUT.md).
+- Verified 178 frontend tests, lint, TypeScript and default/live + explicit-demo builds. Development and built-demo Edge suites pass desktop/mobile layouts, all eleven destinations, reports/review/instructions, alert persistence, keyboard flow, error states and mocked roles; no exceptions or actual backend calls. Five-page/eight-width before/after comparison preserves visible mobile/tablet geometry at 320/390/768. Browser checks now follow current fixture values and the landing-page entry flow; application data/policies unchanged. Existing bundle warning remains. No backend/auth/service acceptance or task check-off claimed.
+
 ## Landing and hosted-login logo variants - 2026-10-18
 - User-authorized `feature/cache-landing-auth0-branding`, based on main `ca87dd5`: replace the placeholder landing header mark with the transparent white wordmark, current favicon and responsive sizing. Existing storm design/content and both `/?signin` links are preserved.
 - Added approved original navy full logo as `frontend/public/foresite-logo-light.png`, pinned to exact original bytes and included in deterministic asset regeneration/hash manifest. [Auth0 handoff](auth/BRANDING.md): `/foresite-logo-light.png?v=05a688ff` on `https://foresiteoperations.org` after release. User clarified that Braydin will receive this URL; no Auth0 management setting has been changed or claimed verified.
