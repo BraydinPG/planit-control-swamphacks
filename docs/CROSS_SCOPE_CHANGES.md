@@ -17,6 +17,26 @@ checks; T065 real Auth0/Tiger lifecycle acceptance is not claimed. Edge regressi
 passes eleven destinations at 1440/768/390/320 and the new demo/mock-live role checks,
 with no browser exceptions or real API calls. Rudra reviews the focused frontend
 guard; no automatic merge or deployment.
+## Sign-in logo contrast (Cache for Braydin and Rudra) - 2026-10-17
+
+Explicit screenshot-based user request authorizes the narrow auth-presentation fix.
+Branch `feature/cache-sign-in-logo-contrast` starts from main `adea918`, preserving
+the team's new organization assessments, onboarding and demo updates. Open PR56 is
+independent. `frontend/src/auth/RequireRole.tsx` removes OS-dark color overrides from
+the access panel, its button and error text; the app's established light appearance
+keeps the original navy logo readable. Guard conditions, callbacks, token handling,
+roles, hosted Auth0 login, imagery and shared contracts are unchanged. No logo backing,
+outline, recoloring or filter is added; existing transparent assets/sizes are retained.
+
+`frontend/scripts/check-shell.mjs` extends existing sign-in appearance assertions;
+logo guide/context and three public mocked sign-in screenshots document the result.
+174 frontend tests, lint, TypeScript, production build and diff whitespace pass.
+Focused installed-Edge inspection passes 390/1440 widths, dark/light OS preferences,
+logged-out/loading/no-role panels, transparent unfiltered logo and no overflow;
+zero browser exceptions or API requests. The full application browser suite and backend
+suite were not rerun for this presentation-only change. Existing build-size warning
+remains. Braydin reviews auth presentation; Rudra reviews visual consistency. Other
+worktrees/servers, credentials, deployment and task states are untouched; no automatic merge.
 
 ## Smaller transparent logo (Cache for Rudra and Braydin) - 2026-10-17 21:33 EDT
 
@@ -795,3 +815,38 @@ Supervisors on the deployed site saw "private photo retrieval is not connected" 
 - Tests: `backend/tests/test_reports_api.py` (visibility, 401, missing object), `frontend/tests/team.test.mjs` (authorized blob request).
 
 The seven reports created before deployment have photo keys whose files were stored on teammates' laptops, so they show "This photo isn't in storage." New photos go to the private `foresite-photos` bucket.
+
+### 2026-10-18 — Braydin: each organization assesses a hazard for itself (user-authorized)
+
+The user asked that a hazard notice reach every organization in its radius, and that each organization assess it only through its own supervisor. Previously the first notified supervisor of any organization confirmed it for everyone and instructed every team in the radius.
+
+- `backend/app/db/models.py`: new `notice_assessments` table, keyed by (notice, organization): confirmer, time, draft, instruction, sent time. `create_all` adds it; no column changes.
+- `backend/app/services/hazards.py`: `confirm_hazard` records the caller's organization's assessment (409 if that organization already confirmed). Only the reporting organization's confirmation confirms the crew report and rescores its site. The notice's own `status`/`confirmed_by` keep the first confirmation anywhere.
+- `backend/app/services/instructions.py`: the draft and the sent instruction belong to the organization's assessment; delivery goes only to that organization's teams inside the stored radius.
+- `backend/app/services/notice_views.py` (new) and `backend/app/api/sites.py` `load_notices`: a notice reads confirmed, with its instruction, only for the organization that confirmed it (the site's team's organization; the viewer's for a site without a team). Notices confirmed before this change, with no assessment rows, stay confirmed for everyone, and are stored as their confirmer's organization's assessment before any later write.
+- `backend/app/api/hazards.py`: routes return that per-organization view. The API shape is unchanged; the TS mirror didn't change.
+- Frontend: notice card copy says "Confirm for your organization" and "Send to your organization's teams".
+- Tests: hazard, instruction, scoring and feed-notice tests updated to the new rule, plus new cases (another organization confirms only for itself; each organization sends its own instruction; an older confirmed notice keeps its confirmation).
+
+### 2026-10-18 — Braydin: supervisors remove team members (user-authorized)
+
+- `backend/app/api/teams.py`: `DELETE /api/teams/{team_id}/members/{user_id}` deletes that crew member's membership (own organization only; 404 otherwise) and audits `team.member.remove`. Their reports stay on record, and they can rejoin with a new join code.
+- Frontend: `removeMember` in the client contract, HTTP and demo clients; a two-step **Remove** on each member row of the Team tab.
+- Tests: `backend/tests/test_teams_api.py`, `frontend/tests/team.test.mjs`.
+
+### 2026-10-18 — Braydin: supervisor keys and the new-account choice (user-authorized)
+
+The user asked that a new member choose crew or supervisor, and that supervisors be created without manual Auth0 role assignment: an existing supervisor creates a one-use key.
+
+- `backend/app/db/models.py`: new `supervisor_invites` table (code, creator, expiry, revoked, used by/at).
+- `backend/app/security/management.py` (new): minimal Auth0 Management API client (client-credentials token, role lookup by name, add user to role) with settings `AUTH0_MGMT_CLIENT_ID`/`AUTH0_MGMT_CLIENT_SECRET` (auth/SETUP.md section 6a).
+- `backend/app/api/teams.py`: `POST /api/onboarding/supervisor`, `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}`. The key is claimed in the same transaction, Auth0 assigns the role, then the organization and supervisor membership are saved; any failure saves nothing.
+- Frontend (Rudra's lane): the unlinked-account screen offers **Crew member** (join code) or **Start an organization** (supervisor key + name), then signs in again for the new role; the Team tab gets **Invite a supervisor**; types `SupervisorInvite`/`SupervisorSignup` mirrored; client methods in contract, HTTP and demo clients.
+- Tests: `backend/tests/test_teams_api.py`, `backend/tests/test_auth0_management.py`, `frontend/tests/team.test.mjs`.
+
+### 2026-10-18 — Braydin: demo anomaly sites; outlook event names (user-authorized)
+
+- `backend/app/demo/anomalies.py` (new) and `python -m app.demo anomalies`: backs up then removes every crew report (and its notices/assessments) and the old Everglades scenario's simulated weather, alerts and notices, then adds one labeled demo site per anomaly type in different states (LA flood, TX flash flood, AZ heat, WY high wind, GA heavy rain, MN winter storm, AL hurricane, CA earthquake) plus lightning stop-work at the Everglades site. Readings use the live feed shapes (all simulated); notices get real delivery receipts and are confirmed through `confirm_hazard`; scores come from the real algorithm; briefings from the 6 PM schedule. Backups go to `~/foresite-demo-backups` (outside the repo).
+- `backend/app/outlook/events.py` (Rudra's T050A module): `_classify` keeps exact NOAA names for weather notices (High Wind, Strong Wind, Heavy Rain, Winter Storm, Ice Storm, Heavy Snow, Heat Index Exceedance) instead of lowercasing them, so the adapter receives its registry keys. The adapter's own rules decide support; none was loosened.
+- What each card shows (verified against the real adapter): Flood gives an estimate. Flash Flood, High Wind, Heavy Rain and Winter Storm need Cache's `ml/artifacts/multidisaster/*.joblib`, and then on-site confirmation evidence from the last hour (today only a confirmed crew report of the same hazard). Heat refuses live events by design (historical replay only). Hurricane and earthquake need issued NHC/USGS products.
+- Tests: `backend/tests/test_demo_anomalies.py`.

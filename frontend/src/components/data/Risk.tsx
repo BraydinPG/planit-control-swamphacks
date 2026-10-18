@@ -179,11 +179,8 @@ export function ScoreBar({
   evidence?: Evidence | null
 }) {
   const color = level ? `var(--pc-${levelVar[level]})` : 'var(--pc-low)'
-  // Partial evidence: hatched fill, so the bar never reads as a settled value.
-  const fill =
-    evidence === 'partial'
-      ? `repeating-linear-gradient(135deg, ${color} 0 4px, transparent 4px 7px)`
-      : color
+  // Incomplete evidence remains labeled in the badge and adjacent warning.
+  const fill = evidence === 'partial' ? '#ff0000' : color
   if (evidence === 'none') score = null
   return (
     <div className="flex h-2.5 w-full gap-0.5" aria-hidden="true">

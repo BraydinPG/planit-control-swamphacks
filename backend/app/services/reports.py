@@ -173,18 +173,23 @@ def notice_radius(category: ReportCategory, report: db.CrewReport) -> tuple[floa
     return DEFAULT_RADIUS_MILES[category], RadiusSource.DEFAULT
 
 
-def notice_recipients(session: Session, notice: db.HazardNotice) -> Recipients:
-    """Teams assigned to sites inside the radius, and their organizations' supervisors."""
+def notice_team_organizations(session: Session, notice: db.HazardNotice) -> list[tuple[str, str]]:
+    """(team_id, organization_id) for every team assigned to a site inside the radius."""
     teams = session.execute(
         select(db.Team.id, db.Team.organization_id, db.Site.lat, db.Site.lon).join(
             db.Site, db.Team.site_id == db.Site.id
         )
     ).all()
-    inside = [
+    return [
         (team_id, org_id)
         for team_id, org_id, lat, lon in teams
         if miles_between(notice.lat, notice.lon, lat, lon) <= notice.radius_miles
     ]
+
+
+def notice_recipients(session: Session, notice: db.HazardNotice) -> Recipients:
+    """Teams assigned to sites inside the radius, and their organizations' supervisors."""
+    inside = notice_team_organizations(session, notice)
     orgs = {org_id for _, org_id in inside}
     supervisors = (
         session.scalars(

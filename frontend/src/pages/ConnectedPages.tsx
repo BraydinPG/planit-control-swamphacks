@@ -180,6 +180,7 @@ function SitePage({
       !n.instruction_sent_at)
   const actions = (
     <div className="space-y-3">
+      {!compact && (
       <div className="grid gap-3 @lg:grid-cols-2">
         <a className={primary + big} href={`#/${persona}/reports`}>
           <Icon name="camera" className="size-6" />
@@ -190,6 +191,7 @@ function SitePage({
           View briefing
         </a>
       </div>
+      )}
       <button
         type="button"
         className={control + ' w-full border-dashed @lg:w-auto'}
@@ -227,6 +229,7 @@ function SitePage({
       <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
         <div className="space-y-5 @3xl:col-span-7">
           {compact && actions}
+          {!compact && (
           <section className={`${card} p-5`}>
             <p className="kicker mb-1.5">
               {displayLabel(site.location_type, 'Worksite')}
@@ -249,6 +252,7 @@ function SitePage({
               </p>
             </Details>
           </section>
+          )}
           {!compact && actions}
           <ScorePanel site={site} demo={client.mode === 'demo'} />
           <section className="space-y-3">
@@ -698,20 +702,14 @@ function AlertsPage({ id }: { id: string | null }) {
   const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
   return (
     <div className="pc-enter space-y-5">
-      <a href={`#/${persona}/overview`} className={control}>
-        <Icon name="back" className="size-4" />
-        Back to {persona === 'crew' ? 'home' : 'overview'}
-      </a>
-      {id && (
-        <a
-          href={`#${location.hash.split('/').slice(0, 3).join('/').slice(1)}`}
-          className={control}
-        >
+      <div className="flex flex-wrap items-center gap-3">
+        <a href={`#/${persona}/overview`} className={control}>
           <Icon name="back" className="size-4" />
-          All alerts
+          Back to {persona === 'crew' ? 'home' : 'overview'}
         </a>
-      )}
-      <button type="button" className={control} onClick={refresh}>Refresh alerts</button>
+
+        <button type="button" className={control} onClick={refresh}>Refresh alerts</button>
+      </div>
       <div className="grid gap-5 @3xl:grid-cols-2 @3xl:items-start">
         {rows.length ? (
           rows.map((a) => <AlertCard key={a.id} alert={a} detail />)

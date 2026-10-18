@@ -27,6 +27,21 @@ class JoinCode(Schema):
     expires_at: datetime
 
 
+class SupervisorInvite(Schema):
+    """`XXXX-XXXX`. Lets one new account become a supervisor and start its own organization."""
+
+    code: str = Field(pattern=r"^[A-Z2-9]{4}-[A-Z2-9]{4}$")
+    created_at: datetime
+    expires_at: datetime
+
+
+class SupervisorSignup(Schema):
+    """Become a supervisor with an invite key and name the new organization."""
+
+    code: str = Field(min_length=8, max_length=20)
+    organization_name: str = Field(min_length=1, max_length=80)
+
+
 class TeamRoster(Schema):
     id: str
     name: str

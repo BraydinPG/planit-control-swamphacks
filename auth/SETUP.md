@@ -143,6 +143,16 @@ VITE_AUTH0_AUDIENCE=https://api.planit-control
 
 Without these values, the backend answers 503 for token-protected requests (it never lets requests through), and the frontend shows "Sign-in is not configured".
 
+## 6a. Supervisor sign-up (role manager app)
+
+A new account becomes a supervisor by redeeming a **supervisor key** that an existing supervisor creates on the Team tab, then naming its organization. The backend gives that account the `supervisor` role in Auth0, so nobody assigns roles by hand. It needs one machine-to-machine app, created once:
+
+1. **Applications → Applications → Create Application**. Name it `FORESITE role manager` and choose **Machine to Machine Applications**.
+2. Authorize it for the **Auth0 Management API** with only **`read:roles`** and **`create:role_members`**.
+3. From its **Settings** tab, put the Client ID and Client Secret in `backend/.env` (and the server's `.env`) as `AUTH0_MGMT_CLIENT_ID` and `AUTH0_MGMT_CLIENT_SECRET`. Never commit them.
+
+Flow: `POST /api/onboarding/supervisor` checks the key (one use, 7 days, revocable), asks Auth0 to add the user to the `supervisor` role, then creates the organization and the supervisor membership. If Auth0 refuses, nothing is saved and the key stays usable. The browser signs in again so the new role and permissions reach it. Without the app, the endpoint answers 503 `not_configured`.
+
 ## 7. Demo accounts
 
 The demo needs one account per role (`spec.md` section 8). Create them in the dashboard. **Do not commit their emails, passwords, or user ids anywhere public.** Keep the passwords in the team's password manager or a private team chat.

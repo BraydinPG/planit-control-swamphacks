@@ -308,7 +308,7 @@ def test_notice_delivery_is_audited(session) -> None:
 def test_detected_feed_notice_can_be_confirmed_by_its_recorded_recipient(session) -> None:
     [(notice, _)] = send_feed_notices(session, SITE, [quake(10.0, 4.8)], NOW, SETTINGS)
     user = CurrentUser("auth0|sup", "supervisor", roles.SUPERVISOR_PERMISSIONS)
-    confirmed = confirm_hazard(session, notice.id, user, NOW)
+    confirmed, _ = confirm_hazard(session, notice.id, user, NOW)
     assert confirmed.status == "confirmed" and confirmed.confirmed_by == user.sub
     assert list(session.scalars(select(db.CrewReport))) == []
     assert list(session.scalars(select(db.HazardScore))) == []

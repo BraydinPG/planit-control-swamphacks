@@ -249,7 +249,7 @@ export function ScorePanel({
         ) : (
           <>
             <span className="font-condensed text-6xl leading-none tabular-nums">
-              <CountUp value={site.risk_score} decimals={1} />
+              <CountUp value={site.risk_score} decimals={1} duration={3000} />
             </span>
             <span className="text-lg text-muted">
               / 10 · {displayLabel(site.risk_level, 'Level unavailable')}

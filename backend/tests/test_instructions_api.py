@@ -58,9 +58,10 @@ def test_confirm_calls_helper_with_evidence_but_never_sends(h, client):
     assert result["generated_by"] == "gemini"
     assert len(calls) == 1 and report["id"] in calls[0]
     assert '"radius_miles": 1.0' in calls[0]
-    [notice] = h.rows(db.HazardNotice)
-    assert notice.suggested_instruction == result["suggested_instruction"]
-    assert notice.instruction is None and notice.instruction_sent_at is None
+    [assessment] = h.rows(db.NoticeAssessment)
+    assert assessment.organization_id == "org-1"
+    assert assessment.suggested_instruction == result["suggested_instruction"]
+    assert assessment.instruction is None and assessment.instruction_sent_at is None
     assert not any(e.action == "notice.instruction.deliver" for e in h.rows(db.AuditEvent))
 
 
@@ -86,7 +87,7 @@ def test_crew_and_other_supervisors_never_receive_the_unsent_draft(h, client):
     assert own["notices"][0]["suggested_instruction"] == "Keep clear of the damaged pole."
 
 
-def test_only_final_edited_text_reaches_every_team_inside_radius(h, client):
+def test_final_text_reaches_only_the_confirming_organizations_teams(h, client):
     report = submit(client).json()
     provider(lambda *args: valid_draft(report["id"]))
     confirm(client, report["notice_id"])
@@ -96,29 +97,61 @@ def test_only_final_edited_text_reaches_every_team_inside_radius(h, client):
     assert response.status_code == 200
     assert response.json()["instruction"] == final
     assert response.json()["instruction_sent_at"].startswith("2026-10-17T18:00")
-    for site_id, headers in [
-        ("site-a", crew()),
-        ("site-near", supervisor()),
-        ("site-x", supervisor("auth0|supervisor-2")),
-    ]:
+    for site_id, headers in [("site-a", crew()), ("site-near", supervisor())]:
         notices = client.get(f"/api/sites/{site_id}", headers=headers).json()["notices"]
         assert notices[0]["instruction"] == final
+    # Org 2's team is inside the radius but org 2 hasn't assessed it: still potential.
+    other = client.get("/api/sites/site-x", headers=supervisor("auth0|supervisor-2")).json()
+    assert other["notices"][0]["status"] == "potential"
+    assert other["notices"][0]["instruction"] is None
     assert client.get("/api/sites/site-b", headers=supervisor()).json()["notices"] == []
     deliveries = sorted(
         e.entity for e in h.rows(db.AuditEvent) if e.action == "notice.instruction.deliver"
     )
-    assert deliveries == [
-        f"{report['notice_id']}->{team}" for team in ["team-a", "team-n", "team-x"]
-    ]
+    assert deliveries == [f"{report['notice_id']}->{team}" for team in ["team-a", "team-n"]]
     assert [(s.id, s.risk_score) for s in h.rows(db.HazardScore)] == scores_before
     assert h.rows(db.Alert) == []
+
+
+def test_each_organization_sends_its_own_instruction(h, client):
+    report = submit(client).json()
+    notice_id = report["notice_id"]
+    assert confirm(client, notice_id).status_code == 200
+    assert confirm(client, notice_id, supervisor("auth0|supervisor-2")).status_code == 200
+    assert send(client, notice_id, "Org 1: stay behind the barrier.").status_code == 200
+    other = send(client, notice_id, "Org 2: hold at the gate.", supervisor("auth0|supervisor-2"))
+    assert other.status_code == 200
+    seen = {
+        site_id: client.get(f"/api/sites/{site_id}", headers=headers).json()["notices"][0]
+        for site_id, headers in [
+            ("site-a", crew()),
+            ("site-x", supervisor("auth0|supervisor-2")),
+        ]
+    }
+    assert seen["site-a"]["instruction"] == "Org 1: stay behind the barrier."
+    assert seen["site-a"]["confirmed_by"] == "auth0|supervisor-1"
+    assert seen["site-x"]["instruction"] == "Org 2: hold at the gate."
+    assert seen["site-x"]["confirmed_by"] == "auth0|supervisor-2"
+    deliveries = sorted(
+        e.entity for e in h.rows(db.AuditEvent) if e.action == "notice.instruction.deliver"
+    )
+    assert deliveries == [f"{notice_id}->{team}" for team in ["team-a", "team-n", "team-x"]]
+    # Org 2's confirmation didn't touch org 1's report review.
+    [stored] = h.rows(db.CrewReport)
+    assert stored.reviewed_by == "auth0|supervisor-1"
+
+
+def test_another_organization_must_confirm_before_it_can_send(h, client):
+    report = submit(client).json()
+    confirm(client, report["notice_id"])
+    other = send(client, report["notice_id"], headers=supervisor("auth0|supervisor-2"))
+    assert other.status_code == 409
 
 
 @pytest.mark.parametrize(
     "headers",
     [
         crew(),
-        supervisor("auth0|supervisor-2"),
         supervisor("auth0|stranger"),
         bearer(token(["supervisor"], permissions=[], sub="auth0|supervisor-1")),
         bearer(token(["crew"], permissions=[roles.SEND_INSTRUCTIONS], sub="auth0|supervisor-1")),
@@ -128,7 +161,7 @@ def test_only_the_confirming_supervisor_with_permission_can_send(h, client, head
     report = submit(client).json()
     confirm(client, report["notice_id"])
     assert send(client, report["notice_id"], headers=headers).status_code == 403
-    assert h.rows(db.HazardNotice)[0].instruction is None
+    assert h.rows(db.NoticeAssessment)[0].instruction is None
 
 
 def test_no_token_and_unknown_notice(h, client):
@@ -144,7 +177,7 @@ def test_invalid_final_text_is_rejected(h, client, text):
     report = submit(client).json()
     confirm(client, report["notice_id"])
     assert send(client, report["notice_id"], text).status_code == 422
-    assert h.rows(db.HazardNotice)[0].instruction is None
+    assert h.rows(db.NoticeAssessment)[0].instruction is None
 
 
 def test_sent_instruction_cannot_be_overwritten_or_delivered_twice(h, client):
@@ -152,7 +185,7 @@ def test_sent_instruction_cannot_be_overwritten_or_delivered_twice(h, client):
     confirm(client, report["notice_id"])
     assert send(client, report["notice_id"], "Hold position.").status_code == 200
     assert send(client, report["notice_id"], "Different text.").status_code == 409
-    assert h.rows(db.HazardNotice)[0].instruction == "Hold position."
+    assert h.rows(db.NoticeAssessment)[0].instruction == "Hold position."
     assert len([e for e in h.rows(db.AuditEvent) if e.action == "notice.instruction.send"]) == 1
 
 
@@ -226,7 +259,7 @@ def test_delivery_uses_current_teams_and_unchanged_stored_radius(h, client):
     with h.factory() as session:
         session.get(db.Team, "team-x").site_id = None
         session.add(
-            db.Team(id="team-new", organization_id="org-2", name="New", site_id="site-empty")
+            db.Team(id="team-new", organization_id="org-1", name="New", site_id="site-empty")
         )
         session.commit()
     assert send(client, report["notice_id"]).status_code == 200
@@ -255,8 +288,9 @@ def test_failed_delivery_audit_rolls_back_final_text(h, client):
     finally:
         event.remove(h.engine, "before_cursor_execute", fail)
     [notice] = h.rows(db.HazardNotice)
-    assert notice.status == "confirmed" and notice.instruction is None
-    assert notice.instruction_sent_at is None
+    [assessment] = h.rows(db.NoticeAssessment)
+    assert notice.status == "confirmed" and assessment.instruction is None
+    assert assessment.instruction_sent_at is None
 
 
 def test_concurrent_sends_deliver_exactly_one_text(tmp_path):
@@ -282,7 +316,7 @@ def test_concurrent_sends_deliver_exactly_one_text(tmp_path):
     gate = Barrier(2, timeout=10)
 
     def before_update(connection, cursor, statement, parameters, context, executemany):
-        if statement.startswith("UPDATE hazard_notices"):
+        if statement.startswith("UPDATE notice_assessments"):
             gate.wait()
 
     event.listen(engine, "before_cursor_execute", before_update)
@@ -301,7 +335,7 @@ def test_concurrent_sends_deliver_exactly_one_text(tmp_path):
         assert sorted(status for status, _ in results) == [200, 409]
         winner = next(text for status, text in results if status == 200)
         with factory() as session:
-            assert session.get(db.HazardNotice, notice_id).instruction == winner
+            assert session.get(db.NoticeAssessment, (notice_id, "org-1")).instruction == winner
             deliveries = list(
                 session.scalars(
                     select(db.AuditEvent).where(
@@ -309,6 +343,10 @@ def test_concurrent_sends_deliver_exactly_one_text(tmp_path):
                     )
                 )
             )
-            assert len(deliveries) == 3
+            # Org 1's two teams inside the radius; org 2's team waits for its own supervisor.
+            assert sorted(d.entity for d in deliveries) == [
+                f"{notice_id}->team-a",
+                f"{notice_id}->team-n",
+            ]
     finally:
         engine.dispose()

@@ -13,6 +13,7 @@ from app.schemas import HazardConfirmResponse, HazardNotice, InstructionSend
 from app.security import CurrentUser, require_permission, require_role, roles
 from app.services.hazards import confirm_hazard
 from app.services.instructions import draft_instruction, send_instruction
+from app.services.notice_views import notice_view
 
 router = APIRouter(prefix="/api/hazards", tags=["hazards"])
 Confirmer = Annotated[CurrentUser, Depends(require_permission(roles.CONFIRM_HAZARDS))]
@@ -35,11 +36,11 @@ def confirm_notice(
     client: Gemini,
     outlooks: OutlookService,
 ):
-    notice = confirm_hazard(session, notice_id, user, now)
-    generated_by = draft_instruction(session, notice, client, now, outlooks)
+    notice, assessment = confirm_hazard(session, notice_id, user, now)
+    generated_by = draft_instruction(session, notice, assessment, client, now, outlooks)
     return HazardConfirmResponse(
-        notice=HazardNotice.model_validate(notice, from_attributes=True),
-        suggested_instruction=notice.suggested_instruction,
+        notice=notice_view(notice, assessment, user.sub),
+        suggested_instruction=assessment.suggested_instruction,
         generated_by=generated_by,
     )
 
@@ -52,5 +53,5 @@ def confirm_notice(
 def instruct(
     notice_id: str, body: InstructionSend, user: Sender, session: DbSession, now: Now
 ) -> HazardNotice:
-    notice = send_instruction(session, notice_id, body.instruction, user, now)
-    return HazardNotice.model_validate(notice, from_attributes=True)
+    notice, assessment = send_instruction(session, notice_id, body.instruction, user, now)
+    return notice_view(notice, assessment, user.sub)

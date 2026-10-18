@@ -1,22 +1,40 @@
-"""T054 human review and T055 atomic score refresh for confirmed present reports."""
+"""T054 human review and T055 atomic score refresh for confirmed present reports.
+
+Each organization inside a notice's radius assesses it for itself (`NoticeAssessment`).
+"""
 
 import json
 from datetime import datetime
 
 from fastapi import HTTPException
 from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db import models as db
 from app.schemas import NoticeSource, NoticeStatus, ReportReview, ReviewStatus
 from app.security import CurrentUser, membership_for
 from app.services.alerts import audit
+from app.services.notice_views import adopt_legacy
 from app.services.scoring import score_site
+
+
+def assessing_organization(session: Session, user: CurrentUser) -> str:
+    """The organization a supervisor assesses hazards for."""
+    membership = membership_for(session, user)
+    if membership is None or membership.role != "supervisor":
+        raise HTTPException(403, "Your account is not linked to an organization")
+    return membership.organization_id
 
 
 def confirm_hazard(
     session: Session, notice_id: str, user: CurrentUser, now: datetime
-) -> db.HazardNotice:
+) -> tuple[db.HazardNotice, db.NoticeAssessment]:
+    """Confirm a received notice for the caller's own organization.
+
+    Each organization inside the radius confirms separately. Only the reporting
+    organization's confirmation also confirms the crew report and rescores its site.
+    """
     notice = session.get(db.HazardNotice, notice_id)
     if notice is None:
         raise HTTPException(404, "Hazard notice not found")
@@ -29,52 +47,64 @@ def confirm_hazard(
     )
     if receipt is None:
         raise HTTPException(403, "You did not receive this hazard notice")
+    organization_id = assessing_organization(session, user)
+    adopt_legacy(session, notice_id)
 
-    # Compare-and-set protects the first confirmer even across concurrent transactions.
-    claimed = session.execute(
+    # The (notice, organization) key lets exactly one supervisor per organization confirm,
+    # even across concurrent transactions.
+    assessment = db.NoticeAssessment(
+        notice_id=notice_id,
+        organization_id=organization_id,
+        confirmed_by=user.sub,
+        confirmed_at=now,
+    )
+    session.add(assessment)
+    try:
+        session.flush()
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(409, "Your organization has already confirmed this hazard") from None
+    # The notice records the first confirmation anywhere; a later one leaves it unchanged.
+    session.execute(
         update(db.HazardNotice)
-        .where(
-            db.HazardNotice.id == notice_id,
-            db.HazardNotice.status == NoticeStatus.POTENTIAL,
-            db.HazardNotice.confirmed_by.is_(None),
-        )
+        .where(db.HazardNotice.id == notice_id, db.HazardNotice.confirmed_by.is_(None))
         .values(status=NoticeStatus.CONFIRMED, confirmed_by=user.sub, confirmed_at=now)
         .execution_options(synchronize_session=False)
     )
-    if claimed.rowcount != 1:
-        session.rollback()
-        raise HTTPException(409, "This hazard has already been confirmed")
 
     if notice.source == NoticeSource.CREW_REPORT:
         report = session.get(db.CrewReport, notice.source_ref)
         if report is None or not report.hazard_present or report.notice_id != notice_id:
             session.rollback()
             raise HTTPException(409, "The notice has no matching present report")
-        reviewed = session.execute(
-            update(db.CrewReport)
-            .where(
-                db.CrewReport.id == report.id, db.CrewReport.review_status == ReviewStatus.PENDING
+        if report.organization_id == organization_id:
+            reviewed = session.execute(
+                update(db.CrewReport)
+                .where(
+                    db.CrewReport.id == report.id,
+                    db.CrewReport.review_status == ReviewStatus.PENDING,
+                )
+                .values(
+                    review_status=ReviewStatus.CONFIRMED,
+                    reviewed_by=user.sub,
+                    reviewed_at=now,
+                    confirmed_category=report.category,
+                )
+                .execution_options(synchronize_session=False)
             )
-            .values(
-                review_status=ReviewStatus.CONFIRMED,
-                reviewed_by=user.sub,
-                reviewed_at=now,
-                confirmed_category=report.category,
-            )
-            .execution_options(synchronize_session=False)
-        )
-        if reviewed.rowcount != 1:
-            session.rollback()
-            raise HTTPException(409, "The linked report has already been reviewed")
-        # Bulk updates bypass the identity map; refresh before the scoring query reads it.
-        session.expire(report)
-        score_site(session, report.site_id, now, commit=False)
-        audit(session, user.sub, "score.refresh.confirmed_report", report.id, now)
-        audit(session, user.sub, "report.confirm", report.id, now)
+            if reviewed.rowcount != 1:
+                session.rollback()
+                raise HTTPException(409, "The linked report has already been reviewed")
+            # Bulk updates bypass the identity map; refresh before the scoring query reads it.
+            session.expire(report)
+            score_site(session, report.site_id, now, commit=False)
+            audit(session, user.sub, "score.refresh.confirmed_report", report.id, now)
+            audit(session, user.sub, "report.confirm", report.id, now)
     audit(session, user.sub, "notice.confirm", notice_id, now)
     session.commit()
     session.refresh(notice)
-    return notice
+    session.refresh(assessment)
+    return notice, assessment
 
 
 def review_absent_report(
