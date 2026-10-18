@@ -129,7 +129,7 @@ export const levelHex: Record<RiskLevel | 'none', string> = {
   high: '#c93400',
   moderate: '#e0b000',
   low: '#8e8e93',
-  none: '#c7c7cc',
+  none: '#636366',
 }
 
 /**
@@ -183,7 +183,7 @@ export function ScoreBar({
 }) {
   const color = level ? `var(--pc-${levelVar[level]})` : 'var(--pc-low)'
   // Incomplete evidence remains labeled in the badge and adjacent warning.
-  const fill = evidence === 'partial' ? '#ff0000' : color
+  const fill = evidence === 'partial' ? 'var(--pc-stop)' : color
   if (evidence === 'none') score = null
   return (
     <div className="flex h-2.5 w-full gap-0.5" aria-hidden="true">

@@ -216,3 +216,8 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Confirmed hazards show the name only; instruction, duration and source sit behind View more (user choice). A supervisor who did not confirm sees who can send the instruction. Static species caveat banner removed (per-row label and sources disclosure remain). Mat grades align, A = "Perfect", all grades select in black. Every active alert uses one red; `--pc-stop` softened to #c0262d (white text 5.9:1).
 - `check-shell.mjs` follows the current UI: no View alert link, disclosures opened before reading, compact report cards. Its 320 px crew primary-action check now passes.
 - Verification on the tree merged with main 5d42c9c: 175 frontend tests, lint, TypeScript/build, full `check-shell.mjs` (1440/390/320, no browser exceptions) and 954 backend tests pass.
+
+## Always-dark theme - 2026-10-18
+- User-authorized (Rudra): the whole site, sign-in included, is always dark (no toggle, no OS switch). `frontend/src/index.css` holds one dark `--pc-*` palette with `color-scheme: dark`; text tokens pass 4.5:1 on bg/surface/surface-2. New tokens: `accent-fill` (+hover) and `ok-fill` carry white text; `accent` and `ok` are the bright text/border colors; `control`/`control-hover` for secondary buttons. Use `bg-ok-fill`/`bg-accent-fill` under white text, never `bg-ok`/`bg-accent`.
+- Map tiles are darkened with a CSS filter on `.leaflet-tile-pane` only. Selected report choices (`bg-ink`) now highlight light. The navy logo is unchanged and low-contrast on dark (accepted; see docs/OFFICIAL_LOGO.md).
+- Verification: 175 frontend tests, lint, TypeScript/build and full `check-shell.mjs` (dark sign-in assertions; 1440/390/320, no browser exceptions) pass.
