@@ -12,7 +12,8 @@ Moved at each demo site:
 - readings and alerts (hypertables keyed on their time column): deleted and inserted again
   with shifted times. Ids stay the same, so notice sources, alert triggers and
   acknowledgements still resolve. Alert evidence times move too.
-- acknowledgements of those alerts, and crew reports with their review times.
+- acknowledgements of those alerts, and crew reports with their review times and their
+  stored analysis (`enrichment`) times.
 - the site's notices (sourced from its readings or reports) with their evidence times, and
   every organization's assessment of them. Evidence and confirmation move together, so an
   `event_start` stays before `confirmed_at` and the duration outlook stays available.
@@ -27,8 +28,10 @@ at the same `now` changes nothing. A past event never moves past `now`: the seed
 confirmations and anything a tester did since the last slide are newer than the readings,
 so they stop at "just now". Timers and forecast times may lie ahead and move freely.
 
-Each round also links the public "Try demo" guests (`ensure_guest_memberships`): a seed
-clears the demo organization's memberships, and the guests' scope comes from theirs.
+Each round also fills the Everglades report's seeded analysis when it has none
+(`app.demo.report_analysis`), and links the public "Try demo" guests
+(`ensure_guest_memberships`): a seed clears the demo organization's memberships, and the
+guests' scope comes from theirs.
 
 `run_forever` repeats the slide every `FEED_REFRESH_SECONDS` next to the live feed loop
 (`app.services.refresh.run_forever`), so it runs only where `FEED_REFRESH_ENABLED` is on:
@@ -46,6 +49,7 @@ from sqlalchemy import delete, func, insert, or_, select
 from sqlalchemy.orm import Session
 
 from app.db import models as db
+from app.demo.report_analysis import ensure_demo_report_analysis
 from app.demo.scenario import DEMO_ORG_ID, DEMO_TEAM_ID
 from app.ingestion import runtime
 from app.security.dependencies import GUEST_USER_IDS
@@ -92,6 +96,13 @@ def keep_demo_fresh(session: Session, now: datetime) -> dict[str, timedelta]:
             continue
         if delta is not None:
             moved[site_id] = delta
+    try:
+        ensure_demo_report_analysis(session, now)
+    except Exception as exc:
+        session.rollback()
+        runtime.event(
+            "demo_report_analysis_failed", failure=True, exception_type=type(exc).__name__
+        )
     if moved:
         runtime.event(
             "demo_freshened",
@@ -167,6 +178,9 @@ def slide_site(session: Session, site_id: str, now: datetime) -> timedelta | Non
     )
     reports = list(session.scalars(select(db.CrewReport).where(db.CrewReport.site_id == site_id)))
     slide.rows(reports, "created_at", "reviewed_at")
+    for report in reports:
+        if report.enrichment:
+            report.enrichment = slide.analysis(report.enrichment)
 
     notices = list(
         session.scalars(
@@ -217,16 +231,24 @@ class _Slide:
             for column in columns:
                 setattr(row, column, self.past(getattr(row, column)))
 
+    def analysis(self, enrichment: dict) -> dict:
+        """A report's stored analysis (JSON): its time and its evidence times."""
+        moved = {**enrichment, "evidence": self.evidence(enrichment.get("evidence"))}
+        if enrichment.get("analyzed_at"):
+            moved["analyzed_at"] = self._json_time(enrichment["analyzed_at"])
+        return moved
+
+    def _json_time(self, at: str) -> str:
+        moved = self.past(datetime.fromisoformat(at)).isoformat()
+        return moved.replace("+00:00", "Z") if at.endswith("Z") else moved
+
     def evidence(self, items: list | None) -> list:
         """Evidence is stored as JSON; move each item's `observed_at`, keeping its format."""
         shifted = []
         for item in items or []:
             at = item.get("observed_at") if isinstance(item, dict) else None
             if at:
-                moved = self.past(datetime.fromisoformat(at)).isoformat()
-                if at.endswith("Z"):
-                    moved = moved.replace("+00:00", "Z")
-                item = {**item, "observed_at": moved}
+                item = {**item, "observed_at": self._json_time(at)}
             shifted.append(item)
         return shifted
 
