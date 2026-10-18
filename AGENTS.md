@@ -18,7 +18,7 @@ Default ownership is a coordination boundary, not a reason to block explicitly a
 3. Avoid root manifests, lockfiles, shared environment templates, migrations, and API contracts by default. Explicit project-level authorization permits focused changes when required; notify the relevant owner and preserve unrelated work. Braydin owns Tiger Data migrations.
 4. Begin with fixtures and stable interfaces. Do not wait for another agent’s implementation to finish before building your independent module.
 5. Do not commit secrets, API keys, tokens, private photos, or real personal data.
-6. Label simulated, stale, mocked, and unavailable data in code and UI.
+6. Label simulated, stale, mocked, and unavailable data in code and UI. Exception (user decision, 2026-10-18): a demo site (`location_type="demo_site"`) says so only in its name, "... (demo)"; its readings look live and its pages show no simulated or replay tags. The site type still marks it in data, live feeds skip it, and the model still treats its events as replays. Real sites keep every label.
 7. Gemini can explain and structure supplied information. Deterministic rules control alerts. Human review confirms report classifications. No AI output can declare work safe or clear an alert.
 8. Make small commits on your own branch. Do not commit directly to `main`. Rudra coordinates merges.
 9. Keep the project demoable. Merge only code that builds and passes its focused checks.

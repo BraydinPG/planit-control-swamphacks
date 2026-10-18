@@ -47,6 +47,7 @@ from app.gemini.briefings import generate_site_briefing
 from app.gemini.client import GeminiClient
 from app.ingestion import nws_alerts, nws_weather
 from app.ingestion.geo import destination, direction_from, distance_miles
+from app.ingestion.lightning import LIVE_SOURCE as LIVE_LIGHTNING
 from app.ingestion.lightning import StrikeStore
 from app.outlook import EventOutlookService
 from app.schemas import (
@@ -238,6 +239,11 @@ def seed_anomalies(
             session.commit()
             apply_lightning_rule(session, site.id, [strike], now)
             readings = [*readings, strike]
+        else:
+            quiet = _no_lightning(site, now)
+            session.add(observation_row(quiet))
+            session.commit()
+            readings = [*readings, quiet]
         score = score_site(session, site.id, now, observations=readings)
         results.append(AnomalyResult(site.id, a.hazard_label, score.risk_score, score.risk_level))
 
@@ -279,13 +285,16 @@ def restore_everglades(
     accounts = _linked_accounts(session)
     _clear_sites(session, [DEMO_SITE_ID], everglades=True)
     site = session.get(db.Site, DEMO_SITE_ID)
-    readings = scenario._readings(now - timedelta(minutes=5))
+    readings = [_as_live(o) for o in scenario._readings(now - timedelta(minutes=5))]
     for o in readings:
         session.add(observation_row(o))
     scenario._wildlife_report(session, accounts, now)
     scenario._flood_notice(session, accounts, now)
+    # Rudra's scenario adds a second flooding notice (Flash Flood) to show both models;
+    # Kerrville shows the flash flood, and a site never lists the same hazard twice.
+    session.execute(delete(db.HazardNotice).where(db.HazardNotice.id == FLASH_FLOOD_NOTICE_ID))
     session.commit()
-    strike = _strike(site, 0, now - timedelta(minutes=4))
+    strike = _as_live(_strike(site, 0, now - timedelta(minutes=4)))
     session.add(observation_row(strike))
     session.commit()
     apply_lightning_rule(session, site.id, [strike], now)
@@ -296,7 +305,7 @@ def restore_everglades(
         ZoneInfo(scenario.SITE_TIMEZONE),
         now,
         gemini,
-        scenario._forecasts(now),
+        _live_source(scenario._forecasts(now)),
         outlooks,
     )
     audit(session, SEED_ACTOR, "demo.everglades.restore", DEMO_SITE_ID, now)
@@ -339,8 +348,8 @@ def _common(site: db.Site, now: datetime) -> dict:
         "site_id": site.id,
         "lat": site.lat,
         "lon": site.lon,
-        "data_state": DataState.SIMULATED,
-        "simulated": True,
+        "data_state": DataState.OBSERVED,
+        "simulated": False,
         "fetched_at": now - timedelta(minutes=2),
     }
 
@@ -492,10 +501,44 @@ def _notice_id(a: Anomaly) -> str:
     return f"demo-anomaly-{a.key}"
 
 
+def _as_live(o: Observation) -> Observation:
+    """A scenario reading shown exactly like a live one. The demo site itself, never the
+    reading, marks it: its name says "(demo)" and live feeds skip `demo_site` sites."""
+    update = {"simulated": False}
+    if o.data_state is DataState.SIMULATED:
+        update["data_state"] = DataState.OBSERVED
+    if o.hazard_type == HazardType.LIGHTNING_STRIKE:
+        update["source"] = LIVE_LIGHTNING
+        update["label"] = (o.label or "").replace(" (replay)", "")
+    return o.model_copy(update=update)
+
+
+def _live_source(source):
+    return lambda site, at: [_as_live(o) for o in source(site, at)]
+
+
+def _no_lightning(site: db.Site, now: datetime) -> Observation:
+    """The live feed's "no strikes" reading, for scenario sites without a storm."""
+    return Observation(
+        id=f"ltg:{site.id}:none:{now.isoformat()}",
+        site_id=site.id,
+        source=LIVE_LIGHTNING,
+        hazard_type=HazardType.LIGHTNING_STRIKE,
+        value=None,
+        label="No lightning within 30 mi in the last 60 min (GOES GLM)",
+        lat=site.lat,
+        lon=site.lon,
+        observed_at=now - timedelta(minutes=1),
+        fetched_at=now - timedelta(minutes=1),
+        data_state=DataState.OBSERVED,
+        simulated=False,
+    )
+
+
 def _strike_at(site: db.Site, miles: float, bearing: float, at: datetime) -> Observation:
-    """A replayed strike at a set distance, shaped like the lightning feed's site reading."""
+    """A strike at a set distance, shaped like the live lightning feed's site reading."""
     lat, lon = destination(site.lat, site.lon, bearing, miles)
-    strike = StrikeStore().submit(lat, lon, at, simulated=True)  # normalizes only
+    strike = _as_live(StrikeStore().submit(lat, lon, at, simulated=True))  # normalizes only
     distance = distance_miles(site.lat, site.lon, strike.lat, strike.lon)
     direction = direction_from(site.lat, site.lon, strike.lat, strike.lon)
     return strike.model_copy(

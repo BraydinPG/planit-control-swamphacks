@@ -63,6 +63,7 @@ import {
   reportCategories,
 } from '../presentation/display'
 import { Details } from '../components/data/Details'
+import { DemoSiteContext, isDemoSite } from '../components/data/demo-site'
 const Advisory = lazy(() =>
   import('../components/data/Advisory').then((m) => ({ default: m.Advisory })),
 )
@@ -179,6 +180,11 @@ function SitePage({
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
     active = site.alerts.filter((a) => a.state === 'active')
+  // A demo site says so only in its name ("... (demo)"), never in a type label.
+  const demoSite = isDemoSite(site)
+  const siteKind = demoSite
+    ? 'Worksite'
+    : displayLabel(site.location_type, 'Worksite')
   // Potential notices need a supervisor to confirm them; a confirmed one still
   // needs its confirming supervisor to send the instruction. Everything else is
   // settled and listed together under Confirmed hazards.
@@ -335,70 +341,73 @@ function SitePage({
   // hazards and instructions stay on Home; reporting and briefings have tabs.
   if (persona === 'crew')
     return (
-      <div className="pc-enter space-y-5">
-        <div>
-          {header}
-          <p className="mt-1 text-sm text-ink-2">
-            {displayLabel(site.location_type, 'Worksite')} ·{' '}
-            {site.region ?? 'Region not supplied'}
-          </p>
-          {locationDetails}
+      <DemoSiteContext.Provider value={demoSite}>
+        <div className="pc-enter space-y-5">
+          <div>
+            {header}
+            <p className="mt-1 text-sm text-ink-2">
+              {siteKind} · {site.region ?? 'Region not supplied'}
+            </p>
+            {locationDetails}
+          </div>
+          {score}
+          {factors}
+          {conditions}
+          {reports}
+          {context}
+          {refreshButton}
         </div>
-        {score}
-        {factors}
-        {conditions}
-        {reports}
-        {context}
-        {refreshButton}
-      </div>
+      </DemoSiteContext.Provider>
     )
 
   return (
-    <div className="pc-enter space-y-5">
-      <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
-        <div className="space-y-5 @3xl:col-span-7">
-          <section className={`${card} p-5`}>
-            <p className="kicker mb-1.5">
-              {displayLabel(site.location_type, 'Worksite')}
-            </p>
-            <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
-            <p className="mt-1 text-ink-2">
-              {`${site.assigned_team?.name ?? 'No team assigned'} · ${site.region ?? 'Region not supplied'}`}
-            </p>
-            {locationDetails}
-          </section>
-          <div className="space-y-3">
-            <div className="grid gap-3 @lg:grid-cols-2">
-              <a className={primary + big} href={`#/${persona}/reports`}>
-                <Icon name="camera" className="size-6" />
-                Report a hazard
-              </a>
-              <a className={control + big} href={`#/${persona}/briefings`}>
-                <Icon name="briefings" className="size-6" />
-                View briefing
-              </a>
+    <DemoSiteContext.Provider value={demoSite}>
+      <div className="pc-enter space-y-5">
+        <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
+          <div className="space-y-5 @3xl:col-span-7">
+            <section className={`${card} p-5`}>
+              <p className="kicker mb-1.5">{siteKind}</p>
+              <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
+              <p className="mt-1 text-ink-2">
+                {`${site.assigned_team?.name ?? 'No team assigned'} · ${site.region ?? 'Region not supplied'}`}
+              </p>
+              {locationDetails}
+            </section>
+            <div className="space-y-3">
+              <div className="grid gap-3 @lg:grid-cols-2">
+                <a className={primary + big} href={`#/${persona}/reports`}>
+                  <Icon name="camera" className="size-6" />
+                  Report a hazard
+                </a>
+                <a className={control + big} href={`#/${persona}/briefings`}>
+                  <Icon name="briefings" className="size-6" />
+                  View briefing
+                </a>
+              </div>
+              {refreshButton}
             </div>
-            {refreshButton}
+            {score}
+            {conditions}
+            {factors}
           </div>
-          {score}
-          {conditions}
-          {factors}
+          <div className="space-y-5 @3xl:col-span-5">
+            <section className="space-y-3">
+              <SectionHead title="Alerts" />
+              {site.alerts.length ? (
+                site.alerts.map((a) => (
+                  <AlertCard key={a.id} alert={a} detail />
+                ))
+              ) : (
+                <Empty>No alert record supplied for this site.</Empty>
+              )}
+            </section>
+            {hazards}
+          </div>
         </div>
-        <div className="space-y-5 @3xl:col-span-5">
-          <section className="space-y-3">
-            <SectionHead title="Alerts" />
-            {site.alerts.length ? (
-              site.alerts.map((a) => <AlertCard key={a.id} alert={a} detail />)
-            ) : (
-              <Empty>No alert record supplied for this site.</Empty>
-            )}
-          </section>
-          {hazards}
-        </div>
+        {reports}
+        {context}
       </div>
-      {reports}
-      {context}
-    </div>
+    </DemoSiteContext.Provider>
   )
 }
 
@@ -766,7 +775,9 @@ function AlertsPage({ id }: { id: string | null }) {
           Back to {persona === 'crew' ? 'home' : 'overview'}
         </a>
 
-        <button type="button" className={control} onClick={refresh}>Refresh alerts</button>
+        <button type="button" className={control} onClick={refresh}>
+          Refresh alerts
+        </button>
       </div>
       <div className="grid gap-5 @3xl:grid-cols-2 @3xl:items-start">
         {rows.length ? (
@@ -909,7 +920,9 @@ export function ReportForm({ site }: { site: SiteSummary }) {
       )
       refresh()
     } catch (e) {
-      setMessage(`Report failed. ${e instanceof Error ? e.message : 'Please try again.'}`)
+      setMessage(
+        `Report failed. ${e instanceof Error ? e.message : 'Please try again.'}`,
+      )
     } finally {
       inFlight.current = false
       setBusy(false)
@@ -978,7 +991,9 @@ export function ReportForm({ site }: { site: SiteSummary }) {
                     onChange={() => setCondition(grade)}
                     className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
                   />
-                  <span className="text-xl font-bold leading-tight">{grade}</span>
+                  <span className="text-xl font-bold leading-tight">
+                    {grade}
+                  </span>
                   {/* Every grade keeps the hint line so the letters align. */}
                   <span
                     aria-hidden={!hint}
@@ -1066,8 +1081,9 @@ export function ReportForm({ site }: { site: SiteSummary }) {
               />
             )}
             <p className="min-w-0 flex-1 text-sm text-ink-2">
-              <span className="break-all">{photo.name}</span> selected · {Math.ceil(photo.size / 1024)} KB. Allowed
-              JPEG/PNG/WebP, maximum 5 MB.
+              <span className="break-all">{photo.name}</span> selected ·{' '}
+              {Math.ceil(photo.size / 1024)} KB. Allowed JPEG/PNG/WebP, maximum
+              5 MB.
             </p>
             <button
               type="button"
@@ -1076,7 +1092,10 @@ export function ReportForm({ site }: { site: SiteSummary }) {
               disabled={busy}
               onClick={() => choosePhoto(null)}
             >
-              <span className="whitespace-nowrap">Remove<br />{' '}image</span>
+              <span className="whitespace-nowrap">
+                Remove
+                <br /> image
+              </span>
             </button>
           </div>
         )}
@@ -1316,7 +1335,13 @@ function StoredPhoto({ id, alt }: { id: string; alt: string }) {
   )
 }
 
-function ReportCard({ report, compact = false }: { report: CrewReport; compact?: boolean }) {
+function ReportCard({
+  report,
+  compact = false,
+}: {
+  report: CrewReport
+  compact?: boolean
+}) {
   const { client, persona } = useApplication()
   const photo = demoClient(client)?.photo(report.id)
   const [reviewCategory, setReviewCategory] = useState<ReportCategory>(
@@ -1324,21 +1349,28 @@ function ReportCard({ report, compact = false }: { report: CrewReport; compact?:
   )
   const [severity, setSeverity] = useState<'' | 'low' | 'moderate' | 'high'>('')
   const look = reviewLook[report.review_status]
-  if (compact) return (
-    <article data-report-id={report.id} className={card + ' space-y-2 rounded-xl border border-line p-3'}>
-      <h3 className="text-lg font-bold">{categories[report.category]}</h3>
-      {report.review_status === 'pending' && (
-        <p className="text-sm font-semibold text-warn-text">
-          {report.hazard_present
-            ? 'Action needed: supervisor confirmation of the hazard notice.'
-            : 'Action needed: supervisor review of this report.'}
-        </p>
-      )}
-      <Details title="View more" label={'View more about ' + categories[report.category] + ' report'}>
-        <ReportCard report={report} />
-      </Details>
-    </article>
-  )
+  if (compact)
+    return (
+      <article
+        data-report-id={report.id}
+        className={card + ' space-y-2 rounded-xl border border-line p-3'}
+      >
+        <h3 className="text-lg font-bold">{categories[report.category]}</h3>
+        {report.review_status === 'pending' && (
+          <p className="text-sm font-semibold text-warn-text">
+            {report.hazard_present
+              ? 'Action needed: supervisor confirmation of the hazard notice.'
+              : 'Action needed: supervisor review of this report.'}
+          </p>
+        )}
+        <Details
+          title="View more"
+          label={'View more about ' + categories[report.category] + ' report'}
+        >
+          <ReportCard report={report} />
+        </Details>
+      </article>
+    )
   return (
     <article
       data-report-id={report.id}

@@ -908,3 +908,9 @@ The user made the whole site always dark, sign-in included, with the logo artwor
 ### 2026-10-18 — Braydin: Gemini star icon (user request, Rudra's frontend)
 
 `frontend/src/components/shell/Icon.tsx` adds `GeminiMark`, the four-point Gemini sparkle in its blue-to-purple gradient, sized like `Icon`. It replaces the radiating-lines `spark` icon (which read as a loading spinner) on the Gemini briefing badge (`StoredBriefings.tsx`) and the Gemini report analysis label (`ReportAnalysis.tsx`). The `spark` icon itself stays for the on-site fire report category. Demo sites' one-word state badges ("Simulated", "Simulated replay") are kept: project rule 6 and spec.md require each feed's state in the UI.
+
+### 2026-10-18 — Braydin: demo sites say "demo" only in their name; no unavailable outlook boxes; one hazard per site (user-authorized)
+
+- **Demo marking (AGENTS.md rule 6 exception):** demo readings are stored like live ones (`observed`, `simulated=false`; lightning from `GOES GLM`, with the live "no lightning" reading at sites without a storm), so the score panel shows full completeness and no simulated tags. The site's `location_type="demo_site"` remains the marker: live feeds skip it and `is_simulated(notice, site)` still makes its outlooks replays for the model. Frontend: `components/data/demo-site.ts` (`DemoSiteContext`) hides the "Simulated replay" chip and the "Simulated replay:" prefix on demo sites only, and the site header shows "Worksite" instead of "Demo site". Real sites keep every label.
+- **Unavailable outlooks:** `EventOutlooks` draws only cards with an estimate (no section when none); `ExpectedDuration` renders nothing without an estimate. Rudra's outlook/display tests updated to match.
+- **One hazard per site:** the Everglades restore drops Rudra's scenario's second flooding notice (Flash Flood); Kerrville shows the flash flood. A test checks no demo site repeats a notice hazard, score factor, outlook type or alert rule.

@@ -24,6 +24,8 @@ const { validateSiteDetail } = await server.ssrLoadModule(
 const detail = JSON.parse(
   await readFile(new URL('../src/fixtures/site-detail.json', import.meta.url)),
 )
+// Only outlooks with an estimate are drawn; an unavailable one shows no box at all.
+const available = detail.event_outlooks.filter((c) => c.status === 'available')
 const render = (cards) =>
   renderToStaticMarkup(React.createElement(EventOutlooks, { cards }))
 const text = (html) => html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ')
@@ -32,8 +34,12 @@ test('each event renders as its own card, keyed by event id', () => {
   const checked = validateSiteDetail(structuredClone(detail), detail.id)
   assert.deepEqual(checked.event_outlooks, detail.event_outlooks)
   const html = render(detail.event_outlooks)
-  for (const card of detail.event_outlooks)
+  for (const card of available)
     assert.match(html, new RegExp(`data-outlook-id="${card.event_id}"`))
+  for (const card of detail.event_outlooks.filter(
+    (c) => c.status !== 'available',
+  ))
+    assert.doesNotMatch(html, new RegExp(`data-outlook-id="${card.event_id}"`))
   const out = text(html)
   assert.match(out, /Research duration estimate/)
   assert.match(out, /National Hurricane Center forecast/)
@@ -161,7 +167,14 @@ for (const [kind, label, damage] of malformed) {
     for (let i = 0; i < 6; i++)
       if (i !== index)
         assert.deepEqual(checked.event_outlooks[i], detail.event_outlooks[i])
-    assert.match(text(render(checked.event_outlooks)), /Prediction unavailable/)
+    // The broken card disappears; its siblings still render.
+    const html = render(checked.event_outlooks)
+    assert.doesNotMatch(html, /Prediction unavailable/)
+    assert.doesNotMatch(
+      html,
+      new RegExp(`data-outlook-id="${checked.event_outlooks[index].event_id}"`),
+    )
+    assert.ok((html.match(/data-outlook-id=/g) ?? []).length >= 1)
   })
 }
 
@@ -182,18 +195,15 @@ test('duration, storm and aftershock cards show their own uncertainty and times'
   assert.match(quake, /not this worksite/)
 })
 
-test('unavailable is a visible reason, never a probability', () => {
+test('an unavailable outlook shows no box, never a probability', () => {
   const wildfire = detail.event_outlooks.find(
     (c) => c.forecast.kind === 'unavailable',
   )
-  const out = text(render([wildfire]))
-  assert.match(out, /Prediction unavailable/)
-  assert.match(out, new RegExp(wildfire.forecast.reason.slice(0, 30)))
-  assert.doesNotMatch(out, /\d+%/)
+  assert.equal(render([wildfire]), '')
 })
 
-test('no confirmed event says so without implying safety', () => {
-  assert.match(text(render([])), /Conditions remain unknown/)
+test('no outlook with an estimate shows nothing', () => {
+  assert.equal(render([]), '')
 })
 
 test('a malformed card does not break the site page; a missing field means none', () => {
@@ -214,15 +224,39 @@ test('a malformed card does not break the site page; a missing field means none'
 
 test('crew tiles show four outlooks, a View more toggle and one shared evidence disclosure', () => {
   const html = renderToStaticMarkup(
-    React.createElement(EventOutlooks, { cards: detail.event_outlooks, tiles: true }),
+    React.createElement(EventOutlooks, {
+      cards: detail.event_outlooks,
+      tiles: true,
+    }),
   )
-  const shown = detail.event_outlooks.slice(0, 4)
+  const shown = available.slice(0, 4)
   for (const card of shown)
     assert.match(html, new RegExp(`data-outlook-id="${card.event_id}"`))
   assert.equal((html.match(/data-outlook-id=/g) ?? []).length, 4)
   const out = text(html)
-  assert.ok(out.includes(`View more (${detail.event_outlooks.length - 4})`))
+  assert.ok(out.includes(`View more (${available.length - 4})`))
   assert.match(out, /How each outlook was estimated/)
   assert.doesNotMatch(out, /How was this estimated\?/)
   assert.match(out, /Advisory only. Does not change the score/)
+})
+
+test('a demo site hides replay labels; a real site keeps them', async () => {
+  const { DemoSiteContext } = await server.ssrLoadModule(
+    '/src/components/data/demo-site.ts',
+  )
+  const replay = available.find((c) => c.presentation === 'replay')
+  assert.ok(replay, 'fixture has a replay card')
+  const inside = (value) =>
+    text(
+      renderToStaticMarkup(
+        React.createElement(
+          DemoSiteContext.Provider,
+          { value },
+          React.createElement(EventOutlooks, { cards: [replay] }),
+        ),
+      ),
+    )
+  assert.match(inside(false), /Simulated replay/)
+  assert.doesNotMatch(inside(true), /Simulated replay/)
+  assert.match(inside(true), new RegExp(replay.event_type))
 })

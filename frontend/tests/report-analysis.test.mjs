@@ -24,7 +24,7 @@ const { ReportAnalysis } = await server.ssrLoadModule(
 const { ExpectedDuration } = await server.ssrLoadModule(
   '/src/components/data/Duration.tsx',
 )
-const { durationSentence, NO_ESTIMATE } = await server.ssrLoadModule(
+const { durationSentence } = await server.ssrLoadModule(
   '/src/components/data/duration-text.ts',
 )
 const { ReportForm } = await server.ssrLoadModule(
@@ -205,7 +205,7 @@ test('the duration reads as one plain sentence and never as zero', () => {
   assert.equal(durationSentence(null), null)
 })
 
-test('the duration card labels replays and explains a missing estimate', () => {
+test('the duration card labels replays and disappears without an estimate', () => {
   const card = (o) =>
     text(
       renderToStaticMarkup(
@@ -220,10 +220,11 @@ test('the duration card labels replays and explains a missing estimate', () => {
   )
   assert(replay.includes('Not an all-clear'))
   assert(replay.includes('How this is estimated'))
-  const missing = card(
-    outlook({ status: 'unavailable', limitations: ['model unavailable'] }),
+  // No estimate: no box at all.
+  assert.equal(
+    card(outlook({ status: 'unavailable', limitations: ['model unavailable'] })),
+    '',
   )
-  assert(missing.includes(NO_ESTIMATE) && missing.includes('model unavailable'))
 })
 
 // ---- T034A report location in the form ----

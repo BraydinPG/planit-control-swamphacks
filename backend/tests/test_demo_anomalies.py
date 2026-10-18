@@ -112,12 +112,29 @@ def test_only_the_site_title_says_demo(client) -> None:
             *(o["label"] or "" for o in detail["observations"]),
             *(e["label"] for n in detail["notices"] for e in n["evidence"]),
         ]
-        assert not [t for t in texts if "demo" in t.casefold()], a.key
-        # Still stored as simulated, and its outlooks are labeled replays.
-        assert all(o["simulated"] for o in detail["observations"])
+        assert not [t for t in texts if "demo" in t.casefold() or "simulat" in t.casefold()]
+        # Readings look live; only the site marks the scenario. The model still treats
+        # its events as replays, never as current events.
+        assert detail["location_type"] == "demo_site"
+        assert not any(o["simulated"] for o in detail["observations"]), a.key
+        assert {o["data_state"] for o in detail["observations"]} <= {"observed", "forecast"}
+        assert detail["score"]["data_completeness"] == 1.0, a.key
+        assert not any(alert["simulated"] for alert in detail["alerts"]), a.key
         assert all(
             c["presentation"] == "replay" for c in detail["event_outlooks"] if c["notice_id"]
         )
+
+
+def test_no_site_lists_the_same_hazard_twice(client) -> None:
+    for site_id in [f"demo-{a.key}" for a in ANOMALIES] + [DEMO_SITE_ID]:
+        detail = client.get(f"/api/sites/{site_id}", headers=supervisor(SUPERVISOR)).json()
+        labels = [n["hazard_label"].casefold() for n in detail["notices"]]
+        factors = [
+            f["factor"] for f in detail["score"]["factor_contributions"] if f["contribution"]
+        ]
+        cards = [c["event_type"] for c in detail["event_outlooks"] if c["notice_id"]]
+        for values in (labels, factors, cards, [x["rule"] for x in detail["alerts"]]):
+            assert len(values) == len(set(values)), (site_id, values)
 
 
 def test_each_site_shows_a_confirmed_event_and_its_duration_card(client) -> None:
@@ -127,7 +144,6 @@ def test_each_site_shows_a_confirmed_event_and_its_duration_card(client) -> None
         assert notice["status"] == "confirmed" and notice["instruction"] is None
         cards = [c for c in detail["event_outlooks"] if c["notice_id"] == notice["id"]]
         assert cards, a.key
-        assert all(o["simulated"] for o in detail["observations"]), a.key
     expected = {
         "flood": "Flood",
         "flash-flood": "Flash Flood",
@@ -153,7 +169,8 @@ def test_the_everglades_wildlife_scenario_is_restored(client) -> None:
     notices = {n["id"]: n for n in detail["notices"]}
     assert notices["demo-notice-wildlife"]["instruction"]
     assert notices["demo-notice-flood"]["status"] == "confirmed"
-    assert notices["demo-notice-flash-flood"]["status"] == "confirmed"
+    assert "demo-notice-flash-flood" not in notices  # one flooding event per site
+    assert not any(o["simulated"] for o in detail["observations"])
     factors = {f["factor"] for f in detail["score"]["factor_contributions"]}
     assert {"lightning", "heat_index", "flood"} <= factors
     assert any(f.startswith("crew_report") for f in factors)

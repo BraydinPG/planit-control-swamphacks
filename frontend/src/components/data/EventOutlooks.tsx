@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { useDemoSite } from './demo-site'
 import type {
   DurationForecast,
   EventOutlookCard,
@@ -39,6 +40,9 @@ export function EventOutlooks({
   cards: EventOutlookCard[]
   tiles?: boolean
 }) {
+  // Only events with an estimate get a card; an unavailable outlook shows nothing.
+  cards = cards.filter((card) => card.status === 'available')
+  if (!cards.length) return null
   return (
     <section className="space-y-3" aria-labelledby="event-outlooks-title">
       <div>
@@ -53,24 +57,21 @@ export function EventOutlooks({
           work.
         </p>
       </div>
-      {cards.length && tiles ? (
+      {tiles ? (
         <OutlookTiles cards={cards} />
-      ) : cards.length ? (
+      ) : (
         <div className="grid items-start gap-3 @3xl:grid-cols-2">
           {cards.map((card) => (
             <OutlookCard key={card.event_id} card={card} />
           ))}
         </div>
-      ) : (
-        <p className="rounded-xl bg-surface p-4 text-sm text-ink-2">
-          No confirmed event outlook is available. Conditions remain unknown.
-        </p>
       )}
     </section>
   )
 }
 
 function OutlookCard({ card }: { card: EventOutlookCard }) {
+  const demoSite = useDemoSite()
   const f = card.forecast
   return (
     <article
@@ -83,11 +84,13 @@ function OutlookCard({ card }: { card: EventOutlookCard }) {
           {displayLabel(card.event_type)}
         </h3>
         <div className="flex flex-wrap gap-1.5">
-          <span
-            className={`chip border ${card.presentation === 'current' ? 'border-line-strong text-ink-2' : 'border-dotted border-sim text-sim'}`}
-          >
-            {presentationText[card.presentation]}
-          </span>
+          {!(demoSite && card.presentation === 'replay') && (
+            <span
+              className={`chip border ${card.presentation === 'current' ? 'border-line-strong text-ink-2' : 'border-dotted border-sim text-sim'}`}
+            >
+              {presentationText[card.presentation]}
+            </span>
+          )}
           {f.kind !== 'unavailable' && (
             <span className="chip border border-line-strong text-ink-2">
               {kindText[f.kind]}
@@ -152,9 +155,7 @@ function OutlookEvidence({ card }: { card: EventOutlookCard }) {
       <p>{card.association.description}</p>
       {f.kind === 'historical_duration_research' && <DurationDetails f={f} />}
       {f.kind === 'official_event_forecast' && <StormDetails f={f} />}
-      {f.kind === 'official_aftershock_forecast' && (
-        <AftershockDetails f={f} />
-      )}
+      {f.kind === 'official_aftershock_forecast' && <AftershockDetails f={f} />}
       {f.kind === 'unavailable' && (
         <>
           <p>{f.reason}</p>
@@ -270,7 +271,11 @@ function tileReading(f: EventOutlookCard['forecast']): {
           unit: `chance of M${bin.magnitude_at_least}+`,
           note: `${window.label} · sequence region, not this worksite.`,
         }
-      : { value: 'Unknown', unit: '', note: 'Sequence region, not this worksite.' }
+      : {
+          value: 'Unknown',
+          unit: '',
+          note: 'Sequence region, not this worksite.',
+        }
   }
   return {
     value: 'Prediction unavailable',
@@ -280,6 +285,7 @@ function tileReading(f: EventOutlookCard['forecast']): {
 }
 
 function OutlookTile({ card }: { card: EventOutlookCard }) {
+  const demoSite = useDemoSite()
   const f = card.forecast
   const reading = tileReading(f)
   const missing = f.kind === 'unavailable'
@@ -300,11 +306,13 @@ function OutlookTile({ card }: { card: EventOutlookCard }) {
       </p>
       <p className="text-sm text-ink-2">{reading.note}</p>
       <p className="flex flex-wrap gap-1.5">
-        <span
-          className={`chip border ${card.presentation === 'current' ? 'border-line-strong text-ink-2' : 'border-dotted border-sim text-sim'}`}
-        >
-          {presentationText[card.presentation]}
-        </span>
+        {!(demoSite && card.presentation === 'replay') && (
+          <span
+            className={`chip border ${card.presentation === 'current' ? 'border-line-strong text-ink-2' : 'border-dotted border-sim text-sim'}`}
+          >
+            {presentationText[card.presentation]}
+          </span>
+        )}
         {f.kind !== 'unavailable' && (
           <span className="chip border border-line-strong text-ink-2">
             {kindText[f.kind]}

@@ -119,27 +119,32 @@ test('dates show local timezone and handle null/invalid; units are labels withou
     'The event could not be linked to this worksite.',
   )
 })
-test('six primary outlooks retain replay/research/archive/unknown and do not expose model IDs', () => {
+test('outlooks with an estimate keep replay/research/archive labels; unavailable ones are hidden', () => {
   const html = render(EventOutlooks, { cards: site.event_outlooks })
   const main = plain(primary(html))
-  assert.equal((html.match(/data-outlook-id=/g) ?? []).length, 6)
+  const shown = site.event_outlooks.filter((c) => c.status === 'available')
+  assert.equal((html.match(/data-outlook-id=/g) ?? []).length, shown.length)
   for (const text of [
     'Flood',
     'Flash Flood',
     'High Wind',
-    'Wildfire',
     'Hurricane',
     'Earthquake',
     'Research duration estimate',
     'not a time to resume work',
     'Archived agency forecast, not a current prediction',
-    'Prediction unavailable',
     'not this worksite',
   ])
     assert(main.includes(text), text)
+  // The unavailable Wildfire outlook draws no box at all.
+  assert(!main.includes('Wildfire'))
+  assert(!main.includes('Prediction unavailable'))
   assert(!main.includes(site.event_outlooks[0].forecast.model_version))
   assert(html.includes(site.event_outlooks[0].forecast.model_version))
-  assert.equal((html.match(/How was this estimated\?/g) ?? []).length, 6)
+  assert.equal(
+    (html.match(/How was this estimated\?/g) ?? []).length,
+    shown.length,
+  )
 })
 test('pending notices never imply confirmation or supply an instruction; approved prose stays primary and verbatim', () => {
   const notice =

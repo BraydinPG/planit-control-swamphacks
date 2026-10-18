@@ -1,34 +1,30 @@
 import type { EventOutlook } from '../../types/api'
-import { durationSentence, NO_ESTIMATE } from './duration-text'
+import { useDemoSite } from './demo-site'
+import { durationSentence } from './duration-text'
 import { Icon } from '../shell/Icon'
 import { Timestamp } from './Status'
 
 /** T036B: how long a confirmed hazard is expected to last, in plain words. */
 export function ExpectedDuration({ outlook }: { outlook: EventOutlook }) {
   const sentence = durationSentence(outlook)
+  const demoSite = useDemoSite()
+  // No estimate: show nothing rather than a box saying so.
+  if (!sentence) return null
   return (
     <div className="rounded-xl bg-surface-2 p-3 text-sm">
       <p className="kicker flex items-center gap-1.5">
         <Icon name="clock" className="size-3.5" />
         Estimated duration · research
       </p>
-      {sentence ? (
-        <>
-          <p className="mt-1 text-base font-semibold text-ink">
-            {outlook.is_simulated && 'Simulated replay: '}
-            {sentence}
-          </p>
-          <p className="mt-1 text-ink-2">
-            Estimate from past recorded events, as of{' '}
-            <Timestamp value={outlook.as_of_utc} />. Not an all-clear: alerts
-            and instructions still apply.
-          </p>
-        </>
-      ) : (
-        <p className="mt-1 text-ink-2">
-          {NO_ESTIMATE} Conditions remain unknown.
-        </p>
-      )}
+      <p className="mt-1 text-base font-semibold text-ink">
+        {outlook.is_simulated && !demoSite && 'Simulated replay: '}
+        {sentence}
+      </p>
+      <p className="mt-1 text-ink-2">
+        Estimate from past recorded events, as of{' '}
+        <Timestamp value={outlook.as_of_utc} />. Not an all-clear: alerts and
+        instructions still apply.
+      </p>
       <details className="mt-2">
         <summary className="flex min-h-11 cursor-pointer items-center font-semibold text-ink">
           How this is estimated
