@@ -1,3 +1,33 @@
+## Replacement white/cyan logo (Cache for Rudra and Braydin) - 2026-10-18
+
+Explicit user request replaces logos everywhere in the app and removes the supplied
+dark background. User approved a pixel cutout after two imagegen drafts produced
+artifacts; neither draft is used. Branch `feature/cache-white-cyclone-branding` began
+at `7aacfe5` and incorporated main `0605e7b` with PR63/64 notifications/dark theme intact.
+
+- `frontend/branding/foresite-logo-source.png`: unmodified upload; README documents
+  pinned source, exact cutout method, hashes, reproduction and owner handoff.
+- `frontend/scripts/prepare-brand-assets.py`: alpha key/enclosed eye removal and
+  deterministic derivation. RGB of retained pixels is unchanged; removed pixels are
+  transparent. No generative redraw or vector conversion is claimed.
+- Existing `frontend/public/foresite-*` full/compact/cyclone/favicon/touch/social assets
+  and hash manifest are replaced. Metadata preview has a documented dark canvas;
+  logo/icon files themselves are transparent.
+- `frontend/src/components/shell/Brand.tsx`, `frontend/index.html`, `auth-check.html`:
+  asset cache version `daaf5322`; sizes, accessibility and home links remain intact.
+- Existing browser regression checks verify real transparency/white lettering and
+  current assets. Context/guide and public simulated screenshots are updated.
+
+177 frontend tests, lint, TypeScript, live/demo builds, Python script lint/format,
+deterministic regeneration and all asset hashes pass. Focused Edge checks pass eleven
+destinations at 1440/768/390/320 in development and built-demo modes; mocked sign-in
+appearance and Sign out contrast pass under both OS preferences, with no exceptions or
+real API requests. Full mutation browser suite/backend tests not rerun for this asset
+change. Existing build-size warnings remain. Other worktrees/processes/configuration
+are preserved. No auth implementation, style/surface, backend/API, score/ML/Gemini,
+deployment or task-state changes relative to main. Rudra reviews frontend release;
+Braydin coordinates external hosted Auth0 imagery separately. No automatic merge.
+
 ## Supervisor-only worksite notice review (Cache for Rudra) - 2026-10-17
 
 Explicit user request: crew must not see the notice-review option after a photo

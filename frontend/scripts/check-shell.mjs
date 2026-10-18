@@ -149,6 +149,14 @@ async function checkBranding() {
     await evaluate("Array.from(document.querySelectorAll('[data-brand]')).filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);const width=e.getBoundingClientRect().width;return s.backgroundColor==='rgba(0, 0, 0, 0)'&&width<=(e.dataset.brand==='full'?240:e.dataset.brand==='compact'?144:32)})"),
     'Logo stays transparent and compact at every viewport',
   )
+  assert(
+    await evaluate("Array.from(document.querySelectorAll('[data-brand] img')).filter(e=>e.getClientRects().length).every(e=>e.src.includes('?v=daaf5322')&&getComputedStyle(e).filter==='none')"),
+    'Replacement logo loads current assets without a recoloring filter',
+  )
+  assert(
+    await evaluate("(()=>{const img=Array.from(document.querySelectorAll('[data-brand] img')).find(e=>e.getClientRects().length),canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0);const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;let solid=0,white=0;for(let i=0;i<data.length;i+=4){if(data[i+3]>200){solid++;if(data[i]>220&&data[i+1]>220&&data[i+2]>220)white++;}}return data[3]===0&&solid>0&&white/solid>.4})()"),
+    'Replacement artwork has genuine transparent corners and white lettering',
+  )
 }
 async function offModeServer(setting) {
   const listener = createServer()

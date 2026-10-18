@@ -1,5 +1,11 @@
 # Official FORESITE logo integration
 
+**Current artwork (2026-10-18):** the user replaced the navy-letter logo with the
+white-letter/cyan-cyclone version. See the [current source, transparent cutout,
+reproduction and handoff guide](../frontend/branding/README.md). Active assets and
+screenshots now show that replacement. The original integration notes below are a
+historical record; the team's always-dark theme supplies current contrast.
+
 Review: [PR53](https://github.com/BraydinPG/planit-control-swamphacks/pull/53),
 tested implementation `4508e9d`; open against main, no automatic merge/deployment.
 
