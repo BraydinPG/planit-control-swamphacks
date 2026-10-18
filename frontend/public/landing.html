@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Temporary landing page, served at /landing.html. The Sign in buttons open the app root, where the main Foresite sign-in lives. Delete this file to remove it. -->
+<!-- Temporary landing page, served at /landing.html. It is the front door: a signed-out visit to / is sent here (src/application/landing.ts), and the Sign in buttons return to /?signin to start sign-in. To remove it, delete this file and the redirect in src/application/landing.ts and its callers. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -109,7 +109,7 @@ main,header{position:relative;z-index:3}
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M13.2 4 7 13.4h4.4L10.6 20l6.4-9.6h-4.5z" fill="#000"/></svg>
     Foresite
   </a>
-  <a class="signin" href="/">Sign in<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <a class="signin" href="/?signin">Sign in<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </header>
 
 <main>
@@ -119,7 +119,7 @@ main,header{position:relative;z-index:3}
       <h1 id="h1">Every on-site hazard.<span class="thin">One shared view.</span></h1>
       <p class="hero-lede">Lightning, flood, heat, hurricane and earthquake feeds plus crew reports, combined into one risk picture for every monitored site. Rules raise the alerts. People make the call.</p>
       <div class="cta">
-        <a class="cta-btn" href="/">Sign in to Foresite<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="cta-btn" href="/?signin">Sign in to Foresite<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <span class="cta-note">Crew and supervisor accounts</span>
       </div>
     </div>
