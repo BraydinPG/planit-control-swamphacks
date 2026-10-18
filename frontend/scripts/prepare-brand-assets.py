@@ -20,6 +20,8 @@ FULL = (138, 177, 1848, 600)
 WORDMARK = (138, 177, 1848, 534)
 CYCLONE = (326, 177, 701, 534)
 SURFACE = "#0b141d"
+LIGHT = PUBLIC / "foresite-logo-light.png"
+APPROVED_LIGHT = "05a688ff75edc55538eb2343ffa038aea76d3a0bea7aef604b95848c9cd60fd3"
 
 
 def remove_background(original):
@@ -120,6 +122,10 @@ def main():
     assert hashlib.sha256(SOURCE.read_bytes()).hexdigest() == APPROVED, (
         "Unapproved source image"
     )
+    assert LIGHT.is_file(), "Approved committed light-mode variant is missing"
+    assert hashlib.sha256(LIGHT.read_bytes()).hexdigest() == APPROVED_LIGHT, (
+        "Unapproved light-mode variant"
+    )
     original = Image.open(SOURCE).convert("RGB")
     assert original.size == (1983, 793)
     original = remove_background(original)
@@ -128,6 +134,7 @@ def main():
     icon = extract_cyclone(original)
     assets = {
         "foresite-logo.png": original,
+        "foresite-logo-light.png": Image.open(LIGHT).convert("RGBA"),
         "foresite-logo-full.png": contain(full, (1200, 300)),
         "foresite-wordmark.png": contain(compact, (768, 166)),
         "foresite-cyclone.png": square(icon, 384, 12),
@@ -146,6 +153,7 @@ def main():
     manifest = {
         "source_sha256": APPROVED,
         "source_file": "frontend/branding/foresite-logo-source.png",
+        "light_source": {"approved_commit": "4508e9d", "sha256": APPROVED_LIGHT},
         "pillow_version": __version__,
         "method": "user-authorized pixel cutout; foreground RGB unchanged",
         "alpha_key": {
