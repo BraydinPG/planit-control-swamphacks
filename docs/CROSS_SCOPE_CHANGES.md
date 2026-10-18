@@ -874,3 +874,7 @@ The user asked to restore the Everglades site (the owners' wildlife demonstratio
 ### 2026-10-18 — Rudra: always-dark theme touches Braydin's sign-in panels (user-authorized)
 
 The user made the whole site always dark, sign-in included, with the logo artwork untouched. Outside Rudra's lanes: `frontend/src/auth/RequireRole.tsx` (`AccessPanel` uses `bg-surface text-ink border-line`, the Sign in/Sign out button uses `bg-accent-fill`, error text uses `text-stop-text`) and `frontend/src/auth/AuthCheckPage.tsx` (neutral/dark: pairs replaced by tokens). No authentication logic, conditions or tokens changed. `check-shell.mjs` now expects the dark sign-in surface `rgb(28, 28, 30)` and still asserts the logo is transparent and unfiltered in both OS preferences. `docs/OFFICIAL_LOGO.md` records the accepted low-contrast navy logo on dark.
+
+### 2026-10-18 — Braydin: Gemini star icon (user request, Rudra's frontend)
+
+`frontend/src/components/shell/Icon.tsx` adds `GeminiMark`, the four-point Gemini sparkle in its blue-to-purple gradient, sized like `Icon`. It replaces the radiating-lines `spark` icon (which read as a loading spinner) on the Gemini briefing badge (`StoredBriefings.tsx`) and the Gemini report analysis label (`ReportAnalysis.tsx`). The `spark` icon itself stays for the on-site fire report category. Demo sites' one-word state badges ("Simulated", "Simulated replay") are kept: project rule 6 and spec.md require each feed's state in the UI.

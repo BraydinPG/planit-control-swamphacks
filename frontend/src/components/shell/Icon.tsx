@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react'
+import { useId, type SVGProps } from 'react'
 import { Brand } from './Brand'
 
 export type IconName =
@@ -62,6 +62,33 @@ export function Icon({
       {...props}
     >
       <path d={paths[name]} />
+    </svg>
+  )
+}
+
+/** The Gemini sparkle, marking text or analysis Gemini wrote. Sized like `Icon`. */
+export function GeminiMark({ className = 'size-4' }: { className?: string }) {
+  const id = `gemini-${useId().replace(/:/g, '')}`
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient
+          id={id}
+          x1="3"
+          y1="21"
+          x2="21"
+          y2="3"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#4796E3" />
+          <stop offset="0.55" stopColor="#9177C7" />
+          <stop offset="1" stopColor="#CA6673" />
+        </linearGradient>
+      </defs>
+      <path
+        fill={`url(#${id})`}
+        d="M12 2c.62 5.21 4.79 9.38 10 10-5.21.62-9.38 4.79-10 10-.62-5.21-4.79-9.38-10-10 5.21-.62 9.38-4.79 10-10Z"
+      />
     </svg>
   )
 }

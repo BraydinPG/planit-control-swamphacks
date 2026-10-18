@@ -3,7 +3,7 @@ import type { Briefing, SiteSummary } from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { field, labelText, LoadState } from './Interaction'
 import { Timestamp } from './Status'
-import { Icon } from '../shell/Icon'
+import { GeminiMark, Icon } from '../shell/Icon'
 import { ApiError } from '../../api/contracts'
 import { displayLabel } from '../../presentation/display'
 import { Details } from './Details'
@@ -38,7 +38,11 @@ export function BriefingCard({ value }: { value: Briefing }) {
         <span
           className={`inline-flex items-center gap-1.5 chip border ${fallback ? 'border-dashed border-line-strong text-ink-2' : 'border-sim text-sim'}`}
         >
-          <Icon name={fallback ? 'doc' : 'spark'} className="size-3.5" />
+          {fallback ? (
+            <Icon name="doc" className="size-3.5" />
+          ) : (
+            <GeminiMark className="size-3.5" />
+          )}
           {fallback ? 'Template' : 'Gemini'}
         </span>
         <h2 className="text-2xl font-bold tracking-tight">Shift briefing</h2>
