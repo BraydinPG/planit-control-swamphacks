@@ -98,7 +98,7 @@ function Ring({
 }
 
 /** Green check for the viewer's own acknowledgement; never an all-clear. */
-function Acknowledged({ at, big = false }: { at: string; big?: boolean }) {
+function Acknowledged({ big = false }: { big?: boolean }) {
   return (
     <div
       role="status"
@@ -111,10 +111,7 @@ function Acknowledged({ at, big = false }: { at: string; big?: boolean }) {
         <strong className={`block ${big ? 'text-lg' : 'text-base'}`}>
           Acknowledged by you
         </strong>
-        <span className="text-sm text-ink-2">
-          <Timestamp value={at} /> · alert still active until the server clears
-          it
-        </span>
+
       </span>
     </div>
   )
@@ -173,16 +170,7 @@ export function AlertCard({
         </h2>
       </div>
       <div className="space-y-3 p-4">
-        {!detail && (
-          <a
-            className="flex min-h-14 items-center justify-between gap-3 rounded-xl border border-line-strong bg-surface-2 px-4 text-lg font-bold text-ink hover:bg-bg"
-            href={`#/${persona}/alerts/${encodeURIComponent(alert.id)}`}
-          >
-            View alert
-            <Icon name="arrow" className="size-5 shrink-0" />
-          </a>
-        )}
-        {!detail && mine && <Acknowledged at={mine.acknowledged_at} />}
+        {!detail && mine && <Acknowledged />}
         {!detail && left !== null && left > 0 && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
             <span className="text-base font-semibold">Watch window</span>
@@ -303,7 +291,7 @@ export function AlertCard({
               Acknowledging does not clear the alert.
             </p>
             {mine ? (
-              <Acknowledged at={mine.acknowledged_at} big />
+              <Acknowledged big />
             ) : (
               <Action
                 capability="acknowledge"
