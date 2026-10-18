@@ -193,7 +193,7 @@ export function ConfirmedHazards({
                   Confirmed; no approved instruction has been sent.
                   {persona === 'supervisor' &&
                     notice.confirmed_by !== principalId &&
-                    ' Only the supervisor who confirmed this hazard can send its instruction.'}
+                    ' Only the supervisor who confirmed this hazard for your organization can send its instruction.'}
                 </p>
               )}
               {outlook?.event_id === notice.id && (
