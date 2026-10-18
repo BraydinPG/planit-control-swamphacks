@@ -39,7 +39,6 @@ import {
   LoadState,
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
-import { AlertNotifier } from '../components/data/AlertNotifier'
 import { EventOutlooks } from '../components/data/EventOutlooks'
 import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
@@ -102,14 +101,6 @@ function Empty({ children }: { children: ReactNode }) {
 }
 
 export function ConnectedPages() {
-  return (
-    <>
-      <AlertNotifier />
-      <Pages />
-    </>
-  )
-}
-function Pages() {
   const { client, persona } = useApplication(),
     [, page = 'overview', encodedId] = useRoute()
   const sites = useResource(
