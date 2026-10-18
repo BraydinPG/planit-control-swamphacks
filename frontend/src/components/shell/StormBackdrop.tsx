@@ -1,19 +1,21 @@
 import { useEffect, useRef } from 'react'
+import { isVivid, onStormLevel } from './stormLevel'
 
 /**
- * Dark red fog with occasional lightning behind every app page, matching the
- * landing page (public/landing.html) but calmer, because people read and work here.
+ * Dark red fog with random lightning behind every app page, matching the landing
+ * page (public/landing.html). App pages use the vivid level (useVividStorm); the
+ * sign-in and loading screens stay calm.
  *
  * Legibility: the fog colour is clamped in the shader (see the cap in FRAGMENT) so
- * even the faint text token (#8e8e93) stays at 4.5:1 or better on the page
- * background, including mid-flash, and red alert surfaces stay distinct from it.
+ * text that sits directly on the page stays at 4.5:1 or better, including
+ * mid-flash, and red alert surfaces stay distinct from it.
  * Bolts are drawn dim and only for 0.7 s. Cards keep their own opaque surfaces.
  * The layer sits behind all content (z-index -1), takes no pointer events and is
  * hidden from assistive technology. Reduced motion shows a still fog, no lightning.
  */
 const VERTEX = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'
 const FRAGMENT = `precision mediump float;
-uniform vec2 uRes;uniform float uTime;uniform float uFlash;uniform vec2 uStrike;
+uniform vec2 uRes;uniform float uTime;uniform float uFlash;uniform vec2 uStrike;uniform float uLevel;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
@@ -30,16 +32,18 @@ void main(){
   float edge=smoothstep(.45,.75,f)-smoothstep(.75,1.,f);
   vec3 tint=vec3(.95,.12,.16);
   // base matches the app background (#121214) so plain areas look unchanged at rest
-  vec3 col=mix(vec3(.071,.071,.078),vec3(.11,.04,.045),fog);
-  col+=tint*edge*.012;
+  // uLevel 0 = calm (sign-in and loading screens), 1 = vivid (app pages)
+  vec3 col=mix(vec3(.071,.071,.078),mix(vec3(.11,.04,.045),vec3(.24,.06,.07),uLevel),fog);
+  col+=tint*edge*mix(.012,.05,uLevel);
   float d=length(p-uStrike);
   float lit=uFlash*(exp(-d*1.5)*1.5+.12)*(.02+fog*1.1+edge*.8);
-  col+=mix(tint,vec3(1.,.8,.84),.4)*lit*.32;
+  col+=mix(tint,vec3(1.,.8,.84),.4)*lit*mix(.32,.6,uLevel);
   col*=1.-.45*pow(length(uv-.5)*1.25,2.2);
-  // Cap: never brighter than rgb(.20,.06,.065) (about 51,15,17). That keeps every text
-  // token at 4.5:1 or better, and keeps the fog far darker than the stop-work red
-  // (#c0262d), so red alerts always stand out from the background.
-  col=min(col,vec3(.20,.06,.065));
+  // Cap, even mid-flash. Calm: rgb(.20,.06,.065), about (51,15,17). Vivid: rgb(.34,.09,.10),
+  // about (87,23,26), relative luminance ~0.027. At the vivid cap, the text tokens that sit
+  // directly on the page stay at 4.5:1 or better (muted ~5.3, link ~5.2, stop-text ~4.9,
+  // sim ~4.8), and the fog stays far darker than the stop-work red (#c0262d).
+  col=min(col,mix(vec3(.20,.06,.065),vec3(.34,.09,.10),uLevel));
   gl_FragColor=vec4(max(col,0.),1.);
 }`
 
@@ -54,7 +58,7 @@ export function StormBackdrop() {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const gl = skyEl.getContext('webgl', { antialias: false })
     const bx = boltEl.getContext('2d')
-    const state = { flash: 0, strike: [0, 0.3] as [number, number], flicker: -1e9 }
+    const state = { flash: 0, strike: [0, 0.3] as [number, number], flicker: -1e9, level: isVivid() ? 1 : 0 }
     let draw: (time: number) => void = () => {}
     let raf = 0
     let timer = 0
@@ -78,7 +82,7 @@ export function StormBackdrop() {
       gl.enableVertexAttribArray(loc)
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
       const u = (name: string) => gl.getUniformLocation(program, name)
-      const uRes = u('uRes'), uTime = u('uTime'), uFlash = u('uFlash'), uStrike = u('uStrike')
+      const uRes = u('uRes'), uTime = u('uTime'), uFlash = u('uFlash'), uStrike = u('uStrike'), uLevel = u('uLevel')
       // low resolution: the fog is soft anyway, and field phones save battery
       const size = () => {
         skyEl.width = Math.max(1, Math.round(window.innerWidth * 0.35))
@@ -93,6 +97,7 @@ export function StormBackdrop() {
         gl.uniform1f(uTime, time)
         gl.uniform1f(uFlash, state.flash)
         gl.uniform2f(uStrike, state.strike[0], state.strike[1])
+        gl.uniform1f(uLevel, state.level)
         gl.drawArrays(gl.TRIANGLES, 0, 3)
       }
     } else {
@@ -100,8 +105,17 @@ export function StormBackdrop() {
     }
 
     if (reduce) {
-      draw(12)
-      return () => cleanups.forEach((fn) => fn())
+      // still fog, redrawn only when the level changes
+      const still = () => {
+        state.level = isVivid() ? 1 : 0
+        draw(12)
+      }
+      still()
+      const stopListening = onStormLevel(still)
+      return () => {
+        stopListening()
+        cleanups.forEach((fn) => fn())
+      }
     }
 
     // bolts: a jagged main channel with a few branches, drawn dim and briefly
@@ -153,7 +167,7 @@ export function StormBackdrop() {
           bx.strokeStyle = `rgba(255,140,150,${a * 0.1})`
           bx.lineWidth = s.w * 4
           bx.stroke()
-          bx.strokeStyle = `rgba(255,225,230,${a * 0.3})`
+          bx.strokeStyle = `rgba(255,225,230,${a * (0.3 + 0.1 * state.level)})`
           bx.lineWidth = s.w
           bx.stroke()
         }
@@ -162,15 +176,20 @@ export function StormBackdrop() {
     const strike = () => {
       const x = window.innerWidth * (0.08 + Math.random() * 0.84)
       const yEnd = window.innerHeight * (0.4 + Math.random() * 0.4)
-      state.flash = 0.45 + Math.random() * 0.25
+      state.flash = (isVivid() ? 0.6 : 0.45) + Math.random() * 0.3
       state.flicker = performance.now()
       state.strike = [(x - window.innerWidth / 2) / window.innerHeight, 0.5 - (yEnd * 0.5) / window.innerHeight]
       makeBolt(x, yEnd)
     }
-    // calmer than the landing page: a strike every 6–16 seconds
+    // Random timing. App pages: every 2.5–8 s, sometimes with a quick second strike.
+    // Sign-in and loading screens stay calm: every 6–16 s.
+    let follow = 0
     const schedule = () => {
-      if (!document.hidden) strike()
-      timer = window.setTimeout(schedule, 6000 + Math.random() * 10000)
+      if (!document.hidden) {
+        strike()
+        if (isVivid() && Math.random() < 0.3) follow = window.setTimeout(strike, 150 + Math.random() * 400)
+      }
+      timer = window.setTimeout(schedule, isVivid() ? 2500 + Math.random() * 5500 : 6000 + Math.random() * 10000)
     }
     timer = window.setTimeout(schedule, 2500)
 
@@ -180,8 +199,9 @@ export function StormBackdrop() {
       raf = requestAnimationFrame(frame)
       if (now - last < 33) return // about 30 frames a second is plenty for fog
       last = now
+      state.level += ((isVivid() ? 1 : 0) - state.level) * 0.05 // fades between levels
       state.flash *= 0.88
-      if (now - state.flicker < 400 && Math.random() < 0.2) state.flash = Math.min(0.7, state.flash + 0.15)
+      if (now - state.flicker < 400 && Math.random() < 0.2) state.flash = Math.min(0.9, state.flash + 0.15)
       draw((now - t0) / 1000)
       drawBolts(now)
     }
@@ -190,6 +210,7 @@ export function StormBackdrop() {
     return () => {
       cancelAnimationFrame(raf)
       window.clearTimeout(timer)
+      window.clearTimeout(follow)
       cleanups.forEach((fn) => fn())
     }
   }, [])
