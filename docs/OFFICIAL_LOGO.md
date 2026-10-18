@@ -69,6 +69,9 @@ their existing minimum sizes.
   presentation-only optional prop on RequireRole; embedded guards in the development
   sign-in-check page omit duplicate logos because that page has its own full logo.
   Authentication conditions, actions, context and tokens are unchanged.
+  These panels and their controls stay light even when the device prefers dark mode,
+  matching the application's light theme and retaining readable original navy artwork.
+  The logo itself stays transparent without a backing plate, outline or color filter.
 - Both HTML entrypoints reference cyclone favicons. Main metadata includes the
   full-logo social image. The tab title remains exactly **FORESITE**.
 
@@ -100,7 +103,14 @@ Transparent/smaller follow-up (2026-10-17, base `6e7850e`): lint, TypeScript, 17
 live/demo builds and both development/built-demo browser suites pass. Wrappers are
 transparent, widths are bounded across all four viewports, and screenshots below
 reflect the updated presentation. The original PNGs/hashes are unchanged. Navy
-lettering is retained on dark surfaces too; there is no longer a white backing plate.
+lettering is retained; there is no longer a white backing plate. Sign-in panels now
+stay light for both OS preferences so that lettering is readable.
+
+Sign-in contrast follow-up (base `adea918`): 174 frontend tests, lint, TypeScript and
+production build pass. Focused Edge inspection at 390/1440 with dark/light preferences
+checks matching light panels, transparent/unfiltered logos, visible controls, no
+overflow and logged-out/loading/no-role states, with no exceptions or API requests.
+The full application browser suite was not rerun for this presentation-only follow-up.
 
 - Frontend lint, explicit TypeScript check and **171 existing frontend tests pass**.
 - Default/live-mode and explicit-demo production builds pass. The existing default
@@ -144,6 +154,7 @@ Review images (public simulated data; no real accounts or private photos):
 ![Desktop supervisor branding](branding/foresite-desktop.png)
 ![Mobile crew branding](branding/foresite-mobile.png)
 ![Dark app-owned sign-in, mocked session](branding/foresite-sign-in-dark.png)
+![Desktop sign-in with dark OS preference, mocked session](branding/foresite-sign-in-desktop.png)
 
 Light sign-in and asset-size/contrast contact sheet are also in `docs/branding/`.
 
