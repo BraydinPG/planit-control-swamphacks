@@ -38,6 +38,7 @@ data, permissions and actions across screen sizes.
 [Home desktop](crew-desktop.png) ? [Home phone](crew-mobile.png) ?
 [Expanded worksite](worksite-expanded.png) ? [Full-width alerts](alerts-full-width.png)
 [Unified hazards on phone](confirmed-hazards-mobile.png).
+[Species sources above the habitat map](species-provenance.png).
 
 ## Review locally
 
@@ -68,7 +69,9 @@ top alignment within 1px at desktop widths. Unit count: 198.
 Lint, TypeScript, default/live and explicit-demo production builds and the complete
 development/built-demo browser workflow suites also pass.
 Unified-list implementation `2d293fb` and `d82a30f`; reconciliation `e96b190`
-preserves main `c285cf5` / read-only guests. The prior PR80 baseline also passed
+preserves main `c285cf5` / read-only guests; `3430f4e` incorporates PR82's fog changes.
+Species placement tests verify source/state/time/caveat containment in its disclosure
+above the habitat map and no detached footer. The prior PR80 baseline also passed
 139 backend score/report/lightning/contract checks; this feature changes no backend code.
 [Review branch](https://github.com/BraydinPG/planit-control-swamphacks/compare/main...feature/cache-unified-confirmed-hazards).
 Existing bundle-size warnings remain; browser evidence is demo/mocked verification,

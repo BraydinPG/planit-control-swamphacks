@@ -20,12 +20,14 @@ habitat map into Species sources and coverage under Local species. All metadata,
 regional-context caveats and map attribution remain. `SpeciesPanel.tsx`, its existing
 unit test and the browser regression now verify this placement.
 
-198 frontend tests, lint/TypeScript and live/demo builds pass. Development/built-demo
-workflows and 40 focused cases pass for the unified list; species placement is being
-verified before publication. An initial CDP navigation timeout did not recur after
+198 frontend tests, lint/TypeScript, live/demo builds, development/built-demo workflow
+suites and 40 focused built-browser cases across eight widths pass, including species
+source containment/order and unified hazard rows. No overflow, browser exceptions or
+actual backend calls. An initial CDP navigation timeout did not recur after
 restarting only this checkout's owned preview. Reconciled main `c285cf5` in `e96b190`;
 the sole context-document conflict preserves both entries and the read-only guest
-feature. Final results are in the current layout guide.
+feature. Also preserved main `fc72b1c` / PR82 in `3430f4e`. User explicitly authorizes
+push, conflict resolution and merge. Screenshots and final commands are in the layout guide.
 
 ## Worksite alignment and hazard evidence (Cache for Rudra) - 2026-10-18 06:46 UTC
 
