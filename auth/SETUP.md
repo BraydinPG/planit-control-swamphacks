@@ -1,4 +1,11 @@
-# Auth0 setup for PlanIT Control
+# Auth0 setup for FORESITE
+
+FORESITE is the current product name. The working tenant may still label the existing
+API/client `PlanIT Control API` / `PlanIT Control Web` and the Action `Add PlanIT roles`.
+Those are legacy dashboard labels, not new resources to create for the rebrand.
+Keep all audience, client ID, tenant, claim namespace, role, callback and environment
+identifiers below unchanged. Braydin can coordinate hosted login display branding
+separately; this rebrand does not change Auth0 settings.
 
 This guide sets up the Auth0 tenant, both roles, the demo accounts, and the local environment. Auth0 is the only identity provider. It takes about 20 minutes in the Auth0 dashboard.
 
@@ -7,7 +14,7 @@ Never commit Auth0 secrets, demo passwords, or `.env` files. The frontend values
 ## How it fits together
 
 1. The React app signs in with Auth0 (Authorization Code + PKCE, through `@auth0/auth0-react`).
-2. Auth0 issues an **access token** for the PlanIT Control API. A post-login Action adds the user's roles, and RBAC adds their permissions.
+2. Auth0 issues an **access token** for the FORESITE API. A post-login Action adds the user's roles, and RBAC adds their permissions.
 3. The FastAPI backend validates every token: signature (RS256, from the tenant's JWKS), issuer, audience, and expiry. Then it checks the role or permission for the action.
 4. The frontend reads the role from the ID token only to choose screens. **The backend is the authority.** Hiding a button is not authorization.
 
@@ -37,7 +44,7 @@ To work on this tenant, put these values in your own `backend/.env` and `fronten
 
 | Field | Value |
 |---|---|
-| Name | `PlanIT Control API` |
+| Name | `FORESITE API` (the existing tenant may retain the legacy label above) |
 | Identifier | `https://api.planit-control` (any URI; it is never called. This is `AUTH0_AUDIENCE`.) |
 | JSON Web Token Profile | Auth0 |
 | Signing Algorithm | `RS256` |
@@ -65,14 +72,14 @@ These match `backend/app/security/roles.py` and the role policy in `spec.md` sec
 
 **User Management → Roles → Create Role**, twice:
 
-- `crew`: description "Field crew". Under **Permissions → Add Permissions**, choose PlanIT Control API and add the four crew permissions.
+- `crew`: description "Field crew". Under **Permissions → Add Permissions**, choose the API from step 2 and add the four crew permissions.
 - `supervisor`: description "Supervisor". Add all eight permissions.
 
 Name the roles `crew` and `supervisor`. Capitalization does not matter (`Supervisor` works); the spelling does.
 
 ## 4. Create the single-page application
 
-**Applications → Applications → Create Application**, then choose **Single Page Web Applications**. Name it `PlanIT Control Web`.
+**Applications → Applications → Create Application**, then choose **Single Page Web Applications**. For a new setup, name it `FORESITE Web`; reuse the published SPA in the working tenant instead of creating another for the rebrand.
 
 On its **Settings** tab:
 
@@ -215,7 +222,7 @@ def list_alerts(user: AuthenticatedUser): ...
 def review(user: Annotated[CurrentUser, Depends(require_permission(roles.REVIEW_REPORTS))]): ...
 ```
 
-Responses: **401** missing, invalid, or expired token; **403** valid token without the role or permission (or with no PlanIT role); **503** Auth0 not configured or its keys unreachable. Scope checks such as "own organization only" use `membership_for(session, user)`. Treat `None` as no access.
+Responses: **401** missing, invalid, or expired token; **403** valid token without the role or permission (or with no FORESITE role); **503** Auth0 not configured or its keys unreachable. Scope checks such as "own organization only" use `membership_for(session, user)`. Treat `None` as no access.
 
 ## Security notes
 

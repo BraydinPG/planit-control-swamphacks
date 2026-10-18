@@ -1,4 +1,4 @@
-# Agent Instructions for PlanIT Control
+# Agent Instructions for FORESITE
 
 Read `PROJECT_CONTEXT.md` first, then this file and targeted code/contracts. Update the context in the same commit when models, contracts, source availability, handoff status, or verified tests change; reconcile teammate edits rather than overwriting them.
 

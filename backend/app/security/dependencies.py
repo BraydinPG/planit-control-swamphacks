@@ -111,7 +111,7 @@ AuthenticatedUser = Annotated[CurrentUser, Depends(get_current_user)]
 
 
 def user_from_claims(claims: dict[str, Any], roles_claim: str) -> CurrentUser:
-    """Map verified claims to a user. A token without a PlanIT role is refused (403).
+    """Map verified claims to a user. A token without a FORESITE role is refused (403).
 
     Role names match regardless of case or surrounding spaces ("Supervisor" counts). A new
     account gets the `crew` role claim from the Auth0 Action before any role is assigned in
@@ -127,7 +127,7 @@ def user_from_claims(claims: dict[str, Any], roles_claim: str) -> CurrentUser:
     elif "crew" in names:
         role = "crew"
     else:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "Account has no PlanIT Control role")
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Account has no FORESITE role")
     granted = claims.get("permissions")
     if isinstance(granted, list) and (granted or role != "crew"):
         permissions = frozenset(p for p in granted if isinstance(p, str))

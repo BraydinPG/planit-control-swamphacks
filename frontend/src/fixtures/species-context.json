@@ -906,7 +906,7 @@
     "Demo fixture: a recorded IPaC and critical habitat snapshot (retrieved 2026-10-17), not a live lookup. Species wording is one recorded Gemini response, checked against these facts.",
     "IPaC covers only federally listed species. Species that are not federally listed, such as the water moccasin, never appear here, so their absence says nothing about local wildlife.",
     "State protection status (for example Florida FWC listings) is not supplied by IPaC.",
-    "IPaC gives no date for its range data. The date shown is when PlanIT Control retrieved it."
+    "IPaC gives no date for its range data. The date shown is when FORESITE retrieved it."
   ],
   "caveat": "Regional context, not a sighting. These species are listed because their known range or critical habitat overlaps the area around this site. Verify locally and follow your site's wildlife procedures. This is not legal advice and does not clear work."
 }

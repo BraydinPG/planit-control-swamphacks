@@ -1,5 +1,5 @@
 /**
- * Auth0 module for PlanIT Control (Braydin). Import from here, not from inner files:
+ * Auth0 module for FORESITE (Braydin). Import from here, not from inner files:
  *
  *   import { AuthProvider, RequireRole, useAuth } from './auth'
  *

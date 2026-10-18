@@ -93,7 +93,7 @@ export function AppShell({
     return () => window.removeEventListener('hashchange', update)
   }, [])
   useEffect(() => {
-    document.title = `${active.title} · PlanIT Control`
+    document.title = 'FORESITE'
     heading.current?.focus({ preventScroll: true })
     window.scrollTo(0, 0)
   }, [active.title, route.workspace, locationRoute])
@@ -168,12 +168,12 @@ export function AppShell({
         <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-[#ececf0]/90 px-4 py-6 backdrop-blur-xl lg:flex">
           <a
             href={`#/${route.workspace}/overview`}
-            aria-label="PlanIT Control overview"
+            aria-label="FORESITE overview"
             className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
           >
             <Logo className="size-7 text-ink" />
             <span className="text-lg font-bold tracking-tight">
-              PlanIT Control
+              FORESITE
             </span>
           </a>
           <div className="space-y-2">
@@ -203,7 +203,7 @@ export function AppShell({
             />
             <p className="min-w-0 truncate text-sm">
               <span className={`font-bold ${crew ? '' : 'lg:hidden'}`}>
-                PlanIT Control
+                FORESITE
               </span>
               <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
                 {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}
@@ -320,7 +320,7 @@ export function AppShell({
             </section>
           ))}
         <footer className="mt-10 flex flex-col gap-2 border-t border-line pt-5 text-xs leading-relaxed text-muted @2xl:flex-row @2xl:justify-between">
-          <span className="font-semibold text-ink-2">PlanIT Control</span>
+          <span className="font-semibold text-ink-2">FORESITE</span>
           <span>
             Advisory context does not authorize work or clear an alert.
           </span>

@@ -18,7 +18,8 @@ def test_fixture_alert_produces_an_observation() -> None:
     assert obs.source_ref == "urn:oid:test.0"
     assert obs.data_state is DataState.OBSERVED
     assert obs.valid_at is not None and obs.observed_at < NOW
-    assert fake.requests[0].url.params["point"] == "25.7600,-80.4900"
+    requests = [r for r in fake.requests if r.url.path == "/alerts/active"]
+    assert requests[0].url.params["point"] == "25.7600,-80.4900"
 
 
 def test_keeps_only_flood_events() -> None:

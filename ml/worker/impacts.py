@@ -47,7 +47,7 @@ def _derived_heat(assessments):
                 {
                     **t.model_dump(),
                     "evidence_id": identifier,
-                    "publisher": "PlanIT calculation from " + t.publisher,
+                    "publisher": "FORESITE calculation from " + t.publisher,
                     "original_type": "derived_NWS_heat_index",
                     "variable": "heat_index",
                     "value": heat_index_f(fahrenheit, h.value),
