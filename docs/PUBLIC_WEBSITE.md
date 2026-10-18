@@ -1,5 +1,7 @@
 # FORESITE public website
 
+[PR #96](https://github.com/BraydinPG/planit-control-swamphacks/pull/96): implementation `4b54fe4`, clean verification/screenshots `cfa0dc0`; user-authorized merge.
+
 User-authorized scope, 2026-10-18: complete About, documentation access, shared
 public navigation/footer and metadata, change mapped-location copy to **250**,
 and **remove Case Study**. The user's later removal instruction supersedes the
@@ -143,7 +145,7 @@ public commit `4b54fe4` (scoped cherry-pick of `9a04e08`):
   or API requests. Existing SPA chunk-size warning remains.
 - Fourteen external GitHub destinations returned 200; local links, assets and
   fragments resolve. Research assets, app source, backend, ML and task states
-  exactly match main; no teammates' files are included in this PR.
+  exactly match main; no unrelated teammate application edits are included.
 
 Review captures: [Desktop](screenshots/about-desktop.webp),
 [Mobile](screenshots/about-mobile.webp). Full PNGs and team-section captures
@@ -157,3 +159,49 @@ or infrastructure is needed to serve these existing static build outputs. Models
 scoring, canonical API contracts/fixtures, application components, dependencies,
 credentials and task states remain untouched. This does not complete live
 T063–T068, T070, T081/T083 or the team's remaining acceptance tasks.
+
+
+## Exact changed paths
+
+Added:
+
+```text
+docs/PUBLIC_WEBSITE.md
+docs/screenshots/about-desktop.webp
+docs/screenshots/about-mobile.webp
+frontend/public/about.html
+frontend/public/about.css
+frontend/public/public-navigation.js
+frontend/scripts/public-chrome.mjs
+frontend/scripts/prepare-public-chrome.mjs
+frontend/tests/public-site.test.mjs
+```
+
+Updated (Case Study HTML is only the legacy redirect):
+
+```text
+PROJECT_CONTEXT.md
+docs/CASE_STUDY.md
+docs/CROSS_SCOPE_CHANGES.md
+docs/LANDING_RESEARCH_SECTION.md
+docs/PLATFORM_PAGE.md
+frontend/public/landing.html
+frontend/public/platform.html
+frontend/public/data.html
+frontend/public/public-site.css
+frontend/public/case-study.html
+frontend/scripts/check-public-pages.mjs
+```
+
+Removed:
+
+```text
+docs/screenshots/case-study-desktop.webp
+docs/screenshots/case-study-mobile.webp
+frontend/public/case-study.css
+frontend/public/case-study.js
+frontend/public/case-study/capture-provenance.json
+frontend/public/case-study/crew-overview.webp
+frontend/public/case-study/supervisor-notice.webp
+frontend/tests/case-study.test.mjs
+```

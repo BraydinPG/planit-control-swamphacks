@@ -1,5 +1,7 @@
 ## Public About, resources and navigation (Cache for Rudra) - 2026-10-18 10:05 UTC
 
+[PR #96](https://github.com/BraydinPG/planit-control-swamphacks/pull/96): implementation `4b54fe4`, clean verification/screenshots `cfa0dc0`; merge authorized by the user.
+
 Explicit user authorization, branch `feature/cache-about-resources`, base
 main `5b27687`. The later user message removes Case Study, overriding the attached
 five-page requirement; the direct message authorizes merge after checks. No task
