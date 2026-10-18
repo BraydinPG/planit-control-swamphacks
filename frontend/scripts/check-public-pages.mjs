@@ -120,7 +120,7 @@ try {
     assert(await evaluate("document.querySelector('.top .brand').getAttribute('href')==='/landing.html'&&Array.from(document.querySelectorAll('.top .public-nav a')).map(a=>a.textContent).join(',')==='Platform,Data'&&!Array.from(document.querySelectorAll('.top a')).some(a=>a.textContent.trim()==='Home')"))
     assert(await evaluate("!document.querySelector('.lab')&&!document.querySelector('link[href=\"/data.css\"]')&&!document.querySelector('img[src*=\"/research/\"]')&&document.querySelectorAll('.feature').length===3&&document.querySelector('h1').textContent==='SEE THE RISK.PLAN BEYOND THE ALERT.'"))
     assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.stats b')).map(e=>e.textContent)"), ['526K+', '6', '5,000', '50+'])
-    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.signin,.cta-btn')).map(e=>e.getAttribute('href'))"), ['/?signin', '/?demo#/crew/overview', '/?signin'])
+    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.signin,.cta-btn')).map(e=>e.getAttribute('href'))"), ['/?signin', '/?demo#/crew/overview'])
     assert(!requests.slice(requestStart).some(p => p.startsWith('/research/') || ['/data.css', '/platform.css', '/platform.js'].includes(p)), 'Homepage loads no research or Platform assets')
     await shot(`public-home-${width}`)
     await evaluate("document.querySelector('header a[href=\"/data.html\"]').focus()")
