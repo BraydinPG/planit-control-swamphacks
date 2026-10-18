@@ -1,0 +1,74 @@
+{
+  "source_sha256": "56ddbbb30501102a1700f57510feb5a18db2cbcb588e55bd558f42128ea5617d",
+  "pillow_version": "13.0.0",
+  "crop_boxes": {
+    "full": [
+      164,
+      140,
+      2010,
+      602
+    ],
+    "wordmark": [
+      164,
+      140,
+      2010,
+      538
+    ],
+    "cyclone": [
+      355,
+      139,
+      779,
+      539
+    ]
+  },
+  "assets": {
+    "foresite-logo-full.png": {
+      "width": 1200,
+      "height": 300,
+      "sha256": "05a688ff75edc55538eb2343ffa038aea76d3a0bea7aef604b95848c9cd60fd3"
+    },
+    "foresite-wordmark.png": {
+      "width": 768,
+      "height": 166,
+      "sha256": "84ec03ece80364d08d481d2271347a2092d9089a6e25ef34cf62830040550002"
+    },
+    "foresite-cyclone.png": {
+      "width": 384,
+      "height": 384,
+      "sha256": "c9df33f546fddbdb4e0cb8b9a2d31a215e8aef66d99acffeb76a259b26008630"
+    },
+    "foresite-favicon-16.png": {
+      "width": 16,
+      "height": 16,
+      "sha256": "e1d044972185e44ad5f431c35160610d17e7ed337db99120e17efd4676abdbf6"
+    },
+    "foresite-favicon-32.png": {
+      "width": 32,
+      "height": 32,
+      "sha256": "2388eec5583fc2df1b4e224ace92ded06f2407ee870d143c8e2185c725e88b6a"
+    },
+    "foresite-apple-touch-icon.png": {
+      "width": 180,
+      "height": 180,
+      "sha256": "7a4849684f889879c27048055c21cdcffd221b20fd1699ec5d1b323e0f09989c"
+    },
+    "foresite-icon-192.png": {
+      "width": 192,
+      "height": 192,
+      "sha256": "fd85cfc9109feb836d260fb95d5169de402b37ab90120d9cf3f7a1469266e37f"
+    },
+    "foresite-social.png": {
+      "width": 1200,
+      "height": 630,
+      "sha256": "70e422d9f53eca961ee6ed15e387d596e230a5b40c8de96a5b29f21bc25d5bc5"
+    },
+    "foresite-favicon.ico": {
+      "sizes": [
+        16,
+        32,
+        48
+      ],
+      "sha256": "de6d93a8a9477b6a1b03c85beac9e7d693d533d29212159c98e2cb83d83456f5"
+    }
+  }
+}
