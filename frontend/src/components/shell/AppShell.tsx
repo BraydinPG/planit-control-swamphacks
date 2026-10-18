@@ -157,7 +157,7 @@ export function AppShell({
   return (
     <div
       data-theme={route.workspace}
-      className={`min-h-svh bg-bg font-sans text-ink ${crew ? '' : 'lg:pl-64'}`}
+      className={`min-h-svh font-sans text-ink ${crew ? '' : 'lg:pl-64'}`}
     >
       <a
         href="#main-content"
