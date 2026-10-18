@@ -2,9 +2,29 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Centered sign-in card - 2026-10-17
+- Explicit follow-up request on `feature/center-sign-in`: center the access card's brand, heading, text and action buttons, remove "Sign in to see this screen.", and retain the soft shadow with an explicit border-free container. Presentation-only changes in `auth/RequireRole.tsx`; authentication behavior is preserved.
+- Verification after integrating main `d50e5d2`: all 174 frontend tests, TypeScript/production build, lint and whitespace checks pass. No real Auth0 or deployment acceptance is claimed.
+
+## Supervisor-only notice review link - 2026-10-17
+- Explicit user merge authorization for [PR56](https://github.com/BraydinPG/planit-control-swamphacks/pull/56): incorporated current main `08d1e80`, preserving sign-in/logo-home and report/disclosure changes. Merge acceptance passes: 174 frontend tests, 22 backend hazard tests, lint, TypeScript, production build and focused mock-browser crew/supervisor checks at 390/1440, including crew reload; no browser exceptions or real-service acceptance claim.
+- User-authorized frontend fix on `feature/cache-supervisor-notice-review`, base main `f42ddaf`: pending photo reports keep the supervisor-confirmation status for crew, but only supervisors see "Review worksite notice". Existing notice confirmation/instruction guards and backend permission checks remain authoritative.
+- Scope: `ConnectedPages.tsx`, existing browser regression and coordination docs. No schema, Auth0, backend, scoring, ML or task checkbox changes. T065 real-account lifecycle acceptance remains pending.
+- Verification: 172 frontend tests, lint, TypeScript, production build, 21 offline backend hazard tests and Edge browser regression pass. New demo/mock-live photo-report checks cover hidden crew review actions (including reload) and retained supervisor links; 11 destinations at 1440/768/390/320 pass without exceptions or real API requests. Crew 403 and authorized supervisor confirmation are backend-tested. Existing bundle-size/deprecation warnings remain.
+
 ## Upstream deployment merge - 2026-10-18 01:25 UTC
 - Integrated `origin/main` through `98387c8` into `feature/rudra-species-context`, preserving the automatic GitHub Actions deploy workflow and model-artifact safeguards in `deploy/`.
 - Verification on the merged tree: **932 backend tests** and Ruff checks pass; **171 frontend tests**, TypeScript build checks, and the frontend production build pass. No deployment was triggered from this feature branch.
+
+## Header home link - 2026-10-17
+- Explicit follow-up request on `feature/header-logo-home`: wrap the existing compact header brand in an accessible link to the current workspace's overview. Official artwork and sizing are preserved; the existing desktop sidebar home link is unchanged. This supersedes the earlier request to revert header-link behavior only.
+- Verification: frontend TypeScript/production build and whitespace checks pass.
+- Follow-up report layout fix: the Remove image button uses smaller text on two explicit lines and a fixed nonshrinking width. Long filenames wrap within the flexible filename area instead of compressing the button.
+- Species display-name cleanup: remove equals signs from rendered species names (for example `puma (=mountain lion)` becomes `puma (mountain lion)`), preserving source records and species matching.
+- Shared native disclosures titled "View more" now switch their visible and accessible labels to "View less" while expanded, reverting on collapse. Other disclosure titles are preserved; the separate observation-list control already has this behavior.
+- Sign-in/access card styling: user requested a soft drop shadow instead of the dark outline. Focused presentation-only change in `auth/RequireRole.tsx`; authentication behavior and logo artwork are unchanged.
+- Latest-main reconciliation (`ea13893`): retained upstream's accessible header home link and consistently light sign-in panel; preserved the local shadow, report-button sizing, species-name cleanup and disclosure labels.
+- Final verification before publishing: all 174 frontend tests, production build, lint and whitespace checks pass. Production build reports the existing large-chunk advisory; no runtime configuration or credentials are included.
 
 ## Alert, report and header maintenance - 2026-10-17
 - Explicit user request on `feature/alert-report-header-fixes`: expired live watch windows show pending authoritative status instead of a stuck 00:00 and refresh every 15 seconds; only the server can clear an alert. Alerts also have a manual refresh button. User follow-up reverted the acknowledgement button changes to their original behavior.
@@ -185,6 +205,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Verification: all 171 frontend tests, frontend lint, TypeScript checks and production build pass. Browser visual verification was not run.
 - Follow-up: confirmed hazard rows and the unverified-conditions advisory now collapse behind keyboard-accessible View more disclosures. Site reports show category titles and pending supervisor-action text before their disclosure; the Reports page retains its full workflow. Existing confirmation/instruction actions remain unchanged. All 171 frontend tests, lint and production build pass; no push/merge or browser visual check.
 - Publication authorized by Rudra: integrated origin/main f42ddaf, reconciling both project notes and AlertCard acknowledgement/expired-window refresh behavior. All 172 frontend tests, lint, TypeScript and production build pass on the merged tree.
+- PR56 conflict resolution: incorporated main f4c0d56, retaining both supervisor-link and deployment context entries plus the compact report UI. Supervisor-only notice links remain guarded. All 172 frontend tests, lint and production build pass; no browser rerun.
 
 ## Crew UI follow-up - 2026-10-17
 - User-authorized: alert toolbar spacing and removal of All alerts/View alert links and acknowledgement subtitle; solid red partial-evidence score bar with existing incomplete-data warnings; three-second site-score animation; hidden crew-home location card and redundant report/briefing actions; top logo returns to the current workspace home. Backend rules, alert timer, permissions and services are unchanged. User authorizes push and merge.
