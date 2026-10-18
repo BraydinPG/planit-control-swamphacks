@@ -153,10 +153,11 @@ def test_fixture_distances() -> None:
 
 def test_access_mat_report_preserves_crew_note_and_creates_potential_notice(h, client) -> None:
     note = "Mat 12: crew stage D, broken timber at ramp entrance."
-    response = submit(client, category="access_mat_deterioration", note=note)
+    response = submit(client, category="access_mat_deterioration", note=note, mat_condition="D")
     assert response.status_code == 201
     report = response.json()
     assert report["category"] == "access_mat_deterioration"
+    assert report["mat_condition"] == "D"
     assert report["note"] == note
     assert report["review_status"] == "pending"
     [notice] = h.rows(db.HazardNotice)
@@ -166,6 +167,46 @@ def test_access_mat_report_preserves_crew_note_and_creates_potential_notice(h, c
     assert notice.instruction is None
     detail = client.get("/api/sites/site-a", headers=supervisor()).json()
     assert detail["reports"][0]["category"] == "access_mat_deterioration"
+    assert detail["reports"][0]["mat_condition"] == "D"
+
+
+def test_access_mat_grade_a_is_absent_and_sends_no_notice(h, client) -> None:
+    response = submit(
+        client,
+        category="access_mat_deterioration",
+        hazard_present="false",
+        mat_condition="A",
+        photo=None,
+    )
+    assert response.status_code == 201, response.text
+    assert response.json()["mat_condition"] == "A"
+    assert response.json()["hazard_present"] is False
+    assert h.rows(db.HazardNotice) == []
+
+
+@pytest.mark.parametrize(
+    ("fields", "problem"),
+    [
+        ({"category": "access_mat_deterioration"}, "required"),
+        ({"category": "access_mat_deterioration", "mat_condition": "E"}, ""),
+        ({"category": "access_mat_deterioration", "mat_condition": "A"}, "Grade A"),
+        (
+            {
+                "category": "access_mat_deterioration",
+                "mat_condition": "C",
+                "hazard_present": "false",
+            },
+            "Grade A",
+        ),
+        ({"category": "wildlife", "mat_condition": "B"}, "only accepted"),
+    ],
+    ids=["missing", "unknown-grade", "a-present", "c-absent", "other-category"],
+)
+def test_mat_condition_is_validated(h, client, fields, problem) -> None:
+    response = submit(client, **fields)
+    assert response.status_code == 422
+    assert problem in response.text
+    assert h.rows(db.CrewReport) == []
 
 
 def test_present_report_persists_as_pending_with_photo(h, client) -> None:

@@ -351,6 +351,7 @@ def report_schema(r: db.CrewReport) -> CrewReport:
         confirmed_severity=r.confirmed_severity,
         location_source=r.location_source,
         location_accuracy_m=r.location_accuracy_m,
+        mat_condition=r.mat_condition,
         site_distance_miles=r.site_distance_miles,
         enrichment=r.enrichment,
         notice_id=r.notice_id,

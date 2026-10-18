@@ -9,7 +9,12 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react'
-import type { CrewReport, ReportCategory, SiteSummary } from '../types/api'
+import type {
+  CrewReport,
+  MatCondition,
+  ReportCategory,
+  SiteSummary,
+} from '../types/api'
 import {
   useApplication,
   useResource,
@@ -47,6 +52,8 @@ import {
 import { RiskBadge, RiskShape } from '../components/data/Risk'
 import { LocationSearch } from '../components/data/LocationSearch'
 import { evidenceOf } from '../components/data/evidence'
+import { Masonry } from '../components/data/Masonry'
+import { CountUp } from '../components/data/CountUp'
 import { Icon, type IconName } from '../components/shell/Icon'
 import {
   displayLabel,
@@ -291,13 +298,13 @@ function SitePage({
       <section className="space-y-3">
         <SectionHead kicker="Crew reports" title="Reports at this site" />
         {site.reports.length ? (
-          <ul className="grid items-start gap-4 @3xl:grid-cols-2 @7xl:grid-cols-3">
-            {site.reports.map((r) => (
-              <li key={r.id} className="min-w-0">
-                <ReportCard report={r} />
-              </li>
-            ))}
-          </ul>
+          <Masonry
+            label="Reports at this site"
+            items={site.reports.map((r) => ({
+              key: r.id,
+              node: <ReportCard report={r} />,
+            }))}
+          />
         ) : (
           <Empty>No reports supplied.</Empty>
         )}
@@ -337,7 +344,7 @@ function Stat({
       <RiskShape kind={shape} className="mt-1.5 size-4" />
       <span className="leading-tight">
         <span className="block text-3xl font-bold tabular-nums tracking-tight">
-          {value}
+          <CountUp value={value} />
         </span>
         <span className="text-sm text-ink-2">{label}</span>
         {onToggle && (
@@ -455,7 +462,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
       </div>
       <section
         aria-label="Location filters"
-        className={`${card} border border-line/80 bg-surface supports-[backdrop-filter]:bg-surface/90 shadow-[0_8px_28px_rgba(0,0,0,0.07)] backdrop-blur-xl backdrop-saturate-150 grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end`}
+        className={`${card} border border-white/70 bg-surface supports-[backdrop-filter]:bg-surface/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),inset_0_-1px_0_rgba(255,255,255,0.25),0_8px_32px_rgba(0,0,0,0.10)] ring-1 ring-black/5 backdrop-blur-2xl backdrop-saturate-[1.8] grid gap-3 p-4 @lg:grid-cols-2 @3xl:sticky @3xl:top-[3.75rem] @3xl:z-10 @3xl:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))_auto] @3xl:items-end`}
       >
         <LocationSearch
           sites={ranked}
@@ -510,7 +517,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
               ))}
           </select>
         </label>
-        <label className="flex min-h-11 items-center gap-3 rounded-xl border border-line-strong px-3 text-sm font-semibold text-ink-2">
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface px-3 text-sm font-semibold text-ink">
           <input
             type="checkbox"
             className="size-5"
@@ -742,12 +749,19 @@ export function ReportForm({ site }: { site: SiteSummary }) {
   const [category, setCategory] = useState<ReportCategory>(
       'broken_pole_downed_line',
     ),
-    [presence, setPresence] = useState(''),
+    [answer, setAnswer] = useState(''),
+    // T034B: access mat reports ask for the crew's A-D grade instead of
+    // present/absent. A is no hazard; B, C and D are hazard present.
+    [condition, setCondition] = useState<MatCondition | ''>(''),
     [note, setNote] = useState(''),
     [photo, setPhoto] = useState<File | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('')
   const inFlight = useRef(false)
+  const isMat = category === 'access_mat_deterioration'
+  const presence = isMat
+    ? condition && (condition === 'A' ? 'absent' : 'present')
+    : answer
   // T034A: device location with the crew member's permission, else the site's
   // coordinates (approximate); editing the coordinates makes it a manual pin.
   const location = useReportLocation(site, client.mode)
@@ -805,6 +819,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
           lon: at.lon,
           location_source: at.source,
           location_accuracy_m: at.source === 'device' ? at.accuracyM : null,
+          mat_condition: isMat && condition ? condition : null,
           note: note || null,
         },
         photo,
@@ -840,7 +855,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
       </div>
       <fieldset>
         <legend className={step}>1 · Hazard category</legend>
-        <div className="grid grid-cols-2 gap-2 @lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2 @lg:grid-cols-3 @4xl:grid-cols-6">
           {Object.entries(categories).map(([id, label]) => (
             <label
               key={id}
@@ -864,36 +879,73 @@ export function ReportForm({ site }: { site: SiteSummary }) {
         </div>
       </fieldset>
       <div>
-        <fieldset>
-          <legend className={step}>
-            2 · Is the hazard present? (required)
-          </legend>
-          <div className="grid grid-cols-2 gap-2">
-            {(
-              [
-                ['present', 'Hazard present', presentChoice],
-                ['absent', 'Hazard absent', absentChoice],
-              ] as const
-            ).map(([value, label, look]) => (
-              <label
-                key={value}
-                className={`relative flex min-h-16 cursor-pointer items-center justify-center rounded-xl border-2 border-line px-3 py-2 text-base font-bold text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${look}`}
-              >
-                <input
-                  type="radio"
-                  name="presence"
-                  value={value}
-                  required
-                  checked={presence === value}
-                  onChange={() => setPresence(value)}
-                  className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        {isMat ? (
+          <fieldset>
+            <legend className={step}>
+              2 · What is the condition? (required)
+            </legend>
+            <div className="grid grid-cols-4 gap-2">
+              {matGrades.map(([grade, hint]) => (
+                <label
+                  key={grade}
+                  className={`relative flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-line px-2 py-2 text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${grade === 'A' ? absentChoice : presentChoice}`}
+                >
+                  <input
+                    type="radio"
+                    name="mat-condition"
+                    value={grade}
+                    required
+                    aria-label={`Condition ${grade}${hint ? `, ${hint}` : ''}`}
+                    checked={condition === grade}
+                    onChange={() => setCondition(grade)}
+                    className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
+                  />
+                  <span className="text-xl font-bold">{grade}</span>
+                  {hint && (
+                    <span className="text-sm font-semibold">{hint}</span>
+                  )}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : (
+          <fieldset>
+            <legend className={step}>
+              2 · Is the hazard present? (required)
+            </legend>
+            <div className="grid grid-cols-2 gap-2">
+              {(
+                [
+                  ['present', 'Hazard present', presentChoice],
+                  ['absent', 'Hazard absent', absentChoice],
+                ] as const
+              ).map(([value, label, look]) => (
+                <label
+                  key={value}
+                  className={`relative flex min-h-16 cursor-pointer items-center justify-center rounded-xl border-2 border-line px-3 py-2 text-base font-bold text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${look}`}
+                >
+                  <input
+                    type="radio"
+                    name="presence"
+                    value={value}
+                    required
+                    checked={answer === value}
+                    onChange={() => setAnswer(value)}
+                    className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
         <p className="mt-2 text-sm text-muted">
+          {isMat && condition && (
+            <>
+              Grade {condition} counts as hazard{' '}
+              {condition === 'A' ? 'absent' : 'present'}.{' '}
+            </>
+          )}
           {presence === 'present'
             ? 'Nearby teams receive a potential-hazard notice. Supervisor confirmation is required before instructions.'
             : presence === 'absent'
@@ -1050,6 +1102,14 @@ export function ReportForm({ site }: { site: SiteSummary }) {
     </form>
   )
 }
+// T034B access mat grades. No approved rubric defines the letters, so only D's
+// meaning ("unusable") is shown.
+const matGrades: [MatCondition, string][] = [
+  ['A', ''],
+  ['B', ''],
+  ['C', ''],
+  ['D', 'Unusable'],
+]
 // Checked states for the present/absent choice (step 2), like the category step.
 const presentChoice =
   'has-checked:border-stop has-checked:bg-stop has-checked:text-white'
@@ -1145,6 +1205,12 @@ function ReportCard({ report }: { report: CrewReport }) {
             >
               {report.hazard_present ? 'Reported present' : 'Reported absent'}
             </span>
+            {report.mat_condition && (
+              <span className="chip inline-flex items-center border border-ink font-bold text-ink">
+                Condition {report.mat_condition}
+                {report.mat_condition === 'D' && ' · unusable'}
+              </span>
+            )}
           </div>
           <h3 className="text-lg font-bold">{categories[report.category]}</h3>
           <p className="text-sm text-muted">
@@ -1281,52 +1347,51 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const [siteId, setSiteId] = useState(choices[0].id)
   const site = choices.find((s) => s.id === siteId) ?? choices[0]
   return (
-    // Controls and the queue heading share row 1, so the form card and the
-    // first report card start on the same line in row 2.
-    <div className="pc-enter grid gap-4 @3xl:grid-cols-12 @3xl:items-start">
-      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-1 @3xl:self-end">
-        <div className="flex flex-wrap items-end gap-3">
-          <label className={`${labelText} min-w-0 flex-1`}>
-            Report location
-            <select
-              aria-label="Report location"
-              className={field}
-              value={site.id}
-              onChange={(e) => setSiteId(e.target.value)}
-            >
-              {choices.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="button" className={control} onClick={refresh}>
-            <Icon name="refresh" className="size-4" />
-            Refresh reports
-          </button>
-        </div>
+    // The hazard report is the main task: controls, then the form across the
+    // full width, then the review queue with cards laid out left to right.
+    <div className="pc-enter space-y-6">
+      <div className="flex flex-wrap items-end gap-3">
+        <label className={`${labelText} min-w-0 flex-1 @3xl:max-w-md`}>
+          Report location
+          <select
+            aria-label="Report location"
+            className={field}
+            value={site.id}
+            onChange={(e) => setSiteId(e.target.value)}
+          >
+            {choices.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button type="button" className={control} onClick={refresh}>
+          <Icon name="refresh" className="size-4" />
+          Refresh reports
+        </button>
       </div>
-      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-2">
+      {/* Its own container, so the form's controls size to the form. */}
+      <div className="@container">
         <ReportForm key={site.id} site={site} />
       </div>
-      <div className="mt-4 @3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-1 @3xl:mt-0 @3xl:self-center">
+      <section className="space-y-3" aria-label="Submitted reports">
         <SectionHead kicker="Review queue" title="Reports and review" />
-      </div>
-      <div className="@3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-2">
         {result.data ? (
-          <section className="space-y-3" aria-label="Submitted reports">
-            {result.data
-              .filter((r) => sites.some((s) => s.id === r.site_id))
-              .map((r) => (
-                <ReportCard key={r.id} report={r} />
-              ))}
-            {!result.data.length && <Empty>No reports returned.</Empty>}
-          </section>
+          result.data.length ? (
+            <Masonry
+              label="Submitted reports"
+              items={result.data
+                .filter((r) => sites.some((s) => s.id === r.site_id))
+                .map((r) => ({ key: r.id, node: <ReportCard report={r} /> }))}
+            />
+          ) : (
+            <Empty>No reports returned.</Empty>
+          )
         ) : (
           <LoadState error={result.error} />
         )}
-      </div>
+      </section>
     </div>
   )
 }

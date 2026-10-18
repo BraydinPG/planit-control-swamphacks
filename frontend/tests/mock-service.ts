@@ -153,6 +153,7 @@ export function createMockService() {
           location_accuracy_m: form.get('location_accuracy_m')
             ? Number(form.get('location_accuracy_m'))
             : null,
+          mat_condition: form.get('mat_condition') || null,
           site_distance_miles: null,
           enrichment: null,
           notice_id: present ? `mock-notice-${service.reports.length}` : null,

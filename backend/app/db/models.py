@@ -208,6 +208,7 @@ class CrewReport(Base):
     confirmed_category: Mapped[str | None] = mapped_column(String, nullable=True)
     confirmed_severity: Mapped[str | None] = mapped_column(String, nullable=True)
     location_source: Mapped[str | None] = mapped_column(String, nullable=True)
+    mat_condition: Mapped[str | None] = mapped_column(String, nullable=True)  # T034B
     location_accuracy_m: Mapped[float | None] = mapped_column(Float, nullable=True)
     site_distance_miles: Mapped[float | None] = mapped_column(Float, nullable=True)
     enrichment: Mapped[dict | None] = mapped_column(JSON, nullable=True)

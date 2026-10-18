@@ -310,6 +310,17 @@ export class DemoClient implements Client {
       (input.note?.length ?? 0) > 1000
     )
       throw new ApiError(422, 'Check report fields')
+    // Same rule as the backend (T034B): a grade only for access mats, and
+    // A means absent while B, C and D mean present.
+    const mat = input.category === 'access_mat_deterioration'
+    const grade = input.mat_condition ?? null
+    if (
+      mat !== (grade !== null) ||
+      (grade !== null &&
+        (!['A', 'B', 'C', 'D'].includes(grade) ||
+          input.hazard_present !== (grade !== 'A')))
+    )
+      throw new ApiError(422, 'Access mat reports need a matching A-D grade')
     if (
       photo &&
       (!['image/jpeg', 'image/png', 'image/webp'].includes(photo.type) ||
@@ -336,6 +347,7 @@ export class DemoClient implements Client {
       confirmed_severity: null,
       location_source: input.location_source ?? 'site',
       location_accuracy_m: input.location_accuracy_m ?? null,
+      mat_condition: grade,
       site_distance_miles: null,
       enrichment: null,
       notice_id: noticeId,
