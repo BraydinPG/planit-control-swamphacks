@@ -10,6 +10,8 @@ separate application, transport or stored state.
 - From **1024 px**, use the existing desktop sidebar pattern and a flexible main
   area capped at **1440 px**. Header navigation reflects the crew workspace; the
   supervisor-only Team destination remains absent.
+  The transparent sidebar wordmark is 168px wide (previously 144px); phone-header
+  artwork retains its original size.
 - From **1280 px**, Home places the active alert beside hazards/supervisor
   instructions, with direct Report a hazard and View briefing links above. My
   Worksite places the score/factors beside weather conditions. Reports, alerts,

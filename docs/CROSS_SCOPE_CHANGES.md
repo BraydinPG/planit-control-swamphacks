@@ -23,6 +23,14 @@ warning remains. Backend and real-service acceptance were not rerun or claimed.
 No other worktree/server, backend, auth, schema, scoring/ML, environment or task-state
 changes. T063-T068 real-service acceptance remains pending its own checks.
 
+User follow-up explicitly authorizes merging PR73 and slightly enlarging the top
+sidebar logo. Only its display width changes, 144px to 168px, for both workspaces;
+phone headers and artwork stay unchanged. Existing browser size checks distinguish
+sidebar from header. Reverified 178 frontend tests, lint, TypeScript/build and 44
+focused browser destinations at 1440/768/390/320, including mocked sign-in: no
+overflow, exceptions or actual backend requests. Earlier workflow-suite results above
+remain the layout acceptance; the full lifecycle suite was not repeated for this size change.
+
 ## Demo sites slide forward in time (Braydin, touching Rudra's refresh loop) - 2026-10-18
 
 Explicit user request: keep the demo sites looking freshly seeded on the server, with no

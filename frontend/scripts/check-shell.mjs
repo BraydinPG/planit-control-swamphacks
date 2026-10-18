@@ -149,7 +149,7 @@ async function checkBranding() {
     'Official source, accessible name, favicon and undistorted aspect ratio',
   )
   assert(
-    await evaluate("Array.from(document.querySelectorAll('[data-brand]')).filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);const width=e.getBoundingClientRect().width;return s.backgroundColor==='rgba(0, 0, 0, 0)'&&width<=(e.dataset.brand==='full'?240:e.dataset.brand==='compact'?144:32)})"),
+    await evaluate("Array.from(document.querySelectorAll('[data-brand]')).filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);const width=e.getBoundingClientRect().width;return s.backgroundColor==='rgba(0, 0, 0, 0)'&&width<=(e.dataset.brand==='full'?240:e.dataset.brand==='compact'?(e.closest('aside')?168:144):32)})"),
     'Logo stays transparent and compact at every viewport',
   )
   assert(

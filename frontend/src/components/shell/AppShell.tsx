@@ -178,7 +178,7 @@ export function AppShell({
           aria-label="FORESITE overview"
           className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
         >
-          <Brand variant="compact" className="w-36" decorative />
+          <Brand variant="compact" className="w-42" decorative />
         </a>
         <div className="space-y-2">
           <p className="kicker px-3">
