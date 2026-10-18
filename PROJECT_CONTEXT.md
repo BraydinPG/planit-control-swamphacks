@@ -2,6 +2,9 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Centered sign-in card - 2026-10-17
+- Explicit follow-up request on `feature/center-sign-in`: center the access card's brand, heading, text and action buttons, remove "Sign in to see this screen.", and retain the soft shadow with an explicit border-free container. Presentation-only changes in `auth/RequireRole.tsx`; authentication behavior is preserved.
+
 ## Upstream deployment merge - 2026-10-18 01:25 UTC
 - Integrated `origin/main` through `98387c8` into `feature/rudra-species-context`, preserving the automatic GitHub Actions deploy workflow and model-artifact safeguards in `deploy/`.
 - Verification on the merged tree: **932 backend tests** and Ruff checks pass; **171 frontend tests**, TypeScript build checks, and the frontend production build pass. No deployment was triggered from this feature branch.
