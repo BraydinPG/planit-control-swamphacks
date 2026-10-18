@@ -134,6 +134,10 @@ async function checkBranding() {
     await evaluate("(()=>{const images=Array.from(document.querySelectorAll('[data-brand] img')).filter(e=>e.getClientRects().length);return images.length>0&&images.every(e=>{const r=e.getBoundingClientRect();return e.src.includes('/foresite-')&&Math.abs(r.width/r.height-e.naturalWidth/e.naturalHeight)<.02&&(e.alt.includes('FORESITE')||e.closest('a[aria-label]'))})&&!document.querySelector('[href*=\"planit-mark\"]')})()"),
     'Official source, accessible name, favicon and undistorted aspect ratio',
   )
+  assert(
+    await evaluate("Array.from(document.querySelectorAll('[data-brand]')).filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);const width=e.getBoundingClientRect().width;return s.backgroundColor==='rgba(0, 0, 0, 0)'&&width<=(e.dataset.brand==='full'?240:e.dataset.brand==='compact'?144:32)})"),
+    'Logo stays transparent and compact at every viewport',
+  )
 }
 async function offModeServer(setting) {
   const listener = createServer()
@@ -875,8 +879,8 @@ try {
       features: [{ name: 'prefers-color-scheme', value: 'dark' }],
     })
     assert(
-      await evaluate("getComputedStyle(document.querySelector('[data-brand]')).backgroundColor==='rgb(255, 255, 255)'"),
-      'Original navy wordmark keeps its contrast plate in dark mode',
+      await evaluate("getComputedStyle(document.querySelector('[data-brand]')).backgroundColor==='rgba(0, 0, 0, 0)'&&document.querySelector('[data-brand]').getBoundingClientRect().width<=240"),
+      'Sign-in logo stays transparent and smaller in dark mode',
     )
     await screenshot('logo-sign-in-dark')
     await send('Emulation.setEmulatedMedia', {

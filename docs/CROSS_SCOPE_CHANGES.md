@@ -1,3 +1,31 @@
+## Smaller transparent logo (Cache for Rudra and Braydin) - 2026-10-17 21:33 EDT
+
+User explicitly requested background removal, smaller logos and pulling latest main.
+Clean functional checkout fast-forwarded to `6e7850e` (PR53 merged), then branched as
+`feature/cache-compact-transparent-branding`. No teammate worktree/process changed.
+
+- `frontend/src/components/shell/Brand.tsx`: remove white CSS backing and padding;
+  existing transparent PNGs and their approved source hashes stay unchanged. Full
+  logo width 320 -> 240 px; compact default 160 -> 128 px.
+- `frontend/src/components/shell/AppShell.tsx`: sidebar 176 -> 144 px; header
+  144/160 -> 112/128 px. Navigation links retain their minimum touch-target sizes.
+- `frontend/scripts/check-shell.mjs`: existing browser assertions verify transparent
+  wrappers and compact widths across viewports, including mocked dark sign-in.
+- `docs/OFFICIAL_LOGO.md`, `docs/branding/foresite-{desktop,mobile,sign-in-dark,
+  sign-in-light}.png` and `PROJECT_CONTEXT.md`: current sizing, screenshots and handoff.
+
+Frontend lint, TypeScript, 171 tests and default/live plus demo builds pass. Installed
+Edge development and built-demo smoke pass eleven destinations at 1440/768/390/320
+with no browser exceptions or real API requests; temporary built preview closed.
+Backend tests not rerun for presentation-only edits.
+Existing live-build bundle-size warning remains. Dark-surface navy artwork is unchanged;
+the requested transparent presentation intentionally removes the former white plate.
+Demo remains http://localhost:5177/ on the existing owned Vite process. No auth behavior,
+backend, schemas, scoring, ML, Gemini, credentials, deployment files or task states change.
+Rudra reviews display sizing; Braydin should know app-owned sign-in inherits shared
+branding, while external Universal Login remains outside this change. The review branch
+above contains this focused follow-up; no automatic merge/deployment.
+
 ## Official FORESITE logo (Cache for Rudra and Braydin) - 2026-10-17
 
 Explicit user authorization permits narrow visual identity integration, including
