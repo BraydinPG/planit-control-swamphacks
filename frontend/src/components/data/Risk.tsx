@@ -128,7 +128,7 @@ export const levelHex: Record<RiskLevel | 'none', string> = {
   critical: '#c0262d',
   high: '#c93400',
   moderate: '#e0b000',
-  low: '#8e8e93',
+  low: '#30d158', // green: a satisfactory risk on the map (--pc-ok)
   none: '#636366',
 }
 
