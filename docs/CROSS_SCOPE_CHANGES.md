@@ -1,3 +1,16 @@
+## Alert, report and header maintenance - 2026-10-17
+
+Explicit user request authorizes focused frontend integration on
+`feature/alert-report-header-fixes`. Changes cover alert timer presentation,
+pre-submission photo removal, report status copy and the live header. Header logo
+changes were reverted at the user's follow-up request; original logo markup and
+behavior are preserved. Acknowledgement button changes were also reverted at the
+user's request; original acknowledgement behavior is preserved.
+`application/LiveApplication.tsx` calls the existing logout function; no Auth0 internals,
+API contracts, backend alert decisions or stored photos are changed. Expired live
+windows stay active until updated server state arrives. Demo controls and simulated
+labels are preserved. Browser acceptance uses the existing isolated mock harness.
+
 ## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
 
 Explicit task-specific user authorization permits focused ingestion/refresh edits.

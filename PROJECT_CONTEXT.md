@@ -2,6 +2,14 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Alert, report and header maintenance - 2026-10-17
+- Explicit user request on `feature/alert-report-header-fixes`: expired live watch windows show pending authoritative status instead of a stuck 00:00 and refresh every 15 seconds; only the server can clear an alert. Alerts also have a manual refresh button. User follow-up reverted the acknowledgement button changes to their original behavior.
+- Report photo selections can be removed before submission, clearing the preview and file input so the same image can be selected again. Saved report photos are unchanged. Live submission copy is "Report successful" / "Report failed"; supervisor review remains pending.
+- User follow-up reverted the header logo changes to their previous markup and behavior. The live authenticated badge is replaced with Sign out using the existing Auth0 logout; the live connection-information container is hidden. Demo labeling and controls remain visible.
+- Changes are frontend-only: no API/schema, deterministic alert rule, DB, photo-storage or Auth0-internal changes. Automated verification uses fixtures and mocked authentication/API responses; no deployed-service acceptance is claimed.
+- Verification before the logo and acknowledgement reverts: 170 frontend tests, production build, lint and whitespace checks passed. Isolated Edge browser acceptance passed at 1440/390/320, including live-clock ticking, expired-window refresh and server-only clearance, image removal/reselection, success/failure copy and Sign out. No browser exceptions or actual backend requests. Temporary test server used port 5194; existing servers and environment files were preserved.
+- Final verification after both requested reverts: all 169 remaining frontend tests, production build, lint and whitespace checks pass. Browser assertions for the reverted behaviors were removed; the full browser suite was not rerun after those reverts.
+
 ## Feed refresh performance review - 2026-10-17 23:12 UTC
 - Explicit Cache cross-owner authorization; branch `feature/cache-feed-refresh-performance`, baseline main `11c62b6`. Implementation `ffff712`; reviewed main `cdba4c3` incorporated as `e0120fb` (only incoming UI hover styling, no backend changes). PR47/48/49 are maintainer-merged. No frontend, ML, scoring weights/rules, lightning detector/timer, schema, Auth0 or database migration changes in this PR.
 - Network-only bounded workers (6), pooled HTTP, host gates (NWS4/USGS2), time budgets/retries, coordinate/TTL metadata cache, shared NWS alert/zone resources and gauge batches. Immutable site snapshots precede serial ORM writes/rules/scoring. Missing forecasts/source subresults are explicit unavailable; no missing-to-zero or outage clearance.

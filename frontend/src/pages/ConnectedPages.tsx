@@ -685,6 +685,7 @@ function AlertsPage({ id }: { id: string | null }) {
           All alerts
         </a>
       )}
+      <button type="button" className={control} onClick={refresh}>Refresh alerts</button>
       <div className="grid gap-5 @3xl:grid-cols-2 @3xl:items-start">
         {rows.length ? (
           rows.map((a) => <AlertCard key={a.id} alert={a} detail />)
@@ -748,6 +749,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('')
   const inFlight = useRef(false)
+  const photoInput = useRef<HTMLInputElement>(null)
   // T034A: device location with the crew member's permission, else the site's
   // coordinates (approximate); editing the coordinates makes it a manual pin.
   const location = useReportLocation(site, client.mode)
@@ -782,6 +784,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
     previewUrl.current = file ? URL.createObjectURL(file) : null
     setPreview(previewUrl.current)
     setPhoto(file)
+    if (!file && photoInput.current) photoInput.current.value = ''
   }
   async function submit(event: FormEvent) {
     event.preventDefault()
@@ -812,11 +815,11 @@ export function ReportForm({ site }: { site: SiteSummary }) {
       setMessage(
         client.mode === 'demo'
           ? 'Simulated report stored in this browser only. Review is pending; no score changed.'
-          : 'Report accepted by backend; await human review.',
+          : 'Report successful. Awaiting supervisor review.',
       )
       refresh()
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Submission unavailable')
+      setMessage(`Report failed. ${e instanceof Error ? e.message : 'Please try again.'}`)
     } finally {
       inFlight.current = false
       setBusy(false)
@@ -914,6 +917,8 @@ export function ReportForm({ site }: { site: SiteSummary }) {
           </span>
           <input
             type="file"
+            ref={photoInput}
+            disabled={busy}
             required={client.mode === 'live' && presence === 'present'}
             accept="image/jpeg,image/png,image/webp"
             className={`${field} py-2.5`}
@@ -933,6 +938,14 @@ export function ReportForm({ site }: { site: SiteSummary }) {
               {photo.name} selected · {Math.ceil(photo.size / 1024)} KB. Allowed
               JPEG/PNG/WebP, maximum 5 MB.
             </p>
+            <button
+              type="button"
+              className={control}
+              disabled={busy}
+              onClick={() => choosePhoto(null)}
+            >
+              Remove image
+            </button>
           </div>
         )}
       </div>
