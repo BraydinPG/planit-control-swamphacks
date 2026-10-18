@@ -1,4 +1,4 @@
-"""Team onboarding with join codes, and the supervisor's team roster."""
+"""Organizations, their owner and supervisor, teams, join codes and claimed sites."""
 
 from datetime import datetime
 from typing import Literal
@@ -28,7 +28,8 @@ class JoinCode(Schema):
 
 
 class SupervisorInvite(Schema):
-    """`XXXX-XXXX`. Lets one new account become a supervisor and start its own organization."""
+    """`XXXX-XXXX`. The owner's code: whoever redeems it becomes the organization's
+    supervisor. One active code per organization; it works once and expires."""
 
     code: str = Field(pattern=r"^[A-Z2-9]{4}-[A-Z2-9]{4}$")
     created_at: datetime
@@ -36,10 +37,25 @@ class SupervisorInvite(Schema):
 
 
 class SupervisorSignup(Schema):
-    """Become a supervisor with an invite key and name the new organization."""
+    """Body for `POST /api/onboarding/supervisor`: redeem the owner's supervisor code."""
 
     code: str = Field(min_length=8, max_length=20)
+
+
+class OrganizationCreate(Schema):
+    """Body for `POST /api/organizations`. The names are kept for records, never shown."""
+
+    first_name: str = Field(min_length=1, max_length=80)
+    last_name: str = Field(min_length=1, max_length=80)
     organization_name: str = Field(min_length=1, max_length=80)
+
+
+class ClaimedSite(Schema):
+    """A site the organization claimed, and the team on it, if any."""
+
+    site_id: str
+    site_name: str
+    team_id: str | None = None
 
 
 class TeamRoster(Schema):
@@ -52,22 +68,33 @@ class TeamRoster(Schema):
 
 
 class OrganizationTeams(Schema):
-    """`GET /api/team`: the supervisor's organization, its supervisors, and every team."""
+    """`GET /api/team`: the organization, its supervisor, every team and its claimed sites.
+
+    The supervisor and the owner can read it. `is_owner` says the caller owns it, and
+    `is_supervisor` that the caller is its supervisor.
+    """
 
     organization_id: str
     organization_name: str
     supervisors: list[TeamMember]
     teams: list[TeamRoster]
+    claimed_sites: list[ClaimedSite] = []
+    unavailable_site_ids: list[str] = Field(
+        default=[], description="Sites another organization claimed or has a team on."
+    )
+    is_owner: bool = False
+    is_supervisor: bool = False
 
 
 class Account(Schema):
     """`GET /api/me` and `POST /api/join`: where the signed-in account belongs.
 
-    `organization_id` is null until the account joins a team (crew) or is linked by an
-    administrator (supervisors).
+    `organization_id` is null until the account creates an organization (its owner),
+    redeems a supervisor code, or joins a team with a join code (crew).
     """
 
     role: Literal["crew", "supervisor"]
+    is_owner: bool = False
     organization_id: str | None = None
     organization_name: str | None = None
     team_id: str | None = None
@@ -85,7 +112,9 @@ class TeamCreate(Schema):
     """Body for `POST /api/teams`: a supervisor adds a team to their organization."""
 
     name: str = Field(min_length=1, max_length=80)
-    site_id: str | None = Field(default=None, description="A site with no team yet.")
+    site_id: str | None = Field(
+        default=None, description="A site the organization claimed that has no team yet."
+    )
 
 
 class TeamUpdate(Schema):

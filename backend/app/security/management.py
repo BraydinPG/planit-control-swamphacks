@@ -1,13 +1,15 @@
 """Give a user an Auth0 role through the Management API (supervisor onboarding).
 
-Only two calls, with a machine-to-machine app limited to `read:roles` and
-`create:role_members`: look up a role by name, and add a user to it. Auth0 stays the
+A few calls, with a machine-to-machine app limited to `read:roles`, `create:role_members`
+and `delete:role_members`: look up a role by name, add a user to it (a supervisor code is
+redeemed), and take it away (the owner removes the supervisor). Auth0 stays the
 authority for roles; the user's next sign-in carries the new role and its permissions.
 """
 
 import time
 from functools import lru_cache
 from threading import Lock
+from urllib.parse import quote
 
 import httpx
 
@@ -49,6 +51,13 @@ class Auth0Management:
         """Add the user to the named role. Assigning a role they already have is a no-op."""
         role_id = self._role_id(role_name)
         self._call("POST", f"/api/v2/roles/{role_id}/users", json={"users": [user_id]})
+
+    def remove_role(self, user_id: str, role_name: str) -> None:
+        """Take the named role away from the user (needs `delete:role_members`)."""
+        role_id = self._role_id(role_name)
+        self._call(
+            "DELETE", f"/api/v2/users/{quote(user_id, safe='')}/roles", json={"roles": [role_id]}
+        )
 
     def _role_id(self, name: str) -> str:
         if name not in self._roles:

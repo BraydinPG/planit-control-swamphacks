@@ -33,6 +33,11 @@ export interface AuthContextValue {
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
 
+/** The sign-in session, or null outside <AuthProvider> (the offline demo, Try a demo). */
+export function useOptionalAuth(): AuthContextValue | null {
+  return useContext(AuthContext)
+}
+
 export function useAuth(): AuthContextValue {
   const value = useContext(AuthContext)
   if (value === null) {

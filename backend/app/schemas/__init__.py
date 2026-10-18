@@ -83,8 +83,10 @@ from app.schemas.species import (
 )
 from app.schemas.teams import (
     Account,
+    ClaimedSite,
     JoinCode,
     JoinRequest,
+    OrganizationCreate,
     OrganizationTeams,
     OrganizationUpdate,
     SupervisorInvite,
@@ -104,6 +106,8 @@ __all__ = [
     "JoinRequest",
     "OrganizationTeams",
     "OrganizationUpdate",
+    "OrganizationCreate",
+    "ClaimedSite",
     "TeamCreate",
     "TeamUpdate",
     "TeamMember",

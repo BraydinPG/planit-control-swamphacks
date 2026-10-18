@@ -372,7 +372,7 @@ try {
         fullWidthStack:instructions.top>=alerts.bottom && Math.abs(instructions.left-alerts.left)<2 && Math.abs(instructions.width-alerts.width)<2,
         halves:Math.abs(instructions.top-alerts.top)<2 && Math.abs(instructions.width-alerts.width)<2 && instructions.left>=alerts.right && alerts.width>main.width*0.45,
         logoHref:document.querySelector('header a[aria-label="FORESITE home page"]')?.getAttribute('href'),
-        collapsedHeights:(()=>{const rows=[...document.querySelectorAll('[data-hazard-row]')],startedClosed=rows.every(r=>r.dataset.openedByCheck==='1');rows.forEach(r=>{r.open=false});
+        collapsedHeights:(()=>{const rows=[...document.querySelectorAll('[data-hazard-row]')],startedClosed=rows.every(r=>r.dataset.openedByCheck==='1'||!r.open);rows.forEach(r=>{r.open=false});
           const a=document.querySelector('[data-crew-alerts]').getBoundingClientRect().height,h=document.querySelector('[data-crew-alerts]').nextElementSibling.getBoundingClientRect().height;
           return {rows:rows.length,startedClosed,error:Math.abs(a-h)}})(),
         supervisorTeamLink:!!document.querySelector('a[href="#/crew/team"]')};

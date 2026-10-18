@@ -21,6 +21,7 @@ import type {
   ReportReview,
   TeamCreate,
   TeamUpdate,
+  OrganizationCreate,
 } from '../types/api'
 import { ApiError, type Client, type Persona } from './contracts'
 
@@ -363,11 +364,32 @@ export class HttpClient implements Client {
       body: JSON.stringify({ code }),
     }).then(validateAccount)
   }
-  becomeSupervisor(code: string, organizationName: string) {
+  becomeSupervisor(code: string) {
     return this.request<unknown>('/api/onboarding/supervisor', {
       method: 'POST',
-      body: JSON.stringify({ code, organization_name: organizationName }),
+      body: JSON.stringify({ code }),
     }).then(validateAccount)
+  }
+  createOrganization(input: OrganizationCreate) {
+    return this.request<unknown>('/api/organizations', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }).then(validateAccount)
+  }
+  async removeSupervisor() {
+    await this.request('/api/organization/supervisor', { method: 'DELETE' })
+  }
+  async claimSite(siteId: string) {
+    await this.request(
+      `/api/organization/sites/${encodeURIComponent(siteId)}`,
+      { method: 'POST' },
+    )
+  }
+  async releaseSite(siteId: string) {
+    await this.request(
+      `/api/organization/sites/${encodeURIComponent(siteId)}`,
+      { method: 'DELETE' },
+    )
   }
   supervisorInvites() {
     return this.request<unknown>('/api/supervisor-invites').then((rows) => {

@@ -462,7 +462,7 @@ def _prompt(inputs: BriefingInputs) -> str:
         "describes (ids starting with factor:) must cite that factor.\n"
         "- Never say or imply that work is safe, that the site is safe, or that an alert "
         "is clear or over. Alerts are cleared only by the system.\n"
-        "- Lead with the workday forecast (evidence labels starting with \"Forecast\"): what "
+        '- Lead with the workday forecast (evidence labels starting with "Forecast"): what '
         "is expected, when it peaks, and what the crew should plan around.\n"
         "- Active alerts, crew reports and score factors describe conditions now. Mention "
         "them only as conditions that may carry into the workday and must be checked again "

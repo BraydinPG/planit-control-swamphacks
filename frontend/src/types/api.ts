@@ -95,9 +95,23 @@ export interface SupervisorInvite {
   expires_at: string
 }
 
+/** Body for POST /api/onboarding/supervisor: redeem the owner's supervisor code. */
 export interface SupervisorSignup {
   code: string
+}
+
+/** Body for POST /api/organizations. The names are kept for records, never shown. */
+export interface OrganizationCreate {
+  first_name: string
+  last_name: string
   organization_name: string
+}
+
+/** A site the organization claimed, and the team on it, if any. */
+export interface ClaimedSite {
+  site_id: string
+  site_name: string
+  team_id?: string | null
 }
 
 export interface TeamRoster {
@@ -116,11 +130,18 @@ export interface OrganizationTeams {
   organization_name: string
   supervisors: TeamMember[]
   teams: TeamRoster[]
+  claimed_sites?: ClaimedSite[]
+  /** Sites another organization claimed or has a team on. */
+  unavailable_site_ids?: string[]
+  is_owner?: boolean
+  is_supervisor?: boolean
 }
 
-/** GET /api/me and POST /api/join. Organization fields are null until the account joins. */
+/** GET /api/me and POST /api/join. Organization fields are null until the account creates,
+ * supervises or joins an organization. `is_owner`: the account created it. */
 export interface Account {
   role: 'crew' | 'supervisor'
+  is_owner?: boolean
   organization_id: string | null
   organization_name: string | null
   team_id: string | null

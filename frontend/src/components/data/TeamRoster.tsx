@@ -9,7 +9,7 @@ import type {
 } from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { ApiError } from '../../api/contracts'
-import { useAuth } from '../../auth'
+import { useOptionalAuth } from '../../auth'
 import { formatTimestamp } from '../../presentation/display'
 import { Icon } from '../shell/Icon'
 import {
@@ -30,111 +30,224 @@ const day = (iso: string) =>
     day: 'numeric',
   })
 
-/** Supervisor: who is on each team, and the join codes that add crew. */
+/** The organization: its owner's supervision controls, the supervisor's sites and
+ * teams, and every team's crew. The owner and the supervisor both open it. */
 export function TeamPage() {
-  const { client } = useApplication()
+  const { client, persona } = useApplication()
   const result = useResource(
     'team',
     useCallback(async () => {
-      // A supervisor account without an organization starts one with a key.
+      // An account with no organization creates one or redeems a code first.
       if (!(await client.me()).organization_id)
         return { linked: false as const }
-      const [org, sites] = await Promise.all([client.team(), client.sites()])
+      const [org, sites] = await Promise.all([
+        client.team(),
+        persona === 'supervisor' ? client.sites() : Promise.resolve([]),
+      ])
       return { linked: true as const, org, sites }
-    }, [client]),
+    }, [client, persona]),
   )
   if (!result.data) return <LoadState error={result.error} />
   if (!result.data.linked)
-    return (
-      <div className="pc-enter mx-auto max-w-md">
-        <StartOrganization />
-      </div>
-    )
+    return <Welcome supervisorAccount={persona === 'supervisor'} />
   const { org, sites } = result.data
-  // A site has at most one team, so new or moved teams pick from sites without one.
-  const taken = new Set(org.teams.map((t) => t.site_id))
-  const free = sites.filter((s) => !s.assigned_team && !taken.has(s.id))
+  // Servers from before owners existed send no flags: a supervisor account supervises.
+  const supervising = org.is_supervisor ?? persona === 'supervisor'
+  // Teams go only on sites the organization claimed that have no team yet.
+  const open = new Set(
+    (org.claimed_sites ?? []).filter((c) => !c.team_id).map((c) => c.site_id),
+  )
+  const free = sites.filter((s) => open.has(s.id))
   return (
     <div className="pc-enter space-y-5">
       <OrganizationHeader key={org.organization_name} org={org} />
-      <AddTeam free={free} />
+      {org.is_owner && <Supervision org={org} />}
+      {supervising && <ClaimedSites org={org} sites={sites} />}
+      {supervising && <AddTeam free={free} />}
       {org.teams.map((team) => (
-        <TeamCard key={team.id} team={team} free={free} />
+        <TeamCard
+          key={team.id}
+          team={team}
+          free={free}
+          supervising={supervising}
+        />
       ))}
       {!org.teams.length && (
         <p className="rounded-2xl border border-dashed border-line-strong p-4 text-sm text-ink-2">
-          No teams in this organization yet. Add one above.
+          No teams in this organization yet.{' '}
+          {supervising
+            ? 'Claim a site, then add a team above.'
+            : 'The supervisor adds teams.'}
         </p>
       )}
-      <SupervisorKeys />
     </div>
   )
 }
 
-/** One-use keys that let a new account become a supervisor of its own organization. */
-function SupervisorKeys() {
-  const { client } = useApplication()
-  const keys = useResource(
+/** Owner only: who supervises, the supervisor code, and handing supervision over. */
+function Supervision({ org }: { org: OrganizationTeams }) {
+  const { client, principalId } = useApplication()
+  const auth = useOptionalAuth()
+  const codes = useResource(
     'supervisor-invites',
     useCallback(() => client.supervisorInvites(), [client]),
   )
   const change = useTeamChange()
+  const [confirming, setConfirming] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const supervisor = org.supervisors[0]
+  const self = !!supervisor && supervisor.user_id === principalId
+  const active = codes.data?.[0]
+  // The new role reaches this browser only with a fresh sign-in.
+  const signInAgain = async () => {
+    if (auth) await auth.login({ returnTo: window.location.pathname })
+  }
   return (
-    <section className={`${card} space-y-3 p-5`} aria-labelledby="sup-keys">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="kicker" id="sup-keys">
-            Invite a supervisor
+    <section
+      className={`${card} space-y-4 p-5`}
+      aria-labelledby="supervision-title"
+    >
+      <div>
+        <p className="kicker mb-1">Owner</p>
+        <h2 id="supervision-title" className="text-xl font-bold tracking-tight">
+          Supervision
+        </h2>
+        <p className="mt-1 text-sm text-ink-2">
+          Your organization has one supervisor. They claim sites, run teams,
+          make join codes, and confirm hazards. You choose who it is.
+        </p>
+      </div>
+      {supervisor ? (
+        <div className="space-y-3 rounded-xl bg-surface-2 p-3">
+          <p className="font-semibold">
+            {self ? 'You supervise this organization.' : `Supervisor: ${display(supervisor)}`}
           </p>
+          {!confirming ? (
+            <button
+              type="button"
+              className={control}
+              onClick={() => setConfirming(true)}
+            >
+              {self ? 'Step down as supervisor' : 'Remove supervisor'}
+            </button>
+          ) : (
+            <div
+              role="group"
+              aria-label="Confirm removing the supervisor"
+              className="flex flex-wrap items-center gap-3"
+            >
+              <p className="min-w-0 flex-1 text-sm">
+                {self
+                  ? 'Step down? You stay the owner, and you can make a new supervisor code for someone else or for yourself.'
+                  : `Remove ${display(supervisor)} as supervisor? They lose the supervisor role. Teams, crew and records stay.`}
+              </p>
+              <button
+                type="button"
+                className={primary}
+                disabled={change.busy}
+                onClick={() =>
+                  void change.run(async () => {
+                    await client.removeSupervisor()
+                    if (self) await signInAgain()
+                  })
+                }
+              >
+                {change.busy ? 'Removing…' : self ? 'Step down' : 'Remove'}
+              </button>
+              <button
+                type="button"
+                className={control}
+                disabled={change.busy}
+                onClick={() => setConfirming(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-sm font-semibold">No supervisor yet.</p>
+          <button
+            type="button"
+            className={primary}
+            disabled={change.busy}
+            onClick={() =>
+              void change.run(async () => {
+                const code = active ?? (await client.createSupervisorInvite())
+                await client.becomeSupervisor(code.code)
+                await signInAgain()
+              })
+            }
+          >
+            <Icon name="team" className="size-4" />
+            {change.busy ? 'Setting up…' : 'Make me the supervisor'}
+          </button>
           <p className="text-sm text-muted">
-            A key lets one new account start its own organization as a
-            supervisor. Each key works once and expires after 7 days.
+            Or give a supervisor code to the person who will supervise. It works
+            once and expires after 7 days.
           </p>
         </div>
+      )}
+      <div className="space-y-2 border-t border-line pt-4">
+        <p className="kicker">Supervisor code</p>
+        {active ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-surface-2 px-3 py-2">
+            <div>
+              <p className="font-mono text-xl font-bold tracking-[0.1em]">
+                {active.code}
+              </p>
+              <p className="text-sm text-muted">
+                Expires {formatTimestamp(active.expires_at)}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={control}
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(active.code)
+                    setCopied(true)
+                  } catch {
+                    setCopied(false)
+                  }
+                }}
+              >
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+              <button
+                type="button"
+                className={control}
+                disabled={change.busy}
+                onClick={() =>
+                  void change.run(() => client.revokeSupervisorInvite(active.code))
+                }
+                aria-label={`Revoke supervisor code ${active.code}`}
+              >
+                Revoke
+              </button>
+            </div>
+          </div>
+        ) : codes.error ? (
+          <LoadState error={codes.error} />
+        ) : (
+          <p className="text-sm text-ink-2">No active supervisor code.</p>
+        )}
         <button
           type="button"
           className={control}
           disabled={change.busy}
           onClick={() => void change.run(() => client.createSupervisorInvite())}
         >
-          New supervisor key
+          {active ? 'Replace code' : 'Create supervisor code'}
         </button>
+        {supervisor && (
+          <p className="text-sm text-muted">
+            A code can be used only while the organization has no supervisor.
+          </p>
+        )}
       </div>
-      {keys.data?.length ? (
-        <ul
-          className="divide-y divide-line"
-          aria-label="Active supervisor keys"
-        >
-          {keys.data.map((k) => (
-            <li
-              key={k.code}
-              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
-            >
-              <span className="font-mono text-lg font-bold tracking-[0.15em]">
-                {k.code}
-              </span>
-              <span className="text-sm text-muted">
-                Expires {day(k.expires_at)}
-              </span>
-              <button
-                type="button"
-                className={control}
-                disabled={change.busy}
-                onClick={() =>
-                  void change.run(() => client.revokeSupervisorInvite(k.code))
-                }
-                aria-label={`Revoke supervisor key ${k.code}`}
-              >
-                Revoke
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : keys.error ? (
-        <LoadState error={keys.error} />
-      ) : (
-        <p className="text-sm text-ink-2">No active supervisor keys.</p>
-      )}
       {change.message && (
         <p role="alert" className="text-sm font-semibold text-stop-text">
           {change.message}
@@ -144,13 +257,132 @@ function SupervisorKeys() {
   )
 }
 
-/** Redeem a supervisor key and name the new organization, then sign in again so the
- * new role reaches this browser. */
-function StartOrganization() {
+/** Supervisor: the sites the organization claimed, and claiming more. */
+function ClaimedSites({
+  org,
+  sites,
+}: {
+  org: OrganizationTeams
+  sites: SiteSummary[]
+}) {
   const { client } = useApplication()
-  const auth = useAuth()
+  const change = useTeamChange()
+  const [search, setSearch] = useState('')
+  const [pick, setPick] = useState('')
+  const claimed = org.claimed_sites ?? []
+  const teamName = new Map(org.teams.map((t) => [t.id, t.name]))
+  const unavailable = new Set([
+    ...(org.unavailable_site_ids ?? []),
+    ...claimed.map((c) => c.site_id),
+  ])
+  const query = search.trim().toLowerCase()
+  const options = sites
+    .filter((s) => !unavailable.has(s.id))
+    .filter((s) => !query || `${s.name} ${s.id}`.toLowerCase().includes(query))
+    .slice(0, 50)
+  return (
+    <section className={`${card} space-y-4 p-5`} aria-labelledby="sites-title">
+      <div>
+        <p className="kicker mb-1">Supervisor</p>
+        <h2 id="sites-title" className="text-xl font-bold tracking-tight">
+          Claimed sites
+        </h2>
+        <p className="mt-1 text-sm text-ink-2">
+          Claim the sites your organization works at, then put a team on each.
+          A site belongs to one organization at a time.
+        </p>
+      </div>
+      {claimed.length ? (
+        <ul className="divide-y divide-line" aria-label="Claimed sites">
+          {claimed.map((c) => (
+            <li
+              key={c.site_id}
+              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
+            >
+              <div className="min-w-0">
+                <p className="font-semibold [overflow-wrap:anywhere]">
+                  {c.site_name}
+                </p>
+                <p className="text-sm text-muted">
+                  {c.team_id
+                    ? `Team: ${teamName.get(c.team_id) ?? c.team_id}`
+                    : 'No team yet'}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={control}
+                disabled={change.busy || !!c.team_id}
+                onClick={() => void change.run(() => client.releaseSite(c.site_id))}
+                aria-label={`Release ${c.site_name}`}
+              >
+                Release
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-ink-2">No sites claimed yet.</p>
+      )}
+      <form
+        aria-label="Claim a site"
+        className="grid gap-3 border-t border-line pt-4 @lg:grid-cols-[1fr_1fr_auto] @lg:items-end"
+        onSubmit={async (event: FormEvent) => {
+          event.preventDefault()
+          if (pick && (await change.run(() => client.claimSite(pick)))) setPick('')
+        }}
+      >
+        <label className={labelText}>
+          Find a site
+          <input
+            className={field}
+            value={search}
+            placeholder="Name or ID"
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setPick('')
+            }}
+          />
+        </label>
+        <label className={labelText}>
+          Site to claim
+          <select
+            className={field}
+            value={pick}
+            onChange={(e) => setPick(e.target.value)}
+          >
+            <option value="">Choose a site</option>
+            {options.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="submit"
+          className={primary}
+          disabled={change.busy || !pick}
+        >
+          <Icon name="pin" className="size-4" />
+          Claim site
+        </button>
+      </form>
+      {change.message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {change.message}
+        </p>
+      )}
+    </section>
+  )
+}
+
+/** Redeem the owner's supervisor code, then sign in again so the new role reaches this
+ * browser. */
+function RedeemSupervisorCode() {
+  const { client } = useApplication()
+  const auth = useOptionalAuth()
   const [code, setCode] = useState('')
-  const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   async function submit(event: FormEvent) {
@@ -159,8 +391,8 @@ function StartOrganization() {
     setBusy(true)
     setMessage('')
     try {
-      await client.becomeSupervisor(code, name.trim())
-      await auth.login({ returnTo: window.location.pathname })
+      await client.becomeSupervisor(code)
+      if (auth) await auth.login({ returnTo: window.location.pathname })
     } catch (e) {
       setMessage(
         e instanceof ApiError && e.detail
@@ -175,21 +407,21 @@ function StartOrganization() {
   return (
     <form
       onSubmit={submit}
-      aria-label="Start an organization"
+      aria-label="Become a supervisor"
       className={`${card} space-y-4 p-5`}
     >
       <div>
         <p className="kicker mb-1">Supervisor</p>
         <h2 className="text-2xl font-bold tracking-tight">
-          Start an organization
+          Enter a supervisor code
         </h2>
         <p className="mt-1 text-sm text-ink-2">
-          Use the supervisor key another supervisor gave you, then name your
-          organization. You'll add teams and sites next.
+          The organization's owner gives you this code to make you its
+          supervisor.
         </p>
       </div>
       <label className={labelText}>
-        Supervisor key
+        Supervisor code
         <input
           className={`${field} min-h-14 text-center font-mono text-2xl font-bold uppercase tracking-[0.2em]`}
           value={code}
@@ -202,12 +434,100 @@ function StartOrganization() {
           required
         />
       </label>
+      <button
+        type="submit"
+        className={primary + big}
+        disabled={busy || code.replace(/[^A-Za-z0-9]/g, '').length !== 8}
+      >
+        {busy ? 'Setting up…' : 'Become the supervisor'}
+      </button>
+      {message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {message}
+        </p>
+      )}
+    </form>
+  )
+}
+
+/** Anyone with no organization creates one and becomes its owner. */
+function CreateOrganization() {
+  const { client, refresh } = useApplication()
+  const [first, setFirst] = useState('')
+  const [last, setLast] = useState('')
+  const [name, setName] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+  async function submit(event: FormEvent) {
+    event.preventDefault()
+    if (busy) return
+    setBusy(true)
+    setMessage('')
+    try {
+      await client.createOrganization({
+        first_name: first.trim(),
+        last_name: last.trim(),
+        organization_name: name.trim(),
+      })
+      refresh()
+    } catch (e) {
+      setMessage(
+        e instanceof ApiError && e.detail
+          ? e.detail
+          : e instanceof Error
+            ? e.message
+            : 'Creating an organization is unavailable',
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
+  return (
+    <form
+      onSubmit={submit}
+      aria-label="Create an organization"
+      className={`${card} space-y-4 p-5`}
+    >
+      <div>
+        <p className="kicker mb-1">Owner</p>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Create an organization
+        </h2>
+        <p className="mt-1 text-sm text-ink-2">
+          You'll own it and choose its supervisor, which can be you.
+        </p>
+      </div>
+      <div className="grid gap-3 @lg:grid-cols-2">
+        <label className={labelText}>
+          First name
+          <input
+            className={field}
+            value={first}
+            onChange={(e) => setFirst(e.target.value)}
+            autoComplete="given-name"
+            maxLength={80}
+            required
+          />
+        </label>
+        <label className={labelText}>
+          Last name
+          <input
+            className={field}
+            value={last}
+            onChange={(e) => setLast(e.target.value)}
+            autoComplete="family-name"
+            maxLength={80}
+            required
+          />
+        </label>
+      </div>
       <label className={labelText}>
         Organization name
         <input
           className={field}
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autoComplete="organization"
           maxLength={80}
           required
         />
@@ -215,11 +535,9 @@ function StartOrganization() {
       <button
         type="submit"
         className={primary + big}
-        disabled={
-          busy || !name.trim() || code.replace(/[^A-Za-z0-9]/g, '').length !== 8
-        }
+        disabled={busy || !first.trim() || !last.trim() || !name.trim()}
       >
-        {busy ? 'Setting up…' : 'Become a supervisor'}
+        {busy ? 'Creating…' : 'Create organization'}
       </button>
       {message && (
         <p role="alert" className="text-sm font-semibold text-stop-text">
@@ -294,8 +612,7 @@ function OrganizationHeader({ org }: { org: OrganizationTeams }) {
       )}
       <p className="mt-1 text-sm text-ink-2">
         {org.teams.length} {org.teams.length === 1 ? 'team' : 'teams'} ·
-        Supervisor{org.supervisors.length === 1 ? '' : 's'}:{' '}
-        {org.supervisors.map(display).join(', ') || 'none linked'}
+        Supervisor: {org.supervisors.map(display).join(', ') || 'none yet'}
       </p>
       {client.mode === 'demo' && (
         <p className="mt-2 text-sm text-sim">
@@ -572,7 +889,16 @@ function MemberRow({ team, member }: { team: TeamRoster; member: TeamMember }) {
   )
 }
 
-function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
+function TeamCard({
+  team,
+  free,
+  supervising,
+}: {
+  team: TeamRoster
+  free: SiteSummary[]
+  /** The supervisor manages codes and sites; the owner only removes. */
+  supervising: boolean
+}) {
   const { client } = useApplication()
   return (
     <section
@@ -587,7 +913,12 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           >
             {team.name}
           </h2>
-          {team.site_id ? (
+          {team.site_id && !supervising ? (
+            <p className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-2">
+              <Icon name="pin" className="size-4" />
+              {team.site_name ?? team.site_id}
+            </p>
+          ) : team.site_id ? (
             <a
               href={`#/supervisor/sites/${encodeURIComponent(team.site_id)}`}
               className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-link"
@@ -616,10 +947,15 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
         </ul>
       ) : (
         <p className="text-sm text-ink-2">
-          No crew yet. Share a join code to add people.
+          No crew yet.{' '}
+          {supervising
+            ? 'Share a join code to add people.'
+            : 'The supervisor shares join codes.'}
         </p>
       )}
 
+      {supervising ? (
+        <>
       <div className="space-y-3 border-t border-line pt-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -642,7 +978,39 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
         team={team}
         free={free}
       />
+        </>
+      ) : (
+        <RemoveTeam team={team} />
+      )}
     </section>
+  )
+}
+
+/** Owner: remove an empty team. */
+function RemoveTeam({ team }: { team: TeamRoster }) {
+  const { client } = useApplication()
+  const change = useTeamChange()
+  return (
+    <div className="space-y-2 border-t border-line pt-3">
+      <button
+        type="button"
+        className={control}
+        disabled={change.busy || team.members.length > 0}
+        onClick={() => void change.run(() => client.deleteTeam(team.id))}
+      >
+        Remove team
+      </button>
+      {team.members.length > 0 && (
+        <p className="text-sm text-muted">
+          A team can be removed once nobody is on it.
+        </p>
+      )}
+      {change.message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {change.message}
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -686,19 +1054,51 @@ function display(m: TeamMember) {
   return m.name ?? m.email ?? 'Name not shared yet'
 }
 
-/** Crew account with no team: enter the supervisor's code. */
+/** An account with no team: the owner's organization page, or the welcome choices. */
 export function JoinTeam() {
-  const { client, refresh } = useApplication()
+  const { client, persona } = useApplication()
   const account = useResource(
     'me',
     useCallback(() => client.me(), [client]),
   )
+  if (!account.data) return <LoadState error={account.error} />
+  if (account.data.team_id) return <NoSite account={account.data} />
+  // An owner who doesn't supervise runs the organization from here.
+  if (account.data.is_owner) return <TeamPage />
+  return <Welcome supervisorAccount={persona === 'supervisor'} />
+}
+
+/** Join a team, become an organization's supervisor, or create an organization. */
+function Welcome({ supervisorAccount }: { supervisorAccount: boolean }) {
+  return (
+    <div className="pc-enter space-y-4">
+      <div className="mx-auto max-w-5xl">
+        <h1 className="text-2xl font-bold tracking-tight">
+          Welcome to FORESITE
+        </h1>
+        <p className="mt-1 text-ink-2">
+          Choose how you'll use it. Crew join a team with a join code. A
+          supervisor uses the code their organization's owner gives them.
+          Anyone can create an organization.
+        </p>
+      </div>
+      <div
+        className={`mx-auto grid max-w-5xl gap-4 ${supervisorAccount ? '@3xl:grid-cols-2' : '@3xl:grid-cols-2 @6xl:grid-cols-3'}`}
+      >
+        {!supervisorAccount && <JoinCodeForm />}
+        <RedeemSupervisorCode />
+        <CreateOrganization />
+      </div>
+    </div>
+  )
+}
+
+/** Crew: enter the supervisor's join code. */
+function JoinCodeForm() {
+  const { client, refresh } = useApplication()
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
-  if (!account.data) return <LoadState error={account.error} />
-  if (account.data.team_id) return <NoSite account={account.data} />
-
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (busy) return
@@ -720,61 +1120,47 @@ export function JoinTeam() {
     }
   }
   return (
-    <div className="pc-enter space-y-4">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-2xl font-bold tracking-tight">
-          Welcome to FORESITE
-        </h1>
-        <p className="mt-1 text-ink-2">
-          Choose how you'll use it. Crew join a team with a join code;
-          supervisors start their own organization with a supervisor key.
+    <form
+      onSubmit={submit}
+      aria-label="Join your team"
+      className={`${card} space-y-4 p-5`}
+    >
+      <div>
+        <p className="kicker mb-1">Crew member</p>
+        <h2 className="text-2xl font-bold tracking-tight">
+          Enter your join code
+        </h2>
+        <p className="mt-1 text-sm text-ink-2">
+          Your supervisor gives you an 8-character code, like ABCD-2345.
         </p>
       </div>
-      <div className="mx-auto grid max-w-3xl gap-4 @3xl:grid-cols-2">
-        <form
-          onSubmit={submit}
-          aria-label="Join your team"
-          className={`${card} space-y-4 p-5`}
-        >
-          <div>
-            <p className="kicker mb-1">Crew member</p>
-            <h2 className="text-2xl font-bold tracking-tight">
-              Enter your join code
-            </h2>
-            <p className="mt-1 text-sm text-ink-2">
-              Your supervisor gives you an 8-character code, like ABCD-2345.
-            </p>
-          </div>
-          <label className={labelText}>
-            Join code
-            <input
-              className={`${field} min-h-14 text-center font-mono text-2xl font-bold uppercase tracking-[0.2em]`}
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              autoComplete="off"
-              autoCapitalize="characters"
-              spellCheck={false}
-              maxLength={9}
-              placeholder="XXXX-XXXX"
-              required
-            />
-          </label>
-          <button
-            type="submit"
-            className={primary + big}
-            disabled={busy || code.replace(/[^A-Za-z0-9]/g, '').length !== 8}
-          >
-            {busy ? 'Joining…' : 'Join team'}
-          </button>
-          {message && (
-            <p role="alert" className="text-sm font-semibold text-stop-text">
-              {message}
-            </p>
-          )}
-        </form>
-        <StartOrganization />
-      </div>
-    </div>
+      <label className={labelText}>
+        Join code
+        <input
+          className={`${field} min-h-14 text-center font-mono text-2xl font-bold uppercase tracking-[0.2em]`}
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          maxLength={9}
+          placeholder="XXXX-XXXX"
+          required
+        />
+      </label>
+      <button
+        type="submit"
+        className={primary + big}
+        disabled={busy || code.replace(/[^A-Za-z0-9]/g, '').length !== 8}
+      >
+        {busy ? 'Joining…' : 'Join team'}
+      </button>
+      {message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {message}
+        </p>
+      )}
+    </form>
   )
 }
 

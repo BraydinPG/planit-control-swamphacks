@@ -171,6 +171,8 @@ export class DemoClient implements Client {
   private state: DemoSnapshot
   // Simulated roster and join codes; kept in memory only, so a reload resets them.
   private roster = demoRoster()
+  // Sites the simulated organization claimed (besides those its teams already hold).
+  private claims = new Set<string>()
   private photoURLs = new Map<string, string>()
   private persona: () => Persona
   private storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> | null
@@ -487,6 +489,8 @@ export class DemoClient implements Client {
     return this.persona() === 'supervisor'
       ? {
           role: 'supervisor',
+          // The preview supervisor also owns the simulated organization.
+          is_owner: true,
           organization_id: org,
           organization_name: this.roster.organization_name,
           team_id: null,
@@ -505,13 +509,63 @@ export class DemoClient implements Client {
   async team() {
     this.supervisor()
     const now = this.now()
+    const held = new Map(
+      this.roster.teams.filter((t) => t.site_id).map((t) => [t.site_id!, t.id]),
+    )
+    const claimed = new Set([...this.claims, ...held.keys()])
     return clone({
       ...this.roster,
       teams: this.roster.teams.map((t) => ({
         ...t,
         join_codes: t.join_codes.filter((c) => Date.parse(c.expires_at) > now),
       })),
+      claimed_sites: this.state.sites
+        .filter((s) => claimed.has(s.id))
+        .map((s) => ({
+          site_id: s.id,
+          site_name: s.name,
+          team_id: held.get(s.id) ?? null,
+        })),
+      unavailable_site_ids: this.state.sites
+        .filter((s) => s.assigned_team && !held.has(s.id))
+        .map((s) => s.id),
+      is_owner: true,
+      is_supervisor: true,
     })
+  }
+  async claimSite(siteId: string) {
+    this.supervisor()
+    const site = this.state.sites.find((s) => s.id === siteId)
+    if (!site) throw new ApiError(404, "That site doesn't exist.")
+    const ours = this.roster.teams.some((t) => t.site_id === siteId)
+    if (site.assigned_team && !ours)
+      throw new ApiError(409, 'Site claimed', {
+        reason: 'claimed',
+        detail: 'Another organization already claimed that site.',
+      })
+    this.claims.add(siteId)
+  }
+  async releaseSite(siteId: string) {
+    this.supervisor()
+    if (this.roster.teams.some((t) => t.site_id === siteId))
+      throw new ApiError(409, 'Site has a team', {
+        reason: 'has_team',
+        detail: 'Move the team on this site to another site first.',
+      })
+    if (!this.claims.delete(siteId))
+      throw new ApiError(404, "Your organization hasn't claimed that site")
+  }
+  async createOrganization(): Promise<Account> {
+    throw new ApiError(
+      409,
+      'Simulated demo: preview accounts already have an organization. Creating one works with a live sign-in.',
+    )
+  }
+  async removeSupervisor() {
+    throw new ApiError(
+      409,
+      'Simulated demo: the preview supervisor stays. Removing a supervisor works with a live sign-in.',
+    )
   }
   async createJoinCode(teamId: string) {
     this.supervisor()
@@ -573,6 +627,11 @@ export class DemoClient implements Client {
         reason: 'site_taken',
         detail: 'That site already has a team.',
       })
+    if (!holder && !this.claims.has(siteId))
+      throw new ApiError(409, 'Site not claimed', {
+        reason: 'not_claimed',
+        detail: 'Claim that site for your organization first.',
+      })
     return site
   }
   async renameOrganization(name: string) {
@@ -601,6 +660,8 @@ export class DemoClient implements Client {
     if (input.name) team.name = input.name.trim()
     if ('site_id' in input) {
       const site = this.freeSite(input.site_id, id)
+      // A site the team leaves stays claimed.
+      if (team.site_id && team.site_id !== site?.id) this.claims.add(team.site_id)
       team.site_id = site?.id ?? null
       team.site_name = site?.name ?? null
     }

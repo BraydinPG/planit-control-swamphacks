@@ -7,6 +7,7 @@ import type {
   HazardConfirmResponse,
   JoinCode,
   SupervisorInvite,
+  OrganizationCreate,
   OrganizationTeams,
   TeamCreate,
   TeamRoster,
@@ -58,7 +59,14 @@ export interface Client {
   /** Crew account with no team joins the team behind a code. */
   join(code: string): Promise<Account>
   /** New account redeems a supervisor key and starts its own organization. */
-  becomeSupervisor(code: string, organizationName: string): Promise<Account>
+  becomeSupervisor(code: string): Promise<Account>
+  /** Anyone with no organization creates one and becomes its owner. */
+  createOrganization(input: OrganizationCreate): Promise<Account>
+  /** Owner: remove the organization's supervisor (or step down) and drop the role. */
+  removeSupervisor(): Promise<void>
+  /** Supervisor: claim a site for the organization, or release one with no team. */
+  claimSite(siteId: string): Promise<void>
+  releaseSite(siteId: string): Promise<void>
   /** Supervisor: their one-use supervisor keys that can still be used. */
   supervisorInvites(): Promise<SupervisorInvite[]>
   createSupervisorInvite(): Promise<SupervisorInvite>
