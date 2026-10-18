@@ -585,6 +585,13 @@ export class DemoClient implements Client {
       })
     this.roster.teams = this.roster.teams.filter((t) => t.id !== id)
   }
+  async removeMember(teamId: string, userId: string) {
+    this.supervisor()
+    const team = this.roster.teams.find((t) => t.id === teamId)
+    if (!team || !team.members.some((m) => m.user_id === userId))
+      throw new ApiError(404, "That person isn't on this team")
+    team.members = team.members.filter((m) => m.user_id !== userId)
+  }
   async join(): Promise<Account> {
     throw new ApiError(
       409,

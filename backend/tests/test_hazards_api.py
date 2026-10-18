@@ -45,8 +45,8 @@ def test_notified_supervisors_are_snapshotted(h, client):
     ]
 
 
-@pytest.mark.parametrize("sub", ["auth0|supervisor-1", "auth0|supervisor-2"])
-def test_notified_supervisor_can_confirm_across_organizations(h, client, sub):
+def test_reporting_organization_confirms_the_notice_and_the_report(h, client):
+    sub = "auth0|supervisor-1"
     report = submit(client).json()
     response = confirm(client, report["notice_id"], supervisor(sub))
     assert response.status_code == 200
@@ -66,6 +66,57 @@ def test_notified_supervisor_can_confirm_across_organizations(h, client, sub):
     assert ("notice.confirm", report["notice_id"], sub) in actions
     assert ("report.confirm", report["id"], sub) in actions
     assert len(h.rows(db.HazardScore)) == 1 and h.rows(db.Alert) == []
+
+
+def test_another_organization_confirms_only_for_itself(h, client):
+    report = submit(client).json()
+    response = confirm(client, report["notice_id"], supervisor("auth0|supervisor-2"))
+    assert response.status_code == 200
+    assert response.json()["notice"]["status"] == "confirmed"
+    assert response.json()["notice"]["confirmed_by"] == "auth0|supervisor-2"
+    [assessment] = h.rows(db.NoticeAssessment)
+    assert (assessment.organization_id, assessment.confirmed_by) == ("org-2", "auth0|supervisor-2")
+    # The reporting organization still decides on its own report and sees it as potential.
+    [stored] = h.rows(db.CrewReport)
+    assert stored.review_status == "pending" and stored.reviewed_by is None
+    assert h.rows(db.HazardScore) == []
+    own = client.get("/api/sites/site-a", headers=supervisor()).json()["notices"][0]
+    assert own["status"] == "potential" and own["confirmed_by"] is None
+    theirs = client.get("/api/sites/site-x", headers=supervisor("auth0|supervisor-2")).json()
+    assert theirs["notices"][0]["status"] == "confirmed"
+    # Then the reporting organization confirms for itself, which confirms the report.
+    assert confirm(client, report["notice_id"]).status_code == 200
+    [stored] = h.rows(db.CrewReport)
+    assert stored.review_status == "confirmed" and stored.reviewed_by == "auth0|supervisor-1"
+    assert len(h.rows(db.NoticeAssessment)) == 2
+
+
+def test_an_older_confirmed_notice_keeps_its_confirmation(h, client):
+    """Notices confirmed before per-organization assessments read confirmed for everyone,
+    and a later organization's confirmation stores the original instead of erasing it."""
+    report = submit(client).json()
+    with h.factory() as session:
+        notice = session.get(db.HazardNotice, report["notice_id"])
+        notice.status, notice.confirmed_by, notice.confirmed_at = (
+            "confirmed",
+            "auth0|supervisor-1",
+            NOW,
+        )
+        notice.instruction, notice.instruction_sent_at = "Legacy text.", NOW
+        session.commit()
+    for site_id, headers in [("site-a", crew()), ("site-x", supervisor("auth0|supervisor-2"))]:
+        seen = client.get(f"/api/sites/{site_id}", headers=headers).json()["notices"][0]
+        assert seen["status"] == "confirmed" and seen["instruction"] == "Legacy text."
+    assert confirm(client, report["notice_id"], supervisor("auth0|supervisor-2")).status_code == 200
+    stored = {
+        (a.organization_id, a.confirmed_by, a.instruction) for a in h.rows(db.NoticeAssessment)
+    }
+    assert stored == {
+        ("org-1", "auth0|supervisor-1", "Legacy text."),
+        ("org-2", "auth0|supervisor-2", None),
+    }
+    own = client.get("/api/sites/site-a", headers=crew()).json()["notices"][0]
+    assert own["instruction"] == "Legacy text."
 
 
 @pytest.mark.parametrize("action", ["confirm", "review"])
@@ -130,14 +181,17 @@ def test_missing_notice_and_report_return_404(h, client):
     assert review(client, "missing").status_code == 404
 
 
-def test_repeat_confirmation_preserves_first_reviewer(h, client):
+def test_each_organization_confirms_once(h, client):
     report = submit(client).json()
     assert confirm(client, report["notice_id"]).status_code == 200
     assert confirm(client, report["notice_id"]).status_code == 409
+    assert confirm(client, report["notice_id"], supervisor("auth0|supervisor-2")).status_code == 200
     assert confirm(client, report["notice_id"], supervisor("auth0|supervisor-2")).status_code == 409
     [stored] = h.rows(db.HazardNotice)
-    assert stored.confirmed_by == "auth0|supervisor-1"
-    assert len([e for e in h.rows(db.AuditEvent) if e.action == "notice.confirm"]) == 1
+    assert stored.confirmed_by == "auth0|supervisor-1"  # first confirmation anywhere
+    assert len([e for e in h.rows(db.AuditEvent) if e.action == "notice.confirm"]) == 2
+    [report_row] = h.rows(db.CrewReport)
+    assert report_row.reviewed_by == "auth0|supervisor-1"
 
 
 def test_legacy_notice_without_receipt_fails_closed(h, client):
@@ -256,11 +310,21 @@ def test_review_is_final_and_invalid_body_is_rejected(h, client):
 
 def test_concurrent_confirmations_have_exactly_one_winner(tmp_path):
     # Separate DB connections/transactions exercise the atomic claim, not just retries.
+    # Two supervisors of the same organization race; each organization confirms once.
     engine = create_engine(f"sqlite:///{(tmp_path / 'race.db').as_posix()}")
     db.Base.metadata.create_all(engine)
     factory = sessionmaker(bind=engine, expire_on_commit=False)
     with factory() as session:
         seed(session)
+        session.add(
+            db.Membership(
+                id="m-s1b",
+                user_id="auth0|supervisor-1b",
+                organization_id="org-1",
+                role="supervisor",
+            )
+        )
+        session.commit()
         report = create_report(
             session,
             Reporter("auth0|crew-a", "org-1", "team-a"),
@@ -276,7 +340,7 @@ def test_concurrent_confirmations_have_exactly_one_winner(tmp_path):
     gate = Barrier(2, timeout=10)
 
     def before_update(connection, cursor, statement, parameters, context, executemany):
-        if statement.startswith("UPDATE hazard_notices"):
+        if statement.startswith("INSERT INTO notice_assessments"):
             gate.wait()
 
     event.listen(engine, "before_cursor_execute", before_update)
@@ -292,7 +356,7 @@ def test_concurrent_confirmations_have_exactly_one_winner(tmp_path):
 
     try:
         with ThreadPoolExecutor(max_workers=2) as pool:
-            results = list(pool.map(attempt, ["auth0|supervisor-1", "auth0|supervisor-2"]))
+            results = list(pool.map(attempt, ["auth0|supervisor-1", "auth0|supervisor-1b"]))
         assert sorted(status for status, _ in results) == [200, 409]
         winner = next(sub for status, sub in results if status == 200)
         with factory() as session:

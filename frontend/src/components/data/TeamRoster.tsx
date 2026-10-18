@@ -326,6 +326,79 @@ function ManageTeam({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
   )
 }
 
+/** One crew member, with a two-step Remove (they can rejoin with a new code). */
+function MemberRow({ team, member }: { team: TeamRoster; member: TeamMember }) {
+  const { client } = useApplication()
+  const { busy, message, run } = useTeamChange()
+  const [confirming, setConfirming] = useState(false)
+  return (
+    <li className="space-y-2 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-semibold [overflow-wrap:anywhere]">
+            {display(member)}
+          </p>
+          {member.name && member.email && (
+            <p className="truncate text-sm text-ink-2">{member.email}</p>
+          )}
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-3">
+          <span className="text-sm text-muted">
+            {member.joined_at
+              ? `Joined ${day(member.joined_at)}`
+              : 'Added by admin'}
+          </span>
+          {!confirming && (
+            <button
+              type="button"
+              className={control}
+              onClick={() => setConfirming(true)}
+              aria-label={`Remove ${display(member)} from ${team.name}`}
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+      {confirming && (
+        <div
+          role="group"
+          aria-label={`Confirm removing ${display(member)}`}
+          className="flex flex-wrap items-center gap-3 rounded-xl border border-line-strong p-3"
+        >
+          <p className="min-w-0 flex-1 text-sm">
+            Remove {display(member)} from {team.name}? Their reports stay on
+            record, and they can rejoin with a new join code.
+          </p>
+          <button
+            type="button"
+            className={primary}
+            disabled={busy}
+            onClick={() =>
+              void run(() => client.removeMember(team.id, member.user_id))
+            }
+          >
+            {busy ? 'Removing…' : 'Remove'}
+          </button>
+          <button
+            type="button"
+            className={control}
+            disabled={busy}
+            onClick={() => setConfirming(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      {message && (
+        <p role="alert" className="text-sm font-semibold text-stop-text">
+          {message}
+        </p>
+      )}
+    </li>
+  )
+}
+
 function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
   const { client } = useApplication()
   return (
@@ -365,22 +438,7 @@ function TeamCard({ team, free }: { team: TeamRoster; free: SiteSummary[] }) {
           aria-label={`${team.name} members`}
         >
           {team.members.map((m) => (
-            <li
-              key={m.user_id}
-              className="flex flex-wrap items-center justify-between gap-3 py-2.5"
-            >
-              <div className="min-w-0">
-                <p className="font-semibold [overflow-wrap:anywhere]">
-                  {display(m)}
-                </p>
-                {m.name && m.email && (
-                  <p className="truncate text-sm text-ink-2">{m.email}</p>
-                )}
-              </div>
-              <span className="shrink-0 text-sm text-muted">
-                {m.joined_at ? `Joined ${day(m.joined_at)}` : 'Added by admin'}
-              </span>
-            </li>
+            <MemberRow key={m.user_id} team={team} member={m} />
           ))}
         </ul>
       ) : (

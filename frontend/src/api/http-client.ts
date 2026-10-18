@@ -363,6 +363,12 @@ export class HttpClient implements Client {
       method: 'DELETE',
     })
   }
+  async removeMember(teamId: string, userId: string) {
+    await this.request(
+      `/api/teams/${encodeURIComponent(teamId)}/members/${encodeURIComponent(userId)}`,
+      { method: 'DELETE' },
+    )
+  }
 }
 
 /** The backend's `{detail: {reason, message}}` explanation, when it sent one. */

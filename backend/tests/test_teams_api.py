@@ -348,3 +348,46 @@ def test_supervisor_renames_their_organization(client) -> None:
     assert crew.status_code == 403
     blank = client.patch("/api/organization", json={"name": ""}, headers=SUPERVISOR)
     assert blank.status_code == 422
+
+
+def test_supervisor_removes_a_member_who_can_then_rejoin(client, h) -> None:
+    newcomer = person("auth0|crew|with|pipes")
+    assert (
+        client.post("/api/join", json={"code": make_code(client)}, headers=newcomer).status_code
+        == 200
+    )
+    path = "/api/teams/team-a/members/auth0|crew|with|pipes"
+    # Another organization's supervisor and crew can't remove anyone.
+    assert client.delete(path, headers=OTHER_SUPERVISOR).status_code == 404
+    assert client.delete(path, headers=newcomer).status_code == 403
+    assert client.delete(path).status_code == 401
+    assert client.delete(path, headers=SUPERVISOR).status_code == 204
+    assert client.delete(path, headers=SUPERVISOR).status_code == 404
+    with h() as s:
+        assert (
+            s.scalar(select(db.Membership).where(db.Membership.user_id == "auth0|crew|with|pipes"))
+            is None
+        )
+        audit = s.scalars(
+            select(db.AuditEvent).where(db.AuditEvent.action == "team.member.remove")
+        ).all()
+        assert [a.entity for a in audit] == ["team-a:auth0|crew|with|pipes"]
+    assert client.get("/api/me", headers=newcomer).json()["organization_id"] is None
+    # A removed member sees no team site and can join again with a new code.
+    assert client.get("/api/sites", headers=newcomer).json() == []
+    assert (
+        client.post("/api/join", json={"code": make_code(client)}, headers=newcomer).status_code
+        == 200
+    )
+
+
+def test_removing_a_member_needs_them_on_that_team(client) -> None:
+    newcomer = person("auth0|on-a")
+    client.post("/api/join", json={"code": make_code(client)}, headers=newcomer)
+    assert (
+        client.delete("/api/teams/team-b/members/auth0|on-a", headers=SUPERVISOR).status_code == 404
+    )
+    assert (
+        client.delete("/api/teams/team-a/members/auth0|sup-1", headers=SUPERVISOR).status_code
+        == 404
+    )

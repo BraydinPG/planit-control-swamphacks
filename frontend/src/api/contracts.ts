@@ -60,6 +60,7 @@ export interface Client {
   createTeam(input: TeamCreate): Promise<TeamRoster>
   updateTeam(id: string, input: TeamUpdate): Promise<TeamRoster>
   deleteTeam(id: string): Promise<void>
+  removeMember(teamId: string, userId: string): Promise<void>
 }
 export interface DemoSnapshot {
   version: 1

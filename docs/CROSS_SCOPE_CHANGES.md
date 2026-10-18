@@ -725,3 +725,21 @@ Supervisors on the deployed site saw "private photo retrieval is not connected" 
 - Tests: `backend/tests/test_reports_api.py` (visibility, 401, missing object), `frontend/tests/team.test.mjs` (authorized blob request).
 
 The seven reports created before deployment have photo keys whose files were stored on teammates' laptops, so they show "This photo isn't in storage." New photos go to the private `foresite-photos` bucket.
+
+### 2026-10-18 — Braydin: each organization assesses a hazard for itself (user-authorized)
+
+The user asked that a hazard notice reach every organization in its radius, and that each organization assess it only through its own supervisor. Previously the first notified supervisor of any organization confirmed it for everyone and instructed every team in the radius.
+
+- `backend/app/db/models.py`: new `notice_assessments` table, keyed by (notice, organization): confirmer, time, draft, instruction, sent time. `create_all` adds it; no column changes.
+- `backend/app/services/hazards.py`: `confirm_hazard` records the caller's organization's assessment (409 if that organization already confirmed). Only the reporting organization's confirmation confirms the crew report and rescores its site. The notice's own `status`/`confirmed_by` keep the first confirmation anywhere.
+- `backend/app/services/instructions.py`: the draft and the sent instruction belong to the organization's assessment; delivery goes only to that organization's teams inside the stored radius.
+- `backend/app/services/notice_views.py` (new) and `backend/app/api/sites.py` `load_notices`: a notice reads confirmed, with its instruction, only for the organization that confirmed it (the site's team's organization; the viewer's for a site without a team). Notices confirmed before this change, with no assessment rows, stay confirmed for everyone, and are stored as their confirmer's organization's assessment before any later write.
+- `backend/app/api/hazards.py`: routes return that per-organization view. The API shape is unchanged; the TS mirror didn't change.
+- Frontend: notice card copy says "Confirm for your organization" and "Send to your organization's teams".
+- Tests: hazard, instruction, scoring and feed-notice tests updated to the new rule, plus new cases (another organization confirms only for itself; each organization sends its own instruction; an older confirmed notice keeps its confirmation).
+
+### 2026-10-18 — Braydin: supervisors remove team members (user-authorized)
+
+- `backend/app/api/teams.py`: `DELETE /api/teams/{team_id}/members/{user_id}` deletes that crew member's membership (own organization only; 404 otherwise) and audits `team.member.remove`. Their reports stay on record, and they can rejoin with a new join code.
+- Frontend: `removeMember` in the client contract, HTTP and demo clients; a two-step **Remove** on each member row of the Team tab.
+- Tests: `backend/tests/test_teams_api.py`, `frontend/tests/team.test.mjs`.

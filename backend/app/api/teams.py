@@ -176,6 +176,28 @@ def delete_team(team_id: str, user: Supervisor, session: DbSession, now: Now) ->
     return Response(status_code=204)
 
 
+@router.delete("/api/teams/{team_id}/members/{user_id:path}", status_code=204)
+def remove_member(
+    team_id: str, user_id: str, user: Supervisor, session: DbSession, now: Now
+) -> Response:
+    """Take a crew member off one of the organization's teams.
+
+    Their reports stay on record. They can join a team again with a new join code.
+    """
+    team = _team_of(session, user, team_id)
+    member = session.scalar(
+        select(db.Membership).where(
+            db.Membership.user_id == user_id, db.Membership.team_id == team.id
+        )
+    )
+    if member is None:
+        raise HTTPException(404, "That person isn't on this team")
+    session.delete(member)
+    audit(session, user.sub, "team.member.remove", f"{team.id}:{user_id}", now)
+    session.commit()
+    return Response(status_code=204)
+
+
 @router.post("/api/teams/{team_id}/join-codes", response_model=JoinCode, status_code=201)
 def create_join_code(team_id: str, user: Supervisor, session: DbSession, now: Now) -> JoinCode:
     membership = _organization_of(session, user)

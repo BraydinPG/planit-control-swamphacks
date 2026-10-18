@@ -150,7 +150,7 @@ def test_active_lightning_and_other_site_scores_are_unchanged(h, client):
     alert_before = [(a.id, a.state, a.latest_event_at, a.clear_after) for a in h.rows(db.Alert)]
     other_before = [(s.id, s.risk_score) for s in h.rows(db.HazardScore) if s.site_id == "site-b"]
     report = submit(client).json()
-    assert confirm(client, report["notice_id"], supervisor("auth0|supervisor-2")).status_code == 200
+    assert confirm(client, report["notice_id"], supervisor()).status_code == 200
     latest = max(
         (s for s in h.rows(db.HazardScore) if s.site_id == "site-a"), key=lambda s: s.created_at
     )
@@ -219,14 +219,14 @@ def test_concurrent_distinct_confirmations_preserve_both_factors(tmp_path):
     gate = Barrier(2, timeout=10)
 
     def before_update(connection, cursor, statement, parameters, context, executemany):
-        if statement.startswith("UPDATE hazard_notices"):
+        if statement.startswith("INSERT INTO notice_assessments"):
             gate.wait()
 
     event.listen(engine, "before_cursor_execute", before_update)
 
     def attempt(id):
         with factory() as session:
-            return confirm_hazard(session, id, user, NOW).id
+            return confirm_hazard(session, id, user, NOW)[0].id
 
     try:
         with ThreadPoolExecutor(max_workers=2) as pool:

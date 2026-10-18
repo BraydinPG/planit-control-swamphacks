@@ -56,8 +56,8 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 3. Filter by location, hazard type, or alert status.
 4. Open a site to inspect score factors, observations, freshness, active alerts, and crew reports.
 5. Review this organization’s reports that say no hazard is present, and make the final call on those reports.
-6. Receive a “potential {hazard}” notice, with no instructions, when one of this supervisor’s teams is inside the radius. Any supervisor who received that notice can confirm the hazard.
-7. After confirming, review Gemini’s suggested instruction, change it if needed, and send that text to every team inside the same radius. For a confirmed event the model supports (flooding today), also see in plain words how much longer it is expected to last, labeled as an estimate and never as an all-clear.
+6. Receive a “potential {hazard}” notice, with no instructions, when one of this supervisor’s teams is inside the radius. The notice reaches every organization with a team inside the radius, and each organization assesses it for itself: this supervisor confirms it for their own organization only.
+7. After confirming, review Gemini’s suggested instruction, change it if needed, and send that text to this organization's teams inside the same radius. Other organizations' teams get their own supervisor's instruction. For a confirmed event the model supports (flooding today), also see in plain words how much longer it is expected to last, labeled as an estimate and never as an all-clear.
 8. Review the next-day briefing, generated automatically at 6 PM local time, and use the evidence links to inspect its inputs.
 
 ## 4. MVP scope and priorities
@@ -72,7 +72,7 @@ The pasted track rules also identify Best Use of Gemini API, Best UI/UX, Best Us
 - Support crew hazard reports with a photo, a category, a present-or-absent answer, an optional note, and the device's precise location when the crew member allows it (otherwise the site's location, labeled approximate).
 - Support one supervisor per organization, with multiple teams and crew members. Many organizations share one deployment.
 - When a connected source detects a hazard, or a crew member marks a hazard present, notify every team and supervisor inside a Gemini-chosen radius. The notice says “potential {hazard}” and contains no instructions.
-- After any notified supervisor confirms the hazard, have Gemini suggest one concise instruction. Send the text that supervisor accepts or edits to every team inside that radius.
+- Each notified organization's supervisor confirms the hazard for that organization. Then have Gemini suggest one concise instruction, and send the text that supervisor accepts or edits to that organization's teams inside the radius. Only the reporting organization's confirmation confirms the crew report itself.
 - Support supervisor review of absent reports and a full map plus the occupied-first location list.
 - Train and evaluate an active-event recorded-outcome model on historical event intervals, with episode-grouped chronological holdout and explicit geographic/data limitations.
 - Enforce crew and supervisor roles with Auth0 on protected backend routes.
@@ -250,12 +250,12 @@ Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. H
 | Read all sites, assigned teams, and the full map | No | Yes |
 | Review a report that no hazard is present | No | Own organization only |
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
-| Confirm a potential hazard from a received notice | No | Any notified supervisor |
-| Edit and send the instruction for that hazard | No | The confirming supervisor |
+| Confirm a potential hazard from a received notice | No | A notified supervisor, for their own organization |
+| Edit and send the instruction for that hazard | No | The supervisor who confirmed it for their organization; it reaches only that organization's teams |
 | Read organization-wide briefings | Own organization only | Own organization only |
 | Join a team with a join code | Only when on no team yet | No (linked by an administrator) |
 | See the team roster; create and revoke join codes | No | Own organization only |
-| Add, rename, move, or remove teams | No | Own organization only |
+| Add, rename, move, or remove teams; remove a team member | No | Own organization only |
 
 Team onboarding: a new Auth0 account starts as crew (the post-login Action) and sees no site until it enters a join code on the "Join your team" screen. Supervisors create codes on the Team tab, see exactly who is on each team, and revoke codes. Supervisor accounts are assigned in Auth0 and linked to an organization by an administrator.
 
@@ -290,6 +290,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `DELETE /api/join-codes/{code}` | Supervisor: revoke one of their organization's codes. Existing members stay. |
 | `PATCH /api/organization` | Supervisor: rename their organization. |
 | `POST /api/teams`, `PATCH /api/teams/{id}`, `DELETE /api/teams/{id}` | Supervisor: add a team to their organization, rename it or change its site (a site has at most one team), or remove a team with no members and no reports. |
+| `DELETE /api/teams/{id}/members/{user_id}` | Supervisor: take a crew member off one of their organization's teams. Their reports stay on record; they can rejoin with a new join code. |
 | `GET /api/sites/{id}/species` | Read-only species context for a team site: USFWS IPaC federally listed species whose range overlaps the site (regional context, not a sighting), USFWS critical habitat nearby, curated encounter guidance, and the site's crew wildlife reports kept separate. Same access as site detail; 404 `no_team` for sites without a team. Never affects the score, alerts, or clearance. See `docs/SPECIES_CONTEXT.md`. |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.

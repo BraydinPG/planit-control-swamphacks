@@ -255,6 +255,28 @@ class HazardNotice(Base):
     evidence: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
 
 
+class NoticeAssessment(Base):
+    """One organization's confirmation of a hazard notice and the instruction it sent.
+
+    A notice reaches every organization with a team inside its radius, and each one
+    decides for itself: its own supervisor confirms, and their instruction goes only to
+    that organization's teams. The notice's own `status`/`confirmed_by` record the first
+    confirmation anywhere; its instruction columns are no longer used.
+    """
+
+    __tablename__ = "notice_assessments"
+
+    notice_id: Mapped[str] = mapped_column(ForeignKey("hazard_notices.id"), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id"), primary_key=True)
+    confirmed_by: Mapped[str] = mapped_column(String, nullable=False)
+    confirmed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    suggested_instruction: Mapped[str | None] = mapped_column(String, nullable=True)
+    instruction: Mapped[str | None] = mapped_column(String, nullable=True)
+    instruction_sent_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+
 class Briefing(Base):
     __tablename__ = "briefings"
 

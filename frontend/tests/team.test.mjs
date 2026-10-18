@@ -438,3 +438,27 @@ test('report photos load as an authorized blob from the live API', async () => {
   assert.equal(blob.size, 3)
   assert.deepEqual(calls, ['GET /api/reports/r%201/photo Bearer t'])
 })
+
+test('supervisors remove a member (demo and live)', async () => {
+  const demo = new DemoClient(() => 'supervisor', storage())
+  const [team] = (await demo.team()).teams
+  const [member] = team.members
+  await demo.removeMember(team.id, member.user_id)
+  const after = (await demo.team()).teams.find((t) => t.id === team.id)
+  assert.ok(!after.members.some((m) => m.user_id === member.user_id))
+  await assert.rejects(
+    () => demo.removeMember(team.id, member.user_id),
+    (e) => e.status === 404,
+  )
+  const calls = []
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(`${options.method} ${new URL(url).pathname}`)
+      return new Response(null, { status: 204 })
+    },
+  )
+  await api.removeMember('team-a', 'auth0|abc')
+  assert.deepEqual(calls, ['DELETE /api/teams/team-a/members/auth0%7Cabc'])
+})
