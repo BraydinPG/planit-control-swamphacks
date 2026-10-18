@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from './context'
 import { RequireRole } from './RequireRole'
 import { ROLE_LABELS, ROLES_CLAIM } from './roles'
+import { Brand } from '../components/shell/Brand'
 
 /**
  * Isolated sign-in check for T025/T026 and the demo-account setup in auth/SETUP.md.
@@ -30,6 +31,7 @@ export function AuthCheckPage() {
 
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-6 p-4 text-lg text-neutral-950 dark:text-neutral-50">
+      <Brand variant="full" />
       <h1 className="text-3xl font-bold">FORESITE sign-in check</h1>
       {auth.mode === 'dev' && (
         <p className="rounded-md border-2 border-amber-700 p-3 font-medium">
@@ -58,10 +60,10 @@ export function AuthCheckPage() {
       </div>
       {tokenStatus && <p role="status">{tokenStatus}</p>}
       <h2 className="text-2xl font-semibold">Role guard</h2>
-      <RequireRole role="crew">
+      <RequireRole role="crew" showBrand={false}>
         <p>Crew-only content is visible.</p>
       </RequireRole>
-      <RequireRole role="supervisor">
+      <RequireRole role="supervisor" showBrand={false}>
         <p>Supervisor-only content is visible.</p>
       </RequireRole>
     </main>

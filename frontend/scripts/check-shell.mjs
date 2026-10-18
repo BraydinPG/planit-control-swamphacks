@@ -126,6 +126,14 @@ async function checkBranding() {
     ),
     'Legacy branding in visible text or accessible names',
   )
+  await until(
+    () => evaluate("Array.from(document.querySelectorAll('[data-brand] img')).filter(e=>e.getClientRects().length).every(e=>e.complete&&e.naturalWidth>0)"),
+    'official logo images decoded',
+  )
+  assert(
+    await evaluate("(()=>{const images=Array.from(document.querySelectorAll('[data-brand] img')).filter(e=>e.getClientRects().length);return images.length>0&&images.every(e=>{const r=e.getBoundingClientRect();return e.src.includes('/foresite-')&&Math.abs(r.width/r.height-e.naturalWidth/e.naturalHeight)<.02&&(e.alt.includes('FORESITE')||e.closest('a[aria-label]'))})&&!document.querySelector('[href*=\"planit-mark\"]')})()"),
+    'Official source, accessible name, favicon and undistorted aspect ratio',
+  )
 }
 async function offModeServer(setting) {
   const listener = createServer()
@@ -258,6 +266,20 @@ try {
     new URL('#/supervisor/sites/site-demo-everglades', base).href,
     'Score factors and evidence',
   )
+  await checkBranding()
+  const logoMetadata = await evaluate(`Promise.all([
+    ['link[rel="icon"][sizes="16x16"]',16,16],
+    ['link[rel="icon"][sizes="32x32"]',32,32],
+    ['link[rel="apple-touch-icon"]',180,180],
+    ['meta[property="og:image"]',1200,630]
+  ].map(([selector,w,h])=>new Promise((resolve,reject)=>{
+    const element=document.querySelector(selector),img=new Image();
+    img.onload=()=>resolve({selector,valid:img.naturalWidth===w&&img.naturalHeight===h});
+    img.onerror=()=>reject(new Error('Missing brand metadata asset'));
+    img.src=element.href||element.content;
+  })))`)
+  assert(logoMetadata.every(row => row.valid))
+  results.push({ official_logo_assets: logoMetadata })
   await click('Reset demo')
   await evaluate(`(()=>{
     const key='planit:frontend-demo:v1', value=JSON.parse(localStorage.getItem(key));
@@ -305,6 +327,7 @@ try {
       new URL('#/crew/overview', base).href,
       'Stop-work alert active',
     )
+    await checkBranding()
     await screenshot(name)
     assert(
       await evaluate('document.documentElement.scrollWidth <= innerWidth'),
@@ -553,6 +576,7 @@ try {
   })
   for (const [width, height] of [
     [1440, 1000],
+    [768, 1024],
     [390, 844],
     [320, 740],
   ]) {
@@ -628,7 +652,7 @@ try {
   }
   results.push({
     accessibility:
-      'all eleven demo destinations at three viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
+      'all eleven demo destinations at four viewports; no horizontal overflow, labels/names present, primary controls and map zoom >=44px, visible keyboard focus; full T068 live acceptance still blocked',
   })
   // Team mutations use the existing in-memory demo client, never a real organization.
   await hash('/supervisor/team', 'Join codes')
@@ -840,6 +864,25 @@ try {
       new URL('/tests/browser.html', base).href,
       'Sign in required',
     )
+    await until(
+      () => evaluate("document.querySelector('[data-brand=full] img')?.complete"),
+      'sign-in logo loaded',
+    )
+    await send('Emulation.setDeviceMetricsOverride', {
+      width: 390, height: 844, deviceScaleFactor: 2, mobile: true,
+    })
+    await send('Emulation.setEmulatedMedia', {
+      features: [{ name: 'prefers-color-scheme', value: 'dark' }],
+    })
+    assert(
+      await evaluate("getComputedStyle(document.querySelector('[data-brand]')).backgroundColor==='rgb(255, 255, 255)'"),
+      'Original navy wordmark keeps its contrast plate in dark mode',
+    )
+    await screenshot('logo-sign-in-dark')
+    await send('Emulation.setEmulatedMedia', {
+      features: [{ name: 'prefers-color-scheme', value: 'light' }],
+    })
+    await screenshot('logo-sign-in-light')
     await evaluate('window.harness.reset()')
     await evaluate("window.harness.mount('loading')")
     await loaded('Checking sign-in')
