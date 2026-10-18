@@ -1,3 +1,29 @@
+## Predictive-intelligence landing messaging (Cache for Rudra) - 2026-10-18
+
+Explicit user authorization covers the public homepage copy/presentation and the
+later request to merge after verification. Branch
+`feature/cache-predictive-landing-messaging` starts from main `d801615`.
+`frontend/public/landing.html` is the only changed application source: requested
+headline, description, statistics, three feature blocks and a source/limitations
+disclosure. Existing logo, dark/red atmosphere, inline shader/counter JavaScript
+and demo/sign-in destinations are retained. Responsive typography, natural scrolling
+and a reduced-motion entrance fix keep all copy accessible on small/short screens.
+
+The source audit supports every requested number, with explicit mixed-record,
+retrospective research, offline consistency and reference-location qualifications.
+No dashboards, API/backend/auth, score weights, alerts, models, fixtures, shared
+manifests, credentials, deployment or task checkboxes change. Rudra should preserve
+the existing navigation targets and research qualifiers. Braydin has no required
+configuration action. Other worktrees and existing servers are untouched.
+
+Verified 198 frontend tests, lint/TypeScript, live/demo builds and Edge/CDP checks
+plus visual screenshots at 1440/768/390/320px. Short-screen/fallback-font, reduced-motion,
+count-up, disclosure and actual demo navigation checks pass without clipping,
+browser exceptions or real API calls. [Audit, evidence and handoff](LANDING_PREDICTIVE_MESSAGING.md).
+`PROJECT_CONTEXT.md` records this same verification; commit/PR attribution is in
+Git history. The latest user instruction supersedes the attached prompt's earlier
+request to leave the PR unmerged.
+
 ## Score/evidence row on My Worksite (Cache for Rudra) - 2026-10-18
 
 Explicit user follow-up, `feature/cache-score-evidence-layout` from main `6f563fe`:
