@@ -42,7 +42,12 @@ cd /srv/foresite
 # Keep the server's .env and, when this deploy didn't ship one, its model artifact.
 [ -f app/backend/.env ] && cp -p app/backend/.env app.next/backend/.env
 if [ ! -d app.next/ml/artifacts/provisioned_v2 ] && [ -d app/ml/artifacts/provisioned_v2 ]; then
-  cp -rp app/ml/artifacts/provisioned_v2 app.next/ml/artifacts/
+  mkdir -p app.next/ml/artifacts
+  cp -rp app/ml/artifacts/provisioned_v2 app.next/ml/artifacts/provisioned_v2
+fi
+if [ ! -f app.next/ml/artifacts/provisioned_v2/active_event.joblib ]; then
+  echo "The model artifact is missing; deploy once from a laptop that has ml/artifacts." >&2
+  exit 1
 fi
 rm -rf app.prev frontend.prev
 [ -d app ] && mv app app.prev
