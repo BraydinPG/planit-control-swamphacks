@@ -26,8 +26,12 @@ byte-identical export check and six source/six SVG hashes. Development and built
 Edge smoke checks pass at 1440/768/390/320px with correct chart variants, open value
 tables, preserved CTA navigation, no clipping/overflow, exceptions or actual API calls.
 Desktop/mobile screenshots were inspected. [Audit and handoff](LANDING_RESEARCH_SECTION.md).
-The latest prompt explicitly requires **no automatic merge**; leave this PR for review.
+The attachment initially requested an unmerged PR; the latest user follow-up
+explicitly authorizes merging the verified PR into main.
 `PROJECT_CONTEXT.md` records the same facts; implementation/PR attribution is in Git history.
+Main `748056b` reconciled without conflicts in `bdec23b`, retaining report-photo spacing
+and seeded demo analysis. Final frontend checks pass on that combined tree. An isolated
+replica with CRLF reports confirms portable source hashes and identical exports.
 
 ## Full-width crew score and alert sections (Cache for Rudra) - 2026-10-18
 

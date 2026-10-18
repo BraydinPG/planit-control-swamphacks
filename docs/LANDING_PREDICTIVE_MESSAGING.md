@@ -5,7 +5,8 @@ Verified 2026-10-18 on `feature/cache-predictive-landing-messaging`, based on ma
 
 Later addition: [research showcase and charts](LANDING_RESEARCH_SECTION.md) documents
 the new data/backtesting/Monte Carlo section. The headline and statistics audited
-here remain intact; that later request explicitly requires its PR to stay unmerged.
+here remain intact. The research-section follow-up explicitly authorizes merging
+its verified PR into main.
 
 The headline is **SEE THE RISK.** followed by **PLAN BEYOND THE ALERT.** The eyebrow
 is **FORESITE · PREDICTIVE WORKSITE INTELLIGENCE**. The requested description and

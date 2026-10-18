@@ -1,7 +1,11 @@
 # Landing-page research showcase
 
 Verified 2026-10-18. Branch `feature/cache-landing-research-evidence` starts from
-main `a824964`. The user requests a focused PR and **no automatic merge**.
+main `a824964`. The attached prompt initially requested an unmerged PR; the latest
+user follow-up explicitly authorizes merging the verified PR into main.
+Main `748056b` was reconciled in `bdec23b` without conflicts, retaining teammates'
+report-photo spacing and seeded demo-analysis changes. Final frontend checks pass
+on the combined tree; these upstream changes are not part of this PR's diff.
 
 The new section immediately follows the hero/statistics:
 **Built on Real Data. Tested with Real Simulations.** It presents four source cards,
@@ -80,7 +84,8 @@ $plotPython = Join-Path $PWD 'frontend/.shell-check/landing-plots/Scripts/python
 & $plotPython frontend/scripts/prepare-landing-research.py --check
 ```
 
-The generator uses Matplotlib **3.10.7** and pinned plotting dependencies. It reads
+The generator uses Matplotlib **3.10.7** and pinned plotting dependencies (verified
+with Python **3.14.5**). It reads
 only saved reports, renders deterministic SVGs, writes the public JSON and replaces
 the marked research section in `landing.html`. `--check` verifies byte-identical
 figures/data and the generated HTML without writing. No raw archive, model load,
@@ -100,6 +105,7 @@ page. No external Auth0, database or deployment acceptance is claimed.
   explicit-fixture production build passes. Existing bundle/plugin-timing advisories remain.
 - New Python exporter: Ruff check/format and `--check` pass. Independent inspection
   confirms all six source hashes and six SVG hashes match the current files.
+  An isolated replica with CRLF source reports also reproduces the exports exactly.
 - Edge/CDP development and built-demo smoke checks pass at **1440/768/390/320px**:
   all three SVGs decode with the correct mobile/desktop variant and aspect ratio;
   figures have captions, tables/values/source counts match, and text does not clip
@@ -124,5 +130,5 @@ holdout. Nothing changes the 0–10 index, alert state, model gates or human aut
 
 Rudra: preserve this generated section and its qualifiers during frontend maintenance.
 Braydin: normal static-asset publication is sufficient after review; no configuration
-or service change is required. The PR remains open for review; its link/commit can be
-recovered from this document's Git history.
+or service change is required. The latest user follow-up requests merging after
+verification; the PR link/commit can be recovered from this document's Git history.
