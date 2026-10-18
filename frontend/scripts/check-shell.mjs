@@ -11,6 +11,9 @@ import { checkReportLocation } from './integration/location-browser.mjs'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const output = join(root, '.shell-check')
 const base = new URL(process.argv[2] ?? 'http://localhost:5173/')
+const scoreFixture = JSON.parse(
+  await readFile(join(root, 'src/fixtures/site-detail.json'), 'utf8'),
+)
 const production = process.argv.includes('--production')
 const restartCheck = process.argv.includes('--restart-check')
 assert(
@@ -146,7 +149,7 @@ async function checkBranding() {
     'Official source, accessible name, favicon and undistorted aspect ratio',
   )
   assert(
-    await evaluate("Array.from(document.querySelectorAll('[data-brand]')).filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);const width=e.getBoundingClientRect().width;return s.backgroundColor==='rgba(0, 0, 0, 0)'&&width<=(e.dataset.brand==='full'?240:e.dataset.brand==='compact'?144:32)})"),
+    await evaluate("Array.from(document.querySelectorAll('[data-brand]')).filter(e=>e.getClientRects().length).every(e=>{const s=getComputedStyle(e);const width=e.getBoundingClientRect().width;return s.backgroundColor==='rgba(0, 0, 0, 0)'&&width<=(e.dataset.brand==='full'?240:e.dataset.brand==='compact'?(e.closest('aside')?168:144):32)})"),
     'Logo stays transparent and compact at every viewport',
   )
   assert(
@@ -323,8 +326,8 @@ try {
     await evaluate(`(()=>{
     const value=JSON.parse(localStorage.getItem('planit:frontend-demo:v1'));
     const detail=value.details['site-demo-everglades'];
-    return detail.risk_score===6.1 && detail.score.risk_score===6.1 &&
-      detail.model_version==='rules-0.2' && detail.data_completeness===0 &&
+    return detail.risk_score===${scoreFixture.risk_score} && detail.score.risk_score===${scoreFixture.risk_score} &&
+      detail.model_version==='rules-0.2' && detail.data_completeness===${scoreFixture.data_completeness} &&
       localStorage.getItem('@@auth0spajs@@audit-sentinel')==='synthetic-session-only';
   })()`),
   )
@@ -333,10 +336,14 @@ try {
   await loaded('rules-0.2')
   results.push({
     demo_score_reset:
-      'legacy -> 6.1/10, rules-0.2; reload persists; synthetic Auth0 storage sentinel preserved',
+      `legacy -> ${scoreFixture.risk_score}/10, rules-0.2; reload persists; synthetic Auth0 storage sentinel preserved`,
   })
   for (const [width, height, name] of [
     [1440, 1000, 'desktop'],
+    [1024, 1000, 'small-desktop'],
+    [1280, 1000, 'laptop'],
+    [1920, 1080, 'wide-desktop'],
+    [2560, 1440, 'ultrawide'],
     [390, 844, 'phone'],
     [320, 740, 'small-phone'],
   ]) {
@@ -353,6 +360,22 @@ try {
     await alertCardLoaded()
     await checkBranding()
     await screenshot(name)
+    const layout = await evaluate(`(()=>{
+      const visible=e=>!!e&&e.getClientRects().length>0;
+      const main=document.querySelector('main').getBoundingClientRect();
+      const alerts=document.querySelector('[data-crew-alerts]').getBoundingClientRect();
+      const instructions=document.querySelector('[data-crew-alerts]').nextElementSibling.getBoundingClientRect();
+      return {mainWidth:main.width,desktopNav:visible(document.querySelector('nav[aria-label="Workspace"]')),
+        mobileNav:visible(document.querySelector('nav[aria-label="Mobile workspace"]')),
+        sideBySide:instructions.left>alerts.right&&Math.abs(instructions.top-alerts.top)<2,
+        supervisorTeamLink:!!document.querySelector('a[href="#/crew/team"]')};
+    })()`)
+    assert.equal(layout.desktopNav, width >= 1024)
+    assert.equal(layout.mobileNav, width < 1024)
+    assert.equal(layout.supervisorTeamLink, false)
+    if (width >= 1024) assert(layout.mainWidth > 600 && layout.mainWidth <= 1440)
+    else assert(layout.mainWidth <= 512)
+    assert.equal(layout.sideBySide, width >= 1280)
     assert(
       await evaluate('document.documentElement.scrollWidth <= innerWidth'),
       `Overflow at ${width}`,
@@ -374,6 +397,7 @@ try {
       primary_action_visible: true,
       overflow: false,
       nav_targets: '>=44px',
+      crew_layout: layout,
     })
     await hash('/crew/sites', 'Score factors and evidence')
     // Crew outlook tiles show four; expand to count every outlook.
@@ -381,14 +405,23 @@ try {
     assert(
       await evaluate(`(()=>{
       const score=document.querySelector('[aria-label="Site score"]');
-      return score?.innerText.includes('6.1') && !score.innerText.includes('Score withheld') &&
+      return score?.innerText.includes('${scoreFixture.risk_score.toFixed(1)}') && !score.innerText.includes('Score withheld') &&
         score.innerText.includes('Evidence incomplete') && score.textContent.includes('rules-0.2') &&
-        document.querySelectorAll('[data-outlook-id]').length===6 &&
+        document.querySelectorAll('[data-outlook-id]').length===${scoreFixture.event_outlooks.filter(c => c.status === 'available').length} &&
         document.body.innerText.includes('Archived agency forecast, not a current prediction') &&
         document.documentElement.scrollWidth<=innerWidth;
     })()`),
-      'Approved simulated score and six independent outlooks',
+      'Approved simulated score and every available independent outlook',
     )
+    if (width >= 1280)
+      assert(
+        await evaluate(`(()=>{
+          const score=document.querySelector('[data-crew-score]').getBoundingClientRect();
+          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+          return conditions.left>score.right&&Math.abs(conditions.top-score.top)<2;
+        })()`),
+        'Desktop worksite score and conditions sit side by side',
+      )
     await evaluate(
       'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',
     )
@@ -801,9 +834,9 @@ try {
     )
     assert(
       await evaluate(
-        "document.querySelectorAll('[data-outlook-id]').length===6 && document.querySelectorAll('[data-alert-id]').length===3 && document.querySelectorAll('[data-alert-id=\"copy-second-alert\"]').length===1",
+        `document.querySelectorAll('[data-outlook-id]').length===${scoreFixture.event_outlooks.filter(c => c.status === 'available').length} && document.querySelectorAll('[data-alert-id]').length===3 && document.querySelectorAll('[data-alert-id="copy-second-alert"]').length===1`,
       ),
-      'Multiple alerts and six outlooks retained',
+      'Multiple alerts and every available outlook retained',
     )
     assert(
       await evaluate('document.documentElement.scrollWidth<=innerWidth'),
@@ -844,7 +877,7 @@ try {
   await reload('Not scored yet')
   results.push({
     readability:
-      'Long site/team/crew text and approved instructions, stale/null observations, six outlooks, multiple active alerts and all expanded details at 1440/390/320; empty reference-site state checked. Controlled simulation only.',
+      'Long site/team/crew text and approved instructions, stale/null observations, every available outlook, multiple active alerts and all expanded details at 1440/390/320; empty reference-site state checked. Controlled simulation only.',
   })
   if (restartCheck) {
     const saved = await evaluate(
@@ -1257,7 +1290,9 @@ try {
       const started = Date.now()
       const url = await offModeServer(setting)
       await navigate(
-        url,
+        // Bare URLs now open the public landing page. Exercise the protected
+        // workspace directly to check missing-auth configuration, without login.
+        setting === 'false' ? new URL('#/crew/overview', url).href : url,
         setting === 'false'
           ? 'Sign-in is not configured.'
           : 'The app could not start',

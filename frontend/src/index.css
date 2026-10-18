@@ -4,8 +4,8 @@
  * FORESITE design tokens: an Apple Human Interface style, always dark.
  * Dark grouped backgrounds, raised surfaces, hairline dividers, system
  * blue for actions, and the system font (San Francisco on Apple devices).
- * The crew workspace keeps its phone layout at every screen size; the
- * supervisor workspace is denser for desktop review.
+ * Crew keeps its field layout on phones and tablets, expanding into a
+ * desktop workspace on larger screens. Supervisors have a denser review layout.
  * Text tokens pass 4.5:1 on bg, surface and surface-2. Fills that carry
  * white text (stop, warn, accent-fill, ok-fill) pass 4.5:1 with white.
  * Risk colours are always paired with a shape and a word.

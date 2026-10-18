@@ -300,21 +300,37 @@ function SitePage({
   // Crew home: what needs attention now. The evidence lives on My worksite.
   if (compact)
     return (
-      <div className="pc-enter space-y-5">
-        {header}
-        {active[0] && <AlertCard alert={active[0]} />}
-        {active.length > 1 && (
-          <a href={`#/${persona}/alerts`} className={control}>
-            View all {active.length} active alerts
-          </a>
-        )}
-        {!active.length && (
-          <Empty>
-            No active alerts reported. Worksite conditions still require
-            verification.
-          </Empty>
-        )}
-        {hazards}
+      <div className="pc-enter space-y-5" data-crew-home>
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          {header}
+          <div className="hidden shrink-0 gap-3 xl:flex">
+            <a className={primary} href={`#/${persona}/reports`}>
+              <Icon name="camera" className="size-4" />
+              Report a hazard
+            </a>
+            <a className={control} href={`#/${persona}/briefings`}>
+              <Icon name="briefings" className="size-4" />
+              View briefing
+            </a>
+          </div>
+        </div>
+        <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-start xl:gap-6 xl:space-y-0">
+          <div className="min-w-0 space-y-5" data-crew-alerts>
+            {active[0] && <AlertCard alert={active[0]} />}
+            {active.length > 1 && (
+              <a href={`#/${persona}/alerts`} className={control}>
+                View all {active.length} active alerts
+              </a>
+            )}
+            {!active.length && (
+              <Empty>
+                No active alerts reported. Worksite conditions still require
+                verification.
+              </Empty>
+            )}
+          </div>
+          {hazards}
+        </div>
         <div className="flex flex-wrap gap-3">
           <a
             className={control + ' w-full @lg:w-auto'}
@@ -341,9 +357,15 @@ function SitePage({
             </p>
             {locationDetails}
           </div>
-          {score}
-          {factors}
-          {conditions}
+          <div className="space-y-5 xl:grid xl:grid-cols-12 xl:items-start xl:gap-6 xl:space-y-0">
+            <div className="min-w-0 space-y-5 xl:col-span-4" data-crew-score>
+              {score}
+              {factors}
+            </div>
+            <div className="min-w-0 xl:col-span-8" data-crew-conditions>
+              {conditions}
+            </div>
+          </div>
           {reports}
           {context}
           {refreshButton}
