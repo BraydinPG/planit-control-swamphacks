@@ -33,10 +33,20 @@ p,h1{text-wrap:pretty}
 .public-link:hover{background:rgba(238,240,242,.08);color:var(--bone)}
 .public-link[aria-current="page"]{background:rgba(229,22,47,.13);color:var(--bone);box-shadow:inset 0 -2px var(--signal)}
 @media (max-width:600px){
+  :root{--hdr:112px}
   .top{gap:4px}
   .signin{padding:0 10px}
   .public-nav{gap:4px}
+  .top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:44px 44px;gap:4px 8px;align-content:center}
+  .brand{grid-column:1;grid-row:1}
+  .signin{grid-column:2;grid-row:1}
+  .public-nav{grid-column:1/-1;grid-row:2;justify-content:center;margin-left:0}
 }
+
+.public-footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding:24px var(--gutter);border-top:1px solid var(--line);color:#c0c5ce;font-size:13px;background:var(--ink)}
+.public-footer nav{display:flex;gap:8px;flex-wrap:wrap}
+.public-footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;text-underline-offset:4px}
+@media(prefers-reduced-motion:reduce){body .grain{animation:none}}
 
 /* ——— Layers ——— */
 #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}

@@ -1,6 +1,7 @@
 (() => {
 'use strict';
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+let reduce = motionPreference.matches;
 const $ = s => document.querySelector(s);
 
 /* ================= WebGL red fog ================= */
@@ -146,6 +147,7 @@ function drawBolts(now){
 /* ================= Random lightning ================= */
 // a strike lands somewhere across the sky every few seconds; sometimes a second one follows close behind
 function strike(strong){
+  if (reduce) return;
   const x = innerWidth*(.08 + Math.random()*.84);
   const near = strong || Math.random() < .4;
   S.flash = near ? .85 : .5;
@@ -154,18 +156,20 @@ function strike(strong){
   S.strike = [(x - innerWidth/2)/innerHeight, .5 - yEnd*.5/innerHeight]; // light centred halfway down the bolt
   if (!reduce) makeBolt(x, yEnd);
 }
+let lightningTimeout, restrikeTimeout;
 const schedule = () => {
-  if (!document.hidden) { strike(); if (Math.random() < .3) setTimeout(strike, 180 + Math.random()*420); }
-  setTimeout(schedule, 3200 + Math.random()*5200);
+  if (reduce) return;
+  if (!document.hidden) { strike(); if (Math.random() < .3) restrikeTimeout = setTimeout(strike, 180 + Math.random()*420); }
+  lightningTimeout = setTimeout(schedule, 3200 + Math.random()*5200);
 };
-setTimeout(schedule, 1400);
+if (!reduce) lightningTimeout = setTimeout(schedule, 1400);
 
 /* ================= Stats count up once on load ================= */
 document.querySelectorAll('.stats b').forEach((el, i) => {
   const to = +el.dataset.to, suf = el.dataset.suffix || '', unit = el.dataset.unit, t0 = performance.now() + 900 + i*120, D = reduce ? 1 : 1400;
   const put = v => { el.textContent = v.toLocaleString("en-US") + suf; if (unit) { const s = document.createElement('small'); s.textContent = unit; el.append(s); } };
   put(reduce ? to : 0);
-  const tick = now => { const k = Math.min(1, Math.max(0, (now - t0)/D)), e = 1 - Math.pow(1 - k, 4); put(Math.round(to*e)); if (k < 1) requestAnimationFrame(tick); };
+  const tick = now => { const k = Math.min(1, Math.max(0, (now - t0)/D)), e = 1 - Math.pow(1 - k, 4); put(Math.round(to*e)); if (k < 1 && !reduce) requestAnimationFrame(tick); else if (reduce) put(to); };
   if (!reduce) requestAnimationFrame(tick);
   setTimeout(() => put(to), 900 + i*120 + D + 300); // lands on the real value even if animation frames are paused
 });
@@ -176,12 +180,30 @@ function frame(now){
   S.flash *= .93; // the glow lingers in the fog a moment after the bolt
   // the fog flickers with the bolt's own return strokes during its first half second
   const age = now - (S.flicker || -1e9);
-  if (age < 450 && Math.random() < .25) S.flash = Math.min(.9, S.flash + .2);
+  if (!reduce && age < 450 && Math.random() < .25) S.flash = Math.min(.9, S.flash + .2);
   updateWake(now);
   S.mouse[0] += (S.mt[0] - S.mouse[0]) * .05; S.mouse[1] += (S.mt[1] - S.mouse[1]) * .05;
   draw(reduce ? 12 : (now - t0)/1000);
   drawBolts(now);
-  requestAnimationFrame(frame);
+  if (!reduce) frameId = requestAnimationFrame(frame);
 }
-requestAnimationFrame(frame);
+let frameId = requestAnimationFrame(frame);
+const redrawStaticSky = () => {
+  if (reduce) {
+    cancelAnimationFrame(frameId);
+    frameId = requestAnimationFrame(frame);
+  }
+};
+addEventListener('resize', redrawStaticSky);
+sky.addEventListener('webglcontextrestored', redrawStaticSky);
+motionPreference.addEventListener('change', event => {
+  reduce = event.matches;
+  clearTimeout(lightningTimeout);
+  clearTimeout(restrikeTimeout);
+  cancelAnimationFrame(frameId);
+  bolts = [];
+  S.flash = 0;
+  frameId = requestAnimationFrame(frame);
+  if (!reduce) lightningTimeout = setTimeout(schedule, 1400);
+});
 })();
