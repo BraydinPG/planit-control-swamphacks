@@ -8,9 +8,16 @@ import { ConnectedPages, DemoClock } from './pages/ConnectedPages'
 import { control } from './components/data/Interaction'
 import { Details } from './components/data/Details'
 import { LiveApplication } from './application/LiveApplication'
+import { GuestApplication } from './application/GuestApplication'
 import { ApplicationProvider } from './application/Provider'
 import type { Persona } from './api/contracts'
-import { cameFromLanding, clearSignInParam, isBareEntry, showLanding } from './application/landing'
+import {
+  cameFromLanding,
+  clearSignInParam,
+  isBareEntry,
+  isGuestDemo,
+  showLanding,
+} from './application/landing'
 import './styles/map.css'
 
 function DemoApplication() {
@@ -123,8 +130,10 @@ export default function App() {
         </Details>
       </main>
     )
-  return shellMode === 'fixture' ? (
-    <DemoEntry />
+  // Fixture mode: `?demo` (Try demo on the landing page) opens the bundled demo.
+  if (shellMode === 'fixture') return <DemoEntry />
+  return isGuestDemo() ? (
+    <GuestApplication />
   ) : (
     <AuthProvider>
       <LiveApplication />

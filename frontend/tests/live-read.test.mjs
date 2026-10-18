@@ -181,3 +181,29 @@ test('a concurrent server state change is retained; client never derives clearan
   )
   assert.equal((await client([expected]).alerts())[0].state, 'active')
 })
+
+test('a Try demo guest reads without a token, sends its demo role and offers no write actions', async () => {
+  const calls = []
+  const guest = HttpClient.guest(
+    'http://localhost:8000',
+    'supervisor',
+    async (url, options) => {
+      calls.push(options.headers)
+      return Response.json(sites)
+    },
+  )
+  assert.deepEqual(await guest.sites(), sites)
+  assert.equal(calls[0]['X-Demo-Role'], 'supervisor')
+  assert.equal(calls[0].Authorization, undefined)
+  assert.deepEqual(
+    Object.entries(guest.capabilities)
+      .filter(([, on]) => on)
+      .map(([k]) => k),
+    ['briefings'],
+  )
+  assert.match(guest.readOnlyMessage, /read-only/)
+  await assert.rejects(
+    () => new HttpClient('http://localhost:8000', async () => ({})).sites(),
+    (e) => e.status === 401,
+  )
+})

@@ -16,6 +16,9 @@ class AuthSettings(BaseSettings):
     auth0_roles_claim: str = DEFAULT_ROLES_CLAIM
     # Local-only development bypass. Never enable in a deployed environment.
     dev_auth_bypass: bool = False
+    # Public "Try demo": an unauthenticated visitor may read the demo organization as its
+    # guest crew member or supervisor (`X-Demo-Role`). Read-only. Off unless set.
+    demo_guest_enabled: bool = False
     # Machine-to-machine app for the Auth0 Management API, with only read:roles and
     # create:role_members. Used to give a new supervisor their role (auth/SETUP.md).
     auth0_mgmt_client_id: str | None = None
