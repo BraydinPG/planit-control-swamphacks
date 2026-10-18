@@ -30,6 +30,10 @@ sidebar from header. Reverified 178 frontend tests, lint, TypeScript/build and 4
 focused browser destinations at 1440/768/390/320, including mocked sign-in: no
 overflow, exceptions or actual backend requests. Earlier workflow-suite results above
 remain the layout acceptance; the full lifecycle suite was not repeated for this size change.
+Before merging, incorporated main `f5f4969` / PR74: retain supervisor auto-hide and
+map initialization, with pinned crew desktop navigation and 168px logos. Combined-tree
+checks pass: 178 tests, lint, TypeScript/build, 40 crew layout views, 44 branding views,
+and explicit supervisor pointer-collapse/left-edge-reopen plus unchanged phone headers.
 
 ## Demo sites slide forward in time (Braydin, touching Rudra's refresh loop) - 2026-10-18
 

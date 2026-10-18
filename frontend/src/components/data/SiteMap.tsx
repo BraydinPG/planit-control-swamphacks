@@ -27,15 +27,24 @@ const network = () => (navigator.onLine ? reconnects : -1)
 // depends on colour alone. Each outline also carries its name as a tooltip.
 const HABITAT_COLOR = '#9d8ad6'
 
+// The contiguous United States (lower 48), used as the supervisor map's opening view.
+const CONTIGUOUS_US = L.latLngBounds([24.4, -124.8], [49.4, -66.9])
+
 export function SiteMap({
   sites,
   select,
   habitat,
+  view = 'sites',
 }: {
   sites: SiteSummary[]
   select: (id: string) => void
   /** Optional critical habitat overlay, already clipped to the map window. */
   habitat?: CriticalHabitatArea[]
+  /**
+   * Opening view. `sites` fits the shown sites (and habitat). `contiguous-us` opens on
+   * the lower 48 filling the map, centred, and stays there when filters change.
+   */
+  view?: 'sites' | 'contiguous-us'
 }) {
   const container = useRef<HTMLDivElement>(null)
   const connection = useSyncExternalStore(subscribe, network, () => 0)
@@ -64,9 +73,14 @@ export function SiteMap({
       bounds.extend(layer.getBounds())
       return [layer]
     })
-    const map = L.map(container.current, { scrollWheelZoom: false }).fitBounds(
-      bounds.pad(0.15),
-    )
+    const usView = view === 'contiguous-us'
+    const map = usView
+      ? // fine zoom steps let the lower 48 fill the frame instead of snapping a level out
+        L.map(container.current, { scrollWheelZoom: false, zoomSnap: 0.1 }).fitBounds(
+          CONTIGUOUS_US,
+          { padding: [6, 6] },
+        )
+      : L.map(container.current, { scrollWheelZoom: false }).fitBounds(bounds.pad(0.15))
     outlines.forEach((layer) => layer.addTo(map))
     for (let lon = -180; lon <= 180; lon += 30)
       L.polyline(
@@ -122,7 +136,7 @@ export function SiteMap({
     return () => {
       map.remove()
     }
-  }, [sites, select, habitat, hidden, connection])
+  }, [sites, select, habitat, hidden, connection, view])
   if (hidden) return null
   return (
     <section
@@ -198,7 +212,9 @@ export function SiteMap({
         ref={container}
         role="region"
         aria-label="Interactive geographic reference map; locations also listed below"
-        className="map-shell relative z-0 h-80 w-full overflow-hidden rounded-xl border border-line @3xl:h-[26rem]"
+        // The US view matches the lower 48's shape on this map (about 1.9:1) so the
+        // country fills the frame in both directions.
+        className={`map-shell relative z-0 w-full overflow-hidden rounded-xl border border-line ${view === 'contiguous-us' ? 'aspect-[1.9/1] max-h-[70vh] min-h-56' : 'h-80 @3xl:h-[26rem]'}`}
       />
     </section>
   )
