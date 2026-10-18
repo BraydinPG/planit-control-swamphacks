@@ -52,6 +52,13 @@ export function BriefingCard({ value }: { value: Briefing }) {
           Covers <Timestamp value={value.forecast_window_start} /> to{' '}
           <Timestamp value={value.forecast_window_end} />
         </p>
+        <p className="flex items-start gap-2 text-sm text-ink-2">
+          <Icon name="clock" className="mt-0.5 size-4 shrink-0" />
+          <span>
+            Briefings are scheduled for 6 PM, in the worksite's local time.
+            Organization briefings require permission.
+          </span>
+        </p>
         <p className="text-sm">
           {value.risk_score === null ? (
             <>
@@ -175,7 +182,7 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
   )
   const titleSlot = usePageActions()
   const picker = (
-      <div className="grid gap-4 rounded-2xl border border-line bg-surface p-4 @5xl:grid-cols-[minmax(0,22rem)_1fr] @5xl:items-end">
+      <div className="rounded-2xl border border-line bg-surface p-4">
         <label className={labelText}>
           Choose a worksite or organization
           <select
@@ -191,16 +198,6 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
             <option value="organization">Organization briefings</option>
           </select>
         </label>
-        {/* Beside the dropdown on wide pages: centred between it and the right edge, and top to bottom.
-            The half-gap shift (gap-4 / 2) centres it on the space between the dropdown and
-            the edge, not on its grid cell, which starts after the column gap. */}
-        <p className="flex items-start gap-2 text-sm text-ink-2 @5xl:-translate-x-2 @5xl:items-center @5xl:self-center @5xl:justify-self-center">
-          <Icon name="clock" className="mt-0.5 size-4 shrink-0 @5xl:mt-0" />
-          <span>
-            Briefings are scheduled for 6 PM, in the worksite's local time.
-            Organization briefings require permission.
-          </span>
-        </p>
       </div>
   )
   return (

@@ -278,7 +278,7 @@ export function AppShell({
         </div>
           <div
             ref={setPageActions}
-            className="min-w-0 empty:hidden @2xl:max-w-[46rem] @2xl:flex-1"
+            className="min-w-0 empty:hidden @2xl:w-[24rem] @2xl:shrink-0"
           />
         </div>
         <PageActionsContext.Provider value={pageActions}>
