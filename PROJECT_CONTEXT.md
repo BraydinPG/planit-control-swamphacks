@@ -2,6 +2,15 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Alert, report and header maintenance - 2026-10-17
+- Explicit user request on `feature/alert-report-header-fixes`: expired live watch windows show pending authoritative status instead of a stuck 00:00 and refresh every 15 seconds; only the server can clear an alert. Alerts also have a manual refresh button. User follow-up reverted the acknowledgement button changes to their original behavior.
+- Report photo selections can be removed before submission, clearing the preview and file input so the same image can be selected again. Saved report photos are unchanged. Live submission copy is "Report successful" / "Report failed"; supervisor review remains pending.
+- User follow-up reverted the header logo changes to their previous markup and behavior. The live authenticated badge is replaced with Sign out using the existing Auth0 logout; the live connection-information container is hidden. Demo labeling and controls remain visible.
+- Changes are frontend-only: no API/schema, deterministic alert rule, DB, photo-storage or Auth0-internal changes. Automated verification uses fixtures and mocked authentication/API responses; no deployed-service acceptance is claimed.
+- Verification before the logo and acknowledgement reverts: 170 frontend tests, production build, lint and whitespace checks passed. Isolated Edge browser acceptance passed at 1440/390/320, including live-clock ticking, expired-window refresh and server-only clearance, image removal/reselection, success/failure copy and Sign out. No browser exceptions or actual backend requests. Temporary test server used port 5194; existing servers and environment files were preserved.
+- Final verification after both requested reverts: all 169 remaining frontend tests, production build, lint and whitespace checks pass. Browser assertions for the reverted behaviors were removed; the full browser suite was not rerun after those reverts.
+- Merge verification against main `6e7850e`: preserved official branding, report-photo retrieval and access mat condition fields; all 172 frontend tests, production build and lint pass. Resolved report-form conflict by retaining both the file-input ref and current mat-condition logic.
+
 ## Official FORESITE artwork integration - 2026-10-17
 - Explicit narrow logo authorization; `feature/cache-official-foresite-logo` starts from main `991c52f`. PR50/51/52 are maintainer-merged; new report/photo/deployment changes are preserved. No edits to another checkout or deployment configuration.
 - Approved Downloads PNG copied byte-identically to `frontend/public/foresite-logo.png`; transparent full/compact/cyclone/favicon/mobile assets are extracted, not redesigned. Shared `Brand` component covers shell/sidebar/mobile/footer and app-owned auth/loading screens. Original colors and layout retained; dark-mode contrast plate; no raster-as-SVG claim.
@@ -32,9 +41,11 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Published [PR47](https://github.com/BraydinPG/planit-control-swamphacks/pull/47), **Polish UI Copy and Improve Worker Readability.**, open against main for Rudra's review; verified UI commit `a5a06cd`. No automatic merge.
 
 ## Access mat report category - 2026-10-17
+- Main integration: preserved the access mat, species and demo-fix context entries together; added the category label to the new supervisor Overview. Reverified 140 focused backend checks, 45 frontend checks (data, report-analysis, team), frontend build and lint after incorporating main `66dffb8`.
 - User-authorized addition: `access_mat_deterioration` / "Access mat deterioration" across the canonical report enum, TypeScript mirror, form/review labels, validators, demo client, notice labels and Gemini analysis. Existing string DB columns need no migration. Potential notices use the existing review/instruction workflow and a labeled prototype 1-mile fallback radius.
 - The optional note can preserve the crew's A-D stage and section description. User clarification: individual mat IDs are impractical and no approved rubric is available. T034B therefore tracks section-based reporting, structured crew judgment and evidence-linked Gemini observations for supervisor review; automated letter grading is deferred. Gemini is prompted to describe visible damage and unknowns without claiming structural capacity or replacing the crew assessment.
 - Verification: 125 backend checks passed (`test_reports_api`, `test_report_analysis`, `test_ts_mirror`, `test_hazards_api`, `test_radius`), plus 34 focused frontend checks (`data`, `report-analysis`), production build and lint. No live Gemini evaluation or model training was needed for this category addition.
+
 ## Demo score and prediction failure fixes - 2026-10-17
 - [PR44](https://github.com/BraydinPG/planit-control-swamphacks/pull/44) was merged as `66dffb8`; implementation `9ae6866`, reviewed-main merge `07c71db`. No Codex merge or operational enablement.
 - Explicit Cache bug-fix assignment on `feature/cache-demo-score-prediction-fixes`, initially main `0a0d5c8`; reviewed main `3272930` incorporated with team/species and supervisor changes preserved. Authorized Rudra-path changes are in `docs/CROSS_SCOPE_CHANGES.md`; no scoring algorithm/weights, ML, Auth0, DB configuration or canonical schema edits by Cache.

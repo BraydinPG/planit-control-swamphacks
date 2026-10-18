@@ -71,12 +71,16 @@ export function AppShell({
   controls,
   message,
   badge,
+  headerControls,
+  hideConnectionInfo = false,
 }: {
   children?: ReactNode
   workspaceOverride?: Workspace
   controls?: ReactNode
   message?: string
   badge?: string
+  headerControls?: ReactNode
+  hideConnectionInfo?: boolean
 }) {
   const [locationRoute, setRoute] = useState(readRoute)
   const route = {
@@ -208,7 +212,7 @@ export function AppShell({
               </span>
             </p>
           </div>
-          <span
+          {headerControls ?? (<span
             className={`inline-flex shrink-0 items-center gap-1.5 chip border ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
           >
             <span
@@ -216,7 +220,7 @@ export function AppShell({
               aria-hidden="true"
             />
             {badgeText}
-          </span>
+          </span>)}
         </div>
       </header>
       <main
@@ -224,7 +228,7 @@ export function AppShell({
         tabIndex={-1}
         className={`@container mx-auto ${column} min-w-0 [overflow-wrap:anywhere] px-4 pb-32 pt-4 outline-none ${crew ? '' : 'sm:px-6 sm:pt-6 lg:px-10 lg:pb-12'}`}
       >
-        <div className="mb-5 flex flex-col gap-3 rounded-xl border border-dotted border-line-strong bg-surface/60 px-3 py-2.5 @2xl:flex-row @2xl:items-center @2xl:justify-between @2xl:px-4">
+        {!hideConnectionInfo && <div className="mb-5 flex flex-col gap-3 rounded-xl border border-dotted border-line-strong bg-surface/60 px-3 py-2.5 @2xl:flex-row @2xl:items-center @2xl:justify-between @2xl:px-4">
           <p className="max-w-2xl text-sm leading-relaxed text-ink-2">
             <strong className="font-semibold text-ink">
               {badge ??
@@ -261,7 +265,7 @@ export function AppShell({
               </div>
             )}
           </div>
-        </div>
+        </div>}
         <div className="mb-5 @2xl:mb-7">
           <p className="kicker mb-1.5">
             {route.workspace === 'crew'
