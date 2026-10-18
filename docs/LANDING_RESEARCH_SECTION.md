@@ -15,6 +15,10 @@ The [existing headline-statistic audit](LANDING_PREDICTIVE_MESSAGING.md) still a
 The export reads these six versioned inputs, recording their SHA-256 hashes in
 [evidence.json](../frontend/public/research/evidence.json):
 
+Source hashes use UTF-8 text normalized to LF, matching the Git content on Windows
+and Linux. Figure hashes cover the actual exported bytes; an asset-local
+`.gitattributes` preserves LF for generated SVGs/JSON in clean Windows checkouts.
+
 | Input | Values used and interpretation |
 | --- | --- |
 | [Flood backtest](../ml/reports/purged_v2/backtest_metrics.json) | `source_row_counts.rows_total`: **349,030** NOAA Storm Events rows. `validation_2024_train_through_2023`: **4,053** snapshots / **583** reporting episodes at every displayed horizon. Default estimator: **Kaplan–Meier**. Production eligibility remains false. |
@@ -59,8 +63,8 @@ Each chart has a descriptive image alternative, a native expandable data table
 and original-report links. Dedicated desktop/mobile SVG exports preserve label
 sizes and proportions. Source hashes and figure hashes make the displayed evidence
 inspectable. No charting library, runtime data fetch, simulation controls or new
-runtime JavaScript is introduced. Three images total **73,170 bytes** on desktop
-or **73,046 bytes** on mobile, before compression; images are lazy-loaded.
+runtime JavaScript is introduced. Three images total **71,385 bytes** on desktop
+or **71,261 bytes** on mobile, before compression; images are lazy-loaded.
 
 ## Reproduce or inspect
 

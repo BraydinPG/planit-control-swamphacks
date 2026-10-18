@@ -3,29 +3,30 @@
   "sources": [
     {
       "path": "ml/reports/purged_v2/backtest_metrics.json",
-      "sha256": "a17221cfb339cb4d5c66d0ed7d70dc8250e3eccb40931d7e41471753e730d8c1"
+      "sha256": "6d618257306e1ed0afc40f8214b3e3d458ac357e5bb7e5c3b0994d9147b5a430"
     },
     {
       "path": "ml/reports/purged_v2/monte_carlo_summary.json",
-      "sha256": "8e8175193f79049bbf421aaf9af199eec6ca86c43338e67c48aa788cad0919e4"
+      "sha256": "b9e04609bb19b593a32c45c1c833df39a44eccd177bcb8aafa1d7e901c204bee"
     },
     {
       "path": "ml/reports/multidisaster/station_coverage.json",
-      "sha256": "2abf05d0fe21283416b066679ae6acfc09203e2245437f36fc6aa6d2f573bed4"
+      "sha256": "28daf4ac084580d9c3a5a3e6e8d2b626b85b393bf95d53156654959c67c61c6b"
     },
     {
       "path": "ml/reports/multidisaster/hurdat_coverage.json",
-      "sha256": "658371a635173c96eab6e677753d3abce08fe981947d1aa99425fad5eb2c011f"
+      "sha256": "656cd8eb659e1213101eca585c21e4b7d8386585a8e2bf124168e67e350fb043"
     },
     {
       "path": "ml/reports/worker_outlook/eia_coverage.json",
-      "sha256": "8947d87663ae38349b7624862e5089b7dd01194d1a5b2c21f46a6b7d94ae52a0"
+      "sha256": "49e54b3b96cb5f7e3fa11a0841f70afce13fcce88c341517eb7d719f463266b4"
     },
     {
       "path": "ml/reports/multidisaster/registry.json",
-      "sha256": "36381d1b277c04383dbb42298687b6dfddf7c58ea975601581a5226ebe9ff047"
+      "sha256": "2f3e3d5ff209a5d23110ab115df503885b7337781e90ac081a2c8c0e73f71571"
     }
   ],
+  "source_hash_normalization": "UTF-8 text with LF line endings (Git text form)",
   "datasets": [
     {
       "name": "NOAA Storm Events",
@@ -205,27 +206,27 @@
   "figures": [
     {
       "file": "monte-carlo.svg",
-      "sha256": "eba7ddaaa42b33b7fcea9f2d7fb5bceb386713627628faeb5475b32b1cf7c9e0"
+      "sha256": "e596ad3d5edf6ce234acdc81d76d885cc9714b899ceca404418488dd8abba501"
     },
     {
       "file": "monte-carlo-mobile.svg",
-      "sha256": "6afdc84e6f429b15fcbe8810a3f669cbdde9e5f54cd2394a79ea8e48246f1027"
+      "sha256": "d44a06aef8e204451cbf883548a75626945247ec7810746b6f18fb81f2880207"
     },
     {
       "file": "backtest.svg",
-      "sha256": "7bf06069866b40d8f47859dc04c43f6e93abbe187856a8fc8af42c9ac54d3285"
+      "sha256": "a1b0be8b962066dc7753cd60fdda1fa82068e7dd108c6f53837b1bb7514bab39"
     },
     {
       "file": "backtest-mobile.svg",
-      "sha256": "39f1cdd0c47b1d3631568b53e10f84f1bdbefe7bf57370cf28c2a2900ca177e8"
+      "sha256": "20a391df22f38cebb5817f32be0ed99bc19121e8cc929b840f8aea1eb68976c2"
     },
     {
       "file": "data-sources.svg",
-      "sha256": "53b4321653b09ef031b51058cc63bb25d5c20823261d105ed341eb2cc9d31b4d"
+      "sha256": "0a477d967a7105de14cea79b0db5d640b14d7688e7c9a45c5544f31f561c6bb8"
     },
     {
       "file": "data-sources-mobile.svg",
-      "sha256": "f0748b8978c3b926f1f87cc1cff6d1875725670db85b8b8b6e2066ce7dfaa03b"
+      "sha256": "83efb2926bc3022c30570a45e1b4edb1e8af1ecf9120876eddf175dbd3825121"
     }
   ]
 }

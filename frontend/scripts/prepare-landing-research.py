@@ -35,6 +35,11 @@ def digest(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def source_bytes(path):
+    # Git text reports may use CRLF in Windows worktrees; hash their portable LF form.
+    return (ROOT / path).read_bytes().replace(b"\r\n", b"\n")
+
+
 def read_evidence():
     reports = {
         name: json.loads((ROOT / path).read_bytes()) for name, path in SOURCES.items()
@@ -90,9 +95,10 @@ def read_evidence():
     return {
         "scope": "archived_research_not_live_forecast_or_safety_validation",
         "sources": [
-            {"path": path, "sha256": digest((ROOT / path).read_bytes())}
+            {"path": path, "sha256": digest(source_bytes(path))}
             for path in SOURCES.values()
         ],
+        "source_hash_normalization": "UTF-8 text with LF line endings (Git text form)",
         "datasets": datasets,
         "total_records_and_measurements": sum(d["count"] for d in datasets),
         "reference_sites": reports["eia"]["selected_research_locations"],
@@ -239,7 +245,8 @@ def chart(kind, evidence, mobile):
         },
     )
     plt.close(fig)
-    return out.getvalue()
+    # Matplotlib pads path-command lines; remove trailing whitespace deterministically.
+    return b"\n".join(line.rstrip() for line in out.getvalue().splitlines()) + b"\n"
 
 
 def section(data, assets):

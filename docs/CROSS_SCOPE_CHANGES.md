@@ -6,6 +6,8 @@ research section and scoped CSS. `frontend/scripts/prepare-landing-research.py` 
 six saved ML reports, exports three SVG charts with desktop/mobile variants, public
 chart data/source hashes and the marked HTML section. Dedicated plotting requirements
 are optional regeneration tools; the normal frontend build needs no Python/models.
+Generated assets have their own LF attributes, and report hashes use normalized
+Git text form so Windows/Linux line endings do not invalidate provenance.
 
 Source cards show 349,030 NOAA rows, 122,270 station measurements, 55,524 NHC track
 points and 50 EIA reference locations. Charts show one archived 5,000-draw consistency
