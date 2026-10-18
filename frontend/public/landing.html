@@ -4,9 +4,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Foresite</title>
+<title>FORESITE</title>
 <meta name="description" content="Foresite gives utility field crews and supervisors one shared view of lightning, weather, flood and crew-reported hazards.">
-<link rel="icon" type="image/x-icon" href="/foresite-favicon.ico?v=56ddbbb3">
+<link rel="icon" type="image/x-icon" href="/foresite-favicon.ico?v=daaf5322">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -45,8 +45,8 @@ main,header{position:relative;z-index:3}
 
 /* ——— Chrome ——— */
 .top{position:fixed;top:0;left:0;right:0;z-index:50;height:var(--hdr);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 var(--gutter);background:var(--ink);border-bottom:1px solid var(--line);color:var(--bone)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.01em;text-decoration:none;font-size:15px}
-.brand svg{width:22px;height:22px}
+.brand{display:flex;align-items:center;min-height:44px;text-decoration:none}
+.brand img{display:block;width:clamp(124px,12vw,156px);height:auto;max-width:100%}
 .signin{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;font:600 15px/1 var(--display);text-decoration:none;color:var(--bone);background:rgba(238,240,242,.06);border:1px solid rgba(238,240,242,.24);transition:background .25s,color .25s,border-color .25s}
 .signin svg,.cta-btn svg{width:16px;height:16px;transition:transform .25s var(--ease)}
 .signin:hover{background:var(--bone);border-color:var(--bone);color:var(--ink)}
@@ -105,9 +105,8 @@ main,header{position:relative;z-index:3}
 <div class="grain" aria-hidden="true"></div>
 
 <header class="top">
-  <a class="brand" href="/landing.html" aria-label="Foresite home">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M13.2 4 7 13.4h4.4L10.6 20l6.4-9.6h-4.5z" fill="#000"/></svg>
-    Foresite
+  <a class="brand" href="/landing.html" aria-label="FORESITE home">
+    <img src="/foresite-wordmark.png?v=daaf5322" width="768" height="166" alt="" decoding="async" draggable="false">
   </a>
   <a class="signin" href="/?signin">Sign in<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </header>

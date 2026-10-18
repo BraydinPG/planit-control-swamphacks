@@ -35,6 +35,7 @@ Derived assets preserve aspect ratios and existing display sizes:
 |---|---:|---|
 | `foresite-logo.png` | 1983×793 | Full-resolution transparent download |
 | `foresite-logo-full.png` | 1200×300 | Full logo/tagline, footer and sign-in |
+| `foresite-logo-light.png` | 1200×300 | Approved navy-letter variant for Auth0's light hosted widget |
 | `foresite-wordmark.png` | 768×166 | Header and sidebar |
 | `foresite-cyclone.png` | 384×384 | Compact symbol |
 | `foresite-favicon-16.png`, `foresite-favicon-32.png` | 16/32 | Transparent browser icons |
@@ -62,6 +63,12 @@ and original visible RGB were verified. Existing entrypoints and `Brand.tsx` use
 `?v=daaf5322` to refresh old cached artwork.
 
 ## Integration and review
+
+The standalone dark landing page also uses the current white wordmark. Its sign-in
+links still target `/?signin`. The separate `foresite-logo-light.png` is the unmodified
+approved original full logo from commit `4508e9d`, pinned/validated in the generator;
+it is used only where navy lettering is required on a light background. See the
+[Auth0 branding handoff](../../auth/BRANDING.md) for its public URL and owner steps.
 
 The existing `Brand` component updates header/sidebar/home links, footer, app-owned
 sign-in/loading/access panels and the auth-check page. The team's always-dark theme
