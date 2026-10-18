@@ -1,4 +1,5 @@
 """`python -m app.demo seed` restores the demo; `python -m app.demo strike N` replays lightning.
+`python -m app.demo anomalies` clears crew reports and adds one demo site per anomaly type.
 
 `python -m app.demo briefing-test` sets up the separate 6 PM briefing-test organization.
 
@@ -47,6 +48,10 @@ def main(argv: list[str] | None = None) -> None:
     commands.add_parser(
         "briefing-test", help="set up the organization that checks the 6 PM briefing schedule"
     )
+    commands.add_parser(
+        "anomalies",
+        help="clear crew reports and add one labeled demo site per weather anomaly type",
+    )
     strike = commands.add_parser("strike", help="replay one lightning step at the demo site")
     strike.add_argument("step", type=int, help="replay step, 1 to 3 (2 resets the countdown)")
     args = parser.parse_args(argv)
@@ -80,6 +85,20 @@ def _run(args: argparse.Namespace) -> None:
             f"the schedule writes one at {test.next_run_local:%Y-%m-%d %H:%M %Z} (site time) "
             "on the backend that has BRIEFING_SCHEDULE_ENABLED."
         )
+    elif args.command == "anomalies":
+        from pathlib import Path
+
+        from app.demo.anomalies import seed_anomalies
+
+        initialize_database()
+        # Outside the repository: backups hold crew reports, never committed.
+        backups = Path(os.environ.get("DEMO_BACKUP_DIR", "~/foresite-demo-backups")).expanduser()
+        with get_session() as session:
+            results = seed_anomalies(session, now, backups)
+        print(f"Demo anomalies seeded at {now:%Y-%m-%d %H:%M} UTC.")
+        print(f"Removed rows were backed up in {backups}.")
+        for r in results:
+            print(f"  {r.site_id:24} {r.label:24} score {r.risk_score:.1f} ({r.risk_level})")
     elif args.command == "seed":
         initialize_database()
         accounts = DemoSettings().accounts()
