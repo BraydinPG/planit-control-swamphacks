@@ -1,5 +1,7 @@
 ## Simplify the public header and Data page (Cache for Rudra) - 2026-10-18
 
+[PR #92](https://github.com/BraydinPG/planit-control-swamphacks/pull/92): verified implementation `96c7dd2`; user-authorized merge.
+
 Explicit user request, `feature/cache-simplify-public-data` from main `10bf393`:
 remove the "Evaluation includes saying no" panel and its hurricane-experiment
 paragraph from the public Data page and its canonical renderer. Remove the top Home

@@ -3,6 +3,8 @@
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
 ## Public-page simplification - 2026-10-18
+
+[PR #92](https://github.com/BraydinPG/planit-control-swamphacks/pull/92): verified implementation `96c7dd2`; user-authorized merge.
 - Explicit user scope, `feature/cache-simplify-public-data` from main `10bf393`: removes the Data-page evaluation/disabled-model panel and its hurricane-experiment paragraph in the canonical renderer; all twelve figures, research exports and model gates remain unchanged. Both public headers now use the logo as Home, with Data and Sign In; the phone header fits one row.
 - Verified 198 frontend tests, lint/TypeScript, live + fixture production builds, Ruff/format and deterministic export checks. Built-browser checks at 1440/768/390/320 pass removed-content assertions, logo mouse/keyboard navigation, responsive layout and existing controls/fallbacks with zero exceptions or API calls. User authorizes push and merge; no task states, app/auth/backend/scoring or other worktrees change.
 
