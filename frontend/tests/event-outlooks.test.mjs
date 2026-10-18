@@ -257,6 +257,8 @@ test('a demo site hides replay labels; a real site keeps them', async () => {
       ),
     )
   assert.match(inside(false), /Simulated replay/)
-  assert.doesNotMatch(inside(true), /Simulated replay/)
+  // On a demo site nothing on the card, details included, says it isn't live.
+  assert.doesNotMatch(inside(true), /demo|simulat|replay|hypothetical/i)
   assert.match(inside(true), new RegExp(replay.event_type))
+  assert.match(inside(true), /Site verified/)
 })

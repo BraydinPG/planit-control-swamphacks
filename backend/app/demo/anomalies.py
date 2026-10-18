@@ -68,6 +68,7 @@ from app.services.reports import notice_recipients
 from app.services.scoring import score_site
 
 SEED_ACTOR = "system:demo-anomalies"
+SCENARIO_SOURCE = "Scenario site (not an EIA-860M location)"
 
 
 @dataclass(frozen=True)
@@ -285,6 +286,7 @@ def restore_everglades(
     accounts = _linked_accounts(session)
     _clear_sites(session, [DEMO_SITE_ID], everglades=True)
     site = session.get(db.Site, DEMO_SITE_ID)
+    site.source = SCENARIO_SOURCE  # the site's name is the one place that says "(demo)"
     readings = [_as_live(o) for o in scenario._readings(now - timedelta(minutes=5))]
     for o in readings:
         session.add(observation_row(o))
@@ -325,7 +327,7 @@ def _site_and_team(session: Session, a: Anomaly) -> db.Site:
             lat=a.lat,
             lon=a.lon,
             location_type=DEMO_LOCATION_TYPE,
-            source="Scenario site (not an EIA-860M location)",
+            source=SCENARIO_SOURCE,
             region=a.state,
             timezone=a.timezone,
         )

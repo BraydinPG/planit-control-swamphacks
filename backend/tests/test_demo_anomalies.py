@@ -170,6 +170,7 @@ def test_the_everglades_wildlife_scenario_is_restored(client) -> None:
     assert notices["demo-notice-wildlife"]["instruction"]
     assert notices["demo-notice-flood"]["status"] == "confirmed"
     assert "demo-notice-flash-flood" not in notices  # one flooding event per site
+    assert "demo" not in detail["source"].casefold()
     assert not any(o["simulated"] for o in detail["observations"])
     factors = {f["factor"] for f in detail["score"]["factor_contributions"]}
     assert {"lightning", "heat_index", "flood"} <= factors

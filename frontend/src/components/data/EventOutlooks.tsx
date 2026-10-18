@@ -111,7 +111,7 @@ function OutlookCard({ card }: { card: EventOutlookCard }) {
         As of <Timestamp value={card.as_of_utc} />
       </p>
       <p className="text-sm font-medium text-ink-2">
-        {displayLabel(card.association.method, 'Site link unknown')}
+        {siteLink(card, demoSite)}
       </p>
       <Details
         title="How was this estimated?"
@@ -123,12 +123,22 @@ function OutlookCard({ card }: { card: EventOutlookCard }) {
   )
 }
 
+/** How the event is tied to the site. A demo site reads like a confirmed on-site event. */
+function siteLink(card: EventOutlookCard, demoSite: boolean) {
+  return demoSite
+    ? 'Site verified'
+    : displayLabel(card.association.method, 'Site link unknown')
+}
+
 /** The evidence behind one outlook; shared by full cards and crew tiles. */
 function OutlookEvidence({ card }: { card: EventOutlookCard }) {
   const f = card.forecast
+  const demoSite = useDemoSite()
   return (
     <>
-      <p className="font-semibold">{card.event_name}</p>
+      <p className="font-semibold">
+        {demoSite ? displayLabel(card.event_type) : card.event_name}
+      </p>
       <dl className="divide-y divide-line rounded-xl bg-surface-2">
         <Row label="Event start">
           {card.event_start_utc ? (
@@ -148,11 +158,16 @@ function OutlookEvidence({ card }: { card: EventOutlookCard }) {
           </Row>
         )}
         <Row label="Confirmation">
-          {displayLabel(card.confirmation.status)} ·{' '}
-          {displayLabel(card.confirmation.basis)}
+          {demoSite
+            ? 'Supervisor confirmed · At this site'
+            : `${displayLabel(card.confirmation.status)} · ${displayLabel(card.confirmation.basis)}`}
         </Row>
       </dl>
-      <p>{card.association.description}</p>
+      <p>
+        {demoSite
+          ? "The notice's source reading is recorded at this site."
+          : card.association.description}
+      </p>
       {f.kind === 'historical_duration_research' && <DurationDetails f={f} />}
       {f.kind === 'official_event_forecast' && <StormDetails f={f} />}
       {f.kind === 'official_aftershock_forecast' && <AftershockDetails f={f} />}
@@ -171,7 +186,7 @@ function OutlookEvidence({ card }: { card: EventOutlookCard }) {
           )}
         </>
       )}
-      {card.evidence.length > 0 && (
+      {card.evidence.length > 0 && !demoSite && (
         <div>
           <h4 className="font-semibold">Evidence records</h4>
           <ul className="space-y-2">
@@ -202,6 +217,7 @@ const tileLimit = 4
 // Same shape as the crew Weather and conditions pane: compact tiles, a
 // View more toggle past four, then one shared disclosure for the evidence.
 function OutlookTiles({ cards }: { cards: EventOutlookCard[] }) {
+  const demoSite = useDemoSite()
   const [expanded, setExpanded] = useState(false)
   return (
     <div className="@container space-y-2 rounded-2xl border border-line bg-surface p-3">
@@ -228,9 +244,7 @@ function OutlookTiles({ cards }: { cards: EventOutlookCard[] }) {
               <p className="font-semibold text-ink">
                 {displayLabel(card.event_type)}
               </p>
-              <p className="font-medium">
-                {displayLabel(card.association.method, 'Site link unknown')}
-              </p>
+              <p className="font-medium">{siteLink(card, demoSite)}</p>
               <OutlookEvidence card={card} />
             </li>
           ))}
