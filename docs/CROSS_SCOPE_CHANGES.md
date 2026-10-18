@@ -1,3 +1,30 @@
+## Supervisor-only worksite notice review (Cache for Rudra) - 2026-10-17
+
+Explicit user request: crew must not see the notice-review option after a photo
+report; only supervisors may review. Branch `feature/cache-supervisor-notice-review`
+starts from latest main `f42ddaf` and preserves PR54/55 and other worktrees/servers.
+`frontend/src/pages/ConnectedPages.tsx` gates the existing review link by supervisor
+persona, with an explicit supervisor site URL. Crew retains read-only pending status.
+`frontend/scripts/check-shell.mjs` extends existing photo-report flows to check crew
+absence before/after reload and supervisor availability in demo and mocked live mode.
+Existing notice confirmation/instruction guards, backend policies and Auth0 remain
+unchanged. No contracts, data, scoring, deployment or task-state edits.
+
+172 frontend tests, lint, TypeScript, production build and 21 backend hazard tests pass.
+Backend tests verify anonymous rejection, crew 403 (including crew with supervisor
+permissions), and authorized notified-supervisor confirmation. These are offline
+checks; T065 real Auth0/Tiger lifecycle acceptance is not claimed. Edge regression
+passes eleven destinations at 1440/768/390/320 and the new demo/mock-live role checks,
+with no browser exceptions or real API calls. Rudra reviews the focused frontend
+guard; no automatic merge or deployment.
+
+Merge follow-up: the user explicitly requested merging PR56. Incorporated main
+`08d1e80` without conflicts, preserving the team's latest sign-in, home-link, report,
+species and disclosure changes. Reverified 174 frontend tests, 22 backend hazard tests,
+lint, TypeScript, production build and whitespace. Focused Edge checks on the existing
+mocked-session fixture show no crew notice-review action before/after reload and a
+working supervisor review link at 390/1440, with no browser exceptions. This is merge
+acceptance, not a new real Auth0/Tiger test or a task checkbox update.
 ## Sign-in logo contrast (Cache for Braydin and Rudra) - 2026-10-17
 
 Explicit screenshot-based user request authorizes the narrow auth-presentation fix.
