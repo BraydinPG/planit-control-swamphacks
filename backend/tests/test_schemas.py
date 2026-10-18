@@ -99,6 +99,7 @@ def test_hazard_types_match_ingestion_interface() -> None:
         "lightning_strike",
         "hurricane",
         "earthquake",
+        "severe_storm",
     }
 
 

@@ -177,16 +177,35 @@ test('pending notices never imply confirmation or supply an instruction; approve
 })
 test('active and elapsed timers never promise an automatic all-clear; acknowledgements stay independent', () => {
   const active = site.alerts.find((a) => a.rule === 'lightning_stop_work')
-  const html = render(AlertCard, { alert: active, detail: true })
+  const html = render(AlertCard, { alerts: [active], detail: true })
   assert(
     plain(primary(html)).includes('Acknowledging does not clear the alert'),
   )
   assert(html.includes('The timer does not clear this alert or authorize work'))
   assert(!html.includes('until all-clear') && !html.includes('All-clear in'))
   const elapsed = render(AlertCard, {
-    alert: { ...active, clear_after: '2000-01-01T00:00:00Z' },
+    alerts: [{ ...active, clear_after: '2000-01-01T00:00:00Z' }],
   })
   assert(plain(primary(elapsed)).includes('Alert remains active'))
+})
+test('a merged same-tier card names every event and waits for a warning in effect', () => {
+  const lightning = site.alerts.find((a) => a.rule === 'lightning_stop_work')
+  const storm = {
+    ...lightning,
+    id: 'svr-1',
+    rule: 'severe_thunderstorm',
+    event_label: 'Severe Thunderstorm Warning',
+    clear_after: null,
+    is_prototype_rule: true,
+    acknowledgements: [],
+  }
+  const html = plain(render(AlertCard, { alerts: [lightning, storm], detail: true }))
+  assert(html.includes('Stop work alert - Lightning + Severe Thunderstorm'))
+  assert(html.includes('Tier 2 · Severe danger'))
+  assert(html.includes(lightning.event_label) && html.includes('Severe Thunderstorm Warning'))
+  // A warning still in effect has no all-clear time, so the group shows no countdown.
+  assert(html.includes('Warning still in effect'))
+  assert(!/\d\dm \d+s left/.test(html))
 })
 test('unknown/stale observations remain explicit and preserve original timing under source details', () => {
   const row = {

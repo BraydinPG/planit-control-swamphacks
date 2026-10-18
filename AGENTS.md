@@ -50,6 +50,8 @@ Rudra owns the canonical API and schema definitions. All agents use these names 
 }
 ```
 
+Alerts (T049C): `rule` is one of `lightning_stop_work`, `tornado`, `hurricane`, `flash_flood`, `earthquake`, `severe_thunderstorm`, `tropical_storm`, `flood`, or `heat`. Every `Alert` also carries `danger_tier` (1 extreme to 3 elevated are stop-work; 4 is an advisory) and `event_label`, both set by the server from `DANGER_TIERS` in `backend/app/schemas/alerts.py`, the one place the prototype ranking lives. Lists return every alert, active first and most dangerous tier first; the interface shows only the top active tier per site, merged.
+
 `risk_score`, `risk_level`, and `updated_at` are `null` until the site has a computed score. Show null as "Not scored yet", never as low risk. `GET /api/sites` lists assigned sites first, then scored sites by `risk_score` descending, then unscored sites, then by name. `GET /api/sites/{id}` returns `SiteDetail`, or 404 for an unknown ID.
 
 ### Cache model interface
@@ -95,7 +97,7 @@ lightning.submit_strike(lat, lon, time, simulated) -> Observation
   # used by the replay fixture and by tests
 ```
 
-`hazard_type` is one of `weather`, `forecast`, `flood_alert`, `flood_gauge`, `lightning_strike`, `hurricane`, or `earthquake`. `data_state` is one of `observed`, `forecast`, `simulated`, `stale`, or `unavailable`. Rudra's alert rules and scoring read only these Observations and never call a feed directly. Broken electrical poles, downed lines, on-site fires, and other on-site hazards have no adapter. They arrive only through crew reports.
+`hazard_type` is one of `weather`, `forecast`, `flood_alert`, `flood_gauge`, `lightning_strike`, `hurricane`, `earthquake`, or `severe_storm`. `data_state` is one of `observed`, `forecast`, `simulated`, `stale`, or `unavailable`. Rudra's alert rules and scoring read only these Observations and never call a feed directly. Broken electrical poles, downed lines, on-site fires, and other on-site hazards have no adapter. They arrive only through crew reports.
 
 NWS conventions:
 
@@ -108,6 +110,7 @@ Lightning, hurricane, earthquake, and flood-gauge conventions (T045–T045D):
 - `lightning_strike` (`lightning.py`): `value` is the distance to the site in miles, and `observed_at` is the strike time. `submit_strike(lat, lon, time, simulated=True)` normalizes a strike, and `replay_strike(site, step, at)` replays `fixtures/lightning_replay.json`. Replayed strikes are `source="lightning-replay"`, `simulated=True`, `data_state="simulated"`. Live strikes come from NOAA GOES GLM (`glm.py`, background poller started by the first `fetch()`, `LIGHTNING_LIVE_ENABLED`) as `source="GOES GLM"`, `simulated=False`, `data_state="observed"`. GLM reports total lightning, including in-cloud flashes, at about 8 km resolution and 20–60 s delay. The "no strikes" reading is `GOES GLM`/`observed` only while GLM coverage is gap-free and states the minutes watched. Otherwise it is labeled simulated with the reason (not enabled, starting, unavailable). The 10-mile stop-work rule belongs to Rudra.
 - `hurricane` (`hurricanes.py`): `source="NHC"` readings are active storms with `value` = intensity in kt and `lat`/`lon` = storm center. `source="NWS"` readings have `value` set to `Hurricane Warning`, `Hurricane Watch`, `Tropical Storm Warning`, or `Tropical Storm Watch`. The two sources are cached separately.
 - `earthquake` (`earthquakes.py`): `value` is the magnitude, `unit` is the USGS magnitude type, `lat`/`lon` is the epicenter, and `observed_at` is the origin time.
+- `severe_storm` (`severe_storms.py`, T049C): NWS Tornado Warning/Watch and Severe Thunderstorm Warning/Watch for the site point; `value` is the event name. A successful fetch with none returns one `value=None` reading. Only warnings qualify for stop-work.
 - `flood_gauge` (`flood_gauges.py`): `label` starts with `Gage height` (ft) or `Streamflow` (ft3/s), and `source_ref` is `USGS-{site number}`. Gauges give readings, not flood stages, so NWS flood alerts remain the flood source.
 
 #### Adding a feed adapter

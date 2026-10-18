@@ -228,8 +228,11 @@ test('the Overview lists active alerts, notices to confirm, then absent reports 
         site_id: 'a',
         rule: 'lightning_stop_work',
         state: 'active',
+        danger_tier: 2,
       },
-      { id: 'al-2', site_id: 'a', rule: 'flood', state: 'cleared' },
+      // A lower active tier at the same site stays hidden under lightning.
+      { id: 'al-3', site_id: 'a', rule: 'flood', state: 'active', danger_tier: 3 },
+      { id: 'al-2', site_id: 'a', rule: 'flood', state: 'cleared', danger_tier: 3 },
     ],
     [
       {
@@ -264,7 +267,7 @@ test('the Overview lists active alerts, notices to confirm, then absent reports 
   assert.deepEqual(
     items.map((i) => [i.title, i.detail]),
     [
-      ['Lightning stop-work alert', 'Site a'],
+      ['Stop work alert - Lightning', 'Site a · Tier 2 · Severe danger'],
       ['Potential hazard: Downed line', 'Site b · within 1 mi'],
       ['Reported absent: On-site fire', 'Site b'],
     ],

@@ -112,10 +112,11 @@ export function AppShell({
       : item.title
   const badgeText = badge ?? (isFixture ? 'Fixture mode' : 'No live data')
   const authenticated = badgeText === 'Authenticated API'
-  // The crew workspace keeps its phone layout at every screen size.
+  // Keep the field layout on phones/tablets; give desktop crews a full workspace.
   const crew = route.workspace === 'crew'
-  const column = crew ? 'max-w-lg' : 'max-w-7xl'
+  const column = crew ? 'max-w-lg lg:max-w-[1440px]' : 'max-w-7xl'
 
+  // Desktop: a row of links in the header. Phones and tablets: the bottom tab bar.
   function navigation(mobile = false) {
     return (
       <nav
@@ -123,7 +124,7 @@ export function AppShell({
         className={
           mobile
             ? `grid ${visible.length > 5 ? 'grid-cols-6 gap-0.5' : 'grid-cols-5 gap-1.5'}`
-            : 'space-y-4'
+            : 'flex min-w-0 items-center gap-1'
         }
       >
         {visible.map((item) => {
@@ -136,7 +137,7 @@ export function AppShell({
               className={
                 mobile
                   ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-xs leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
-                  : `flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-white/5 hover:text-ink'}`
+                  : `inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg px-3 text-[15px] whitespace-nowrap transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-white/5 hover:text-ink'}`
               }
             >
               <Icon
@@ -144,10 +145,11 @@ export function AppShell({
                 className={
                   mobile
                     ? 'size-6 shrink-0'
-                    : `size-5 shrink-0 ${current ? 'text-accent' : 'text-accent/80'}`
+                    : // icons only on wide screens, so six links still fit at 1024px
+                      `hidden size-4 shrink-0 xl:block ${current ? 'text-accent' : 'text-accent/80'}`
                 }
               />
-              <span className={mobile ? 'max-w-full' : 'min-w-0 truncate'}>
+              <span className={mobile ? 'max-w-full' : ''}>
                 {mobile && item.id === 'overview' ? 'Home' : label(item)}
               </span>
             </a>
@@ -160,7 +162,7 @@ export function AppShell({
   return (
     <div
       data-theme={route.workspace}
-      className={`min-h-svh font-sans text-ink ${crew ? '' : 'lg:pl-64'}`}
+      className="min-h-svh font-sans text-ink"
     >
       <a
         href="#main-content"
@@ -172,51 +174,21 @@ export function AppShell({
       >
         Skip to content
       </a>
-      {!crew && (
-        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-surface/90 px-4 py-6 backdrop-blur-xl lg:flex">
-          <a
-            href={`#/${route.workspace}/overview`}
-            aria-label="FORESITE overview"
-            className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
-          >
-            <Brand variant="compact" className="w-36" decorative />
-          </a>
-          <div className="space-y-2">
-            <p className="kicker px-3">
-              {route.workspace === 'crew'
-                ? 'Crew workspace'
-                : 'Supervisor workspace'}
-            </p>
-            {navigation()}
-          </div>
-          <div className="mt-auto space-y-3 border-t border-line px-3 pt-5 text-xs leading-relaxed text-muted">
-            <p className="font-semibold text-ink-2">
-              Rules raise alerts. People make the call.
-            </p>
-          </div>
-        </aside>
-      )}
       <header
-        className={`sticky top-0 z-20 border-b border-line bg-nav/80 px-4 backdrop-blur-xl backdrop-saturate-150 ${crew ? '' : 'sm:px-6 lg:px-10'}`}
+        className={`sticky top-0 z-20 border-b border-line bg-nav/80 px-4 backdrop-blur-xl backdrop-saturate-150 ${crew ? 'lg:px-10' : 'sm:px-6 lg:px-10'}`}
       >
         <div
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
         >
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-4 xl:gap-6">
             <a
               href={`#/${route.workspace}/overview`}
               aria-label={`FORESITE ${route.workspace} home`}
-              className={`inline-flex min-h-11 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${crew ? '' : 'lg:hidden'}`}
+              className="inline-flex min-h-11 shrink-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               <Brand variant="compact" className="w-28 sm:w-32" decorative />
             </a>
-            <p className={`hidden min-w-0 truncate text-sm ${crew ? '' : 'lg:block'}`}>
-              <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
-                {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}
-                <span className="px-2 text-line-strong">/</span>
-                <span className="font-semibold text-ink">{active.title}</span>
-              </span>
-            </p>
+            <div className="hidden min-w-0 lg:block">{navigation()}</div>
           </div>
           {headerControls ?? (<span
             className={`inline-flex shrink-0 items-center gap-1.5 chip border ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
@@ -232,7 +204,7 @@ export function AppShell({
       <main
         id="main-content"
         tabIndex={-1}
-        className={`@container mx-auto ${column} min-w-0 [overflow-wrap:anywhere] px-4 pb-32 pt-4 outline-none ${crew ? '' : 'sm:px-6 sm:pt-6 lg:px-10 lg:pb-12'}`}
+        className={`@container mx-auto ${column} min-w-0 [overflow-wrap:anywhere] px-4 pb-32 pt-4 outline-none ${crew ? 'lg:px-10 lg:pt-6 lg:pb-12' : 'sm:px-6 sm:pt-6 lg:px-10 lg:pb-12'}`}
       >
         {!hideConnectionInfo && <div className="mb-5 flex flex-col gap-3 rounded-xl border border-dotted border-line-strong bg-surface/60 px-3 py-2.5 @2xl:flex-row @2xl:items-center @2xl:justify-between @2xl:px-4">
           <p className="max-w-2xl text-sm leading-relaxed text-ink-2">
@@ -333,7 +305,7 @@ export function AppShell({
         </footer>
       </main>
       <div
-        className={`fixed inset-x-0 bottom-0 z-40 border-t border-line bg-nav/85 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-xl backdrop-saturate-150 ${crew ? '' : 'lg:hidden'}`}
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-nav/85 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-xl backdrop-saturate-150 lg:hidden"
       >
         <div className={`mx-auto ${column}`}>{navigation(true)}</div>
       </div>

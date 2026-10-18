@@ -39,6 +39,7 @@ import {
   LoadState,
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
+import { topTier, visibleAlertGroups } from '../presentation/alerts'
 import { EventOutlooks } from '../components/data/EventOutlooks'
 import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
@@ -170,7 +171,9 @@ function SitePage({
   if (dashboard) return <SupervisorOverview sites={sites} />
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
-    active = site.alerts.filter((a) => a.state === 'active')
+    active = site.alerts.filter((a) => a.state === 'active'),
+    // Only the most dangerous active tier is shown; lower tiers stay hidden until it clears.
+    top = topTier(site.alerts)
   // A demo site says so only in its name ("... (demo)"), never in a type label.
   const demoSite = isDemoSite(site)
   const siteKind = demoSite
@@ -300,21 +303,32 @@ function SitePage({
   // Crew home: what needs attention now. The evidence lives on My worksite.
   if (compact)
     return (
-      <div className="pc-enter space-y-5">
-        {header}
-        {active[0] && <AlertCard alert={active[0]} />}
-        {active.length > 1 && (
-          <a href={`#/${persona}/alerts`} className={control}>
-            View all {active.length} active alerts
-          </a>
-        )}
-        {!active.length && (
-          <Empty>
-            No active alerts reported. Worksite conditions still require
-            verification.
-          </Empty>
-        )}
-        {hazards}
+      <div className="pc-enter space-y-5" data-crew-home>
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          {header}
+          <div className="hidden shrink-0 gap-3 xl:flex">
+            <a className={primary} href={`#/${persona}/reports`}>
+              <Icon name="camera" className="size-4" />
+              Report a hazard
+            </a>
+            <a className={control} href={`#/${persona}/briefings`}>
+              <Icon name="briefings" className="size-4" />
+              View briefing
+            </a>
+          </div>
+        </div>
+        <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-start xl:gap-6 xl:space-y-0">
+          <div className="min-w-0 space-y-5" data-crew-alerts>
+            {top.length > 0 && <AlertCard alerts={top} />}
+            {!active.length && (
+              <Empty>
+                No active alerts reported. Worksite conditions still require
+                verification.
+              </Empty>
+            )}
+          </div>
+          {hazards}
+        </div>
         <div className="flex flex-wrap gap-3">
           <a
             className={control + ' w-full @lg:w-auto'}
@@ -341,9 +355,15 @@ function SitePage({
             </p>
             {locationDetails}
           </div>
-          {score}
-          {factors}
-          {conditions}
+          <div className="space-y-5 xl:grid xl:grid-cols-12 xl:items-start xl:gap-6 xl:space-y-0">
+            <div className="min-w-0 space-y-5 xl:col-span-4" data-crew-score>
+              {score}
+              {factors}
+            </div>
+            <div className="min-w-0 xl:col-span-8" data-crew-conditions>
+              {conditions}
+            </div>
+          </div>
           {reports}
           {context}
           {refreshButton}
@@ -385,8 +405,8 @@ function SitePage({
             <section className="space-y-3">
               <SectionHead title="Alerts" />
               {site.alerts.length ? (
-                site.alerts.map((a) => (
-                  <AlertCard key={a.id} alert={a} detail />
+                visibleAlertGroups(site.alerts).map((g) => (
+                  <AlertCard key={g[0].id} alerts={g} detail />
                 ))
               ) : (
                 <Empty>No alert record supplied for this site.</Empty>
@@ -612,7 +632,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
             </p>
           }
         >
-          <SiteMap sites={shown} select={select} />
+          <SiteMap sites={shown} select={select} view="contiguous-us" />
         </Suspense>
       ) : (
         <p role="status" className={`${card} p-5`}>
@@ -757,7 +777,18 @@ function AlertsPage({ id }: { id: string | null }) {
   )
   const demo = demoClient(client)
   if (!alerts.data) return <LoadState error={alerts.error} />
-  const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
+  const groups = visibleAlertGroups(alerts.data)
+  // A link to an alert hidden under a more dangerous tier opens that site's top group.
+  const linked = id ? alerts.data.find((a) => a.id === id) : undefined
+  const rows = !id
+    ? groups
+    : groups
+        .filter((g) => g.some((a) => a.id === id))
+        .concat(
+          linked && !groups.some((g) => g.some((a) => a.id === id))
+            ? groups.filter((g) => g[0].site_id === linked.site_id).slice(0, 1)
+            : [],
+        )
   return (
     <div className="pc-enter space-y-5">
       <div className="flex flex-wrap items-center gap-3">
@@ -772,7 +803,7 @@ function AlertsPage({ id }: { id: string | null }) {
       </div>
       <div className="grid gap-5 @3xl:grid-cols-2 @3xl:items-start">
         {rows.length ? (
-          rows.map((a) => <AlertCard key={a.id} alert={a} detail />)
+          rows.map((g) => <AlertCard key={g[0].id} alerts={g} detail />)
         ) : (
           <Empty>No alert record supplied for this selection.</Empty>
         )}

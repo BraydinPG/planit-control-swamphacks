@@ -13,6 +13,10 @@ EVENTS = {
     "Hurricane Watch",
     "Tropical Storm Warning",
     "Tropical Storm Watch",
+    "Tornado Warning",
+    "Tornado Watch",
+    "Severe Thunderstorm Warning",
+    "Severe Thunderstorm Watch",
 }
 
 

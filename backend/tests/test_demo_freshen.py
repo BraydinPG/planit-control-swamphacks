@@ -29,7 +29,15 @@ from tests.test_demo_anomalies import factory as factory  # noqa: F401
 from tests.test_demo_seed import NOW, OUTLOOKS, SUPERVISOR
 
 DEMO_SITES = [f"demo-{a.key}" for a in ANOMALIES] + [DEMO_SITE_ID]
-STOP_WORK_SITES = {"demo-flash-flood", "demo-heavy-rain", "demo-hurricane", DEMO_SITE_ID}
+# Lightning plus the tiered stop-work rules (T049C): flood and earthquake sites too.
+STOP_WORK_SITES = {
+    "demo-flood",
+    "demo-flash-flood",
+    "demo-heavy-rain",
+    "demo-hurricane",
+    "demo-earthquake",
+    DEMO_SITE_ID,
+}
 LATER = (timedelta(hours=2), timedelta(hours=30), timedelta(days=7))
 TABLES = (
     db.Observation,
@@ -179,7 +187,10 @@ def test_demo_pages_stay_as_seeded_for_days(demo, at) -> None:
         assert p["updated"] == timedelta(minutes=1)
         assert [n[:3] for n in p["notices"]] == [n[:3] for n in s["notices"]], site_id
         assert [c[:3] for c in p["outlooks"]] == [c[:3] for c in s["outlooks"]], site_id
-        assert all(a[1] == "active" and a[3] < timedelta(0) for a in p["alerts"]), site_id
+        # A warning still in effect has no all-clear time yet (T049C); others are ahead.
+        assert all(
+            a[1] == "active" and (a[3] is None or a[3] < timedelta(0)) for a in p["alerts"]
+        ), site_id
         # The first slide brings the newest reading up to now: a few minutes younger once.
         younger = {
             s_age - p_age
@@ -236,7 +247,9 @@ def test_a_testers_own_report_confirmation_and_acknowledgement_ride_along(demo, 
         notice_id = report.notice_id
         confirm_hazard(session, notice_id, _supervisor(SUPERVISOR), NOW + timedelta(minutes=4))
         alert = session.scalars(
-            select(db.Alert).where(db.Alert.site_id == "demo-flash-flood")
+            select(db.Alert).where(
+                db.Alert.site_id == "demo-flash-flood", db.Alert.rule == "lightning_stop_work"
+            )
         ).one()
         session.add(
             db.Acknowledgement(

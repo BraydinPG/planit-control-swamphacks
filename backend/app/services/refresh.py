@@ -8,14 +8,15 @@ One refresh, for every site:
    the (id, observed_at) key, so a cached reading fetched again updates its row instead
    of duplicating it, and a remote database costs one round trip per site, not one per
    reading.
-3. Run the lightning stop-work rule (T046–T048), send source-detected potential notices
-   (T049A), and rescore the site (T051), all from the readings just fetched.
+3. Run the stop-work rules (lightning T046–T048, prototype tiered rules T049C), send
+   source-detected potential notices (T049A), and rescore the site (T051), all from the
+   readings just fetched.
 
 Failure handling:
 - A feed that raises outright, not through `FeedCache`, gets one unavailable placeholder
   per site, so its state reads "unknown", never "no hazard". The other feeds still run.
 - A failure while processing one site rolls back that site's work and moves on.
-- A feed outage can't clear a lightning alert. The rule holds it until a healthy reading.
+- A feed outage can't clear a stop-work alert. The rule holds it until a healthy reading.
 
 Demo sites (`location_type="demo_site"`, the T069 seed) are skipped: live feeds never
 overwrite their scripted, simulated scenario, which `python -m app.demo` controls. Every
@@ -49,8 +50,8 @@ from app.db import models as db
 from app.ingestion import runtime, unavailable_observation
 from app.ingestion.base import SiteLike
 from app.ingestion.settings import get_ingestion_settings
-from app.schemas import HazardType, Observation
-from app.services.alerts import apply_lightning_rule
+from app.schemas import AlertRule, HazardType, Observation
+from app.services.alerts import apply_stop_work_rules
 from app.services.feed_notices import send_feed_notices
 from app.services.scoring import score_site
 
@@ -76,6 +77,8 @@ class RefreshResult:
     failed_sites: list[str] = field(default_factory=list)
     notices: int = 0
     lightning: dict[str, str] = field(default_factory=dict)  # site id -> transition
+    # site id -> {prototype stop-work rule -> transition}, only rules that changed or held
+    stop_work: dict[str, dict[str, str]] = field(default_factory=dict)
     metrics: dict = field(default_factory=dict)
 
 
@@ -88,6 +91,7 @@ def default_feeds() -> list[Feed]:
         lightning,
         nws_alerts,
         nws_weather,
+        severe_storms,
     )
 
     return [
@@ -98,6 +102,7 @@ def default_feeds() -> list[Feed]:
             (("NWS", HazardType.WEATHER), ("NWS", HazardType.FORECAST)),
         ),
         Feed("NWS", HazardType.FLOOD_ALERT, nws_alerts.fetch),
+        Feed("NWS", HazardType.SEVERE_STORM, severe_storms.fetch),
         Feed("lightning", HazardType.LIGHTNING_STRIKE, lightning.fetch),
         Feed(
             "NHC/NWS",
@@ -196,8 +201,16 @@ def _refresh_all(session, now, feeds, run):
             run.phases["persistence"] += time.monotonic() - started
             result.observations += len(fetched)
             started = time.monotonic()
-            lightning = apply_lightning_rule(session, site.id, fetched, now)
-            result.lightning[site.id] = lightning.transition.value
+            outcomes = apply_stop_work_rules(session, current, fetched, now)
+            result.lightning[site.id] = outcomes[AlertRule.LIGHTNING_STOP_WORK].transition.value
+            changed = {
+                rule.value: r.transition.value
+                for rule, r in outcomes.items()
+                if rule is not AlertRule.LIGHTNING_STOP_WORK
+                and r.transition.value not in ("none", "unchanged")
+            }
+            if changed:
+                result.stop_work[site.id] = changed
             result.notices += len(send_feed_notices(session, current, fetched, now))
             run.phases["alerts_and_notices"] += time.monotonic() - started
             started = time.monotonic()
