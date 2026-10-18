@@ -6,6 +6,16 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Integrated `origin/main` through `98387c8` into `feature/rudra-species-context`, preserving the automatic GitHub Actions deploy workflow and model-artifact safeguards in `deploy/`.
 - Verification on the merged tree: **932 backend tests** and Ruff checks pass; **171 frontend tests**, TypeScript build checks, and the frontend production build pass. No deployment was triggered from this feature branch.
 
+## Header home link - 2026-10-17
+- Explicit follow-up request on `feature/header-logo-home`: wrap the existing compact header brand in an accessible link to the current workspace's overview. Official artwork and sizing are preserved; the existing desktop sidebar home link is unchanged. This supersedes the earlier request to revert header-link behavior only.
+- Verification: frontend TypeScript/production build and whitespace checks pass.
+- Follow-up report layout fix: the Remove image button uses smaller text on two explicit lines and a fixed nonshrinking width. Long filenames wrap within the flexible filename area instead of compressing the button.
+- Species display-name cleanup: remove equals signs from rendered species names (for example `puma (=mountain lion)` becomes `puma (mountain lion)`), preserving source records and species matching.
+- Shared native disclosures titled "View more" now switch their visible and accessible labels to "View less" while expanded, reverting on collapse. Other disclosure titles are preserved; the separate observation-list control already has this behavior.
+- Sign-in/access card styling: user requested a soft drop shadow instead of the dark outline. Focused presentation-only change in `auth/RequireRole.tsx`; authentication behavior and logo artwork are unchanged.
+- Latest-main reconciliation (`ea13893`): retained upstream's accessible header home link and consistently light sign-in panel; preserved the local shadow, report-button sizing, species-name cleanup and disclosure labels.
+- Final verification before publishing: all 174 frontend tests, production build, lint and whitespace checks pass. Production build reports the existing large-chunk advisory; no runtime configuration or credentials are included.
+
 ## Alert, report and header maintenance - 2026-10-17
 - Explicit user request on `feature/alert-report-header-fixes`: expired live watch windows show pending authoritative status instead of a stuck 00:00 and refresh every 15 seconds; only the server can clear an alert. Alerts also have a manual refresh button. User follow-up reverted the acknowledgement button changes to their original behavior.
 - Report photo selections can be removed before submission, clearing the preview and file input so the same image can be selected again. Saved report photos are unchanged. Live submission copy is "Report successful" / "Report failed"; supervisor review remains pending.
