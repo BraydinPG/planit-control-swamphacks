@@ -882,10 +882,18 @@ try {
       await evaluate("getComputedStyle(document.querySelector('[data-brand]')).backgroundColor==='rgba(0, 0, 0, 0)'&&document.querySelector('[data-brand]').getBoundingClientRect().width<=240"),
       'Sign-in logo stays transparent and smaller in dark mode',
     )
+    const signInAppearance = "(()=>{const panel=document.querySelector('[aria-labelledby=access-panel-title]');const button=panel.querySelector('button');const logo=panel.querySelector('[data-brand]');return {panelBackground:getComputedStyle(panel).backgroundColor,panelText:getComputedStyle(panel).color,buttonBackground:getComputedStyle(button).backgroundColor,buttonText:getComputedStyle(button).color,logoBackground:getComputedStyle(logo).backgroundColor,logoFilter:getComputedStyle(logo.querySelector('img')).filter}})()"
+    const darkPreferenceAppearance = await evaluate(signInAppearance)
+    assert.equal(darkPreferenceAppearance.panelBackground, 'rgb(255, 255, 255)', 'Original navy logo stays on a light sign-in panel even with dark OS preference')
+    assert.equal(darkPreferenceAppearance.logoBackground, 'rgba(0, 0, 0, 0)')
+    assert.equal(darkPreferenceAppearance.logoFilter, 'none', 'No recoloring, white halo or contrast plate is added to the logo')
+    assert.notEqual(darkPreferenceAppearance.panelText, darkPreferenceAppearance.panelBackground)
+    assert.notEqual(darkPreferenceAppearance.buttonText, darkPreferenceAppearance.buttonBackground)
     await screenshot('logo-sign-in-dark')
     await send('Emulation.setEmulatedMedia', {
       features: [{ name: 'prefers-color-scheme', value: 'light' }],
     })
+    assert.deepEqual(await evaluate(signInAppearance), darkPreferenceAppearance, 'Sign-in surface, text and button remain consistent with either OS preference')
     await screenshot('logo-sign-in-light')
     await evaluate('window.harness.reset()')
     await evaluate("window.harness.mount('loading')")

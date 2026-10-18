@@ -1,3 +1,24 @@
+## Sign-in logo contrast (Cache for Braydin and Rudra) - 2026-10-17
+
+Explicit screenshot-based user request authorizes the narrow auth-presentation fix.
+Branch `feature/cache-sign-in-logo-contrast` starts from main `adea918`, preserving
+the team's new organization assessments, onboarding and demo updates. Open PR56 is
+independent. `frontend/src/auth/RequireRole.tsx` removes OS-dark color overrides from
+the access panel, its button and error text; the app's established light appearance
+keeps the original navy logo readable. Guard conditions, callbacks, token handling,
+roles, hosted Auth0 login, imagery and shared contracts are unchanged. No logo backing,
+outline, recoloring or filter is added; existing transparent assets/sizes are retained.
+
+`frontend/scripts/check-shell.mjs` extends existing sign-in appearance assertions;
+logo guide/context and three public mocked sign-in screenshots document the result.
+174 frontend tests, lint, TypeScript, production build and diff whitespace pass.
+Focused installed-Edge inspection passes 390/1440 widths, dark/light OS preferences,
+logged-out/loading/no-role panels, transparent unfiltered logo and no overflow;
+zero browser exceptions or API requests. The full application browser suite and backend
+suite were not rerun for this presentation-only change. Existing build-size warning
+remains. Braydin reviews auth presentation; Rudra reviews visual consistency. Other
+worktrees/servers, credentials, deployment and task states are untouched; no automatic merge.
+
 ## Smaller transparent logo (Cache for Rudra and Braydin) - 2026-10-17 21:33 EDT
 
 User explicitly requested background removal, smaller logos and pulling latest main.
