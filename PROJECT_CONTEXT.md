@@ -2,6 +2,12 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Public-page simplification - 2026-10-18
+
+[PR #92](https://github.com/BraydinPG/planit-control-swamphacks/pull/92): verified implementation `96c7dd2`; user-authorized merge.
+- Explicit user scope, `feature/cache-simplify-public-data` from main `10bf393`: removes the Data-page evaluation/disabled-model panel and its hurricane-experiment paragraph in the canonical renderer; all twelve figures, research exports and model gates remain unchanged. Both public headers now use the logo as Home, with Data and Sign In; the phone header fits one row.
+- Verified 198 frontend tests, lint/TypeScript, live + fixture production builds, Ruff/format and deterministic export checks. Built-browser checks at 1440/768/390/320 pass removed-content assertions, logo mouse/keyboard navigation, responsive layout and existing controls/fallbacks with zero exceptions or API calls. User authorizes push and merge; no task states, app/auth/backend/scoring or other worktrees change.
+
 ## Public Data & Research dashboard - 2026-10-18
 - [PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91) is verified; the latest user message explicitly authorizes merge. Implementation `0b1269b`, latest reconciled main `c951ae0`. Working branch `feature/cache-dedicated-data-page`.
 - Explicit user scope, `feature/cache-dedicated-data-page` from main `61ec526`: separate public `/data.html`; homepage research removed while original hero/stats/features, brand and atmosphere remain. Shared public CSS/atmosphere, consistent Home/Data/Sign In; no app/auth/backend/deployment changes. The subsequent user message authorizes merging PR91 after verification, superseding the addendum hold.
