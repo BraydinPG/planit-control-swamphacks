@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Centered sign-in card - 2026-10-17
+- Explicit follow-up request on `feature/center-sign-in`: center the access card's brand, heading, text and action buttons, remove "Sign in to see this screen.", and retain the soft shadow with an explicit border-free container. Presentation-only changes in `auth/RequireRole.tsx`; authentication behavior is preserved.
+- Verification after integrating main `d50e5d2`: all 174 frontend tests, TypeScript/production build, lint and whitespace checks pass. No real Auth0 or deployment acceptance is claimed.
+
 ## Supervisor-only notice review link - 2026-10-17
 - Explicit user merge authorization for [PR56](https://github.com/BraydinPG/planit-control-swamphacks/pull/56): incorporated current main `08d1e80`, preserving sign-in/logo-home and report/disclosure changes. Merge acceptance passes: 174 frontend tests, 22 backend hazard tests, lint, TypeScript, production build and focused mock-browser crew/supervisor checks at 390/1440, including crew reload; no browser exceptions or real-service acceptance claim.
 - User-authorized frontend fix on `feature/cache-supervisor-notice-review`, base main `f42ddaf`: pending photo reports keep the supervisor-confirmation status for crew, but only supervisors see "Review worksite notice". Existing notice confirmation/instruction guards and backend permission checks remain authoritative.
