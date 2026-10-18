@@ -211,3 +211,18 @@ test('a malformed card does not break the site page; a missing field means none'
   delete legacy.event_outlooks
   assert.deepEqual(validateSiteDetail(legacy, legacy.id).event_outlooks, [])
 })
+
+test('crew tiles show four outlooks, a View more toggle and one shared evidence disclosure', () => {
+  const html = renderToStaticMarkup(
+    React.createElement(EventOutlooks, { cards: detail.event_outlooks, tiles: true }),
+  )
+  const shown = detail.event_outlooks.slice(0, 4)
+  for (const card of shown)
+    assert.match(html, new RegExp(`data-outlook-id="${card.event_id}"`))
+  assert.equal((html.match(/data-outlook-id=/g) ?? []).length, 4)
+  const out = text(html)
+  assert.ok(out.includes(`View more (${detail.event_outlooks.length - 4})`))
+  assert.match(out, /How each outlook was estimated/)
+  assert.doesNotMatch(out, /How was this estimated\?/)
+  assert.match(out, /Advisory only. Does not change the score/)
+})

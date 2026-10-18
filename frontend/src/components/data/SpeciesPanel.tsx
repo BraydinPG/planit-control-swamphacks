@@ -88,17 +88,7 @@ export function SpeciesPanel({
   const unavailable = context.data_state === 'unavailable'
   return (
     <div className="space-y-4">
-      <p
-        className="flex items-start gap-2.5 rounded-2xl border-2 border-warn bg-warn/10 p-4 text-sm font-medium text-ink"
-        data-testid="species-caveat"
-      >
-        <RiskShape kind="caution" className="mt-0.5 size-4 shrink-0" />
-        <span>
-          Regional context, not a sighting. Local wildlife remains unverified;
-          this does not clear work.
-        </span>
-      </p>
-
+      {/* "Not a sighting" is labeled on each species row and in the sources disclosure. */}
       <WildlifeReports reports={context.wildlife_reports} />
 
       {unavailable ? (

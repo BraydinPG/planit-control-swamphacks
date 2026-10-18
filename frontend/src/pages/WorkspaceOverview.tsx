@@ -43,7 +43,7 @@ export function WorkspaceOverview({
     <div className="space-y-7">
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
         <section
-          className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+          className="overflow-hidden rounded-2xl border border-line bg-surface"
           aria-labelledby="reference-workspace"
         >
           <div className="relative overflow-hidden bg-[#193b40] px-6 py-7 text-white sm:px-8">
@@ -80,7 +80,7 @@ export function WorkspaceOverview({
             <div className="px-6 py-6 sm:px-8">
               <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                     Example team
                   </dt>
                   <dd className="mt-1.5 text-sm font-semibold">
@@ -88,7 +88,7 @@ export function WorkspaceOverview({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                     Scenario region
                   </dt>
                   <dd className="mt-1.5 text-sm font-semibold">
@@ -96,7 +96,7 @@ export function WorkspaceOverview({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                     Example updated
                   </dt>
                   <dd className="mt-1.5 text-xs font-medium">
@@ -104,7 +104,7 @@ export function WorkspaceOverview({
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
                     Site score
                   </dt>
                   <dd className="mt-1.5 text-xs font-medium">
@@ -114,15 +114,15 @@ export function WorkspaceOverview({
                   </dd>
                 </div>
               </dl>
-              <div className="mt-6 border-t border-slate-100 pt-4 text-[11px] leading-relaxed text-slate-500">
-                <span className="font-semibold text-slate-700">Source: </span>
+              <div className="mt-6 border-t border-line pt-4 text-[11px] leading-relaxed text-muted">
+                <span className="font-semibold text-ink">Source: </span>
                 {context.source}
               </div>
             </div>
           ) : (
             <div
               role="status"
-              className="px-6 py-7 text-sm leading-7 text-slate-600"
+              className="px-6 py-7 text-sm leading-7 text-ink-2"
             >
               {mode === 'invalid'
                 ? 'Fixture configuration is invalid. No sample or live data will be substituted.'
@@ -132,36 +132,36 @@ export function WorkspaceOverview({
         </section>
         <section
           aria-labelledby="connection-heading"
-          className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-7"
+          className="rounded-2xl border border-line bg-surface p-6 sm:p-7"
         >
           <div className="flex items-center justify-between gap-3">
             <h2 id="connection-heading" className="text-base font-semibold">
               Workspace connections
             </h2>
-            <Icon name="grid" className="size-5 text-slate-400" />
+            <Icon name="grid" className="size-5 text-muted" />
           </div>
-          <p className="mt-2 text-sm leading-relaxed text-slate-500">
+          <p className="mt-2 text-sm leading-relaxed text-muted">
             Know where the information comes from.
           </p>
-          <dl className="mt-6 divide-y divide-slate-100">
+          <dl className="mt-6 divide-y divide-line">
             <div className="py-4 first:pt-0">
               <dt className="text-sm font-medium">Sample data</dt>
-              <dd className="mt-1 text-xs text-slate-600">
+              <dd className="mt-1 text-xs text-ink-2">
                 {context ? 'Loaded · simulated fixtures' : 'Not loaded'}
               </dd>
             </div>
             <div className="py-4">
               <dt className="text-sm font-medium">Live site conditions</dt>
-              <dd className="mt-1 text-xs text-slate-600">
+              <dd className="mt-1 text-xs text-ink-2">
                 Unavailable · no live connection
               </dd>
             </div>
             <div className="py-4">
               <dt className="text-sm font-medium">Account session</dt>
-              <dd className="mt-1 text-xs text-slate-600">Not connected</dd>
+              <dd className="mt-1 text-xs text-ink-2">Not connected</dd>
             </div>
           </dl>
-          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-950">
+          <div className="mt-4 rounded-xl border border-caution/40 bg-caution/10 px-4 py-3 text-sm leading-relaxed text-ink">
             Switching preview workspaces changes navigation only. It does not
             sign you in or grant permissions.
           </div>
@@ -172,7 +172,7 @@ export function WorkspaceOverview({
           <h2 id="workspace-heading" className="text-base font-semibold">
             Explore the workspace
           </h2>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-muted">
             Navigation preview · features being connected
           </span>
         </div>
@@ -181,27 +181,27 @@ export function WorkspaceOverview({
             <a
               key={item.page}
               href={`#/${workspace}/${item.page}`}
-              className="group flex min-h-36 flex-col rounded-xl border border-slate-200 bg-white p-5 transition-colors hover:border-teal-400 hover:bg-teal-50/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+              className="group flex min-h-36 flex-col rounded-xl border border-line bg-surface p-5 transition-colors hover:border-accent hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             >
               <div className="mb-4 flex items-center justify-between">
-                <Icon name={item.icon} className="size-6 text-teal-800" />
+                <Icon name={item.icon} className="size-6 text-accent" />
                 <Icon
                   name="arrow"
-                  className="size-4 text-slate-400 transition-transform group-hover:translate-x-1"
+                  className="size-4 text-muted transition-transform group-hover:translate-x-1"
                 />
               </div>
               <h3 className="text-sm font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              <p className="mt-2 text-sm leading-relaxed text-muted">
                 {item.description}
               </p>
             </a>
           ))}
         </div>
       </section>
-      <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-100/70 px-5 py-4 text-sm leading-relaxed text-slate-600">
-        <Icon name="alerts" className="mt-0.5 size-4 shrink-0 text-slate-500" />
+      <div className="flex items-start gap-3 rounded-xl border border-line bg-surface-2 px-5 py-4 text-sm leading-relaxed text-ink-2">
+        <Icon name="alerts" className="mt-0.5 size-4 shrink-0 text-muted" />
         <p>
-          <strong className="font-semibold text-slate-800">
+          <strong className="font-semibold text-ink">
             Field verification remains essential.
           </strong>{' '}
           Electrical condition, structural stability and access remain

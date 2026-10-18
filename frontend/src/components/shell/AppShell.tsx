@@ -133,7 +133,7 @@ export function AppShell({
               className={
                 mobile
                   ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-xs leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
-                  : `flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
+                  : `flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-white/5 hover:text-ink'}`
               }
             >
               <Icon
@@ -170,7 +170,7 @@ export function AppShell({
         Skip to content
       </a>
       {!crew && (
-        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-[#ececf0]/90 px-4 py-6 backdrop-blur-xl lg:flex">
+        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-surface/90 px-4 py-6 backdrop-blur-xl lg:flex">
           <a
             href={`#/${route.workspace}/overview`}
             aria-label="FORESITE overview"
@@ -249,7 +249,7 @@ export function AppShell({
                 <div
                   role="group"
                   aria-label="Preview workspace, not an authorization role"
-                  className="flex rounded-[10px] bg-[#e3e3e8] p-0.5"
+                  className="flex rounded-[10px] bg-surface-2 p-0.5"
                 >
                   {(['crew', 'supervisor'] as const).map((workspace) => (
                     <button
@@ -259,7 +259,7 @@ export function AppShell({
                       onClick={() => {
                         window.location.hash = `/${workspace}/overview`
                       }}
-                      className={`min-h-11 rounded-lg px-4 text-sm font-semibold capitalize transition-colors ${route.workspace === workspace ? 'bg-surface text-ink shadow-[0_1px_2px_rgba(0,0,0,0.12)]' : 'text-ink-2 hover:text-ink'}`}
+                      className={`min-h-11 rounded-lg px-4 text-sm font-semibold capitalize transition-colors ${route.workspace === workspace ? 'bg-control-hover text-ink shadow-[0_1px_2px_rgba(0,0,0,0.4)]' : 'text-ink-2 hover:text-ink'}`}
                     >
                       {workspace}
                     </button>
@@ -282,7 +282,7 @@ export function AppShell({
           >
             {route.page === 'overview'
               ? crew
-                ? 'Your worksite'
+                ? 'Home'
                 : 'Supervisor overview'
               : descriptions[route.page].title}
           </h1>
@@ -316,7 +316,7 @@ export function AppShell({
               </p>
               <a
                 href={`#/${route.workspace}/overview`}
-                className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-accent px-5 text-sm font-semibold text-white"
+                className="mt-7 inline-flex min-h-12 items-center gap-3 rounded-xl bg-accent-fill px-5 text-sm font-semibold text-white"
               >
                 Back to overview <Icon name="arrow" className="size-4" />
               </a>

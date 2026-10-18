@@ -12,9 +12,12 @@ export type RiskShapeKind =
 export function RiskShape({
   kind,
   className = 'size-4',
+  fill,
 }: {
   kind: RiskShapeKind
   className?: string
+  /** Overrides the warning triangle's fill, e.g. white on a red alert band. */
+  fill?: string
 }) {
   const common = {
     viewBox: '0 0 24 24',
@@ -43,7 +46,7 @@ export function RiskShape({
     case 'warn':
       return (
         <svg {...common}>
-          <path d="M12 2.5 22.5 21h-21z" fill="var(--pc-warn)" />
+          <path d="M12 2.5 22.5 21h-21z" fill={fill ?? 'var(--pc-warn)'} />
           <path
             d="M12 9.5v5 M12 17.6v.2"
             stroke="#1a1e24"
@@ -122,11 +125,11 @@ const levelWord: Record<RiskLevel, string> = {
 /** Hex fill per level, for places that cannot use CSS variables (Leaflet). */
 // oxlint-disable-next-line react/only-export-components
 export const levelHex: Record<RiskLevel | 'none', string> = {
-  critical: '#d70015',
+  critical: '#c0262d',
   high: '#c93400',
   moderate: '#e0b000',
   low: '#8e8e93',
-  none: '#c7c7cc',
+  none: '#636366',
 }
 
 /**
@@ -180,7 +183,7 @@ export function ScoreBar({
 }) {
   const color = level ? `var(--pc-${levelVar[level]})` : 'var(--pc-low)'
   // Incomplete evidence remains labeled in the badge and adjacent warning.
-  const fill = evidence === 'partial' ? '#ff0000' : color
+  const fill = evidence === 'partial' ? 'var(--pc-stop)' : color
   if (evidence === 'none') score = null
   return (
     <div className="flex h-2.5 w-full gap-0.5" aria-hidden="true">

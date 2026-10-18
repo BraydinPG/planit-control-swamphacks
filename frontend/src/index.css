@@ -1,43 +1,52 @@
 @import 'tailwindcss';
 
 /*
- * FORESITE design tokens: an Apple Human Interface style.
- * Light grouped backgrounds, white inset lists, hairline dividers, system
+ * FORESITE design tokens: an Apple Human Interface style, always dark.
+ * Dark grouped backgrounds, raised surfaces, hairline dividers, system
  * blue for actions, and the system font (San Francisco on Apple devices).
  * The crew workspace keeps its phone layout at every screen size; the
  * supervisor workspace is denser for desktop review.
- * Risk colours are darkened system colours (white text passes 4.5:1) and
- * are always paired with a shape and a word.
+ * Text tokens pass 4.5:1 on bg, surface and surface-2. Fills that carry
+ * white text (stop, warn, accent-fill, ok-fill) pass 4.5:1 with white.
+ * Risk colours are always paired with a shape and a word.
  */
 :root,
 [data-theme='crew'],
 [data-theme='supervisor'] {
-  --pc-bg: #f2f2f7;
-  --pc-surface: #ffffff;
-  --pc-surface-2: #f2f2f7;
-  /* Hover on white surfaces: lighter than the page background so a hovered
-     card never blends into it. */
-  --pc-hover: #f9f9fb;
-  --pc-nav: #f9f9fb;
-  --pc-line: #d2d2d7;
-  --pc-line-strong: #8e8e93;
-  --pc-ink: #1d1d1f;
-  --pc-ink-2: #3a3a3c;
-  --pc-muted: #6e6e73;
+  --pc-bg: #121214;
+  --pc-surface: #1c1c1e;
+  --pc-surface-2: #2c2c2e;
+  /* Hover on dark surfaces: a step lighter than the surface. */
+  --pc-hover: #242426;
+  --pc-nav: #1c1c1e;
+  --pc-line: #38383a;
+  --pc-line-strong: #636366;
+  --pc-ink: #f5f5f7;
+  --pc-ink-2: #d1d1d6;
+  --pc-muted: #a1a1a6;
   --pc-faint: #8e8e93;
-  --pc-focus: #0071e3;
-  --pc-link: #0066cc;
-  --pc-accent: #0071e3;
-  --pc-stop: #d70015;
-  --pc-stop-text: #c4000f;
+  --pc-focus: #0a84ff;
+  --pc-link: #4da3ff;
+  /* Accent text/icons; accent-fill carries white text (4.7:1). */
+  --pc-accent: #0a84ff;
+  --pc-accent-fill: #0071e3;
+  --pc-accent-fill-hover: #0064c8;
+  /* Buttons that are not the primary action. */
+  --pc-control: #2c2c2e;
+  --pc-control-hover: #3a3a3c;
+  /* Fill under white text (5.9:1); stop-text is red text on dark. */
+  --pc-stop: #c0262d;
+  --pc-stop-text: #ff6b6b;
   --pc-warn: #c93400;
-  --pc-warn-text: #b02e00;
-  --pc-caution: #ffcc00;
-  --pc-caution-text: #7a5c00;
+  --pc-warn-text: #ff9f0a;
+  --pc-caution: #ffd60a;
+  --pc-caution-text: #ffd60a;
   --pc-low: #8e8e93;
-  --pc-ok: #248a3d;
-  --pc-sim: #5856d6;
-  color-scheme: light;
+  /* Green text/borders; ok-fill carries white text (5.4:1). */
+  --pc-ok: #30d158;
+  --pc-ok-fill: #1f7a36;
+  --pc-sim: #8e8cff;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -46,6 +55,10 @@
     system-ui, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --color-accent: var(--pc-accent);
+  --color-accent-fill: var(--pc-accent-fill);
+  --color-accent-fill-hover: var(--pc-accent-fill-hover);
+  --color-control: var(--pc-control);
+  --color-control-hover: var(--pc-control-hover);
   --color-bg: var(--pc-bg);
   --color-surface: var(--pc-surface);
   --color-surface-2: var(--pc-surface-2);
@@ -67,6 +80,7 @@
   --color-caution-text: var(--pc-caution-text);
   --color-low: var(--pc-low);
   --color-ok: var(--pc-ok);
+  --color-ok-fill: var(--pc-ok-fill);
   --color-sim: var(--pc-sim);
 }
 

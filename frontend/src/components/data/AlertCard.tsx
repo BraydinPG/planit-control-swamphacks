@@ -38,10 +38,11 @@ function look(alert: Alert): {
       ring: 'border-stop',
       word: 'Stop work',
     }
+  // Every active alert shares the stop red; the shape and title tell them apart.
   return {
     kind: 'warn',
-    band: 'bg-warn text-white',
-    ring: 'border-warn',
+    band: 'bg-stop text-white',
+    ring: 'border-stop',
     word: 'Warning',
   }
 }
@@ -104,7 +105,7 @@ function Acknowledged({ big = false }: { big?: boolean }) {
       role="status"
       className={`flex items-center gap-3 rounded-2xl border-2 border-ok bg-ok/10 px-4 text-ok ${big ? 'min-h-[72px]' : 'min-h-14'}`}
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok text-white">
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok-fill text-white">
         <Icon name="check" className="size-5" />
       </span>
       <span>
@@ -162,6 +163,7 @@ export function AlertCard({
         >
           <RiskShape
             kind={style.kind}
+            fill={style.kind === 'warn' ? '#fff' : undefined}
             className={detail ? 'size-8' : 'size-8 @lg:size-10'}
           />
         </span>
@@ -186,11 +188,7 @@ export function AlertCard({
           <Ring
             alert={alert}
             left={left}
-            color={
-              style.kind === 'stop'
-                ? 'var(--pc-stop-text)'
-                : 'var(--pc-warn-text)'
-            }
+            color="var(--pc-stop-text)"
           />
         )}
         <p className="text-sm text-ink-2">
