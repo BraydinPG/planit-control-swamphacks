@@ -612,7 +612,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
             </p>
           }
         >
-          <SiteMap sites={shown} select={select} />
+          <SiteMap sites={shown} select={select} view="contiguous-us" />
         </Suspense>
       ) : (
         <p role="status" className={`${card} p-5`}>
