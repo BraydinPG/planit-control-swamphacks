@@ -151,7 +151,8 @@ test('multiple confirmations retain every distinct instruction; Flash Flood is a
   assert.equal(rows.find(r => r.id === 'flash_flood').notices.length, 1)
   const html = render(site)
   assert(html.includes(notice.instruction))
-  assert.match(html, /Second instruction\.|Flash flood instruction\./)
+  assert.match(html, /Second instruction\./)
+  assert.match(html, /Flash flood instruction\./)
 })
 
 test('unrecognized notices stay distinct; other-category report joins only its exact notice', () => {
@@ -165,4 +166,5 @@ test('unrecognized notices stay distinct; other-category report joins only its e
   const rows = siteHazards(site)
   assert.equal(rows.length, 3)
   assert.equal(rows.find(r => r.id === `report:${report.id}`).notices[0].id, notice.id)
+  assert.match(render(site), /Chemical spill/)
 })
