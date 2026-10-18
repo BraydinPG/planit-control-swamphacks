@@ -1,3 +1,26 @@
+## Simplify the public header and Data page (Cache for Rudra) - 2026-10-18
+
+[PR #92](https://github.com/BraydinPG/planit-control-swamphacks/pull/92): verified implementation `96c7dd2`; user-authorized merge.
+
+Explicit user request, `feature/cache-simplify-public-data` from main `10bf393`:
+remove the "Evaluation includes saying no" panel and its hurricane-experiment
+paragraph from the public Data page and its canonical renderer. Remove the top Home
+text link on both public pages; the accessible logo remains the Home link. Shared
+phone header returns to one row. Footer navigation and all twelve figures remain.
+Research archives, disabled-model gates and provenance are unchanged.
+
+Changed paths: public landing/Data HTML, shared public CSS, Data renderer, existing
+public-page browser assertions and research/context docs. No backend/auth, app
+workspaces, model/scoring, task states, credentials or other worktrees change.
+Rudra should preserve the logo-to-Home interface and renderer removal; Braydin has
+no configuration action. User explicitly authorizes merge after verification.
+
+Passed: 198 frontend tests, lint, TypeScript, both live and fixture production
+builds; Ruff/format and deterministic figure/data checks. Built-browser tests at
+1440/768/390/320 verify removal, logo mouse/keyboard navigation, single-row header,
+existing figures/selectors/fallbacks and no overflow/exceptions/API calls. Existing
+SPA chunk warning remains. Exact commit/PR attribution is in Git history.
+
 ## Public Data & Research dashboard (Cache for Rudra) - 2026-10-18
 
 [PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91), verified; latest user follow-up authorizes merge. Implementation `0b1269b`;

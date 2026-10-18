@@ -6,7 +6,7 @@ Verified 2026-10-18. Branch `feature/cache-dedicated-data-page`, initially based
 main `61ec526`. This corrects PR89: research lives at **`/data.html`**, an independent
 public document. The homepage keeps its original hero, four statistics, three
 features, brand, fog/lightning effects and demo/sign-in destinations. Public
-navigation now includes Home and Data with an active-page indicator.
+navigation uses the logo as the Home link, followed by Data and Sign In. Data retains its active-page indicator.
 
 The advanced-dashboard addendum initially requested no automatic merge. The user's
 subsequent request explicitly authorizes merging PR91 after verification. Main
@@ -15,6 +15,15 @@ reconciled in `cf24867`, both without conflicts. The frontend tree is identical 
 verified implementation `0b1269b`; all 12 additional upstream backend demo checks
 pass, with one existing dependency deprecation warning. Commit/PR attribution is
 in Git history and the PR description.
+
+## Public-page cleanup (2026-10-18)
+
+At the user's request, the generated Data page no longer displays the
+"Evaluation includes saying no" panel or its separate hurricane-experiment paragraph.
+The supporting research reports, disabled-model gates and all twelve figures remain
+unchanged. Both public headers omit the Home text button; the accessible FORESITE
+logo returns to `/landing.html`. The narrower header fits in one row on phones.
+Screenshots below record the original PR91 layout before this small cleanup.
 
 ## What runs
 
@@ -180,7 +189,7 @@ Full phone capture uses compositor-sized tiles joined without editing content.
 
 ## Handoff and limits
 
-Rudra: preserve `/data.html` as a real public document, the public Home/Data/Sign In
+Rudra: preserve `/data.html` as a real public document, the public logo-to-Home/Data/Sign In
 header, generated markers and research labels. Use the exporter to change chart
 content; do not paste it back into the homepage or app layout. PR90's unrelated
 briefing-picker changes are preserved when reconciling latest main.

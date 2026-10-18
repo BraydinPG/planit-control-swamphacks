@@ -36,11 +36,6 @@ p,h1{text-wrap:pretty}
   .top{gap:4px}
   .signin{padding:0 10px}
   .public-nav{gap:4px}
-  :root{--hdr:112px}
-  .top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:44px 44px;gap:4px 8px;align-content:center}
-  .brand{grid-column:1;grid-row:1}
-  .signin{grid-column:2;grid-row:1}
-  .public-nav{grid-column:1/-1;grid-row:2;justify-content:center;margin-left:0}
 }
 
 /* ——— Layers ——— */

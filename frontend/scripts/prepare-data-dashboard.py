@@ -589,10 +589,6 @@ def make_page(data, heldout, assets, provenance):
         multi_controls,
         True,
     )
-    disabled = "".join(
-        f"<article><h4>{item['name']}</h4><p>Not qualified: {', '.join(r.replace('_', ' ') for r in item['reasons'])}.</p></article>"
-        for item in data["disabled_targets"]
-    )
     bench = data["benchmark"]
     benchmark_table = table(
         ["Workers", "Elapsed s", "Snapshots / s", "Peak RSS MB"],
@@ -663,9 +659,6 @@ def make_page(data, heldout, assets, provenance):
                 "Each category retains its own support, estimator, horizon and limitations. Research eligibility does not establish operational validation.",
             ),
             '<div class="lab-charts">' + multi + "</div>",
-            '<section class="research-disabled"><h3>Evaluation includes saying no.</h3><p>Strong Wind, Ice Storm and Heavy Snow did not pass the predetermined research criteria.</p><div class="lab-model-grid">'
-            + disabled
-            + '</div><p>The separate North Atlantic hurricane experiment predicts 24-hour maximum-wind-change classes from post-analysis tracks. It is not a duration model, a live operational forecast or local worksite wind. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/hurricane_trend.json">Read the separate experiment</a>.</p></section>',
             '<section class="research-performance"><p class="lab-eyebrow">ARCHIVED ENGINEERING BENCHMARK</p><h3>Measure the pipeline. Keep the context.</h3><p>161 bounded snapshots; 1 / 4 / 8 / 12 workers, with matched outputs. One worker was retained. Concurrent short jobs affected timings; this is not live-feed latency or a full-backtest speedup.</p>'
             + benchmark_table
             + f'<p>Saved parsing/normalization: {bench["stage_timings_seconds"]["noaa_parse_and_normalization"]:.3f}s. Cached feature attachment: {bench["stage_timings_seconds"]["cached_weather_feature_attachment"]["elapsed_seconds"]:.4f}s for 100 events, zero network calls. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/benchmark.json">Original benchmark and caveats</a>.</p></section>',
