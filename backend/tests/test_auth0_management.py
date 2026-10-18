@@ -1,4 +1,4 @@
-"""The Auth0 Management client that gives a new supervisor their role (no network)."""
+"""The Auth0 Management client that gives and takes the supervisor role (no network)."""
 
 import json
 
@@ -22,6 +22,12 @@ def fake_auth0(calls, *, roles=None, assign_status=201, token_status=200):
         if request.url.path == "/api/v2/roles":
             assert request.url.params["name_filter"] == "supervisor"
             return httpx.Response(200, json=roles)
+        if (
+            request.method == "DELETE"
+            and request.url.raw_path == b"/api/v2/users/auth0%7Cnew/roles"
+        ):
+            assert json.loads(request.content) == {"roles": ["rol_sup"]}
+            return httpx.Response(assign_status if assign_status != 201 else 204)
         if request.url.path == "/api/v2/roles/rol_sup/users":
             assert json.loads(request.content) == {"users": ["auth0|new"]}
             return httpx.Response(assign_status)
@@ -71,3 +77,11 @@ def test_role_names_ignore_capitalization():
     transport = fake_auth0(calls, roles=[{"id": "rol_sup", "name": "Supervisor"}])
     client(transport).assign_role("auth0|new", "supervisor")
     assert ("POST", "/api/v2/roles/rol_sup/users", "Bearer mgmt") in calls
+
+
+def test_removes_the_role_from_the_user():
+    calls = []
+    client(fake_auth0(calls)).remove_role("auth0|new", "supervisor")
+    assert ("DELETE", "/api/v2/users/auth0|new/roles", "Bearer mgmt") in calls
+    with pytest.raises(ManagementUnavailable):
+        client(fake_auth0([], assign_status=403)).remove_role("auth0|new", "supervisor")

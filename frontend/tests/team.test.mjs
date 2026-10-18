@@ -231,8 +231,20 @@ test('the Overview lists active alerts, notices to confirm, then absent reports 
         danger_tier: 2,
       },
       // A lower active tier at the same site stays hidden under lightning.
-      { id: 'al-3', site_id: 'a', rule: 'flood', state: 'active', danger_tier: 3 },
-      { id: 'al-2', site_id: 'a', rule: 'flood', state: 'cleared', danger_tier: 3 },
+      {
+        id: 'al-3',
+        site_id: 'a',
+        rule: 'flood',
+        state: 'active',
+        danger_tier: 3,
+      },
+      {
+        id: 'al-2',
+        site_id: 'a',
+        rule: 'flood',
+        state: 'cleared',
+        danger_tier: 3,
+      },
     ],
     [
       {
@@ -335,6 +347,16 @@ test('demo supervisors add, rename, move and remove teams; one team per site', a
   const sites = await demo.sites()
   const free = sites.find((s) => !s.assigned_team)
   const taken = sites.find((s) => s.assigned_team)
+  await assert.rejects(
+    () => demo.createTeam({ name: 'Early', site_id: free.id }),
+    (e) => e.reason === 'not_claimed',
+  )
+  await demo.claimSite(free.id)
+  assert(
+    (await demo.team()).claimed_sites.some(
+      (c) => c.site_id === free.id && !c.team_id,
+    ),
+  )
   const added = await demo.createTeam({
     name: ' Night Crew ',
     site_id: free.id,
@@ -350,6 +372,12 @@ test('demo supervisors add, rename, move and remove teams; one team per site', a
     site_id: null,
   })
   assert.deepEqual([moved.name, moved.site_id], ['Nights', null])
+  // The site it left stays claimed until released.
+  await demo.releaseSite(free.id)
+  await assert.rejects(
+    () => demo.releaseSite(free.id),
+    (e) => e.status === 404,
+  )
   const crewTeam = (await demo.team()).teams.find((t) => t.members.length)
   await assert.rejects(
     () => demo.deleteTeam(crewTeam.id),
@@ -481,7 +509,7 @@ test('supervisor keys: create, list, revoke, and redeem (demo and live)', async 
     (e) => e.status === 403,
   )
   await assert.rejects(
-    () => demo.becomeSupervisor('ABCD-2345', 'X'),
+    () => demo.becomeSupervisor('ABCD-2345'),
     (e) => e.status === 409,
   )
   const calls = []
@@ -515,12 +543,67 @@ test('supervisor keys: create, list, revoke, and redeem (demo and live)', async 
   assert.equal((await api.createSupervisorInvite()).code, 'ABCD-2345')
   assert.equal((await api.supervisorInvites()).length, 1)
   await api.revokeSupervisorInvite('ABCD-2345')
-  const account = await api.becomeSupervisor('abcd2345', 'Gulf Line Co')
+  const account = await api.becomeSupervisor('abcd2345')
   assert.equal(account.organization_name, 'Gulf Line Co')
   assert.deepEqual(calls, [
     'POST /api/supervisor-invites ',
     'GET /api/supervisor-invites ',
     'DELETE /api/supervisor-invites/ABCD-2345 ',
-    'POST /api/onboarding/supervisor {"code":"abcd2345","organization_name":"Gulf Line Co"}',
+    'POST /api/onboarding/supervisor {"code":"abcd2345"}',
   ])
+})
+
+test('owners create an organization and hand out supervision; supervisors claim sites (live)', async () => {
+  const calls = []
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(
+        `${options.method ?? 'GET'} ${new URL(url).pathname} ${options.body ?? ''}`,
+      )
+      if (new URL(url).pathname === '/api/organizations')
+        return Response.json(
+          {
+            role: 'crew',
+            is_owner: true,
+            organization_id: 'org:1',
+            organization_name: 'Gulf Line Co',
+            team_id: null,
+            team_name: null,
+            site_id: null,
+          },
+          { status: 201 },
+        )
+      return new Response(null, { status: 204 })
+    },
+  )
+  const account = await api.createOrganization({
+    first_name: 'Olive',
+    last_name: 'Owner',
+    organization_name: 'Gulf Line Co',
+  })
+  assert.equal(account.is_owner, true)
+  await api.removeSupervisor()
+  await api.claimSite('eia860m-AL-1')
+  await api.releaseSite('eia860m-AL-1')
+  assert.deepEqual(calls, [
+    'POST /api/organizations {"first_name":"Olive","last_name":"Owner","organization_name":"Gulf Line Co"}',
+    'DELETE /api/organization/supervisor ',
+    'POST /api/organization/sites/eia860m-AL-1 ',
+    'DELETE /api/organization/sites/eia860m-AL-1 ',
+  ])
+  assert.throws(() => validateAccount({ ...account, is_owner: 'yes' }), invalid)
+  const demo = new DemoClient(() => 'supervisor', storage())
+  await assert.rejects(
+    () => demo.createOrganization(),
+    (e) => e.status === 409,
+  )
+  await assert.rejects(
+    () => demo.removeSupervisor(),
+    (e) => e.status === 409,
+  )
+  const roster = await demo.team()
+  assert.equal(roster.is_owner, true)
+  assert.equal(validateTeams(roster).organization_id, roster.organization_id)
 })

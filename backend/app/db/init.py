@@ -27,6 +27,9 @@ ADDED_COLUMNS = (
     ("memberships", "email", "VARCHAR"),  # team roster and join codes
     ("memberships", "display_name", "VARCHAR"),
     ("memberships", "joined_at", "TIMESTAMPTZ"),
+    ("organizations", "owner_id", "VARCHAR"),  # organization owners
+    ("organizations", "owner_name", "VARCHAR"),
+    ("supervisor_invites", "organization_id", "VARCHAR"),
 )
 
 HYPERTABLES = (

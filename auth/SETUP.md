@@ -147,15 +147,23 @@ VITE_AUTH0_AUDIENCE=https://api.planit-control
 
 Without these values, the backend answers 503 for token-protected requests (it never lets requests through), and the frontend shows "Sign-in is not configured".
 
-## 6a. Supervisor sign-up (role manager app)
+## 6a. Organizations, owners and the supervisor (role manager app)
 
-A new account becomes a supervisor by redeeming a **supervisor key** that an existing supervisor creates on the Team tab, then naming its organization. The backend gives that account the `supervisor` role in Auth0, so nobody assigns roles by hand. It needs one machine-to-machine app, created once:
+Everything is done in the app; nobody assigns roles by hand:
+
+- **Anyone signed in** with no organization creates one on the welcome screen (first name, last name, organization name) and becomes its **owner**. Ownership is stored on the organization, not as an Auth0 role, and the owner's name is never shown.
+- The owner makes the organization's **supervisor code** (one active at a time, one use, 7 days, revocable) and gives it to the person who will supervise, or presses **Make me the supervisor** to redeem it themselves. An organization has **one supervisor**.
+- Redeeming the code (`POST /api/onboarding/supervisor`) asks Auth0 to add the account to the `Supervisor` role, then saves the supervisor membership. If Auth0 refuses, nothing is saved and the code stays usable. The browser signs in again so the new role reaches it.
+- The owner can **remove the supervisor**, or step down if they supervise (`DELETE /api/organization/supervisor`). Auth0 takes the `Supervisor` role away first; the membership is removed only if that worked. Then a new code can be redeemed by someone else.
+- The supervisor **claims sites** for the organization, puts teams on them, and makes crew **join codes**. The owner can also remove teams and crew members.
+
+This needs one machine-to-machine app, created once:
 
 1. **Applications → Applications → Create Application**. Name it `FORESITE role manager` and choose **Machine to Machine Applications**.
-2. Authorize it for the **Auth0 Management API** with only **`read:roles`** and **`create:role_members`**.
+2. Authorize it for the **Auth0 Management API** with **`read:roles`**, **`create:role_members`** and **`delete:role_members`** (the last one lets the owner remove a supervisor). To add a scope later: **Applications → APIs → Auth0 Management API → Machine To Machine Applications**, expand `FORESITE role manager`, tick the scope, **Update**.
 3. From its **Settings** tab, put the Client ID and Client Secret in `backend/.env` (and the server's `.env`) as `AUTH0_MGMT_CLIENT_ID` and `AUTH0_MGMT_CLIENT_SECRET`. Never commit them.
 
-Flow: `POST /api/onboarding/supervisor` checks the key (one use, 7 days, revocable), asks Auth0 to add the user to the `supervisor` role, then creates the organization and the supervisor membership. If Auth0 refuses, nothing is saved and the key stays usable. The browser signs in again so the new role and permissions reach it. Without the app, the endpoint answers 503 `not_configured`.
+Without the app, redeeming a code and removing a supervisor answer 503 `not_configured`; creating organizations, teams and join codes still works. Supervisor keys from before owners existed no longer work (410 `old_key`).
 
 ## 7. Demo accounts
 

@@ -50,6 +50,7 @@ export function validateAccount(v: unknown): Account {
   if (
     !record(v) ||
     !role(v.role) ||
+    !(v.is_owner === undefined || typeof v.is_owner === 'boolean') ||
     ![
       'organization_id',
       'organization_name',
@@ -127,7 +128,23 @@ export function validateTeams(v: unknown): OrganizationTeams {
       } catch {
         return false
       }
-    })
+    }) ||
+    !(
+      v.claimed_sites === undefined ||
+      (Array.isArray(v.claimed_sites) &&
+        v.claimed_sites.every(
+          (c) =>
+            record(c) &&
+            text(c.site_id) &&
+            text(c.site_name) &&
+            nullable(c.team_id ?? null),
+        ))
+    ) ||
+    !(
+      v.unavailable_site_ids === undefined ||
+      (Array.isArray(v.unavailable_site_ids) &&
+        v.unavailable_site_ids.every(text))
+    )
   )
     throw new ApiError(502, 'Invalid team response')
   return v as unknown as OrganizationTeams

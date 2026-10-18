@@ -164,7 +164,7 @@ Adapter rules:
 - `POST /api/hazards/{id}/instruction`
 - `GET /api/sites/{id}/briefing`
 - `GET /api/briefings`
-- `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `PATCH /api/organization`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}`, `DELETE /api/teams/{id}/members/{user_id}`, `POST /api/onboarding/supervisor`, `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}` (team onboarding and management)
+- `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `PATCH /api/organization`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}`, `DELETE /api/teams/{id}/members/{user_id}`, `POST /api/onboarding/supervisor`, `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}`, `POST /api/organizations`, `DELETE /api/organization/supervisor`, `POST|DELETE /api/organization/sites/{site_id}` (organizations, owners, the supervisor code, claimed sites, teams and join codes; 2026-10-18 user decision: one supervisor per organization)
 - `GET /api/sites/{id}/species` (read-only species context for team sites; see `docs/SPECIES_CONTEXT.md`)
 
 These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Rudra consumes these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
@@ -304,10 +304,13 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 | Confirm a potential hazard from a received notice | No | A notified supervisor, for their own organization |
 | Edit and send the instruction for that hazard | No | The supervisor who confirmed it for their organization (reaches only its teams) |
 | Read organization-wide briefings | Own organization only | Own organization only |
-| Join a team with a join code | Only when on no team yet | No |
-| Start an organization with a supervisor key | Only when in no organization yet (becomes its supervisor) | Create and revoke keys |
-| See the team roster; create and revoke join codes | No | Own organization only |
-| Add, rename, move, or remove teams; remove a team member | No | Own organization only |
+| Join a team with a join code | Only when on no team yet and owning no organization | No |
+| Create an organization (becomes its owner) | When in no organization yet | When in no organization yet |
+| Redeem the owner's supervisor code (becomes the organization's one supervisor) | When in no organization yet, or as its owner | No |
+| Claim and release sites; add, rename, and move teams; create and revoke join codes | No | Own organization only |
+| See the team roster; rename the organization; remove a team or a team member | No | Own organization only (its owner too) |
+
+Organization owner (user decision, 2026-10-18): whoever creates an organization owns it. Ownership is stored on the organization, not an Auth0 role. The owner creates and revokes the one supervisor code, can redeem it themselves, and removes the supervisor (which takes the Auth0 Supervisor role away). An organization has at most one supervisor.
 
 The backend is the authority for permissions. Frontend guards improve UX but do not replace API checks.
 

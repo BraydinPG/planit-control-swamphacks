@@ -24,12 +24,21 @@ class Base(DeclarativeBase):
 
 
 class Organization(Base):
-    """One supervisor controls one organization. Many organizations share the deployment."""
+    """An organization holds one supervisor, its teams and their crew. Many organizations
+    share the deployment.
+
+    Anyone signed in can create one and becomes its owner (`owner_id`, an Auth0 user id).
+    The owner gives out the supervisor code and can remove the supervisor; they may also
+    redeem the code themselves. Organizations created before owners existed have none.
+    """
 
     __tablename__ = "organizations"
 
     id: Mapped[str] = mapped_column(String, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
+    owner_id: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
+    # First and last name given at creation; kept for records, never displayed.
+    owner_name: Mapped[str | None] = mapped_column(String, nullable=True)
 
     teams: Mapped[list["Team"]] = relationship(back_populates="organization")
     members: Mapped[list["Membership"]] = relationship(back_populates="organization")
@@ -231,18 +240,38 @@ class JoinCode(Base):
 
 
 class SupervisorInvite(Base):
-    """A supervisor's one-use key that lets a new account start its own organization as a
-    supervisor, until it expires, is revoked, or is used."""
+    """An owner's one-use supervisor code: the account that redeems it becomes the
+    organization's supervisor, until it expires, is revoked, or is used.
+
+    Keys from before organizations had owners have no `organization_id` and no longer work.
+    """
 
     __tablename__ = "supervisor_invites"
 
     code: Mapped[str] = mapped_column(String, primary_key=True)  # XXXX-XXXX
+    organization_id: Mapped[str | None] = mapped_column(
+        ForeignKey("organizations.id"), nullable=True
+    )
     created_by: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     used_by: Mapped[str | None] = mapped_column(String, nullable=True)
     used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class OrganizationSite(Base):
+    """A site the organization's supervisor claimed. Only claimed sites go to its teams,
+    and a site belongs to at most one organization."""
+
+    __tablename__ = "organization_sites"
+
+    site_id: Mapped[str] = mapped_column(ForeignKey("sites.id"), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(
+        ForeignKey("organizations.id"), nullable=False, index=True
+    )
+    claimed_by: Mapped[str] = mapped_column(String, nullable=False)
+    claimed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class HazardNotice(Base):

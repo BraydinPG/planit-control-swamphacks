@@ -273,9 +273,13 @@ def test_supervisor_adds_teams_at_free_sites(client, h) -> None:
             )
         )  # fmt: skip
         s.commit()
-    response = client.post(
-        "/api/teams", json={"name": " Night Crew ", "site_id": "site-b"}, headers=SUPERVISOR
-    )
+    body = {"name": " Night Crew ", "site_id": "site-b"}
+    unclaimed = client.post("/api/teams", json=body, headers=SUPERVISOR)
+    assert unclaimed.status_code == 409
+    assert unclaimed.json()["detail"]["reason"] == "not_claimed"
+    claim = client.post("/api/organization/sites/site-b", headers=SUPERVISOR)
+    assert claim.status_code == 204
+    response = client.post("/api/teams", json=body, headers=SUPERVISOR)
     assert response.status_code == 201, response.text
     team = response.json()
     assert (team["name"], team["site_name"], team["members"]) == ("Night Crew", "Bravo Plant", [])
@@ -393,20 +397,28 @@ def test_removing_a_member_needs_them_on_that_team(client) -> None:
     )
 
 
-# ---- supervisor invite keys ----
+# ---- owners, the supervisor code, and site claims ----
 
 
 class FakeManagement:
-    def __init__(self, fail: bool = False) -> None:
+    def __init__(self) -> None:
         self.assigned: list[tuple[str, str]] = []
-        self.fail = fail
+        self.removed: list[tuple[str, str]] = []
+        self.fail = False
 
-    def assign_role(self, user_id: str, role_name: str) -> None:
+    def _check(self) -> None:
         from app.security.management import ManagementUnavailable
 
         if self.fail:
             raise ManagementUnavailable("synthetic Auth0 failure")
+
+    def assign_role(self, user_id: str, role_name: str) -> None:
+        self._check()
         self.assigned.append((user_id, role_name))
+
+    def remove_role(self, user_id: str, role_name: str) -> None:
+        self._check()
+        self.removed.append((user_id, role_name))
 
 
 @pytest.fixture
@@ -418,119 +430,180 @@ def management(h):
     return fake
 
 
-def invite(client, headers=SUPERVISOR) -> str:
+OWNER = person("auth0|owner")
+NEW_ORG = {"first_name": "Olive", "last_name": "Owner", "organization_name": " Gulf Line Co "}
+
+
+def found(client, headers=OWNER) -> str:
+    response = client.post("/api/organizations", json=NEW_ORG, headers=headers)
+    assert response.status_code == 201, response.text
+    return response.json()["organization_id"]
+
+
+def supervisor_code(client, headers=OWNER) -> str:
     response = client.post("/api/supervisor-invites", headers=headers)
     assert response.status_code == 201, response.text
     return response.json()["code"]
 
 
-def test_new_account_becomes_a_supervisor_with_an_invite_key(client, h, management) -> None:
-    code = invite(client)
-    assert [
-        i["code"] for i in client.get("/api/supervisor-invites", headers=SUPERVISOR).json()
-    ] == [code]
-    newcomer = person("auth0|new-boss", name="Bo Boss", email="bo@example.com")
-    response = client.post(
-        "/api/onboarding/supervisor",
-        json={"code": code.lower().replace("-", ""), "organization_name": "  Gulf Line Co  "},
-        headers=newcomer,
-    )
-    assert response.status_code == 200, response.text
-    account = response.json()
-    assert account["role"] == "supervisor" and account["organization_name"] == "Gulf Line Co"
-    assert management.assigned == [("auth0|new-boss", "supervisor")]
+def redeem(client, code: str, headers) -> object:
+    return client.post("/api/onboarding/supervisor", json={"code": code}, headers=headers)
+
+
+def test_anyone_creates_an_organization_and_owns_it(client, h) -> None:
+    org_id = found(client)
+    me = client.get("/api/me", headers=OWNER).json()
+    assert me["is_owner"] is True and me["organization_name"] == "Gulf Line Co"
+    assert me["team_id"] is None and me["role"] == "crew"
     with h() as s:
-        member = s.scalars(
-            select(db.Membership).where(db.Membership.user_id == "auth0|new-boss")
-        ).one()
-        assert (member.role, member.team_id, member.display_name) == ("supervisor", None, "Bo Boss")
-        used = s.get(db.SupervisorInvite, code)
-        assert used.used_by == "auth0|new-boss" and used.used_at is not None
-    # The key is spent, and drops off the inviter's list.
-    assert client.get("/api/supervisor-invites", headers=SUPERVISOR).json() == []
-    again = client.post(
-        "/api/onboarding/supervisor",
-        json={"code": code, "organization_name": "Second"},
-        headers=person("auth0|someone-else"),
-    )
-    assert again.status_code == 404
-    # After signing in again with the new role, they run their own organization.
-    boss = person("auth0|new-boss", "supervisor")
-    teams = client.get("/api/team", headers=boss).json()
-    assert teams["organization_name"] == "Gulf Line Co" and teams["teams"] == []
-
-
-def test_supervisor_signup_fails_closed(client, h, management) -> None:
-    newcomer = person("auth0|hopeful")
-    body = {"code": "ABCD-2345", "organization_name": "Nope"}
-    assert client.post("/api/onboarding/supervisor", json=body, headers=newcomer).status_code == 404
-    assert client.post("/api/onboarding/supervisor", json=body).status_code == 401
-    code = invite(client)
-    # Already in an organization.
-    joined = person("auth0|joined")
-    client.post("/api/join", json={"code": make_code(client)}, headers=joined)
-    taken = client.post("/api/onboarding/supervisor", json={**body, "code": code}, headers=joined)
-    assert taken.status_code == 409 and taken.json()["detail"]["reason"] == "already_member"
-    # Blank organization name.
+        org = s.get(db.Organization, org_id)
+        assert (org.owner_id, org.owner_name) == ("auth0|owner", "Olive Owner")
+    # One organization per account; members can't start another.
+    assert client.post("/api/organizations", json=NEW_ORG, headers=OWNER).status_code == 409
+    assert client.post("/api/organizations", json=NEW_ORG, headers=SUPERVISOR).status_code == 409
     blank = client.post(
-        "/api/onboarding/supervisor",
-        json={"code": code, "organization_name": "   "},
-        headers=newcomer,
+        "/api/organizations", json={**NEW_ORG, "first_name": "  "}, headers=person("auth0|z")
     )
     assert blank.status_code == 422
-    # Auth0 failure changes nothing: the key stays usable, no organization is made.
+    # The owner reads the roster, but supervisor work needs a supervisor.
+    roster = client.get("/api/team", headers=OWNER).json()
+    assert roster["is_owner"] and not roster["is_supervisor"] and roster["supervisors"] == []
+    assert client.post("/api/teams", json={"name": "T"}, headers=OWNER).status_code == 403
+    # Owners don't join teams as crew.
+    joined = client.post("/api/join", json={"code": make_code(client)}, headers=OWNER)
+    assert joined.status_code == 409 and joined.json()["detail"]["reason"] == "owner"
+
+
+def test_owner_supervises_with_their_own_code_then_hands_it_over(client, h, management) -> None:
+    found(client)
+    code = supervisor_code(client)
+    assert [i["code"] for i in client.get("/api/supervisor-invites", headers=OWNER).json()] == [
+        code
+    ]
+    # A newer code replaces the old one.
+    newer = supervisor_code(client)
+    assert [i["code"] for i in client.get("/api/supervisor-invites", headers=OWNER).json()] == [
+        newer
+    ]
+    assert redeem(client, code, person("auth0|x")).status_code == 404
+    taken = redeem(client, newer.lower().replace("-", ""), OWNER)
+    assert taken.status_code == 200, taken.text
+    assert taken.json()["role"] == "supervisor" and taken.json()["is_owner"] is True
+    assert management.assigned == [("auth0|owner", "supervisor")]
+    owner_sup = person("auth0|owner", "supervisor")
+    roster = client.get("/api/team", headers=owner_sup).json()
+    assert roster["is_owner"] and roster["is_supervisor"]
+    # One supervisor: another code can't add a second.
+    third = supervisor_code(client, owner_sup)
+    second = redeem(client, third, person("auth0|second"))
+    assert second.status_code == 409 and second.json()["detail"]["reason"] == "has_supervisor"
+    # The owner steps down; Auth0 drops the role; someone else redeems the code.
+    assert client.delete("/api/organization/supervisor", headers=owner_sup).status_code == 204
+    assert management.removed == [("auth0|owner", "supervisor")]
+    assert client.get("/api/me", headers=OWNER).json()["is_owner"] is True
+    ok = redeem(client, third, person("auth0|delegate"))
+    assert ok.status_code == 200, ok.text
+    # The owner can remove the delegate too.
+    assert client.delete("/api/organization/supervisor", headers=OWNER).status_code == 204
+    assert management.removed[-1] == ("auth0|delegate", "supervisor")
+    with h() as s:
+        assert s.scalar(
+            select(db.Membership).where(db.Membership.user_id == "auth0|delegate")
+        ) is None  # fmt: skip
+
+
+def test_only_the_owner_hands_out_or_removes_supervision(client, management) -> None:
+    found(client)
+    for headers in (SUPERVISOR, person("auth0|crew-x"), person("auth0|nobody", "supervisor")):
+        assert client.post("/api/supervisor-invites", headers=headers).status_code == 403
+        assert client.delete("/api/organization/supervisor", headers=headers).status_code == 403
+    code = supervisor_code(client)
+    assert client.delete(f"/api/supervisor-invites/{code}", headers=SUPERVISOR).status_code == 403
+    assert client.delete(f"/api/supervisor-invites/{code}", headers=OWNER).status_code == 204
+    assert redeem(client, code, person("auth0|late")).status_code == 404
+    # Nobody to remove.
+    assert client.delete("/api/organization/supervisor", headers=OWNER).status_code == 404
+
+
+def test_supervisor_codes_fail_closed(client, h, management) -> None:
+    found(client)
+    code = supervisor_code(client)
+    assert redeem(client, "ABCD-2345", person("auth0|hopeful")).status_code == 404
+    assert redeem(client, code, {}).status_code == 401
+    # Already on a team.
+    joined = person("auth0|joined")
+    client.post("/api/join", json={"code": make_code(client)}, headers=joined)
+    taken = redeem(client, code, joined)
+    assert taken.status_code == 409 and taken.json()["detail"]["reason"] == "already_member"
+    # Auth0 failure changes nothing: the code stays usable.
     management.fail = True
-    failed = client.post(
-        "/api/onboarding/supervisor", json={**body, "code": code}, headers=newcomer
-    )
-    assert failed.status_code == 502
+    assert redeem(client, code, person("auth0|hopeful")).status_code == 502
     with h() as s:
         assert s.get(db.SupervisorInvite, code).used_by is None
-        assert (
-            s.scalar(select(db.Membership).where(db.Membership.user_id == "auth0|hopeful")) is None
-        )
     management.fail = False
-    ok = client.post("/api/onboarding/supervisor", json={**body, "code": code}, headers=newcomer)
-    assert ok.status_code == 200
-
-
-def test_expired_and_revoked_keys(client, h, management) -> None:
-    code = invite(client)
-    assert (
-        client.delete(f"/api/supervisor-invites/{code}", headers=OTHER_SUPERVISOR).status_code
-        == 404
-    )
-    assert client.delete(f"/api/supervisor-invites/{code}", headers=SUPERVISOR).status_code == 204
-    body = {"code": code, "organization_name": "Late"}
-    assert (
-        client.post("/api/onboarding/supervisor", json=body, headers=person("auth0|a")).status_code
-        == 404
-    )
-    expired = invite(client)
+    assert redeem(client, code, person("auth0|hopeful")).status_code == 200
+    assert redeem(client, code, person("auth0|again")).status_code == 404  # spent
+    # Expired codes and keys from before owners existed.
+    expired = supervisor_code(client)
     with h() as s:
         s.get(db.SupervisorInvite, expired).expires_at = NOW - timedelta(seconds=1)
+        s.add(
+            db.SupervisorInvite(
+                code="OLDK-2345", created_by="auth0|sup-1", created_at=NOW,
+                expires_at=NOW + timedelta(days=1),
+            )
+        )  # fmt: skip
         s.commit()
-    response = client.post(
-        "/api/onboarding/supervisor", json={**body, "code": expired}, headers=person("auth0|b")
-    )
-    assert response.status_code == 410
+    assert redeem(client, expired, person("auth0|b")).status_code == 410
+    old = redeem(client, "OLDK-2345", person("auth0|b"))
+    assert old.status_code == 410 and old.json()["detail"]["reason"] == "old_key"
 
 
-def test_only_linked_supervisors_create_keys(client) -> None:
-    assert client.post("/api/supervisor-invites", headers=person("auth0|crew-x")).status_code == 403
-    unlinked = person("auth0|unlinked-sup", "supervisor")
-    assert client.post("/api/supervisor-invites", headers=unlinked).status_code == 403
-
-
-def test_signup_without_auth0_role_manager_explains_itself(client, h) -> None:
+def test_without_the_auth0_role_manager_it_explains_itself(client) -> None:
     from app.security.management import get_auth0_management
 
     app.dependency_overrides[get_auth0_management] = lambda: None
-    code = invite(client)
-    response = client.post(
-        "/api/onboarding/supervisor",
-        json={"code": code, "organization_name": "Org"},
-        headers=person("auth0|c"),
-    )
+    found(client)
+    response = redeem(client, supervisor_code(client), person("auth0|c"))
     assert response.status_code == 503
     assert response.json()["detail"]["reason"] == "not_configured"
+
+
+def test_owner_removes_teams_and_members_but_not_supervisor_work(client, h) -> None:
+    with h() as s:
+        s.get(db.Organization, "org-1").owner_id = "auth0|owner"
+        s.commit()
+    crew = person("auth0|c1")
+    client.post("/api/join", json={"code": make_code(client, team="team-b")}, headers=crew)
+    roster = client.get("/api/team", headers=OWNER).json()
+    assert roster["is_owner"] and not roster["is_supervisor"]
+    assert client.delete("/api/teams/team-b/members/auth0|c1", headers=OWNER).status_code == 204
+    assert client.delete("/api/teams/team-b", headers=OWNER).status_code == 204
+    assert client.post("/api/teams/team-a/join-codes", headers=OWNER).status_code == 403
+    assert client.post("/api/organization/sites/site-a", headers=OWNER).status_code == 403
+
+
+def test_sites_are_claimed_once_and_released_without_a_team(client, h) -> None:
+    with h() as s:
+        s.add(
+            db.Site(id="site-c", name="Charlie", lat=26, lon=-80, location_type="power_plant",
+                    source="test")
+        )  # fmt: skip
+        s.commit()
+    assert client.post("/api/organization/sites/site-c", headers=SUPERVISOR).status_code == 204
+    roster = client.get("/api/team", headers=SUPERVISOR).json()
+    claimed = {c["site_id"]: c["team_id"] for c in roster["claimed_sites"]}
+    assert claimed == {"site-a": "team-a", "site-c": None}  # site-a: its team held it before
+    other = client.get("/api/team", headers=OTHER_SUPERVISOR).json()
+    assert {"site-a", "site-c"} <= set(other["unavailable_site_ids"])
+    taken = client.post("/api/organization/sites/site-c", headers=OTHER_SUPERVISOR)
+    assert taken.status_code == 409 and taken.json()["detail"]["reason"] == "claimed"
+    held = client.delete("/api/organization/sites/site-a", headers=SUPERVISOR)
+    assert held.status_code == 409 and held.json()["detail"]["reason"] == "has_team"
+    # Moving the team off keeps site-a claimed; then it can be released.
+    client.patch("/api/teams/team-a", json={"site_id": "site-c"}, headers=SUPERVISOR)
+    assert client.delete("/api/organization/sites/site-a", headers=SUPERVISOR).status_code == 204
+    assert (
+        client.post("/api/organization/sites/site-a", headers=OTHER_SUPERVISOR).status_code == 204
+    )
+    assert client.delete("/api/organization/sites/nope", headers=SUPERVISOR).status_code == 404
