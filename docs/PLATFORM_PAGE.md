@@ -1,9 +1,11 @@
 # Public Platform page
 
+[PR #93](https://github.com/BraydinPG/planit-control-swamphacks/pull/93): verified implementation `7f64b3b`; user-authorized merge.
+
 Verified 2026-10-18. User-authorized stage one only, branch
 `feature/cache-interactive-platform`, initially based on main `88b87ae`.
 Main `bc525ea` is reconciled in `78794bf` without conflicts, preserving the
-team?s map-color changes. Final frontend/build/browser checks pass on this tree.
+team's map-color changes. Final frontend/build/browser checks pass on this tree.
 The accompanying user message explicitly authorizes merge after verification,
 superseding the attachment's original request to leave the PR open.
 
