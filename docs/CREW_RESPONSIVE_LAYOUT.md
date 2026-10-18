@@ -10,9 +10,9 @@ data, permissions and actions across screen sizes.
   has five destinations; only supervisors have Team. The main crew area is capped
   at **1440 px**, without a sidebar gutter.
 - From **1280 px**, Home places the active alert beside supervisor instructions.
-  My Worksite pairs the score and weather conditions with matching section headings
-  so both cards start at the same height, then shows the complete score-factor
-  breakdown in a separate responsive grid.
+  My Worksite places Site score beside Score factors and evidence with matching
+  section headings/card tops. Weather and conditions spans the full-width row below.
+  Narrow screens stack score, complete factor breakdown, then weather.
 - My Worksite shows every supplied observation, available event tile, full report
   card and score factor without View more/View less controls. Reading
   and event grids gain columns when space permits; report columns are bounded by
@@ -64,8 +64,9 @@ and unfamiliar hazards, and site identity. Source details and existing
 research/historical limitations remain available with their associated evidence.
 
 Focused browser checks cover 40 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
-with zero horizontal overflow, exceptions or real backend calls and score/weather card
-top alignment within 1px at desktop widths. Unit count: 198.
+with zero horizontal overflow, exceptions or real backend calls. Worksite checks cover
+aligned score/factor cards, full-width weather below and narrow-screen reading order.
+Unit count: 198.
 Lint, TypeScript, default/live and explicit-demo production builds and the complete
 development/built-demo browser workflow suites also pass.
 Unified-list implementation `2d293fb` and `d82a30f`; reconciliation `e96b190`
@@ -73,7 +74,12 @@ preserves main `c285cf5` / read-only guests; `3430f4e` incorporates PR82's fog c
 Species placement tests verify source/state/time/caveat containment in its disclosure
 above the habitat map and no detached footer. The prior PR80 baseline also passed
 139 backend score/report/lightning/contract checks; this feature changes no backend code.
-[Review branch](https://github.com/BraydinPG/planit-control-swamphacks/compare/main...feature/cache-unified-confirmed-hazards).
+[Review branch](https://github.com/BraydinPG/planit-control-swamphacks/compare/main...feature/cache-score-evidence-layout).
+Latest layout follow-up starts from main `6f563fe` (PR84 merged): 198 frontend tests,
+lint/TypeScript, live/demo builds, the built-demo workflow suite and 40 focused cases
+over eight widths pass with score/factors together and weather below. The initial
+development screenshot run timed out on navigation; the complete built-demo and
+focused browser runs pass with no exceptions or actual backend calls.
 Existing bundle-size warnings remain; browser evidence is demo/mocked verification,
 not live Auth0/Tiger Data or operational safety acceptance.
 

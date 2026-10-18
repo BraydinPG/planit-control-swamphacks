@@ -333,14 +333,16 @@ function SitePage({
               <SectionHead title="Site score" />
               {score}
             </div>
-            <div className="min-w-0 xl:col-span-8" data-crew-conditions>
-              {conditions}
-            </div>
+            <section className="min-w-0 space-y-3 xl:col-span-8" data-crew-factors aria-label="Score factors and evidence">
+              <SectionHead title="Score factors and evidence" />
+              <div className={`${card} border border-line p-4 @lg:p-5`}>
+                <Factors factors={site.score?.factor_contributions ?? site.top_factors} columns />
+              </div>
+            </section>
           </div>
-          <section className={`${card} space-y-3 border border-line p-4 @lg:p-5`} aria-label="Score factors and evidence">
-            <SectionHead title="Score factors and evidence" />
-            <Factors factors={site.score?.factor_contributions ?? site.top_factors} columns />
-          </section>
+          <div className="min-w-0" data-crew-conditions>
+            {conditions}
+          </div>
           {reports}
           {context}
           {refreshButton}

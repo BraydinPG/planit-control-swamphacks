@@ -1,3 +1,19 @@
+## Score/evidence row on My Worksite (Cache for Rudra) - 2026-10-18
+
+Explicit user follow-up, `feature/cache-score-evidence-layout` from main `6f563fe`:
+crew My Worksite places the existing full score-factor panel beside Site score at
+1280px and above, with matched headings/card tops. Weather and conditions moves to
+the full-width row underneath; narrow screens read score, factors, then weather.
+`ConnectedPages.tsx` changes composition only. Existing browser geometry assertions
+now check that ordering, aligned cards and full-width weather. No supervisor layout,
+schema, fixture, backend/auth/scoring/alert logic or task checkbox changes.
+
+Verified 198 frontend tests, lint/TypeScript, live/demo builds, the built-demo browser
+workflow suite and 40 focused cases over eight widths. Score/factor card tops align,
+weather fills the row below, and narrow screens preserve reading order. No overflow,
+exceptions or actual backend calls. User explicitly requests merge after verification.
+The layout guide records commands and the refreshed desktop screenshot.
+
 ## Unified confirmed hazards (Cache for Rudra) - 2026-10-18
 
 User follow-up to PR80 requests a single Confirmed hazards section. Branch
