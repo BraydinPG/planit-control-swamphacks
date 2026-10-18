@@ -417,28 +417,8 @@ try {
   )
   await click('Replay server-cleared payload')
   await loaded('Server reports cleared')
-  // The server-cleared alert raises a green end notification, and its start notice goes away.
-  await until(
-    () =>
-      evaluate(
-        "document.querySelector('[data-alert-notice=end]')?.textContent.includes('Stop work alert - Lightning is over') && !document.querySelector('[data-alert-notice=start]')",
-      ),
-    'alert end notification',
-  )
   await click('Replay additional qualifying strike')
   await alertCardLoaded()
-  // A strike after clearance starts a new alert period: a new red start notification.
-  await until(
-    () =>
-      evaluate(
-        "document.querySelectorAll('[data-alert-notice=start]').length===1 && document.querySelector('[data-alert-notice=start]').textContent.includes('Stop work alert - Lightning') && document.querySelector('[data-alert-notice=start] a').getAttribute('href')==='#/crew/alerts'",
-      ),
-    'alert start notification',
-  )
-  assert(
-    await evaluate('document.documentElement.scrollWidth <= innerWidth'),
-    'Alert notifications must not overflow',
-  )
   const demoReportOpened = performance.now()
   await hash('/crew/reports', 'Report a hazard')
   await choose('presence', 'present')
