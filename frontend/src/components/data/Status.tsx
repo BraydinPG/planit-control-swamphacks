@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type {
   DataState,
   SiteSummary,
@@ -319,6 +320,7 @@ export function ScorePanel({
   )
 }
 export function Observations({ rows }: { rows: Observation[] }) {
+  const [expanded, setExpanded] = useState(false)
   if (!rows.length)
     return (
       <p className="rounded-2xl border border-dashed border-line-strong p-4 text-ink-2">
@@ -332,8 +334,8 @@ export function Observations({ rows }: { rows: Observation[] }) {
   // reading's source and timestamps.
   return (
     <div className="@container space-y-2 rounded-2xl border border-line bg-surface p-3">
-      <ul className="grid gap-2 @md:grid-cols-2 @3xl:grid-cols-3">
-        {rows.map((row, index) => {
+      <ul className="grid gap-2 @md:grid-cols-2">
+        {(expanded ? rows : rows.slice(0, 4)).map((row, index) => {
           const missing = row.value === null || row.data_state === 'unavailable'
           return (
             <li
@@ -367,6 +369,13 @@ export function Observations({ rows }: { rows: Observation[] }) {
           )
         })}
       </ul>
+      {rows.length > 4 && (
+        <button type="button" aria-expanded={expanded}
+          className="inline-flex min-h-11 items-center rounded-xl bg-surface-2 px-4 py-2 text-sm font-semibold text-ink"
+          onClick={() => setExpanded((value) => !value)}>
+          {expanded ? 'View less' : `View more (${rows.length - 4})`}
+        </button>
+      )}
       <Details title="Source and timing for each reading">
         <ul className="divide-y divide-line text-sm">
           {rows.map((row, index) => (

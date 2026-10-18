@@ -284,7 +284,7 @@ function SitePage({
               )}
             </section>
           )}
-          <section className="space-y-3">
+          <section className={`${card} space-y-3 border border-line p-3`}>
             <SectionHead title="Hazards and supervisor instructions" />
             {site.notices.length ? (
               <>
@@ -310,14 +310,14 @@ function SitePage({
         </div>
       </div>
       {/* Full width so reports sit side by side on wide screens. */}
-      <section className="space-y-3">
-        <SectionHead kicker="Crew reports" title="Reports at this site" />
+      <section className={`${card} space-y-3 border border-line p-3`}>
+        <SectionHead title="Reports at this site" />
         {site.reports.length ? (
           <Masonry
             label="Reports at this site"
             items={site.reports.map((r) => ({
               key: r.id,
-              node: <ReportCard report={r} />,
+              node: <ReportCard report={r} compact />,
             }))}
           />
         ) : (
@@ -688,7 +688,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
   )
 }
 function AlertsPage({ id }: { id: string | null }) {
-  const { client, refresh } = useApplication()
+  const { client, refresh, persona } = useApplication()
   const alerts = useResource(
     'alerts',
     useCallback(() => client.alerts(), [client]),
@@ -698,6 +698,10 @@ function AlertsPage({ id }: { id: string | null }) {
   const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
   return (
     <div className="pc-enter space-y-5">
+      <a href={`#/${persona}/overview`} className={control}>
+        <Icon name="back" className="size-4" />
+        Back to {persona === 'crew' ? 'home' : 'overview'}
+      </a>
       {id && (
         <a
           href={`#${location.hash.split('/').slice(0, 3).join('/').slice(1)}`}
@@ -1236,7 +1240,7 @@ function StoredPhoto({ id, alt }: { id: string; alt: string }) {
   )
 }
 
-function ReportCard({ report }: { report: CrewReport }) {
+function ReportCard({ report, compact = false }: { report: CrewReport; compact?: boolean }) {
   const { client, persona } = useApplication()
   const photo = demoClient(client)?.photo(report.id)
   const [reviewCategory, setReviewCategory] = useState<ReportCategory>(
@@ -1244,6 +1248,21 @@ function ReportCard({ report }: { report: CrewReport }) {
   )
   const [severity, setSeverity] = useState<'' | 'low' | 'moderate' | 'high'>('')
   const look = reviewLook[report.review_status]
+  if (compact) return (
+    <article data-report-id={report.id} className={card + ' space-y-2 rounded-xl border border-line p-3'}>
+      <h3 className="text-lg font-bold">{categories[report.category]}</h3>
+      {report.review_status === 'pending' && (
+        <p className="text-sm font-semibold text-warn-text">
+          {report.hazard_present
+            ? 'Action needed: supervisor confirmation of the hazard notice.'
+            : 'Action needed: supervisor review of this report.'}
+        </p>
+      )}
+      <Details title="View more" label={'View more about ' + categories[report.category] + ' report'}>
+        <ReportCard report={report} />
+      </Details>
+    </article>
+  )
   return (
     <article
       data-report-id={report.id}

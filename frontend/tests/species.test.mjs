@@ -111,10 +111,10 @@ test('panel always shows the caveat, source, date, and match labels', () => {
   assert.match(text, /USFWS IPaC Location API/)
   assert.match(text, /Recorded demo snapshot/)
   assert.match(text, /Known regional range\/habitat, not a sighting/)
-  assert.match(text, /Crew wildlife reports at this site/)
+  assert.doesNotMatch(text, /Crew wildlife reports at this site/)
   assert.match(text, /Confirmed by supervisor review/)
-  assert.match(text, /What this does not tell you/)
-  assert.match(text, /water moccasin/)
+  assert.doesNotMatch(text, /What this does not tell you/)
+  assert.doesNotMatch(text, /USFWS field office:/)
 })
 
 test('protection, habitat and encounter render independently; unknown never reads as harmless', () => {

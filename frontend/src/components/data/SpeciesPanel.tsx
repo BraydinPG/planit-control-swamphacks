@@ -99,33 +99,6 @@ export function SpeciesPanel({
         </span>
       </p>
 
-      <div className={`${card} space-y-2 p-4 text-sm text-ink-2`}>
-        <p className="flex flex-wrap items-center gap-2">
-          <Status state={context.data_state} />
-          <span className="font-semibold text-ink">{context.source}</span>
-          {context.api_version && <span>v{context.api_version}</span>}
-          {context.simulated && (
-            <span className="chip border border-dotted border-sim text-sim">
-              Recorded demo snapshot
-            </span>
-          )}
-        </p>
-        <p>
-          Retrieved <Timestamp value={context.fetched_at} />
-        </p>
-        <Details title="Species sources and coverage">
-          <p>{context.caveat}</p>
-          <p>{context.footprint_description}</p>
-          <p>
-            Wording:{' '}
-            {context.generated_by === 'gemini'
-              ? `${context.simulated ? 'recorded Gemini response' : 'Gemini'}, checked line by line against the sources below`
-              : 'deterministic template'}
-            . Statuses and guidance are shown exactly as sourced.
-          </p>
-        </Details>
-      </div>
-
       <WildlifeReports reports={context.wildlife_reports} />
 
       {unavailable ? (
@@ -151,26 +124,21 @@ export function SpeciesPanel({
 
       <HabitatMap context={context} site={site} other={otherHabitat} />
 
-      {context.field_office && (
-        <p className={`${card} p-4 text-sm text-ink-2`}>
-          <span className="font-semibold text-ink">USFWS field office:</span>{' '}
-          {context.field_office.name}
-          {context.field_office.phone && ` · ${context.field_office.phone}`}
-          {context.field_office.email && ` · ${context.field_office.email}`}
+      <footer className="border-t border-line pt-3 text-xs text-muted">
+        <p className="flex flex-wrap items-center gap-2">
+          <Status state={context.data_state} />
+          <span>Source: {context.source}</span>
+          {context.simulated && <span>Recorded demo snapshot</span>}
+          <span>Retrieved <Timestamp value={context.fetched_at} /></span>
         </p>
-      )}
-
-      {context.unknowns.length > 0 && (
-        <div className={`${card} p-4`}>
-          <Details title="What this does not tell you">
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2">
-              {context.unknowns.map((u) => (
-                <li key={u}>{u}</li>
-              ))}
-            </ul>
-          </Details>
-        </div>
-      )}
+        <Details title="Species sources and coverage">
+          <p>{context.caveat}</p>
+          <p>{context.footprint_description}</p>
+          <p>Wording: {context.generated_by === 'gemini'
+            ? (context.simulated ? 'recorded Gemini response, checked line by line against the sources below' : 'Gemini, checked line by line against the sources below')
+            : 'deterministic template'}.</p>
+        </Details>
+      </footer>
     </div>
   )
 }
@@ -178,9 +146,6 @@ export function SpeciesPanel({
 function WildlifeReports({ reports }: { reports: WildlifeReportRef[] }) {
   return (
     <div className="space-y-2">
-      <h3 className="text-base font-bold">
-        Crew wildlife reports at this site
-      </h3>
       <p className="text-sm text-muted">
         Crew reports are separate from regional habitat records. Species
         identity is unverified.

@@ -171,10 +171,10 @@ export function ConfirmedHazards({
             data-notice-id={notice.id}
             className="scroll-mt-20 space-y-2.5 p-4"
           >
-            <h4 className="flex items-center gap-2 text-lg font-bold">
-              <RiskShape kind="warn" className="size-4" />
+            <h4 className="text-lg font-bold">
               {displayLabel(notice.hazard_label)}
             </h4>
+            <Details title="View more" label={`View more about ${displayLabel(notice.hazard_label)}`}>
             {notice.instruction_sent_at && notice.instruction ? (
               <div className="rounded-xl bg-surface-2 p-3 ring-1 ring-line-strong">
                 <strong className="kicker text-ink!">
@@ -196,6 +196,7 @@ export function ConfirmedHazards({
               <ExpectedDuration outlook={outlook} />
             )}
             <NoticeSource notice={notice} />
+            </Details>
           </li>
         ))}
       </ul>
