@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+} from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import '../../styles/map.css'
@@ -161,7 +167,11 @@ export function SiteMap({
             <RiskShape kind="caution" className="size-3.5" />
             Moderate
           </li>
-          <li className="inline-flex items-center gap-1.5">
+          <li
+            className="inline-flex items-center gap-1.5"
+            // Low risk is green on the map, matching its markers.
+            style={{ '--pc-low': levelHex.low } as CSSProperties}
+          >
             <RiskShape kind="low" className="size-3.5" />
             Low
           </li>
