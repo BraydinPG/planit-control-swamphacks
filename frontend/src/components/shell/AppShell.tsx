@@ -178,7 +178,7 @@ export function AppShell({
         className={`sticky top-0 z-20 border-b border-line bg-nav/80 px-4 backdrop-blur-xl backdrop-saturate-150 ${crew ? 'lg:px-10' : 'sm:px-6 lg:px-10'}`}
       >
         <div
-          className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
+          className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]`}
         >
           <div className="flex min-w-0 items-center gap-4 xl:gap-6">
             <a
@@ -188,8 +188,9 @@ export function AppShell({
             >
               <Brand variant="compact" className="w-28 sm:w-32" decorative />
             </a>
-            <div className="hidden min-w-0 lg:block">{navigation()}</div>
           </div>
+          <div className="hidden min-w-0 lg:block lg:justify-self-center">{navigation()}</div>
+          <div className="flex shrink-0 items-center justify-self-end">
           {headerControls ?? (<span
             className={`inline-flex shrink-0 items-center gap-1.5 chip border ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
           >
@@ -199,6 +200,7 @@ export function AppShell({
             />
             {badgeText}
           </span>)}
+          </div>
         </div>
       </header>
       <main

@@ -1,3 +1,28 @@
+## Expanded worksite, full-width alerts and centered top bar (Cache for Rudra) - 2026-10-18
+
+Explicit user requests authorize the presentation changes and merge after verification.
+`feature/cache-worksite-open-layout` starts from main `1c1dc6b`; PR75's top navigation
+was already merged and is preserved. Desktop navigation is centered for Crew and
+Supervisor; phone tabs/role destinations and the existing data/state transport remain.
+
+Crew My Worksite enables complete observation/event tile grids, full report cards,
+an always-visible score-factor grid and inline unverified-condition summary. Named
+technical evidence disclosures stay available. Additive optional display props in
+Status/EventOutlooks/Advisory/Details default to prior behavior outside this scope.
+AlertsPage renders each existing AlertCard across the content width. Report columns
+respect actual report count. No auth/backend/schema/fixture/model/score/alert rule changes.
+
+186 frontend tests, lint/TypeScript, default/live and explicit-demo builds, complete
+development/built-demo browser suites, and 24 focused cases over eight widths pass;
+no horizontal overflow, exceptions or actual backend requests. Three new
+render checks verify complete readings/events and retained field-verification limits.
+Existing role guards remain authoritative. No task checkboxes or teammate worktrees,
+environment files or servers changed. [Current layout guide](CREW_RESPONSIVE_LAYOUT.md).
+Reconciled main `a86110f`: preserved PR76's new danger tiers/merged alert cards,
+per-alert acknowledgements, canonical types/fixtures and Braydin's Auth0 theme work.
+Updated source-backed screenshots show the merged tier-2 alert at full width. No
+teammate rule, contract, theme or data change is overwritten by the presentation work.
+
 ## Crew desktop layout (Cache for Rudra) - 2026-10-18
 
 Explicit user authorization: expand crew for PC while retaining the approved mobile

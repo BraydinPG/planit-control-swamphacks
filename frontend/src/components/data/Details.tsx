@@ -4,13 +4,21 @@ import { useState, type ReactNode } from 'react'
 export function Details({
   title = 'More details',
   label,
+  inline = false,
   children,
 }: {
   title?: string
   label?: string
+  inline?: boolean
   children: ReactNode
 }) {
   const [expanded, setExpanded] = useState(false)
+  if (inline)
+    return (
+      <div className="space-y-3 text-ink-2 [overflow-wrap:anywhere]">
+        {children}
+      </div>
+    )
   const displayTitle = expanded ? title.replace(/^View more\b/i, 'View less') : title
   const displayLabel = expanded ? label?.replace(/^View more\b/i, 'View less') : label
   return (

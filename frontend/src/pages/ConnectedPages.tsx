@@ -222,7 +222,7 @@ function SitePage({
   const conditions = (
     <section className="space-y-3">
       <SectionHead title="Weather and conditions" />
-      <Observations rows={site.observations} />
+      <Observations rows={site.observations} showAll={persona === 'crew'} />
     </section>
   )
   const factors = (
@@ -270,9 +270,10 @@ function SitePage({
       {site.reports.length ? (
         <Masonry
           label="Reports at this site"
+          maxColumns={persona === 'crew' ? Math.min(3, site.reports.length) : 3}
           items={site.reports.map((r) => ({
             key: r.id,
-            node: <ReportCard report={r} compact />,
+            node: <ReportCard report={r} compact={persona !== 'crew'} />,
           }))}
         />
       ) : (
@@ -285,6 +286,7 @@ function SitePage({
       <EventOutlooks
         cards={site.event_outlooks ?? []}
         tiles={persona === 'crew'}
+        showAll={persona === 'crew'}
       />
       {/* Read-only regional context for team sites; never feeds score or alerts. */}
       {site.assigned_team && <SpeciesSection site={site} />}
@@ -295,7 +297,7 @@ function SitePage({
           </p>
         }
       >
-        <Advisory site={site} demo={client.mode === 'demo'} />
+        <Advisory site={site} demo={client.mode === 'demo'} showAll={persona === 'crew'} />
       </Suspense>
     </>
   )
@@ -358,12 +360,15 @@ function SitePage({
           <div className="space-y-5 xl:grid xl:grid-cols-12 xl:items-start xl:gap-6 xl:space-y-0">
             <div className="min-w-0 space-y-5 xl:col-span-4" data-crew-score>
               {score}
-              {factors}
             </div>
             <div className="min-w-0 xl:col-span-8" data-crew-conditions>
               {conditions}
             </div>
           </div>
+          <section className={`${card} space-y-3 border border-line p-4 @lg:p-5`} aria-label="Score factors and evidence">
+            <SectionHead title="Score factors and evidence" />
+            <Factors factors={site.score?.factor_contributions ?? site.top_factors} columns />
+          </section>
           {reports}
           {context}
           {refreshButton}
@@ -801,7 +806,7 @@ function AlertsPage({ id }: { id: string | null }) {
           Refresh alerts
         </button>
       </div>
-      <div className="grid gap-5 @3xl:grid-cols-2 @3xl:items-start">
+      <div className="space-y-5" data-alert-list>
         {rows.length ? (
           rows.map((g) => <AlertCard key={g[0].id} alerts={g} detail />)
         ) : (

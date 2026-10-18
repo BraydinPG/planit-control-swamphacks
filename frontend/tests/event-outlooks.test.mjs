@@ -240,6 +240,22 @@ test('crew tiles show four outlooks, a View more toggle and one shared evidence 
   assert.match(out, /Advisory only. Does not change the score/)
 })
 
+test('expanded worksite tiles show every available event without a View more control', () => {
+  const html = renderToStaticMarkup(
+    React.createElement(EventOutlooks, {
+      cards: detail.event_outlooks,
+      tiles: true,
+      showAll: true,
+    }),
+  )
+  assert.equal((html.match(/data-outlook-id=/g) ?? []).length, available.length)
+  for (const card of available)
+    assert.match(html, new RegExp(`data-outlook-id="${card.event_id}"`))
+  assert.doesNotMatch(text(html), /View more|View less/)
+  assert.match(text(html), /Archived agency forecast, not a current prediction/)
+  assert.match(text(html), /Advisory only. Does not change the score/)
+})
+
 test('a demo site hides replay labels; a real site keeps them', async () => {
   const { DemoSiteContext } = await server.ssrLoadModule(
     '/src/components/data/demo-site.ts',
