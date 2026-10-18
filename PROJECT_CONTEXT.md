@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Upstream deployment merge - 2026-10-18 01:25 UTC
+- Integrated `origin/main` through `98387c8` into `feature/rudra-species-context`, preserving the automatic GitHub Actions deploy workflow and model-artifact safeguards in `deploy/`.
+- Verification on the merged tree: **932 backend tests** and Ruff checks pass; **171 frontend tests**, TypeScript build checks, and the frontend production build pass. No deployment was triggered from this feature branch.
+
 ## Feed refresh performance review - 2026-10-17 23:12 UTC
 - Explicit Cache cross-owner authorization; branch `feature/cache-feed-refresh-performance`, baseline main `11c62b6`. Implementation `ffff712`; reviewed main `cdba4c3` incorporated as `e0120fb` (only incoming UI hover styling, no backend changes). PR47/48/49 are maintainer-merged. No frontend, ML, scoring weights/rules, lightning detector/timer, schema, Auth0 or database migration changes in this PR.
 - Network-only bounded workers (6), pooled HTTP, host gates (NWS4/USGS2), time budgets/retries, coordinate/TTL metadata cache, shared NWS alert/zone resources and gauge batches. Immutable site snapshots precede serial ORM writes/rules/scoring. Missing forecasts/source subresults are explicit unavailable; no missing-to-zero or outage clearance.
