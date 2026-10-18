@@ -240,7 +240,7 @@ function Wildlife({
   if (!rows.length) return null
   const hazards = rows.filter((r) => r.relevance === 'crew_hazard').length
   return (
-    <details className={`${card} group`} open>
+    <details className={`${card} group`}>
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 text-base font-bold">
         <span>
           Wildlife ({rows.length})
@@ -485,8 +485,15 @@ function HabitatMap({
 }) {
   const drawn = context.critical_habitat.filter((a) => a.geometry)
   return (
-    <div className="space-y-2">
-      <h3 className="flex flex-wrap items-center gap-2 text-base font-bold">
+    <section
+      aria-labelledby="critical-habitat-map"
+      className={`${card} space-y-3 border-2 border-line-strong p-4`}
+    >
+      <h3
+        id="critical-habitat-map"
+        className="flex flex-wrap items-center gap-2 text-xl font-bold tracking-tight"
+      >
+        <Icon name="layers" className="size-6 text-accent" />
         Critical habitat map
         <Status state={context.critical_habitat_state} />
       </h3>
@@ -528,7 +535,7 @@ function HabitatMap({
           />
         </Suspense>
       )}
-    </div>
+    </section>
   )
 }
 

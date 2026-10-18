@@ -11,6 +11,7 @@ import {
 } from 'react'
 import type {
   CrewReport,
+  HazardNotice,
   MatCondition,
   ReportCategory,
   SiteSummary,
@@ -39,7 +40,7 @@ import {
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
 import { EventOutlooks } from '../components/data/EventOutlooks'
-import { NoticeCard } from '../components/data/NoticeCard'
+import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
 import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
 import { SupervisorOverview } from '../components/data/SupervisorOverview'
@@ -160,7 +161,7 @@ function SitePage({
   dashboard: boolean
   sites: SiteSummary[]
 }) {
-  const { client, persona, refresh } = useApplication()
+  const { client, persona, refresh, principalId } = useApplication()
   const result = useResource(
     `site:${id}`,
     useCallback(() => client.site(id), [client, id]),
@@ -169,6 +170,14 @@ function SitePage({
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
     active = site.alerts.filter((a) => a.state === 'active')
+  // Potential notices need a supervisor to confirm them; a confirmed one still
+  // needs its confirming supervisor to send the instruction. Everything else is
+  // settled and listed together under Confirmed hazards.
+  const needsAction = (n: HazardNotice) =>
+    n.status === 'potential' ||
+    (persona === 'supervisor' &&
+      n.confirmed_by === principalId &&
+      !n.instruction_sent_at)
   const actions = (
     <div className="space-y-3">
       <div className="grid gap-3 @lg:grid-cols-2">
@@ -278,13 +287,19 @@ function SitePage({
           <section className="space-y-3">
             <SectionHead title="Hazards and supervisor instructions" />
             {site.notices.length ? (
-              site.notices.map((n) => (
-                <NoticeCard
-                  key={n.id}
-                  notice={n}
+              <>
+                {site.notices.filter(needsAction).map((n) => (
+                  <NoticeCard
+                    key={n.id}
+                    notice={n}
+                    outlook={site.event_outlook}
+                  />
+                ))}
+                <ConfirmedHazards
+                  notices={site.notices.filter((n) => !needsAction(n))}
                   outlook={site.event_outlook}
                 />
-              ))
+              </>
             ) : (
               <Empty>
                 No notices supplied. Local electrical, structural and access
@@ -609,7 +624,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                   ) : (
                     <>
                       <p className="text-lg leading-none font-bold tabular-nums">
-                        {s.risk_score}{' '}
+                        <CountUp value={s.risk_score} decimals={1} />{' '}
                         <span className="text-sm font-semibold text-muted">
                           / 10
                         </span>

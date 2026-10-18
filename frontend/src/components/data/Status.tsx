@@ -14,6 +14,7 @@ import {
   unitLabel,
 } from '../../presentation/display'
 import { Details } from './Details'
+import { CountUp } from './CountUp'
 
 const stateLabels: Record<DataState, string> = {
   observed: 'Observed',
@@ -247,7 +248,7 @@ export function ScorePanel({
         ) : (
           <>
             <span className="font-condensed text-6xl leading-none tabular-nums">
-              {site.risk_score.toFixed(1)}
+              <CountUp value={site.risk_score} decimals={1} />
             </span>
             <span className="text-lg text-muted">
               / 10 · {displayLabel(site.risk_level, 'Level unavailable')}
@@ -324,26 +325,26 @@ export function Observations({ rows }: { rows: Observation[] }) {
         No observations supplied. Conditions remain unknown.
       </p>
     )
+  const name = (row: Observation) => row.label ?? displayLabel(row.hazard_type)
+  const when = (row: Observation) =>
+    row.data_state === 'forecast' ? row.valid_at : row.observed_at
+  // One compact tile per reading, then one shared disclosure for every
+  // reading's source and timestamps.
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
-      {rows.map((row, index) => {
-        const missing = row.value === null || row.data_state === 'unavailable'
-        return (
-          <li key={row.id ?? index} className="space-y-2 px-4 py-3.5">
-            <div className="grid gap-2 @lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-              <div className="min-w-0 space-y-1.5">
-                <p className="font-semibold text-ink">
-                  {row.label ?? displayLabel(row.hazard_type)}
-                </p>
-                <p className="flex flex-wrap gap-1.5">
-                  <Status state={row.data_state} />{' '}
-                  {row.simulated && row.data_state !== 'simulated' && (
-                    <Status state="simulated" />
-                  )}
-                </p>
-              </div>
+    <div className="@container space-y-2 rounded-2xl border border-line bg-surface p-3">
+      <ul className="grid gap-2 @md:grid-cols-2 @3xl:grid-cols-3">
+        {rows.map((row, index) => {
+          const missing = row.value === null || row.data_state === 'unavailable'
+          return (
+            <li
+              key={row.id ?? index}
+              className="flex min-w-0 flex-col gap-1.5 rounded-xl bg-surface-2 p-3"
+            >
+              <p className="text-sm font-semibold text-ink-2 [overflow-wrap:anywhere]">
+                {name(row)}
+              </p>
               <p
-                className={`min-w-0 text-xl font-bold leading-snug tracking-tight tabular-nums [overflow-wrap:anywhere] @lg:text-right ${missing ? 'text-muted' : ''}`}
+                className={`text-xl font-bold leading-snug tracking-tight tabular-nums [overflow-wrap:anywhere] ${missing ? 'text-muted' : ''}`}
               >
                 {typeof row.value === 'string'
                   ? displayLabel(row.value)
@@ -352,18 +353,27 @@ export function Observations({ rows }: { rows: Observation[] }) {
                   {unitLabel(row.unit)}
                 </span>
               </p>
-            </div>
-            <p className="text-sm text-muted">
-              {row.data_state === 'forecast' ? 'Valid' : 'Observed'}{' '}
-              <Timestamp
-                value={
-                  row.data_state === 'forecast' ? row.valid_at : row.observed_at
-                }
-              />
-            </p>
-            <Details title="Source and timing">
-              <p className="grid gap-x-4 text-sm leading-relaxed @lg:grid-cols-2">
-                <span>
+              <p className="flex flex-wrap gap-1.5">
+                <Status state={row.data_state} />{' '}
+                {row.simulated && row.data_state !== 'simulated' && (
+                  <Status state="simulated" />
+                )}
+              </p>
+              <p className="mt-auto text-xs text-muted">
+                {row.data_state === 'forecast' ? 'Valid' : 'Observed'}{' '}
+                <Timestamp value={when(row)} />
+              </p>
+            </li>
+          )
+        })}
+      </ul>
+      <Details title="Source and timing for each reading">
+        <ul className="divide-y divide-line text-sm">
+          {rows.map((row, index) => (
+            <li key={row.id ?? index} className="py-2 leading-relaxed">
+              <p className="font-semibold text-ink">{name(row)}</p>
+              <p className="grid gap-x-4 text-ink-2 @lg:grid-cols-2">
+                <span className="[overflow-wrap:anywhere]">
                   Source: {row.source} ·{' '}
                   {row.source_ref ?? 'record reference unavailable'}
                 </span>
@@ -377,10 +387,10 @@ export function Observations({ rows }: { rows: Observation[] }) {
                   Fetched: <Timestamp value={row.fetched_at} />
                 </span>
               </p>
-            </Details>
-          </li>
-        )
-      })}
-    </ul>
+            </li>
+          ))}
+        </ul>
+      </Details>
+    </div>
   )
 }
