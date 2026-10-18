@@ -50,6 +50,12 @@ window.fetch = async (input, options) => {
 const controls = {
   requests,
   snapshot: () => ({ reports: service.reports, notices: service.notices }),
+  alertWindow(seconds: number, state: 'active' | 'cleared' = 'active') {
+    const alert = service.alerts[0]
+    alert.clear_after = new Date(Date.now() + seconds * 1000).toISOString()
+    alert.latest_event_at = new Date(Date.now() - 1000).toISOString()
+    alert.state = state
+  },
   reset() {
     service = createMockService()
     sessionStorage.removeItem(testKey)

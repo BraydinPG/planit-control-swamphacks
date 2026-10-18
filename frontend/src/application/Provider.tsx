@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useCallback, useState, type ReactNode } from 'react'
 import { ApplicationContext } from './context'
 import type { Client, Persona } from '../api/contracts'
 export function ApplicationProvider({
@@ -13,6 +13,7 @@ export function ApplicationProvider({
   principalId?: string | null
 }) {
   const [revision, setRevision] = useState(0)
+  const refresh = useCallback(() => setRevision((n) => n + 1), [])
   return (
     <ApplicationContext.Provider
       value={{
@@ -20,7 +21,7 @@ export function ApplicationProvider({
         persona,
         principalId: client.mode === 'demo' ? `demo-${persona}` : principalId,
         revision,
-        refresh: () => setRevision((n) => n + 1),
+        refresh,
       }}
     >
       {children}

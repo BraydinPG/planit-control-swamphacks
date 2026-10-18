@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { shellContext, shellMode } from '../../api/shell-fixtures'
-import { Icon, Logo, type IconName } from './Icon'
+import { Icon, type IconName } from './Icon'
+import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
 
 export type Workspace = 'crew' | 'supervisor'
@@ -70,12 +71,16 @@ export function AppShell({
   controls,
   message,
   badge,
+  headerControls,
+  hideConnectionInfo = false,
 }: {
   children?: ReactNode
   workspaceOverride?: Workspace
   controls?: ReactNode
   message?: string
   badge?: string
+  headerControls?: ReactNode
+  hideConnectionInfo?: boolean
 }) {
   const [locationRoute, setRoute] = useState(readRoute)
   const route = {
@@ -171,10 +176,7 @@ export function AppShell({
             aria-label="FORESITE overview"
             className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
           >
-            <Logo className="size-7 text-ink" />
-            <span className="text-lg font-bold tracking-tight">
-              FORESITE
-            </span>
+            <Brand variant="compact" className="w-36" decorative />
           </a>
           <div className="space-y-2">
             <p className="kicker px-3">
@@ -198,13 +200,11 @@ export function AppShell({
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
         >
           <div className="flex min-w-0 items-center gap-2.5">
-            <Logo
-              className={`size-7 shrink-0 text-ink ${crew ? '' : 'lg:hidden'}`}
+            <Brand
+              variant="compact"
+              className={`w-28 sm:w-32 ${crew ? '' : 'lg:hidden'}`}
             />
-            <p className="min-w-0 truncate text-sm">
-              <span className={`font-bold ${crew ? '' : 'lg:hidden'}`}>
-                FORESITE
-              </span>
+            <p className={`hidden min-w-0 truncate text-sm ${crew ? '' : 'lg:block'}`}>
               <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
                 {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}
                 <span className="px-2 text-line-strong">/</span>
@@ -212,7 +212,7 @@ export function AppShell({
               </span>
             </p>
           </div>
-          <span
+          {headerControls ?? (<span
             className={`inline-flex shrink-0 items-center gap-1.5 chip border ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
           >
             <span
@@ -220,7 +220,7 @@ export function AppShell({
               aria-hidden="true"
             />
             {badgeText}
-          </span>
+          </span>)}
         </div>
       </header>
       <main
@@ -228,7 +228,7 @@ export function AppShell({
         tabIndex={-1}
         className={`@container mx-auto ${column} min-w-0 [overflow-wrap:anywhere] px-4 pb-32 pt-4 outline-none ${crew ? '' : 'sm:px-6 sm:pt-6 lg:px-10 lg:pb-12'}`}
       >
-        <div className="mb-5 flex flex-col gap-3 rounded-xl border border-dotted border-line-strong bg-surface/60 px-3 py-2.5 @2xl:flex-row @2xl:items-center @2xl:justify-between @2xl:px-4">
+        {!hideConnectionInfo && <div className="mb-5 flex flex-col gap-3 rounded-xl border border-dotted border-line-strong bg-surface/60 px-3 py-2.5 @2xl:flex-row @2xl:items-center @2xl:justify-between @2xl:px-4">
           <p className="max-w-2xl text-sm leading-relaxed text-ink-2">
             <strong className="font-semibold text-ink">
               {badge ??
@@ -265,7 +265,7 @@ export function AppShell({
               </div>
             )}
           </div>
-        </div>
+        </div>}
         <div className="mb-5 @2xl:mb-7">
           <p className="kicker mb-1.5">
             {route.workspace === 'crew'
@@ -320,7 +320,7 @@ export function AppShell({
             </section>
           ))}
         <footer className="mt-10 flex flex-col gap-2 border-t border-line pt-5 text-xs leading-relaxed text-muted @2xl:flex-row @2xl:justify-between">
-          <span className="font-semibold text-ink-2">FORESITE</span>
+          <Brand variant="full" />
           <span>
             Advisory context does not authorize work or clear an alert.
           </span>

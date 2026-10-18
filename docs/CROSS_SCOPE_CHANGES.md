@@ -1,3 +1,103 @@
+## Smaller transparent logo (Cache for Rudra and Braydin) - 2026-10-17 21:33 EDT
+
+User explicitly requested background removal, smaller logos and pulling latest main.
+Clean functional checkout fast-forwarded to `6e7850e` (PR53 merged), then branched as
+`feature/cache-compact-transparent-branding`. No teammate worktree/process changed.
+
+PR54 merge follow-up: user requested conflict resolution and PR update. Incorporated
+main `ea74de5`, retaining both independently added change-log entries. Upstream alert
+timer, report-photo removal, Sign out and deployment updates match main; AppShell and
+browser checks retain both upstream behavior and this PR's logo-only adjustments.
+Reverified 172 frontend tests, lint, TypeScript, production build and diff whitespace.
+Existing Edge regression also passes all eleven destinations at 1440/768/390/320,
+transparent-logo checks and merged mock-live timer, report/photo and logout flows;
+zero browser exceptions or real API requests. No new task completion claims.
+
+- `frontend/src/components/shell/Brand.tsx`: remove white CSS backing and padding;
+  existing transparent PNGs and their approved source hashes stay unchanged. Full
+  logo width 320 -> 240 px; compact default 160 -> 128 px.
+- `frontend/src/components/shell/AppShell.tsx`: sidebar 176 -> 144 px; header
+  144/160 -> 112/128 px. Navigation links retain their minimum touch-target sizes.
+- `frontend/scripts/check-shell.mjs`: existing browser assertions verify transparent
+  wrappers and compact widths across viewports, including mocked dark sign-in.
+- `docs/OFFICIAL_LOGO.md`, `docs/branding/foresite-{desktop,mobile,sign-in-dark,
+  sign-in-light}.png` and `PROJECT_CONTEXT.md`: current sizing, screenshots and handoff.
+
+Frontend lint, TypeScript, 171 tests and default/live plus demo builds pass. Installed
+Edge development and built-demo smoke pass eleven destinations at 1440/768/390/320
+with no browser exceptions or real API requests; temporary built preview closed.
+Backend tests not rerun for presentation-only edits.
+Existing live-build bundle-size warning remains. Dark-surface navy artwork is unchanged;
+the requested transparent presentation intentionally removes the former white plate.
+Demo remains http://localhost:5177/ on the existing owned Vite process. No auth behavior,
+backend, schemas, scoring, ML, Gemini, credentials, deployment files or task states change.
+Rudra reviews display sizing; Braydin should know app-owned sign-in inherits shared
+branding, while external Universal Login remains outside this change. The review branch
+above contains this focused follow-up; no automatic merge/deployment.
+
+## Alert, report and header maintenance - 2026-10-17
+
+Explicit user request authorizes focused frontend integration on
+`feature/alert-report-header-fixes`. Changes cover alert timer presentation,
+pre-submission photo removal, report status copy and the live header. Header logo
+changes were reverted at the user's follow-up request; original logo markup and
+behavior are preserved. Acknowledgement button changes were also reverted at the
+user's request; original acknowledgement behavior is preserved.
+`application/LiveApplication.tsx` calls the existing logout function; no Auth0 internals,
+API contracts, backend alert decisions or stored photos are changed. Expired live
+windows stay active until updated server state arrives. Demo controls and simulated
+labels are preserved. Browser acceptance uses the existing isolated mock harness.
+
+## Official FORESITE logo (Cache for Rudra and Braydin) - 2026-10-17
+
+Explicit user authorization permits narrow visual identity integration, including
+app-owned auth presentation. Branch `feature/cache-official-foresite-logo` starts
+from main `991c52f`, preserving merged branding, feeds, photos, reports and deployment
+work. No deployment files or another worktree/process were changed.
+
+- `frontend/public/foresite-logo.png`: unmodified approved 2172×724 transparent PNG.
+  New `foresite-{logo-full,wordmark,cyclone,favicon-16,favicon-32,apple-touch-icon,
+  icon-192,social}.png`, multi-size `foresite-favicon.ico` and
+  `foresite-brand-assets.json`: extracted approved pixels, dimensions and hashes.
+- `frontend/scripts/prepare-brand-assets.py`: optional reproducible Pillow 13 extraction;
+  no production dependency/lockfile change. No drawing/redesign/vector-wrapper claim.
+- `frontend/src/components/shell/Brand.tsx` (new): shared full/compact/icon rendering,
+  intrinsic dimensions, aspect ratio/alt/contrast and cache version.
+  `AppShell.tsx`: logo placement in existing navigation/header/footer, bounded sizing
+  and hidden empty mobile breadcrumb. `Icon.tsx`: existing Logo export delegates to
+  the cyclone; operational icons unchanged.
+- `frontend/src/auth/RequireRole.tsx`: add logo to existing access/loading panels and
+  optional presentation-only showBrand prop. `AuthCheckPage.tsx`: one full logo and
+  omit duplicates in embedded examples. Guard conditions, login/logout/token flow,
+  roles and provider configuration unchanged. Braydin reviews these presentation edits.
+- `frontend/index.html`, `auth-check.html`: cyclone favicon/touch refs, main social
+  imagery, exact FORESITE title retained. Old planit-mark asset remains for compatibility
+  but is no longer referenced by current frontend source/entrypoints.
+- Existing `frontend/scripts/check-shell.mjs`: assert image decode/source/aspect/alt,
+  actual 16/32/180/social assets, tablet viewport and light/dark DPR2 sign-in captures.
+- Docs: new `docs/OFFICIAL_LOGO.md` and public simulated screenshots/contact sheet in
+  `docs/branding/`; current logo section in `docs/REBRANDING.md`; concise context/log.
+
+Final checks: frontend lint, TypeScript, **171 tests**, live/demo production builds,
+asset regeneration/hash/alpha/ICO checks pass. Dev Edge smoke passes all 11 destinations
+at 1440/768/390/320, preserving six outlooks, 6.1/10, report/photo/confirmation/instruction,
+alerts, teams and briefings, with no browser exceptions or real backend requests.
+First browser attempt found 5177 absent; a new explicit demo was started from this
+checkout (PID 25276), no existing server stopped. Built-demo Edge suite also passes
+all eleven destinations/four widths, assets and lifecycle; no browser exceptions or
+real API calls. Temporary 5182 preview closed; public simulated screenshots committed.
+Backend suite not rerun: no backend changes. Existing live bundle-size warning remains.
+
+Rudra reviews placement; Braydin reviews app-owned auth presentation and separately
+coordinates external Universal Login imagery. Vultr owner performs the normal frontend
+release with committed assets; no backend/migration/config/secret/DNS/workflow changes.
+No task check-off, real-account acceptance, automatic merge or deployment.
+
+Published [PR53](https://github.com/BraydinPG/planit-control-swamphacks/pull/53),
+**Integrate Official FORESITE Logo and Branding Assets**, open against main;
+tested implementation `4508e9d`, base `991c52f`. Later main `6aa528b` contains
+deployment-only work with no overlap; no deployment files edited in this PR.
+
 ## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
 
 Explicit task-specific user authorization permits focused ingestion/refresh edits.
