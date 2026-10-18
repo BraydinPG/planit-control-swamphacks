@@ -3,6 +3,8 @@ import { shellContext, shellMode } from '../../api/shell-fixtures'
 import { Icon, type IconName } from './Icon'
 import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
+import { useVividStorm } from './stormLevel'
+import { useAutoHideSidebar } from './useAutoHideSidebar'
 
 export type Workspace = 'crew' | 'supervisor'
 export type ShellPage =
@@ -88,6 +90,8 @@ export function AppShell({
     workspace: workspaceOverride ?? locationRoute.workspace,
   }
   const heading = useRef<HTMLHeadingElement>(null)
+  // App pages get the brighter fog and more frequent lightning; sign-in stays calm.
+  useVividStorm()
   const context = shellContext(shellMode)
   const isFixture = shellMode === 'fixture'
   const visible = destinationsFor(route.workspace)
@@ -112,6 +116,8 @@ export function AppShell({
   // The crew workspace keeps its phone layout at every screen size.
   const crew = route.workspace === 'crew'
   const column = crew ? 'max-w-lg' : 'max-w-7xl'
+  // Supervisor desktop: the sidebar tucks away and reappears at the left edge.
+  const sidebar = useAutoHideSidebar(!crew)
 
   function navigation(mobile = false) {
     return (
@@ -157,7 +163,8 @@ export function AppShell({
   return (
     <div
       data-theme={route.workspace}
-      className={`min-h-svh font-sans text-ink ${crew ? '' : 'lg:pl-64'}`}
+      // A tucked-away sidebar overlays the page, so the page keeps its full width.
+      className={`min-h-svh font-sans text-ink ${crew || sidebar.autoHide ? '' : 'lg:pl-64'}`}
     >
       <a
         href="#main-content"
@@ -169,8 +176,21 @@ export function AppShell({
       >
         Skip to content
       </a>
+      {!crew && sidebar.autoHide && !sidebar.open && (
+        // Tucked away: a slim tab on the left edge shows where it went and opens it on click.
+        <button
+          type="button"
+          onClick={sidebar.show}
+          aria-label="Show navigation"
+          className="fixed top-1/2 left-0 z-30 hidden h-24 w-3 -translate-y-1/2 rounded-r-lg border border-l-0 border-line bg-surface/90 backdrop-blur-xl transition-[width] hover:w-4 lg:block"
+        />
+      )}
       {!crew && (
-        <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-surface/90 px-4 py-6 backdrop-blur-xl lg:flex">
+        <aside
+          onFocus={sidebar.onFocus}
+          onBlur={sidebar.onBlur}
+          className={`fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-surface/90 px-4 py-6 backdrop-blur-xl transition-transform duration-300 ease-out lg:flex ${sidebar.autoHide ? 'shadow-[8px_0_32px_rgba(0,0,0,0.45)]' : ''} ${sidebar.open ? '' : '-translate-x-full shadow-none'}`}
+        >
           <a
             href={`#/${route.workspace}/overview`}
             aria-label="FORESITE overview"
@@ -186,11 +206,6 @@ export function AppShell({
             </p>
             {navigation()}
           </div>
-          <div className="mt-auto space-y-3 border-t border-line px-3 pt-5 text-xs leading-relaxed text-muted">
-            <p className="font-semibold text-ink-2">
-              Rules raise alerts. People make the call.
-            </p>
-          </div>
         </aside>
       )}
       <header
@@ -203,7 +218,7 @@ export function AppShell({
             <a
               href={`#/${route.workspace}/overview`}
               aria-label={`FORESITE ${route.workspace} home`}
-              className={`inline-flex min-h-11 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${crew ? '' : 'lg:hidden'}`}
+              className={`inline-flex min-h-11 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${crew || sidebar.autoHide ? '' : 'lg:hidden'}`}
             >
               <Brand variant="compact" className="w-28 sm:w-32" decorative />
             </a>

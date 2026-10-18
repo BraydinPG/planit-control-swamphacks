@@ -1,3 +1,49 @@
+## Demo sites slide forward in time (Braydin, touching Rudra's refresh loop) - 2026-10-18
+
+Explicit user request: keep the demo sites looking freshly seeded on the server, with no
+laptop. Live feeds still skip them; nothing about real sites changes.
+
+- New `backend/app/demo/freshen.py` (`keep_demo_fresh`, `python -m app.demo freshen`): per
+  demo site, moves readings and alerts (delete and reinsert on the hypertables, ids kept),
+  acknowledgements, crew reports, the site's notices and their evidence, and every
+  organization's assessments by `now` minus the newest reading's `fetched_at`; past events
+  never move past `now`. Then rescores the site (same score). Briefings and audit events are
+  left alone. One site's failure rolls back only that site.
+- `backend/app/services/refresh.py` (Rudra): `run_forever` starts the slide as its own task
+  every `FEED_REFRESH_SECONDS`, so a long live round can't let the demo's lightning timers
+  run out, and a slide failure never reaches the live round. The live loop body is unchanged
+  (moved into `_live_rounds`).
+- `backend/app/demo/__main__.py`: new `freshen` command.
+- Tests: `backend/tests/test_demo_freshen.py` (pages unchanged after 2 h, 30 h, 7 days; real
+  sites untouched; idempotent with constant row counts; testers' rows survive; failure
+  isolation). 963 backend tests pass. Checked on Tiger Data in a rolled-back transaction.
+
+## Landing + hosted-login logo handoff (Cache for Rudra and Braydin) - 2026-10-18
+
+Explicit user request covers the new HTML front door and a normal navy logo for the
+separate light Auth0 page. Branch `feature/cache-landing-auth0-branding` starts from
+main `ca87dd5`, preserving the landing storm/statistics implementation and app changes.
+`frontend/public/landing.html` replaces its placeholder symbol/text with the existing
+white wordmark, updates the favicon cache key/title and bounds the logo at phone and
+desktop widths. Both `/?signin` targets and all redirect/auth code remain unchanged.
+
+New public `foresite-logo-light.png` is copied byte-identically from approved branding
+commit `4508e9d`; the existing asset generator pins it and records it in the manifest.
+`auth/BRANDING.md` supplies the public URL suffix and exact hosted-logo owner steps;
+`auth/SETUP.md`, frontend branding guide and PROJECT_CONTEXT link the handoff. User
+clarified they lack management access and need the suffix to give Braydin. No tenant
+configuration, credentials, accounts or privileges were changed; tenant branding is
+pending owner action after the public asset is deployed.
+
+Focused Edge landing checks cover 1440/768/390/320, transparent white/navy asset decode,
+aspect ratio, no overflow, 44px controls, keyboard focus and unchanged Sign in links,
+with no exceptions/real API requests in development and built-demo modes. All 178 frontend
+tests, lint, TypeScript, default/live and explicit-demo production builds, Python generator
+lint/format, pinned asset hashes and deterministic regeneration pass. Existing bundle-size
+warning remains. Backend and hosted Auth0 acceptance were not rerun or claimed.
+Rudra reviews the small HTML change; Braydin applies the hosted-logo URL. No other
+worktrees/servers, auth implementation, backend/contracts, score/ML or task states change.
+
 ## Replacement white/cyan logo (Cache for Rudra and Braydin) - 2026-10-18
 
 Explicit user request replaces logos everywhere in the app and removes the supplied

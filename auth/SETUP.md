@@ -1,5 +1,9 @@
 # Auth0 setup for FORESITE
 
+For the current landing-page logo and the separate navy logo URL to paste into the
+hosted light login widget, see [BRANDING.md](BRANDING.md). The prepared asset does not
+change tenant branding automatically.
+
 FORESITE is the current product name. The working tenant may still label the existing
 API/client `PlanIT Control API` / `PlanIT Control Web` and the Action `Add PlanIT roles`.
 Those are legacy dashboard labels, not new resources to create for the rebrand.

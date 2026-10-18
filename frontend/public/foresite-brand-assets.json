@@ -1,6 +1,10 @@
 {
   "source_sha256": "2f14dd3437f22fe1ef9c420f0edc7b86878ddb6fec9144540c77caa9aa90d3db",
   "source_file": "frontend/branding/foresite-logo-source.png",
+  "light_source": {
+    "approved_commit": "4508e9d",
+    "sha256": "05a688ff75edc55538eb2343ffa038aea76d3a0bea7aef604b95848c9cd60fd3"
+  },
   "pillow_version": "13.0.0",
   "method": "user-authorized pixel cutout; foreground RGB unchanged",
   "alpha_key": {
@@ -33,6 +37,11 @@
       "width": 1983,
       "height": 793,
       "sha256": "daaf53225c030bb152e04b084b49ab210929f4d44db6191b4b574130dccb25e8"
+    },
+    "foresite-logo-light.png": {
+      "width": 1200,
+      "height": 300,
+      "sha256": "05a688ff75edc55538eb2343ffa038aea76d3a0bea7aef604b95848c9cd60fd3"
     },
     "foresite-logo-full.png": {
       "width": 1200,
