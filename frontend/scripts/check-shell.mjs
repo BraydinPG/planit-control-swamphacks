@@ -445,10 +445,23 @@ try {
       assert(
         await evaluate(`(()=>{
           const score=document.querySelector('[data-crew-score] [aria-label="Site score"]').getBoundingClientRect();
-          const conditions=document.querySelector('[data-crew-conditions] [data-observation-list]').parentElement.getBoundingClientRect();
-          return conditions.left>score.right&&Math.abs(conditions.top-score.top)<2;
+          const factors=document.querySelector('[data-crew-factors] > div:last-child').getBoundingClientRect();
+          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+          return factors.left>score.right&&Math.abs(factors.top-score.top)<2 &&
+            conditions.top>=Math.max(score.bottom,factors.bottom) &&
+            Math.abs(conditions.left-score.left)<2 && Math.abs(conditions.right-factors.right)<2;
         })()`),
-        'Desktop worksite cards sit side by side with aligned tops',
+        'Score and factors align side by side with full-width weather underneath',
+      )
+    else
+      assert(
+        await evaluate(`(()=>{
+          const score=document.querySelector('[data-crew-score]').getBoundingClientRect();
+          const factors=document.querySelector('[data-crew-factors]').getBoundingClientRect();
+          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+          return factors.top>=score.bottom && conditions.top>=factors.bottom;
+        })()`),
+        'Narrow worksite stacks score, factors and weather in reading order',
       )
     await evaluate(
       'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',

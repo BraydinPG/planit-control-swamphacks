@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Score and evidence together on My Worksite - 2026-10-18
+- User-authorized `feature/cache-score-evidence-layout`, base main `6f563fe`: crew My Worksite places Site score beside Score factors and evidence from 1280px, with aligned headings/card tops. Weather and conditions spans the next row. Narrow screens stack score, factors, then weather.
+- Reuses the existing score, factor and observation components with their complete data and named evidence disclosures. Verified 198 frontend tests, lint/TypeScript, live/demo builds, the built-demo browser workflow suite and 40 focused cases over eight widths: aligned score/factor cards, full-width weather below, correct narrow-screen order, no overflow/exceptions or actual backend calls. Supervisor composition, backend/scoring, alerts, auth and task states are unchanged. User explicitly requests merge after verification. [Current layout guide](docs/CREW_RESPONSIVE_LAYOUT.md).
+
 ## Unified confirmed hazards - 2026-10-18
 - User follow-up on PR80, branch `feature/cache-unified-confirmed-hazards` from main `8cc25ff`: one Confirmed hazards list combines alerts, positive score contributors and supervisor-confirmed notices. Flood/Flooding share a row with points, duration and instructions; Flash Flood stays separate. Unknown notice types keep distinct IDs and every instruction is retained.
 - `SiteHazards` now owns the existing notice workflow; pending notices stay outside the confirmed list. Confirmed notice content is embedded inline, including the confirming supervisor's editor. A page-local draft cache preserves input when confirmation moves a pending notice into its merged row during refresh. Source states and backend permissions/scores/alerts are unchanged.
