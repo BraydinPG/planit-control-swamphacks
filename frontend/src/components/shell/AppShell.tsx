@@ -5,6 +5,7 @@ import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
 import { useVividStorm } from './stormLevel'
 import { LANDING_PATH } from '../../application/landing'
+import { PageActionsContext } from './pageActions'
 
 export type Workspace = 'crew' | 'supervisor'
 export type ShellPage =
@@ -90,6 +91,8 @@ export function AppShell({
     workspace: workspaceOverride ?? locationRoute.workspace,
   }
   const heading = useRef<HTMLHeadingElement>(null)
+  // the title row's right-hand slot, shared with pages through PageActionsContext
+  const [pageActions, setPageActions] = useState<HTMLElement | null>(null)
   // App pages get the brighter fog and more frequent lightning; sign-in stays calm.
   useVividStorm()
   const context = shellContext(shellMode)
@@ -248,7 +251,9 @@ export function AppShell({
             )}
           </div>
         </div>}
-        <div className="mb-5 @2xl:mb-7">
+        {/* Title on the left; a page can place a control on the right (pageActions.ts). */}
+        <div className="mb-5 flex flex-col gap-4 @2xl:mb-7 @2xl:flex-row @2xl:items-center @2xl:justify-between">
+        <div className="min-w-0 shrink-0">
           <p className="kicker mb-1.5">
             {route.workspace === 'crew'
               ? 'Crew workspace'
@@ -271,6 +276,12 @@ export function AppShell({
               : descriptions[route.page].description}
           </p>
         </div>
+          <div
+            ref={setPageActions}
+            className="min-w-0 empty:hidden @2xl:max-w-[46rem] @2xl:flex-1"
+          />
+        </div>
+        <PageActionsContext.Provider value={pageActions}>
         {children ??
           (route.page === 'overview' ? (
             <WorkspaceOverview
@@ -301,6 +312,7 @@ export function AppShell({
               </a>
             </section>
           ))}
+        </PageActionsContext.Provider>
         <footer className="mt-10 flex flex-col gap-2 border-t border-line pt-5 text-xs leading-relaxed text-muted @2xl:flex-row @2xl:justify-between">
           <Brand variant="full" />
           <span>
