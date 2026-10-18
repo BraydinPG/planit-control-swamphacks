@@ -290,7 +290,7 @@ function SitePage({
             </a>
           </div>
         </div>
-        <div className="space-y-5 xl:grid xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-start xl:gap-6 xl:space-y-0">
+        <div className="space-y-5">
           <div className="min-w-0 space-y-5" data-crew-alerts>
             {top.length > 0 && <AlertCard alerts={top} />}
             {!active.length && (
@@ -328,18 +328,16 @@ function SitePage({
             </p>
             {locationDetails}
           </div>
-          <div className="space-y-5 xl:grid xl:grid-cols-12 xl:items-start xl:gap-6 xl:space-y-0">
-            <div className="min-w-0 space-y-3 xl:col-span-4" data-crew-score>
-              <SectionHead title="Site score" />
-              {score}
-            </div>
-            <section className="min-w-0 space-y-3 xl:col-span-8" data-crew-factors aria-label="Score factors and evidence">
-              <SectionHead title="Score factors and evidence" />
-              <div className={`${card} border border-line p-4 @lg:p-5`}>
-                <Factors factors={site.score?.factor_contributions ?? site.top_factors} columns />
-              </div>
-            </section>
+          <div className="min-w-0 space-y-3" data-crew-score>
+            <SectionHead title="Site score" />
+            {score}
           </div>
+          <section className="min-w-0 space-y-3" data-crew-factors aria-label="Score factors and evidence">
+            <SectionHead title="Score factors and evidence" />
+            <div className={`${card} border border-line p-4 @lg:p-5`}>
+              <Factors factors={site.score?.factor_contributions ?? site.top_factors} columns />
+            </div>
+          </section>
           <div className="min-w-0" data-crew-conditions>
             {conditions}
           </div>
