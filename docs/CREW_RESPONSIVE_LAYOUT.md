@@ -22,12 +22,15 @@ data, permissions and actions across screen sizes.
 - The redundant **Unverified worksite conditions** panel is removed from crew and
   supervisor site pages. Duration estimates remain on the relevant confirmed notice
   and in the independent event outlooks; no ML contract or model was removed.
-- Home and supervisor site hazards include lightning and all active alert tiers,
-  plus positive stored score contributors. Responsive evidence tiles retain exact
-  backend points, sources, times and observed/forecast/stale/simulated distinctions.
-  They supplement the separate supervisor-confirmed notice/instruction list. A scored
-  report without a notice appears only if it is confirmed-present at the same site;
-  pending, rejected, absent and missing reports cannot become confirmed hazards.
+- Home and supervisor sites show **one Confirmed hazards list** with lightning,
+  active alert tiers, positive stored score contributors and confirmed notices.
+  Flood/Flooding share a row with points, duration and inline supervisor instructions;
+  Flash Flood remains distinct. Counts describe merged rows, not evidence records.
+  Original sources/times and observed/forecast/stale/simulated states remain visible.
+  A scored report appears only when confirmed-present at the same site. Pending
+  notices remain outside the list; rejected, absent and missing reports are excluded.
+  A page-local cache preserves supervisor drafts when confirmation moves a notice
+  into its merged row during refresh. Existing owner/role checks still control sending.
 
 [Home desktop](crew-desktop.png) ? [Home phone](crew-mobile.png) ?
 [Expanded worksite](worksite-expanded.png) ? [Full-width alerts](alerts-full-width.png)
@@ -49,14 +52,15 @@ node scripts/check-shell.mjs http://localhost:5177/
 
 Regression checks cover centered navigation, full-width alerts, complete worksite
 readings/reports/outlooks, visible score factors and absent View more controls.
-Eight hazard regression tests cover tier-independent lightning, source states,
+Eleven hazard regression tests cover tier-independent lightning, source states,
 all supported environmental score contributors, outage/elapsed-window alert retention,
-report eligibility/deduplication and site identity. Source details and existing
+report eligibility/deduplication, unified rows/instructions, distinct Flash Flood
+and unfamiliar hazards, and site identity. Source details and existing
 research/historical limitations remain available with their associated evidence.
 
-Focused browser checks cover 32 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
+Focused browser checks cover 40 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
 with zero horizontal overflow, exceptions or real backend calls and score/weather card
-top alignment within 1px at desktop widths. Unit count: 194.
+top alignment within 1px at desktop widths. Unit count: 197.
 Lint, TypeScript, default/live and explicit-demo production builds and the complete
 development/built-demo browser workflow suites also pass.
 139 focused backend scoring, confirmed-report, lightning/stop-work and TypeScript

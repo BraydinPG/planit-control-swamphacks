@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Unified confirmed hazards - 2026-10-18
+- User follow-up on PR80, branch `feature/cache-unified-confirmed-hazards` from main `8cc25ff`: one Confirmed hazards list combines alerts, positive score contributors and supervisor-confirmed notices. Flood/Flooding share a row with points, duration and instructions; Flash Flood stays separate. Unknown notice types keep distinct IDs and every instruction is retained.
+- `SiteHazards` now owns the existing notice workflow; pending notices stay outside the confirmed list. Confirmed notice content is embedded inline, including the confirming supervisor's editor. A page-local draft cache preserves input when confirmation moves a pending notice into its merged row during refresh. Source states and backend permissions/scores/alerts are unchanged.
+- 197 frontend tests, lint/TypeScript and live/demo production builds pass. Full browser acceptance is being completed before publishing. [Current guide](docs/CREW_RESPONSIVE_LAYOUT.md). No task checkboxes, backend/auth/contracts/fixtures/models or other worktrees changed.
+
 ## Aligned worksite cards and complete hazard evidence - 2026-10-18
 - Explicit user authorization, `feature/cache-worksite-hazard-evidence`, base main `4567883`: align score/weather card tops with matching section headings and remove the redundant Unverified worksite conditions panel. Existing event outlooks and notice-linked duration estimates remain.
 - Crew Home and supervisor site hazards now include every server-active alert (including lightning and lower tiers) and positive deterministic score contributors. Source states stay observed/forecast/stale/simulated; supervisor-confirmed notices/instructions remain separate. Confirmed-present scored reports without notices are included; pending/rejected/absent reports are excluded and reports already represented by confirmed notices are not duplicated.

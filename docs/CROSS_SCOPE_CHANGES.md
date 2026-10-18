@@ -1,3 +1,25 @@
+## Unified confirmed hazards (Cache for Rudra) - 2026-10-18
+
+User follow-up to PR80 requests a single Confirmed hazards section. Branch
+`feature/cache-unified-confirmed-hazards` starts from main `8cc25ff`. The projection
+now joins known hazard names/categories (Flood/Flooding) and exact report/notice
+links. Flash Flood and unfamiliar notice IDs remain separate. Each merged row keeps
+all alerts, original score contributions, source states, confirmations, duration
+estimate and verbatim supervisor instructions. Counts refer to merged hazard rows.
+
+`SiteHazards` renders the sole confirmed list and the existing pending notice cards.
+`NoticeCard` gains an embedded presentation option instead of a second confirmed-list
+renderer. Confirmed instructions are inline; supervisor-only confirmation/editor
+guards remain. A page-local draft cache preserves edits across the pending-to-confirmed
+row move during a GET refresh; successful sends discard the cached draft. No auth,
+scoring/alert logic, API contract, fixture, model, task checkbox or external service
+change. Rudra should preserve this composition during future UI work.
+
+197 frontend tests, lint/TypeScript and live/demo production builds pass. Browser
+acceptance is being completed before publication; see the current layout guide for
+final verification. Initial full-browser run hit a CDP navigation timeout without
+browser exceptions or failed API requests; it is being rerun independently.
+
 ## Worksite alignment and hazard evidence (Cache for Rudra) - 2026-10-18 06:46 UTC
 
 Explicit user authorization covers focused frontend edits, push and merge after

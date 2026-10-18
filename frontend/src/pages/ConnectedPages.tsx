@@ -11,7 +11,6 @@ import {
 } from 'react'
 import type {
   CrewReport,
-  HazardNotice,
   MatCondition,
   ReportCategory,
   SiteSummary,
@@ -41,7 +40,6 @@ import {
 import { AlertCard } from '../components/data/AlertCard'
 import { topTier, visibleAlertGroups } from '../presentation/alerts'
 import { EventOutlooks } from '../components/data/EventOutlooks'
-import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
 import { SiteHazards } from '../components/data/SiteHazards'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
 import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
@@ -161,7 +159,7 @@ function SitePage({
   dashboard: boolean
   sites: SiteSummary[]
 }) {
-  const { client, persona, refresh, principalId } = useApplication()
+  const { client, persona, refresh } = useApplication()
   const result = useResource(
     `site:${id}`,
     useCallback(() => client.site(id), [client, id]),
@@ -177,14 +175,6 @@ function SitePage({
   const siteKind = demoSite
     ? 'Worksite'
     : displayLabel(site.location_type, 'Worksite')
-  // Potential notices need a supervisor to confirm them; a confirmed one still
-  // needs its confirming supervisor to send the instruction. Everything else is
-  // settled and listed together under Confirmed hazards.
-  const needsAction = (n: HazardNotice) =>
-    n.status === 'potential' ||
-    (persona === 'supervisor' &&
-      n.confirmed_by === principalId &&
-      !n.instruction_sent_at)
   const refreshButton = (
     <button
       type="button"
@@ -243,23 +233,7 @@ function SitePage({
   const hazards = (
     <section className={`${card} space-y-3 border border-line p-3`}>
       <SectionHead title="Hazards and supervisor instructions" />
-      <SiteHazards site={site} />
-      {site.notices.length ? (
-        <>
-          {site.notices.filter(needsAction).map((n) => (
-            <NoticeCard key={n.id} notice={n} outlook={site.event_outlook} />
-          ))}
-          <ConfirmedHazards
-            notices={site.notices.filter((n) => !needsAction(n))}
-            outlook={site.event_outlook}
-          />
-        </>
-      ) : (
-        <Empty>
-          No notices supplied. Local electrical, structural and access
-          conditions remain unverified.
-        </Empty>
-      )}
+      <SiteHazards key={site.id} site={site} />
     </section>
   )
   const reports = (

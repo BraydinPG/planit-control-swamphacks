@@ -11,18 +11,26 @@ import { Details } from './Details'
 export function NoticeCard({
   notice,
   outlook = null,
+  embedded = false,
+  drafts,
 }: {
   notice: HazardNotice
   outlook?: EventOutlook | null
+  embedded?: boolean
+  drafts?: Map<string, string>
 }) {
-  return <NoticeWorkflow key={notice.id} initial={notice} outlook={outlook} />
+  return <NoticeWorkflow key={notice.id} initial={notice} outlook={outlook} embedded={embedded} drafts={drafts} />
 }
 function NoticeWorkflow({
   initial,
   outlook,
+  embedded,
+  drafts,
 }: {
   initial: HazardNotice
   outlook: EventOutlook | null
+  embedded: boolean
+  drafts?: Map<string, string>
 }) {
   const [responseNotice, setNotice] = useState<HazardNotice | null>(null)
   // Keep the returned server confirmation while its GET refresh is in flight.
@@ -40,9 +48,9 @@ function NoticeWorkflow({
   return (
     <article
       data-notice-id={notice.id}
-      className={`scroll-mt-20 space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? 'border-dashed border-caution' : 'border-line-strong'}`}
+      className={embedded ? 'scroll-mt-20 space-y-3' : `scroll-mt-20 space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? 'border-dashed border-caution' : 'border-line-strong'}`}
     >
-      <div className="flex items-start gap-3">
+      {embedded ? <p className="kicker">Supervisor-confirmed notice</p> : <div className="flex items-start gap-3">
         <RiskShape
           kind={potential ? 'caution' : 'warn'}
           className="mt-0.5 size-6"
@@ -57,7 +65,7 @@ function NoticeWorkflow({
             {displayLabel(notice.hazard_label)}
           </h3>
         </div>
-      </div>
+      </div>}
       {potential ? (
         <p className="rounded-xl border border-dashed border-line-strong px-3 py-2.5 text-sm font-semibold">
           No instruction: supervisor confirmation is pending.
@@ -109,6 +117,7 @@ function NoticeWorkflow({
             key={notice.suggested_instruction}
             notice={notice}
             sent={setNotice}
+            drafts={drafts}
           />
         )}
       <NoticeSource notice={notice} />
@@ -137,87 +146,18 @@ function NoticeSource({ notice }: { notice: HazardNotice }) {
   )
 }
 
-/**
- * Every settled confirmed hazard in one card, one row each. Potential notices and
- * a confirmed notice the viewer still has to instruct keep their own NoticeCard.
- */
-export function ConfirmedHazards({
-  notices,
-  outlook = null,
-}: {
-  notices: HazardNotice[]
-  outlook?: EventOutlook | null
-}) {
-  const { persona, principalId } = useApplication()
-  if (!notices.length) return null
-  return (
-    <section
-      aria-label="Confirmed hazards"
-      className="overflow-hidden rounded-2xl border-2 border-line-strong bg-surface"
-    >
-      <div className="flex items-center gap-3 border-b border-line px-4 py-3">
-        <RiskShape kind="warn" className="size-6" />
-        <div>
-          <p className="kicker">Confirmed hazards</p>
-          <h3 className="text-xl font-bold">
-            {notices.length} confirmed{' '}
-            {notices.length === 1 ? 'hazard' : 'hazards'}
-          </h3>
-        </div>
-      </div>
-      <ul className="divide-y divide-line">
-        {notices.map((notice) => (
-          <li
-            key={notice.id}
-            data-notice-id={notice.id}
-            className="scroll-mt-20 space-y-2.5 p-4"
-          >
-            <h4 className="text-lg font-bold">
-              {displayLabel(notice.hazard_label)}
-            </h4>
-            <Details title="View more" label={`View more about ${displayLabel(notice.hazard_label)}`}>
-              {notice.instruction_sent_at && notice.instruction ? (
-                <div className="rounded-xl bg-surface-2 p-3 ring-1 ring-line-strong">
-                  <strong className="kicker text-ink!">
-                    Supervisor-approved instruction
-                  </strong>
-                  <p className="mt-1 text-base font-semibold">
-                    {notice.instruction}
-                  </p>
-                  <p className="mt-1 text-sm text-muted">
-                    Sent <Timestamp value={notice.instruction_sent_at} />
-                  </p>
-                </div>
-              ) : (
-                <p className="text-sm">
-                  Confirmed; no approved instruction has been sent.
-                  {persona === 'supervisor' &&
-                    notice.confirmed_by !== principalId &&
-                    ' Only the supervisor who confirmed this hazard for your organization can send its instruction.'}
-                </p>
-              )}
-              {outlook?.event_id === notice.id && (
-                <ExpectedDuration outlook={outlook} />
-              )}
-              <NoticeSource notice={notice} />
-            </Details>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
 function InstructionEditor({
   notice,
   sent,
+  drafts,
 }: {
   notice: HazardNotice
   sent: (notice: HazardNotice) => void
+  drafts?: Map<string, string>
 }) {
   const { client } = useApplication()
   const [instruction, setInstruction] = useState(
-    notice.suggested_instruction ?? '',
+    drafts?.get(notice.id) ?? notice.suggested_instruction ?? '',
   )
   return (
     <div className="space-y-3 rounded-xl border border-line bg-surface-2 p-3">
@@ -239,7 +179,10 @@ function InstructionEditor({
           rows={3}
           className={field}
           value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
+          onChange={(e) => {
+            setInstruction(e.target.value)
+            drafts?.set(notice.id, e.target.value)
+          }}
         />
       </label>
       <p className="text-sm text-muted">
@@ -250,7 +193,11 @@ function InstructionEditor({
         capability="hazards"
         tone="primary"
         disabled={!instruction.trim() || instruction.trim().length > 500}
-        run={async () => sent(await client.instruct(notice.id, instruction))}
+        run={async () => {
+          const updated = await client.instruct(notice.id, instruction)
+          drafts?.delete(notice.id)
+          sent(updated)
+        }}
       >
         Send to your organization's teams
       </Action>
