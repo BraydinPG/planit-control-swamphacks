@@ -1,23 +1,30 @@
+import { useState } from 'react'
 import type { SiteRecord } from '../../api/contracts'
 import { siteHazards } from '../../presentation/site-hazards'
 import { Details } from './Details'
 import { RiskShape } from './Risk'
 import { Status, Timestamp } from './Status'
+import { NoticeCard } from './NoticeCard'
 
-/** Environmental evidence and confirmed reports supplement, never replace, notice workflows. */
+/** One hazard row holds its alerts, score evidence, confirmations and instructions. */
 export function SiteHazards({ site }: { site: SiteRecord }) {
+  // Confirmation can move a notice from pending to its merged hazard row during
+  // a GET refresh. Preserve an in-flight supervisor draft across that move.
+  const [drafts] = useState(() => new Map<string, string>())
   const hazards = siteHazards(site)
-  if (!hazards.length) return null
+  const pending = site.notices.filter((n) => n.status === 'potential')
   return (
-    <section aria-label="Environmental hazards and score contributors"
-      className="@container overflow-hidden rounded-2xl border border-line-strong bg-surface">
+    <>
+    {hazards.length > 0 && <section aria-label="Confirmed hazards"
+      className="scroll-mt-20 overflow-hidden rounded-2xl border border-line-strong bg-surface">
       <div className="flex items-center gap-3 border-b border-line px-4 py-3">
         <RiskShape kind="warn" className="size-6" />
-        <h3 className="text-base font-bold">Active alerts and score contributors</h3>
+        <h3 className="flex-1 text-lg font-bold">Confirmed hazards</h3>
+        <span className="chip border border-line-strong">{hazards.length} {hazards.length === 1 ? 'hazard' : 'hazards'}</span>
       </div>
-      <ul className="grid @xl:grid-cols-2">
+      <ul className="divide-y divide-line">
         {hazards.map((hazard) => (
-          <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0 space-y-2.5 border-b border-line p-4">
+          <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0 space-y-2.5 p-4">
             <h4 className="text-lg font-bold">{hazard.label}</h4>
             {hazard.alerts.map((alert) => (
               <div key={alert.id} className="space-y-1 text-sm">
@@ -30,11 +37,14 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
             {hazard.factors.map((factor, i) => (
               <div key={`${factor.evidence_id}-${i}`} className="space-y-1 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <Status state={factor.data_state} />
+                  <Status state={factor.data_state} />{' '}
                   <span className="font-semibold tabular-nums">{factor.contribution} score {factor.contribution === 1 ? 'point' : 'points'}</span>
                 </div>
                 <p className="text-muted [overflow-wrap:anywhere]">{factor.source} · <Timestamp value={factor.observed_at} /></p>
               </div>
+            ))}
+            {hazard.notices.map((notice) => (
+              <NoticeCard key={notice.id} notice={notice} embedded drafts={drafts} outlook={site.event_outlook} />
             ))}
             <Details title="Hazard evidence">
               {hazard.alerts.map((alert) => (
@@ -54,6 +64,11 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
           </li>
         ))}
       </ul>
-    </section>
+    </section>}
+    {pending.map((notice) => (
+      <NoticeCard key={notice.id} notice={notice} drafts={drafts} outlook={site.event_outlook} />
+    ))}
+    {!hazards.length && !pending.length && <p className="text-sm text-muted">No confirmed hazards supplied. Unmeasured conditions remain unknown.</p>}
+    </>
   )
 }

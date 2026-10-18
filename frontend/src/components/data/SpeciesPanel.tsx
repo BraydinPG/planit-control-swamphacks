@@ -88,6 +88,21 @@ export function SpeciesPanel({
   const unavailable = context.data_state === 'unavailable'
   return (
     <div className="space-y-4">
+      <div data-species-provenance>
+        <Details title="Species sources and coverage">
+          <p className="flex flex-wrap items-center gap-2 text-xs text-muted">
+            <Status state={context.data_state} />
+            <span>Source: {context.source}</span>
+            {context.simulated && <span>Recorded demo snapshot</span>}
+            <span>Retrieved <Timestamp value={context.fetched_at} /></span>
+          </p>
+          <p>{context.caveat}</p>
+          <p>{context.footprint_description}</p>
+          <p>Wording: {context.generated_by === 'gemini'
+            ? (context.simulated ? 'recorded Gemini response, checked line by line against the sources below' : 'Gemini, checked line by line against the sources below')
+            : 'deterministic template'}.</p>
+        </Details>
+      </div>
       {/* "Not a sighting" is labeled on each species row and in the sources disclosure. */}
       <WildlifeReports reports={context.wildlife_reports} />
 
@@ -113,22 +128,6 @@ export function SpeciesPanel({
       )}
 
       <HabitatMap context={context} site={site} other={otherHabitat} />
-
-      <footer className="border-t border-line pt-3 text-xs text-muted">
-        <p className="flex flex-wrap items-center gap-2">
-          <Status state={context.data_state} />
-          <span>Source: {context.source}</span>
-          {context.simulated && <span>Recorded demo snapshot</span>}
-          <span>Retrieved <Timestamp value={context.fetched_at} /></span>
-        </p>
-        <Details title="Species sources and coverage">
-          <p>{context.caveat}</p>
-          <p>{context.footprint_description}</p>
-          <p>Wording: {context.generated_by === 'gemini'
-            ? (context.simulated ? 'recorded Gemini response, checked line by line against the sources below' : 'Gemini, checked line by line against the sources below')
-            : 'deterministic template'}.</p>
-        </Details>
-      </footer>
     </div>
   )
 }

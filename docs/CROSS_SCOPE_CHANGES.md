@@ -1,3 +1,34 @@
+## Unified confirmed hazards (Cache for Rudra) - 2026-10-18
+
+User follow-up to PR80 requests a single Confirmed hazards section. Branch
+`feature/cache-unified-confirmed-hazards` starts from main `8cc25ff`. The projection
+now joins known hazard names/categories (Flood/Flooding) and exact report/notice
+links. Flash Flood and unfamiliar notice IDs remain separate. Each merged row keeps
+all alerts, original score contributions, source states, confirmations, duration
+estimate and verbatim supervisor instructions. Counts refer to merged hazard rows.
+
+`SiteHazards` renders the sole confirmed list and the existing pending notice cards.
+`NoticeCard` gains an embedded presentation option instead of a second confirmed-list
+renderer. Confirmed instructions are inline; supervisor-only confirmation/editor
+guards remain. A page-local draft cache preserves edits across the pending-to-confirmed
+row move during a GET refresh; successful sends discard the cached draft. No auth,
+scoring/alert logic, API contract, fixture, model, task checkbox or external service
+change. Rudra should preserve this composition during future UI work.
+
+User follow-up moves the detached USFWS Observed/source/time footer from below the
+habitat map into Species sources and coverage under Local species. All metadata,
+regional-context caveats and map attribution remain. `SpeciesPanel.tsx`, its existing
+unit test and the browser regression now verify this placement.
+
+198 frontend tests, lint/TypeScript, live/demo builds, development/built-demo workflow
+suites and 40 focused built-browser cases across eight widths pass, including species
+source containment/order and unified hazard rows. No overflow, browser exceptions or
+actual backend calls. An initial CDP navigation timeout did not recur after
+restarting only this checkout's owned preview. Reconciled main `c285cf5` in `e96b190`;
+the sole context-document conflict preserves both entries and the read-only guest
+feature. Also preserved main `fc72b1c` / PR82 in `3430f4e`. User explicitly authorizes
+push, conflict resolution and merge. Screenshots and final commands are in the layout guide.
+
 ## Worksite alignment and hazard evidence (Cache for Rudra) - 2026-10-18 06:46 UTC
 
 Explicit user authorization covers focused frontend edits, push and merge after
