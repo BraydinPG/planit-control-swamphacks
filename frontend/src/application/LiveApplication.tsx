@@ -5,7 +5,13 @@ import { ApplicationProvider } from './Provider'
 import { AppShell } from '../components/shell/AppShell'
 import { ConnectedPages } from '../pages/ConnectedPages'
 import { control } from '../components/data/Interaction'
-import { cameFromLanding, isBareEntry, showLanding } from './landing'
+import {
+  cameFromLanding,
+  installBackToLanding,
+  isBareEntry,
+  resetBackToLanding,
+  showLanding,
+} from './landing'
 
 export function LiveApplication() {
   const auth = useAuth()
@@ -23,6 +29,12 @@ export function LiveApplication() {
     if (startSignIn) login({ returnTo: '/' }).catch(() => setLoginFailed(true))
     else showLanding()
   }, [leaving, startSignIn, login])
+  // Once fully signed in, Back from the app returns to the landing page.
+  const signedIn = !isLoading && isAuthenticated
+  useEffect(() => {
+    if (signedIn) return installBackToLanding()
+    if (!isLoading) resetBackToLanding()
+  }, [signedIn, isLoading])
   const client = useMemo(
     () =>
       new HttpClient(
