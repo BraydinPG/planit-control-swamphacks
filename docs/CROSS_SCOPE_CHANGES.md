@@ -1194,3 +1194,7 @@ The user wanted the landing page's demo button to open the live demo sites with 
 ### 2026-10-18 — Braydin: seeded analysis for the Everglades crew report (user request)
 
 **For Rudra (T069 scenario owner):** the alligator report (`demo-report-wildlife`) now gets a written-in-advance `enrichment` from `app/demo/report_analysis.py`, filled by the demo-freshen round when the report has none. `scenario.py` is unchanged; a reseed leaves the report without one until the next round (or `python -m app.demo freshen`). The freshen slide now also moves a report's `enrichment.analyzed_at` and evidence times.
+
+### 2026-10-18 — Braydin: crew Home halves, collapsible hazard rows, header logo to landing (user request; Rudra's frontend)
+
+**For Rudra:** `ConnectedPages.tsx` crew Home puts the alert and hazards side by side at `lg` (stacked below), stretching to equal height while every hazard row is collapsed. `SiteHazards.tsx` wraps each hazard row in `<details open data-hazard-row>` with a chevron summary (also on the supervisor site page). `AppShell.tsx` header logo links to `LANDING_PATH`. `scripts/check-shell.mjs` asserts the halves, the collapsed heights and the logo link instead of the full-width stack on desktop.
