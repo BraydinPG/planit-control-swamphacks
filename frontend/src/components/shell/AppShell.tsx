@@ -253,7 +253,7 @@ export function AppShell({
         </div>}
         {/* Title on the left; a page can place a control on the right (pageActions.ts). */}
         <div className="mb-5 flex flex-col gap-4 @2xl:mb-7 @2xl:flex-row @2xl:items-center @2xl:justify-between">
-        <div className="min-w-0 shrink-0">
+        <div className="min-w-0 flex-1">
           <p className="kicker mb-1.5">
             {route.workspace === 'crew'
               ? 'Crew workspace'

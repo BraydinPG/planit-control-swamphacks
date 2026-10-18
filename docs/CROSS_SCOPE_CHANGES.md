@@ -1361,3 +1361,7 @@ The user wanted the landing page's demo button to open the live demo sites with 
 ### 2026-10-18 — Braydin: live pages poll for updates (user request; Rudra's frontend)
 
 **For Rudra:** `application/Provider.tsx` adds a `poll` counter (every 30 s while visible, and on returning to the tab; live mode only); `application/context.tsx` `useResource` refetches on it and keeps current data if a poll fails; `components/data/SiteMap.tsx` keys its rebuild on drawn content and keeps the view across data refreshes. `tests/browser-harness.tsx` gains `setStatus`; `tests/mock-service.ts` and `check-shell.mjs` follow the accept-first report flow, and the acknowledgement step waits for its requests.
+
+### 2026-10-18 — Braydin: briefings picker no longer overflows at tablet width (user request; Rudra's frontend)
+
+**For Rudra:** in `components/shell/AppShell.tsx` the title block beside the page-actions slot is `min-w-0 flex-1` instead of `min-w-0 shrink-0`, so its description wraps and the 24rem Briefings picker stays on the page at 768px. `check-shell.mjs` now passes in full, including `Page overflow: 768/supervisor/briefings`.
