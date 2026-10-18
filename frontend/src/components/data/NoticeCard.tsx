@@ -111,24 +111,96 @@ function NoticeWorkflow({
             sent={setNotice}
           />
         )}
-      <Details title="Notice source and coverage">
-        <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-2">
-          <span>
-            Status:{' '}
-            <strong className="text-ink">{displayLabel(notice.status)}</strong>
-          </span>
-          <span>
-            Radius: {notice.radius_miles} mi (
-            {displayLabel(notice.radius_source)}
-            {notice.radius_source === 'default' ? ' prototype default' : ''})
-          </span>
-        </p>
-        <p className="break-words text-sm text-muted">
-          {notice.source} · {notice.source_ref} · Created{' '}
-          <Timestamp value={notice.created_at} />
-        </p>
-      </Details>
+      <NoticeSource notice={notice} />
     </article>
+  )
+}
+
+function NoticeSource({ notice }: { notice: HazardNotice }) {
+  return (
+    <Details title="Notice source and coverage">
+      <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-2">
+        <span>
+          Status:{' '}
+          <strong className="text-ink">{displayLabel(notice.status)}</strong>
+        </span>
+        <span>
+          Radius: {notice.radius_miles} mi ({displayLabel(notice.radius_source)}
+          {notice.radius_source === 'default' ? ' prototype default' : ''})
+        </span>
+      </p>
+      <p className="break-words text-sm text-muted">
+        {notice.source} · {notice.source_ref} · Created{' '}
+        <Timestamp value={notice.created_at} />
+      </p>
+    </Details>
+  )
+}
+
+/**
+ * Every settled confirmed hazard in one card, one row each. Potential notices and
+ * a confirmed notice the viewer still has to instruct keep their own NoticeCard.
+ */
+export function ConfirmedHazards({
+  notices,
+  outlook = null,
+}: {
+  notices: HazardNotice[]
+  outlook?: EventOutlook | null
+}) {
+  if (!notices.length) return null
+  return (
+    <section
+      aria-label="Confirmed hazards"
+      className="overflow-hidden rounded-2xl border-2 border-line-strong bg-surface"
+    >
+      <div className="flex items-center gap-3 border-b border-line px-4 py-3">
+        <RiskShape kind="warn" className="size-6" />
+        <div>
+          <p className="kicker">Confirmed hazards</p>
+          <h3 className="text-xl font-bold">
+            {notices.length} confirmed{' '}
+            {notices.length === 1 ? 'hazard' : 'hazards'}
+          </h3>
+        </div>
+      </div>
+      <ul className="divide-y divide-line">
+        {notices.map((notice) => (
+          <li
+            key={notice.id}
+            data-notice-id={notice.id}
+            className="scroll-mt-20 space-y-2.5 p-4"
+          >
+            <h4 className="text-lg font-bold">
+              {displayLabel(notice.hazard_label)}
+            </h4>
+            <Details title="View more" label={`View more about ${displayLabel(notice.hazard_label)}`}>
+            {notice.instruction_sent_at && notice.instruction ? (
+              <div className="rounded-xl bg-surface-2 p-3 ring-1 ring-line-strong">
+                <strong className="kicker text-ink!">
+                  Supervisor-approved instruction
+                </strong>
+                <p className="mt-1 text-base font-semibold">
+                  {notice.instruction}
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  Sent <Timestamp value={notice.instruction_sent_at} />
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm">
+                Confirmed; no approved instruction has been sent.
+              </p>
+            )}
+            {outlook?.event_id === notice.id && (
+              <ExpectedDuration outlook={outlook} />
+            )}
+            <NoticeSource notice={notice} />
+            </Details>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 

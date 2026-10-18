@@ -52,14 +52,11 @@ function LiveSession({ client }: { client: HttpClient }) {
       <AppShell
         workspaceOverride={auth.role}
         badge="Authenticated API"
-        message="Connected mode. Access follows your account permissions; failures are shown without demo data."
-        controls={
-          <div className="flex flex-wrap items-center gap-3">
-            <span>{auth.role === 'crew' ? 'Crew' : 'Supervisor'} session</span>
-            <button className={control} onClick={() => void auth.logout()}>
-              Sign out
-            </button>
-          </div>
+        hideConnectionInfo
+        headerControls={
+          <button type="button" className={control} onClick={() => void auth.logout()}>
+            Sign out
+          </button>
         }
       >
         <ConnectedPages />

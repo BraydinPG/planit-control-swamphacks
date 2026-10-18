@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import type { Alert } from '../../types/api'
 import { countdown } from '../../api/contracts'
 import { useApplication, useClock } from '../../application/context'
@@ -97,6 +97,26 @@ function Ring({
   )
 }
 
+/** Green check for the viewer's own acknowledgement; never an all-clear. */
+function Acknowledged({ big = false }: { big?: boolean }) {
+  return (
+    <div
+      role="status"
+      className={`flex items-center gap-3 rounded-2xl border-2 border-ok bg-ok/10 px-4 text-ok ${big ? 'min-h-[72px]' : 'min-h-14'}`}
+    >
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok text-white">
+        <Icon name="check" className="size-5" />
+      </span>
+      <span>
+        <strong className={`block ${big ? 'text-lg' : 'text-base'}`}>
+          Acknowledged by you
+        </strong>
+
+      </span>
+    </div>
+  )
+}
+
 export function AlertCard({
   alert,
   detail = false,
@@ -104,7 +124,7 @@ export function AlertCard({
   alert: Alert
   detail?: boolean
 }) {
-  const { client, persona } = useApplication(),
+  const { client, persona, principalId, refresh } = useApplication(),
     now = useClock()
   const style = look(alert),
     left = remaining(alert, now)
@@ -115,6 +135,17 @@ export function AlertCard({
   const title = `${name} alert${alert.state === 'active' ? ' active' : ' cleared'}`
   const simulated = alert.simulated || client.mode === 'demo'
   const acks = alert.acknowledgements.length
+  // The viewer's own acknowledgement. Green marks the acknowledgement only:
+  // the alert itself stays active until the server clears it.
+  const mine = alert.acknowledgements.find((a) => a.user_id === principalId)
+  const elapsed = left === 0
+  useEffect(() => {
+    if (client.mode !== 'live' || !elapsed) return
+    // An expired watch window is not clearance. Ask for authoritative state.
+    refresh()
+    const timer = setInterval(refresh, 15000)
+    return () => clearInterval(timer)
+  }, [client, elapsed, refresh])
   return (
     <section
       aria-label={`Alert ${alert.id}`}
@@ -139,16 +170,8 @@ export function AlertCard({
         </h2>
       </div>
       <div className="space-y-3 p-4">
-        {!detail && (
-          <a
-            className="flex min-h-14 items-center justify-between gap-3 rounded-xl border border-line-strong bg-surface-2 px-4 text-lg font-bold text-ink hover:bg-bg"
-            href={`#/${persona}/alerts/${encodeURIComponent(alert.id)}`}
-          >
-            View alert
-            <Icon name="arrow" className="size-5 shrink-0" />
-          </a>
-        )}
-        {!detail && left !== null && (
+        {!detail && mine && <Acknowledged />}
+        {!detail && left !== null && left > 0 && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
             <span className="text-base font-semibold">Watch window</span>
             <span
@@ -159,7 +182,7 @@ export function AlertCard({
             </span>
           </div>
         )}
-        {detail && left !== null && (
+        {detail && left !== null && left > 0 && (
           <Ring
             alert={alert}
             left={left}
@@ -197,6 +220,9 @@ export function AlertCard({
         <p className="text-sm text-ink-2">
           The timer does not clear this alert or authorize work.
         </p>
+        {elapsed && client.mode === 'live' && (
+          <p className="text-sm text-ink-2">Awaiting updated alert status. Checking every 15 seconds.</p>
+        )}
         {detail && (
           <div className="space-y-4">
             <Details title="Alert evidence and timing">
@@ -264,16 +290,20 @@ export function AlertCard({
                 : 'No acknowledgements yet.'}{' '}
               Acknowledging does not clear the alert.
             </p>
-            <Action
-              capability="acknowledge"
-              tone="big"
-              disabled={alert.state !== 'active'}
-              run={() => client.acknowledge(alert.id)}
-            >
-              {client.mode === 'demo'
-                ? 'Acknowledge in demo'
-                : 'Acknowledge alert'}
-            </Action>
+            {mine ? (
+              <Acknowledged big />
+            ) : (
+              <Action
+                capability="acknowledge"
+                tone="big"
+                disabled={alert.state !== 'active'}
+                run={() => client.acknowledge(alert.id)}
+              >
+                {client.mode === 'demo'
+                  ? 'Acknowledge in demo'
+                  : 'Acknowledge alert'}
+              </Action>
+            )}
           </div>
         )}
       </div>

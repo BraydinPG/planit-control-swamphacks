@@ -1,3 +1,53 @@
+## Smaller transparent logo (Cache for Rudra and Braydin) - 2026-10-17 21:33 EDT
+
+User explicitly requested background removal, smaller logos and pulling latest main.
+Clean functional checkout fast-forwarded to `6e7850e` (PR53 merged), then branched as
+`feature/cache-compact-transparent-branding`. No teammate worktree/process changed.
+
+PR54 merge follow-up: user requested conflict resolution and PR update. Incorporated
+main `ea74de5`, retaining both independently added change-log entries. Upstream alert
+timer, report-photo removal, Sign out and deployment updates match main; AppShell and
+browser checks retain both upstream behavior and this PR's logo-only adjustments.
+Reverified 172 frontend tests, lint, TypeScript, production build and diff whitespace.
+Existing Edge regression also passes all eleven destinations at 1440/768/390/320,
+transparent-logo checks and merged mock-live timer, report/photo and logout flows;
+zero browser exceptions or real API requests. No new task completion claims.
+
+- `frontend/src/components/shell/Brand.tsx`: remove white CSS backing and padding;
+  existing transparent PNGs and their approved source hashes stay unchanged. Full
+  logo width 320 -> 240 px; compact default 160 -> 128 px.
+- `frontend/src/components/shell/AppShell.tsx`: sidebar 176 -> 144 px; header
+  144/160 -> 112/128 px. Navigation links retain their minimum touch-target sizes.
+- `frontend/scripts/check-shell.mjs`: existing browser assertions verify transparent
+  wrappers and compact widths across viewports, including mocked dark sign-in.
+- `docs/OFFICIAL_LOGO.md`, `docs/branding/foresite-{desktop,mobile,sign-in-dark,
+  sign-in-light}.png` and `PROJECT_CONTEXT.md`: current sizing, screenshots and handoff.
+
+Frontend lint, TypeScript, 171 tests and default/live plus demo builds pass. Installed
+Edge development and built-demo smoke pass eleven destinations at 1440/768/390/320
+with no browser exceptions or real API requests; temporary built preview closed.
+Backend tests not rerun for presentation-only edits.
+Existing live-build bundle-size warning remains. Dark-surface navy artwork is unchanged;
+the requested transparent presentation intentionally removes the former white plate.
+Demo remains http://localhost:5177/ on the existing owned Vite process. No auth behavior,
+backend, schemas, scoring, ML, Gemini, credentials, deployment files or task states change.
+Rudra reviews display sizing; Braydin should know app-owned sign-in inherits shared
+branding, while external Universal Login remains outside this change. The review branch
+above contains this focused follow-up; no automatic merge/deployment.
+
+## Alert, report and header maintenance - 2026-10-17
+
+Explicit user request authorizes focused frontend integration on
+`feature/alert-report-header-fixes`. Changes cover alert timer presentation,
+pre-submission photo removal, report status copy and the live header. Header logo
+changes were reverted at the user's follow-up request; original logo markup and
+behavior are preserved. Acknowledgement button changes were also reverted at the
+user's request; original acknowledgement behavior is preserved.
+`application/LiveApplication.tsx` calls the existing logout function; no Auth0 internals,
+API contracts, backend alert decisions or stored photos are changed. Expired live
+windows stay active until updated server state arrives. Demo controls and simulated
+labels are preserved. Browser acceptance uses the existing isolated mock harness.
+
 ## Official FORESITE logo (Cache for Rudra and Braydin) - 2026-10-17
 
 Explicit user authorization permits narrow visual identity integration, including
