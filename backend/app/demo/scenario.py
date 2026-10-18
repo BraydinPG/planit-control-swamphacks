@@ -515,16 +515,17 @@ def _remove_previous(session: Session, accounts: DemoAccounts) -> None:
     session.execute(delete(db.Acknowledgement).where(db.Acknowledgement.alert_id.in_(alert_ids)))
     # Demo notices and those from rehearsal reports at the demo site. Feed notices are
     # regional events other sites share, so they stay.
+    demo_notices = or_(
+        db.HazardNotice.id.in_([WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID, FLASH_FLOOD_NOTICE_ID]),
+        db.HazardNotice.source_ref.in_(report_ids),
+    )
+    # Per-organization confirmations (`notice_assessments`) go first: they reference notices.
     session.execute(
-        delete(db.HazardNotice).where(
-            or_(
-                db.HazardNotice.id.in_(
-                    [WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID, FLASH_FLOOD_NOTICE_ID]
-                ),
-                db.HazardNotice.source_ref.in_(report_ids),
-            )
+        delete(db.NoticeAssessment).where(
+            db.NoticeAssessment.notice_id.in_(select(db.HazardNotice.id).where(demo_notices))
         )
     )
+    session.execute(delete(db.HazardNotice).where(demo_notices))
     for model in (db.Alert, db.Observation, db.HazardScore, db.HazardPrediction, db.CrewReport):
         session.execute(delete(model).where(model.site_id == DEMO_SITE_ID))
     session.execute(

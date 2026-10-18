@@ -50,7 +50,7 @@ def main(argv: list[str] | None = None) -> None:
     )
     commands.add_parser(
         "anomalies",
-        help="clear crew reports and add one labeled demo site per weather anomaly type",
+        help="add one demo site per anomaly; restore the Everglades wildlife demo",
     )
     strike = commands.add_parser("strike", help="replay one lightning step at the demo site")
     strike.add_argument("step", type=int, help="replay step, 1 to 3 (2 resets the countdown)")
@@ -89,12 +89,15 @@ def _run(args: argparse.Namespace) -> None:
         from pathlib import Path
 
         from app.demo.anomalies import seed_anomalies
+        from app.gemini.client import get_gemini_client
 
         initialize_database()
         # Outside the repository: backups hold crew reports, never committed.
         backups = Path(os.environ.get("DEMO_BACKUP_DIR", "~/foresite-demo-backups")).expanduser()
         with get_session() as session:
-            results = seed_anomalies(session, now, backups)
+            results = seed_anomalies(
+                session, now, backups, get_gemini_client(), get_event_outlook_service()
+            )
         print(f"Demo anomalies seeded at {now:%Y-%m-%d %H:%M} UTC.")
         print(f"Removed rows were backed up in {backups}.")
         for r in results:

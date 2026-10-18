@@ -11,30 +11,43 @@ the model covers, while behaving like the live system:
 - Lightning goes through the real stop-work rule and 30-minute timer.
 - Scores come from the real algorithm. Briefings come from the 6 PM schedule.
 
-It also removes every crew report (and its notices) so the team can file their own, and
-the old Everglades scenario's simulated weather, alerts and notices. The demo
-organization, its accounts and the Everglades site stay. Live feeds skip demo sites
-(`location_type="demo_site"`), so nothing here is overwritten. Rows removed are first
-written to a backup file.
+It also removes every crew report outside the Everglades site (and its notices) so the
+team can file their own. The Everglades site keeps Rudra's T069 wildlife scenario
+(`app/demo/scenario.py`), which this command restores from his own building blocks with
+the demo accounts already linked in the database: the confirmed alligator report and its
+instruction, heat, the flood and flash-flood notices, lightning stop-work, and a briefing.
+The species panel there shows the live USFWS animals and critical-habitat boundaries.
+Live feeds skip demo sites (`location_type="demo_site"`), so nothing here is overwritten.
+Rows removed are first written to a backup file.
 """
 
 import json
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import delete, or_, select
 from sqlalchemy.orm import Session
 
 from app.db import models as db
+from app.demo import scenario
 from app.demo.scenario import (
+    CREW_MEMBERSHIP_ID,
     DEMO_ORG_ID,
     DEMO_SITE_ID,
+    FLASH_FLOOD_NOTICE_ID,
+    FLOOD_NOTICE_ID,
     SUPERVISOR_MEMBERSHIP_ID,
+    WILDLIFE_NOTICE_ID,
+    DemoAccounts,
     _strike,
 )
+from app.gemini.briefings import generate_site_briefing
+from app.gemini.client import GeminiClient
 from app.ingestion import nws_alerts, nws_weather
 from app.ingestion.geo import destination
+from app.outlook import EventOutlookService
 from app.schemas import (
     DataState,
     Evidence,
@@ -190,7 +203,13 @@ class AnomalyResult:
     risk_level: str
 
 
-def seed_anomalies(session: Session, now: datetime, backup_dir: Path) -> list[AnomalyResult]:
+def seed_anomalies(
+    session: Session,
+    now: datetime,
+    backup_dir: Path,
+    gemini: GeminiClient | None = None,
+    outlooks: EventOutlookService | None = None,
+) -> list[AnomalyResult]:
     now = now.astimezone(UTC)
     supervisor_id = _demo_supervisor(session)
     _backup_and_clear(session, backup_dir, now)
@@ -208,16 +227,8 @@ def seed_anomalies(session: Session, now: datetime, backup_dir: Path) -> list[An
         score = score_site(session, site.id, now, observations=readings)
         results.append(AnomalyResult(site.id, a.hazard_label, score.risk_score, score.risk_level))
 
-    # Lightning at the Everglades site: the real stop-work rule and 30-minute timer.
-    everglades = session.get(db.Site, DEMO_SITE_ID)
-    weather = _weather(everglades, (88, 70, 97), now)
-    strike = _strike(everglades, 0, now - timedelta(minutes=4))
-    for o in [*weather, strike]:
-        session.add(observation_row(o))
-    session.commit()
-    apply_lightning_rule(session, everglades.id, [strike], now)
-    score = score_site(session, everglades.id, now, observations=[*weather, strike])
-    results.append(AnomalyResult(everglades.id, "lightning", score.risk_score, score.risk_level))
+    score = restore_everglades(session, now, gemini or GeminiClient(None, None, 1), outlooks)
+    results.append(AnomalyResult(DEMO_SITE_ID, "wildlife", score.risk_score, score.risk_level))
     audit(session, SEED_ACTOR, "demo.anomalies", ",".join(r.site_id for r in results), now)
     session.commit()
     return results
@@ -228,6 +239,55 @@ def _demo_supervisor(session: Session) -> str:
     if membership is None or membership.organization_id != DEMO_ORG_ID:
         raise ValueError("Run `python -m app.demo seed` first: the demo supervisor isn't linked")
     return membership.user_id
+
+
+def _linked_accounts(session: Session) -> DemoAccounts:
+    """The demo accounts as they're linked now, so restoring never relinks anyone."""
+    crew = session.get(db.Membership, CREW_MEMBERSHIP_ID)
+    if crew is None:
+        raise ValueError("Run `python -m app.demo seed` first: the demo crew account isn't linked")
+    extras = session.scalars(
+        select(db.Membership.user_id)
+        .where(db.Membership.id.like(f"{CREW_MEMBERSHIP_ID}-%"))
+        .order_by(db.Membership.id)
+    ).all()
+    return DemoAccounts(crew.user_id, _demo_supervisor(session), tuple(extras))
+
+
+def restore_everglades(
+    session: Session,
+    now: datetime,
+    gemini: GeminiClient,
+    outlooks: EventOutlookService | None = None,
+) -> db.HazardScore:
+    """Rebuild Rudra's Everglades wildlife scenario (T069) at `now`, from his own pieces,
+    without touching teams or memberships."""
+    accounts = _linked_accounts(session)
+    _clear_sites(session, [DEMO_SITE_ID], everglades=True)
+    site = session.get(db.Site, DEMO_SITE_ID)
+    readings = scenario._readings(now - timedelta(minutes=5))
+    for o in readings:
+        session.add(observation_row(o))
+    scenario._wildlife_report(session, accounts, now)
+    scenario._flood_notice(session, accounts, now)
+    session.commit()
+    strike = _strike(site, 0, now - timedelta(minutes=4))
+    session.add(observation_row(strike))
+    session.commit()
+    apply_lightning_rule(session, site.id, [strike], now)
+    score = score_site(session, site.id, now, observations=[*readings, strike])
+    generate_site_briefing(
+        session,
+        site,
+        ZoneInfo(scenario.SITE_TIMEZONE),
+        now,
+        gemini,
+        scenario._forecasts(now),
+        outlooks,
+    )
+    audit(session, SEED_ACTOR, "demo.everglades.restore", DEMO_SITE_ID, now)
+    session.commit()
+    return score
 
 
 def _site_id(a: Anomaly) -> str:
@@ -366,7 +426,7 @@ def _notice(
     )
     started = now - timedelta(hours=a.started_hours_ago)
     notice = db.HazardNotice(
-        id=f"demo-notice-{a.key}",
+        id=_notice_id(a),
         hazard_label=a.hazard_label,
         source=NoticeSource.FEED,
         source_ref=source.id if source else f"{site.id}:{a.key}-product",
@@ -386,7 +446,7 @@ def _notice(
             ),
             # The outlook conditions on a trusted event start, never the notice time.
             _evidence(
-                f"demo-notice-{a.key}:start",
+                f"{_notice_id(a)}:start",
                 EvidenceKind.EVENT_START,
                 f"{a.hazard_label.capitalize()} began ({SIMULATED})",
                 started,
@@ -416,25 +476,38 @@ def _notice(
     return notice
 
 
+def _notice_id(a: Anomaly) -> str:
+    return f"demo-anomaly-{a.key}"
+
+
 def _evidence(id: str, kind: EvidenceKind, label: str, at: datetime) -> dict:
     return Evidence(id=id, kind=kind, label=label, observed_at=at).model_dump(mode="json")
 
 
+EVERGLADES_NOTICES = (WILDLIFE_NOTICE_ID, FLOOD_NOTICE_ID, FLASH_FLOOD_NOTICE_ID)
+
+
 def _backup_and_clear(session: Session, backup_dir: Path, now: datetime) -> Path:
-    """Write the rows about to be removed to a JSON file, then remove them, children first."""
-    demo_sites = [DEMO_SITE_ID, *(_site_id(a) for a in ANOMALIES)]
-    report_ids = list(session.scalars(select(db.CrewReport.id)))
-    notice_ids = list(
+    """Write the rows about to be removed to a JSON file, then remove them, children first.
+
+    Removed: every crew report outside the Everglades site and its notices, and the anomaly
+    sites' rows. The Everglades scenario is rebuilt separately by `restore_everglades`.
+    """
+    anomaly_sites = [_site_id(a) for a in ANOMALIES]
+    report_ids = list(
+        session.scalars(select(db.CrewReport.id).where(db.CrewReport.site_id != DEMO_SITE_ID))
+    )
+    notice_ids = _anomaly_notice_ids(session) + list(
         session.scalars(
             select(db.HazardNotice.id).where(
-                or_(
-                    db.HazardNotice.source == NoticeSource.CREW_REPORT,
-                    db.HazardNotice.id.like("demo-notice-%"),
-                )
+                db.HazardNotice.source == NoticeSource.CREW_REPORT,
+                db.HazardNotice.source_ref.in_(report_ids),
             )
         )
     )
-    alert_ids = list(session.scalars(select(db.Alert.id).where(db.Alert.site_id.in_(demo_sites))))
+    alert_ids = list(
+        session.scalars(select(db.Alert.id).where(db.Alert.site_id.in_(anomaly_sites)))
+    )
 
     def rows(model, condition):
         return [
@@ -459,13 +532,52 @@ def _backup_and_clear(session: Session, backup_dir: Path, now: datetime) -> Path
     )
     session.execute(delete(db.CrewReport).where(db.CrewReport.id.in_(report_ids)))
     session.execute(delete(db.HazardNotice).where(db.HazardNotice.id.in_(notice_ids)))
-    session.execute(delete(db.Acknowledgement).where(db.Acknowledgement.alert_id.in_(alert_ids)))
-    for model in (db.Alert, db.Observation, db.HazardScore, db.HazardPrediction):
-        session.execute(delete(model).where(model.site_id.in_(demo_sites)))
-    # Briefings at the demo sites are regenerated by the 6 PM schedule from the new data.
-    session.execute(delete(db.Briefing).where(db.Briefing.site_id.in_(demo_sites)))
+    _clear_sites(session, anomaly_sites)
     session.commit()
     return path
+
+
+def _anomaly_notice_ids(session: Session) -> list[str]:
+    """This command's notices, including ones from its first version, which used
+    `demo-notice-{key}` ids; those are told apart from the Everglades scenario's by place."""
+    ids = list(
+        session.scalars(select(db.HazardNotice.id).where(db.HazardNotice.id.like("demo-anomaly-%")))
+    )
+    for a in ANOMALIES:
+        old = session.get(db.HazardNotice, f"demo-notice-{a.key}")
+        if old is not None and abs(old.lat - a.lat) < 1e-6 and abs(old.lon - a.lon) < 1e-6:
+            ids.append(old.id)
+    return ids
+
+
+def _clear_sites(session: Session, site_ids: list[str], everglades: bool = False) -> None:
+    """Readings, alerts, scores and briefings at these sites; for the Everglades site also
+    its scenario's reports and notices. Briefings at anomaly sites come back from the 6 PM
+    schedule; the Everglades restore writes its own."""
+    if everglades:
+        report_ids = list(
+            session.scalars(select(db.CrewReport.id).where(db.CrewReport.site_id.in_(site_ids)))
+        )
+        notice_ids = list(
+            session.scalars(
+                select(db.HazardNotice.id).where(
+                    or_(
+                        db.HazardNotice.id.in_(EVERGLADES_NOTICES),
+                        db.HazardNotice.source_ref.in_(report_ids),
+                    )
+                )
+            )
+        )
+        session.execute(
+            delete(db.NoticeAssessment).where(db.NoticeAssessment.notice_id.in_(notice_ids))
+        )
+        session.execute(delete(db.CrewReport).where(db.CrewReport.id.in_(report_ids)))
+        session.execute(delete(db.HazardNotice).where(db.HazardNotice.id.in_(notice_ids)))
+    alert_ids = select(db.Alert.id).where(db.Alert.site_id.in_(site_ids))
+    session.execute(delete(db.Acknowledgement).where(db.Acknowledgement.alert_id.in_(alert_ids)))
+    for model in (db.Alert, db.Observation, db.HazardScore, db.HazardPrediction, db.Briefing):
+        session.execute(delete(model).where(model.site_id.in_(site_ids)))
+    session.flush()
 
 
 def _plain(value):
