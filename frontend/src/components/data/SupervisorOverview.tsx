@@ -5,6 +5,7 @@ import { Icon } from '../shell/Icon'
 import { card, LoadState } from './Interaction'
 import { RiskBadge, RiskShape } from './Risk'
 import { evidenceOf } from './evidence'
+import { CountUp } from './CountUp'
 import { attentionItems, highestRisk, type Shape } from './attention'
 import { factorLabel } from '../../presentation/display'
 
@@ -147,7 +148,9 @@ export function SupervisorOverview({ sites }: { sites: SiteSummary[] }) {
                   </span>
                   <span className="flex items-center gap-2">
                     <span className="text-2xl font-bold tabular-nums">
-                      {s.risk_score?.toFixed(1)}
+                      {s.risk_score !== null && (
+                        <CountUp value={s.risk_score} decimals={1} />
+                      )}
                       <span className="text-sm font-semibold text-muted">
                         {' '}
                         / 10

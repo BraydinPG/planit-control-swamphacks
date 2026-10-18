@@ -97,6 +97,29 @@ function Ring({
   )
 }
 
+/** Green check for the viewer's own acknowledgement; never an all-clear. */
+function Acknowledged({ at, big = false }: { at: string; big?: boolean }) {
+  return (
+    <div
+      role="status"
+      className={`flex items-center gap-3 rounded-2xl border-2 border-ok bg-ok/10 px-4 text-ok ${big ? 'min-h-[72px]' : 'min-h-14'}`}
+    >
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok text-white">
+        <Icon name="check" className="size-5" />
+      </span>
+      <span>
+        <strong className={`block ${big ? 'text-lg' : 'text-base'}`}>
+          Acknowledged by you
+        </strong>
+        <span className="text-sm text-ink-2">
+          <Timestamp value={at} /> · alert still active until the server clears
+          it
+        </span>
+      </span>
+    </div>
+  )
+}
+
 export function AlertCard({
   alert,
   detail = false,
@@ -104,7 +127,7 @@ export function AlertCard({
   alert: Alert
   detail?: boolean
 }) {
-  const { client, persona, refresh } = useApplication(),
+  const { client, persona, principalId, refresh } = useApplication(),
     now = useClock()
   const style = look(alert),
     left = remaining(alert, now)
@@ -115,6 +138,9 @@ export function AlertCard({
   const title = `${name} alert${alert.state === 'active' ? ' active' : ' cleared'}`
   const simulated = alert.simulated || client.mode === 'demo'
   const acks = alert.acknowledgements.length
+  // The viewer's own acknowledgement. Green marks the acknowledgement only:
+  // the alert itself stays active until the server clears it.
+  const mine = alert.acknowledgements.find((a) => a.user_id === principalId)
   const elapsed = left === 0
   useEffect(() => {
     if (client.mode !== 'live' || !elapsed) return
@@ -156,6 +182,7 @@ export function AlertCard({
             <Icon name="arrow" className="size-5 shrink-0" />
           </a>
         )}
+        {!detail && mine && <Acknowledged at={mine.acknowledged_at} />}
         {!detail && left !== null && left > 0 && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
             <span className="text-base font-semibold">Watch window</span>
@@ -275,16 +302,20 @@ export function AlertCard({
                 : 'No acknowledgements yet.'}{' '}
               Acknowledging does not clear the alert.
             </p>
-            <Action
-              capability="acknowledge"
-              tone="big"
-              disabled={alert.state !== 'active'}
-              run={() => client.acknowledge(alert.id)}
-            >
-              {client.mode === 'demo'
-                ? 'Acknowledge in demo'
-                : 'Acknowledge alert'}
-            </Action>
+            {mine ? (
+              <Acknowledged at={mine.acknowledged_at} big />
+            ) : (
+              <Action
+                capability="acknowledge"
+                tone="big"
+                disabled={alert.state !== 'active'}
+                run={() => client.acknowledge(alert.id)}
+              >
+                {client.mode === 'demo'
+                  ? 'Acknowledge in demo'
+                  : 'Acknowledge alert'}
+              </Action>
+            )}
           </div>
         )}
       </div>

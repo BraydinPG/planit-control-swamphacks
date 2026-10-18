@@ -10,14 +10,14 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
   const compact = site.event_outlook
   return (
     <section
-      className="space-y-3 rounded-2xl border border-line bg-surface p-5 text-sm leading-relaxed text-ink-2 [&_h3]:text-ink [&_li]:break-words [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
+      className="space-y-2 rounded-2xl border border-line bg-surface p-3 text-sm leading-relaxed text-ink-2 [&_h3]:text-ink [&_li]:break-words [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5"
       aria-labelledby="advisory-title"
     >
-      <p className="kicker">Field verification required</p>
-      <h2 id="advisory-title" className="text-xl font-bold text-ink">
+      <h2 id="advisory-title" className="text-base font-bold text-ink">
         Unverified worksite conditions
       </h2>
-      <p className="rounded-xl border border-dashed border-warn bg-surface-2 px-3 py-2 font-semibold text-ink">
+      <Details title="View more" label="View more about unverified worksite conditions">
+      <p className="text-sm text-ink-2">
         Electrical, structural, chemical and access conditions remain unknown
         without verified field or utility evidence.
       </p>
@@ -130,6 +130,7 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
         </p>
       )}
       <p>ML never changes scores, alerts or acknowledgement state.</p>
+      </Details>
     </section>
   )
 }

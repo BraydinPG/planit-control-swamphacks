@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Upstream deployment merge - 2026-10-18 01:25 UTC
+- Integrated `origin/main` through `98387c8` into `feature/rudra-species-context`, preserving the automatic GitHub Actions deploy workflow and model-artifact safeguards in `deploy/`.
+- Verification on the merged tree: **932 backend tests** and Ruff checks pass; **171 frontend tests**, TypeScript build checks, and the frontend production build pass. No deployment was triggered from this feature branch.
+
 ## Alert, report and header maintenance - 2026-10-17
 - Explicit user request on `feature/alert-report-header-fixes`: expired live watch windows show pending authoritative status instead of a stuck 00:00 and refresh every 15 seconds; only the server can clear an alert. Alerts also have a manual refresh button. User follow-up reverted the acknowledgement button changes to their original behavior.
 - Report photo selections can be removed before submission, clearing the preview and file input so the same image can be selected again. Saved report photos are unchanged. Live submission copy is "Report successful" / "Report failed"; supervisor review remains pending.
@@ -172,3 +176,9 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Deployed (2026-10-18): FORESITE runs on Vultr at `https://64-177-53-1.sslip.io` (see `deploy/README.md`). The server is now the one backend with `FEED_REFRESH_ENABLED` and `BRIEFING_SCHEDULE_ENABLED`; every laptop sets both to false. Production found a PR #50 bug: `PooledHttp` decoded gzip bodies twice, so every live NWS/USGS fetch failed (fixed, with a gzip test). Auth0 deployed URLs (T081) and signed-in role checks (T083) remain.
 - 6 PM schedule check (2026-10-17): the briefing-test org (Greenland Energy Center, Jacksonville) got its briefing from the schedule with no seed. The schedule is now OFF by default (`BRIEFING_SCHEDULE_ENABLED`): several backends on one shared database raced, and a teammate's backend without `NWS_USER_AGENT` wrote briefings with no forecast. Exactly one backend (Braydin's laptop now, the Vultr server later) turns it on. Generation is audited as `system:briefing-schedule@<host>`, and FeedCache logs failed fetches.
 - Braydin next: T069 memberships with Rudra, the Gemini notice-radius, instruction, and enrichment calls (T057, T060), and Vultr deployment. No secrets in Git. T053A database columns, then T060 (Gemini side-by-side photo analysis: crew claims vs. what the photo shows, never the location).
+
+## Local crew layout update - 2026-10-17
+- User-authorized frontend changes: alerts return-home link, compact hazards/reports frames, four initial weather tiles with View more, species attribution in a footer, removed field-office/unknowns panels and wildlife-report heading, compact unverified-conditions advisory. Shared site components also affect supervisor detail; backend services and contracts are unchanged. No push or merge authorized.
+- Verification: all 171 frontend tests, frontend lint, TypeScript checks and production build pass. Browser visual verification was not run.
+- Follow-up: confirmed hazard rows and the unverified-conditions advisory now collapse behind keyboard-accessible View more disclosures. Site reports show category titles and pending supervisor-action text before their disclosure; the Reports page retains its full workflow. Existing confirmation/instruction actions remain unchanged. All 171 frontend tests, lint and production build pass; no push/merge or browser visual check.
+- Publication authorized by Rudra: integrated origin/main f42ddaf, reconciling both project notes and AlertCard acknowledgement/expired-window refresh behavior. All 172 frontend tests, lint, TypeScript and production build pass on the merged tree.
