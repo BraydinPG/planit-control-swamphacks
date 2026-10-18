@@ -200,10 +200,13 @@ export function AppShell({
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
         >
           <div className="flex min-w-0 items-center gap-2.5">
-            <Brand
-              variant="compact"
-              className={`w-28 sm:w-32 ${crew ? '' : 'lg:hidden'}`}
-            />
+            <a
+              href={`#/${route.workspace}/overview`}
+              aria-label={`FORESITE ${route.workspace} home`}
+              className={`inline-flex min-h-11 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${crew ? '' : 'lg:hidden'}`}
+            >
+              <Brand variant="compact" className="w-28 sm:w-32" decorative />
+            </a>
             <p className={`hidden min-w-0 truncate text-sm ${crew ? '' : 'lg:block'}`}>
               <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
                 {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}

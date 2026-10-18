@@ -182,3 +182,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Verification: all 171 frontend tests, frontend lint, TypeScript checks and production build pass. Browser visual verification was not run.
 - Follow-up: confirmed hazard rows and the unverified-conditions advisory now collapse behind keyboard-accessible View more disclosures. Site reports show category titles and pending supervisor-action text before their disclosure; the Reports page retains its full workflow. Existing confirmation/instruction actions remain unchanged. All 171 frontend tests, lint and production build pass; no push/merge or browser visual check.
 - Publication authorized by Rudra: integrated origin/main f42ddaf, reconciling both project notes and AlertCard acknowledgement/expired-window refresh behavior. All 172 frontend tests, lint, TypeScript and production build pass on the merged tree.
+
+## Crew UI follow-up - 2026-10-17
+- User-authorized: alert toolbar spacing and removal of All alerts/View alert links and acknowledgement subtitle; solid red partial-evidence score bar with existing incomplete-data warnings; three-second site-score animation; hidden crew-home location card and redundant report/briefing actions; top logo returns to the current workspace home. Backend rules, alert timer, permissions and services are unchanged. User authorizes push and merge.
+- Verification: 172 frontend tests, lint, TypeScript and production build pass. Browser visual checks not rerun.
