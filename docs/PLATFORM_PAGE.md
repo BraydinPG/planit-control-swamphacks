@@ -21,10 +21,10 @@ copy it to `dist/platform.html`. The existing Caddy file-server rule serves actu
 files before the SPA fallback. Local production previews verify this behavior;
 this change does not claim a remote deployment or live Auth0 acceptance check.
 
-The shared header is logo/Home, Platform, Data, Case Study and Sign In. The logo remains Home
+The shared header is logo/Home, Platform, Data, About and Sign In. The logo remains Home
 instead of restoring the text button the user previously asked to remove. Phones
-use two deliberate rows: logo/Sign In, then Platform/Data/Case Study. All links keep 44px
-targets without squeezing the header. Active-page state is present on each document.
+use the shared accessible disclosure menu; all controls retain 44px targets.
+Without JavaScript, links remain visible in two rows. Active-page state is present on each document.
 Platform and Data use the same footer styles from `public-site.css`.
 
 The homepage's hero, statistics, three product features and CTA destinations are

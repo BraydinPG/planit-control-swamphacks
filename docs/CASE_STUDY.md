@@ -1,3 +1,7 @@
+# Archived: Case Study retired from the public website
+
+The user requested removal on 2026-10-18. The active site now has Home, Platform, Data and About; the old URL only redirects to About. The notes below preserve PR94 history and fixture-owner findings, not current setup instructions.
+
 # Public Everglades Case Study
 
 [PR #94](https://github.com/BraydinPG/planit-control-swamphacks/pull/94): verified implementation `6e1fcbd`; user-authorized merge after checks.
@@ -130,8 +134,8 @@ Both default/live and fixture production builds passed those public checks.
   application source, research assets, backend, ML and task states are unchanged.
 
 Built-page captures (actual browser screenshots, converted to WebP):
-[Desktop](screenshots/case-study-desktop.webp),
-[Mobile](screenshots/case-study-mobile.webp). Full PNGs and stage-specific shots
+[Desktop](https://github.com/BraydinPG/planit-control-swamphacks/blob/5b27687/docs/screenshots/case-study-desktop.webp),
+[Mobile](https://github.com/BraydinPG/planit-control-swamphacks/blob/5b27687/docs/screenshots/case-study-mobile.webp). Full PNGs and stage-specific shots
 remain in the ignored `frontend/.shell-check/public-case-study-*.png` directory.
 
 ## Handoff

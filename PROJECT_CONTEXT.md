@@ -2,7 +2,15 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
-## Public Everglades Case Study - 2026-10-18
+## Public website completion / About - 2026-10-18
+
+[PR #96](https://github.com/BraydinPG/planit-control-swamphacks/pull/96): public implementation `4b54fe4`, clean verification/screenshots `cfa0dc0`; user-authorized merge.
+
+- Explicit user scope: `feature/cache-about-resources` from main `5b27687`. Current site is **Home, Platform, Data, About**. Later user instruction removes Case Study; its content/assets/tests are removed and the old URL redirects to About. Mapped-location public copy/animation now says **250**, per user-provided current figure; the archived 50-site research sample stays intact. [Sources, commands and owner handoff](docs/PUBLIC_WEBSITE.md).
+- About uses documented first-name/contribution profiles, actual technical resources, safety boundaries and a source-backed data-handling overview. No invented bios, legal policy, retention promise or certification. Devpost link and formal legal/policy content await team publication/review.
+- One build-time header/footer/metadata source for all four pages, accessible non-modal phone menu, logo as Home, existing approved social image. All 14 About GitHub links returned HTTP 200. Final isolated verification on main `be2bceb` plus public commit `4b54fe4`: fresh npm ci, 203 frontend tests, lint/TypeScript and live/fixture production Edge checks at 1440/768/390/320 pass. Includes natural Tab order, Escape/focus, outside click, no-JS, footer typography, SEO, retired URL, no clipping/exceptions/API calls. PR95 and collapsed-hazard updates are preserved; original worktrees and server are untouched. Existing SPA chunk warning remains; no own edits to app/backend/auth/DB, models/scoring, contracts, dependencies or task states.
+
+## Archived: public Everglades Case Study - 2026-10-18
 
 [PR #94](https://github.com/BraydinPG/planit-control-swamphacks/pull/94): verified implementation `6e1fcbd`; user-authorized merge after checks.
 
