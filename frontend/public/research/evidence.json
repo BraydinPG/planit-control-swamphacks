@@ -1,0 +1,232 @@
+{
+  "scope": "archived_research_not_live_forecast_or_safety_validation",
+  "sources": [
+    {
+      "path": "ml/reports/purged_v2/backtest_metrics.json",
+      "sha256": "6d618257306e1ed0afc40f8214b3e3d458ac357e5bb7e5c3b0994d9147b5a430"
+    },
+    {
+      "path": "ml/reports/purged_v2/monte_carlo_summary.json",
+      "sha256": "b9e04609bb19b593a32c45c1c833df39a44eccd177bcb8aafa1d7e901c204bee"
+    },
+    {
+      "path": "ml/reports/multidisaster/station_coverage.json",
+      "sha256": "28daf4ac084580d9c3a5a3e6e8d2b626b85b393bf95d53156654959c67c61c6b"
+    },
+    {
+      "path": "ml/reports/multidisaster/hurdat_coverage.json",
+      "sha256": "656cd8eb659e1213101eca585c21e4b7d8386585a8e2bf124168e67e350fb043"
+    },
+    {
+      "path": "ml/reports/worker_outlook/eia_coverage.json",
+      "sha256": "49e54b3b96cb5f7e3fa11a0841f70afce13fcce88c341517eb7d719f463266b4"
+    },
+    {
+      "path": "ml/reports/multidisaster/registry.json",
+      "sha256": "2f3e3d5ff209a5d23110ab115df503885b7337781e90ac081a2c8c0e73f71571"
+    }
+  ],
+  "source_hash_normalization": "UTF-8 text with LF line endings (Git text form)",
+  "datasets": [
+    {
+      "name": "NOAA Storm Events",
+      "count": 349030
+    },
+    {
+      "name": "Station measurements",
+      "count": 122270
+    },
+    {
+      "name": "NHC track points",
+      "count": 55524
+    }
+  ],
+  "total_records_and_measurements": 526824,
+  "reference_sites": 50,
+  "research_targets": [
+    "High Wind",
+    "Flash Flood",
+    "Heavy Rain",
+    "Winter Storm",
+    "Heat Index Exceedance",
+    "Flood"
+  ],
+  "monte_carlo": {
+    "trials": 5000,
+    "seed": 42,
+    "analytical_ongoing_probability": {
+      "6h": 0.6199216839402608,
+      "12h": 0.44716834270464595,
+      "24h": 0.2811015423152757
+    },
+    "simulated_ongoing_proportion": {
+      "6h": 0.623,
+      "12h": 0.4512,
+      "24h": 0.282
+    },
+    "absolute_probability_error": {
+      "6h": 0.0030783160597391834,
+      "12h": 0.004031657295354041,
+      "24h": 0.0008984576847242964
+    },
+    "remaining_duration_hours": {
+      "p10": 2.0,
+      "median": 10.0,
+      "p90": 73.0,
+      "unresolved_beyond_simulation_horizon_count": 172,
+      "unresolved_beyond_simulation_horizon_probability": 0.0344
+    },
+    "raw_trajectories_included": false,
+    "validation_note": "Simulation checks arithmetic and model-implied sampling only; it is not independent historical validation.",
+    "model_version": "noaa-flood-pooled-logistic-v2",
+    "scope": "offline_internal_only",
+    "event_id": "fixture-flood-001",
+    "event_type": "Flood",
+    "as_of_utc": "2024-09-10T16:00:00Z",
+    "is_simulated": true
+  },
+  "backtest": {
+    "period": "2024 validation; trained through 2023",
+    "split": {
+      "train_years": "<= 2023",
+      "validation_year": 2024,
+      "test_year": 2025,
+      "grouping": "NOAA EPISODE_ID; intact episodes assigned by earliest start, with entire episodes crossing fit/selection cutoffs purged",
+      "train": {
+        "event_record_count": 6245,
+        "episode_count": 1787,
+        "snapshot_count": 10558,
+        "event_year_counts": {
+          "2021": 1876,
+          "2022": 1746,
+          "2023": 2623
+        }
+      },
+      "validation": {
+        "event_record_count": 2161,
+        "episode_count": 583,
+        "snapshot_count": 4053,
+        "event_year_counts": {
+          "2024": 2161
+        }
+      },
+      "test": {
+        "event_record_count": 1904,
+        "episode_count": 567,
+        "snapshot_count": 3539,
+        "event_year_counts": {
+          "2025": 1904
+        }
+      },
+      "excluded_events": 12,
+      "excluded_episode_count": 8
+    },
+    "rows": [
+      {
+        "horizon": "6h",
+        "kaplan_meier": {
+          "brier_score": 0.21173329753360257,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.19977733227856284,
+            "upper_95": 0.2242185830703282
+          }
+        },
+        "logistic": {
+          "brier_score": 0.21698641660285573,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.201419285637734,
+            "upper_95": 0.23271011598032143
+          }
+        }
+      },
+      {
+        "horizon": "12h",
+        "kaplan_meier": {
+          "brier_score": 0.23238483052498485,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.2187646471557787,
+            "upper_95": 0.2452115066924527
+          }
+        },
+        "logistic": {
+          "brier_score": 0.2422101837000786,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.23069172636110166,
+            "upper_95": 0.25291165291347406
+          }
+        }
+      },
+      {
+        "horizon": "24h",
+        "kaplan_meier": {
+          "brier_score": 0.2248488040017392,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.2022834824478991,
+            "upper_95": 0.24874605821421933
+          }
+        },
+        "logistic": {
+          "brier_score": 0.2398562677050223,
+          "snapshot_count": 4053,
+          "episode_count": 583,
+          "episode_bootstrap_brier_95": {
+            "episode_count": 583,
+            "replicates": 500,
+            "lower_95": 0.21523953574108803,
+            "upper_95": 0.2661406906767194
+          }
+        }
+      }
+    ]
+  },
+  "figure_generator": {
+    "path": "frontend/scripts/prepare-landing-research.py",
+    "matplotlib": "3.10.7"
+  },
+  "figures": [
+    {
+      "file": "monte-carlo.svg",
+      "sha256": "e596ad3d5edf6ce234acdc81d76d885cc9714b899ceca404418488dd8abba501"
+    },
+    {
+      "file": "monte-carlo-mobile.svg",
+      "sha256": "d44a06aef8e204451cbf883548a75626945247ec7810746b6f18fb81f2880207"
+    },
+    {
+      "file": "backtest.svg",
+      "sha256": "a1b0be8b962066dc7753cd60fdda1fa82068e7dd108c6f53837b1bb7514bab39"
+    },
+    {
+      "file": "backtest-mobile.svg",
+      "sha256": "20a391df22f38cebb5817f32be0ed99bc19121e8cc929b840f8aea1eb68976c2"
+    },
+    {
+      "file": "data-sources.svg",
+      "sha256": "0a477d967a7105de14cea79b0db5d640b14d7688e7c9a45c5544f31f561c6bb8"
+    },
+    {
+      "file": "data-sources-mobile.svg",
+      "sha256": "83efb2926bc3022c30570a45e1b4edb1e8af1ecf9120876eddf175dbd3825121"
+    }
+  ]
+}

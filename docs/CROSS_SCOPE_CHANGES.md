@@ -1,3 +1,38 @@
+## Landing data, backtesting and simulation showcase (Cache for Rudra) - 2026-10-18
+
+Explicit user authorization, branch `feature/cache-landing-research-evidence` from
+main `a824964`: public landing-page enhancement only. `landing.html` gains the new
+research section and scoped CSS. `frontend/scripts/prepare-landing-research.py` reads
+six saved ML reports, exports three SVG charts with desktop/mobile variants, public
+chart data/source hashes and the marked HTML section. Dedicated plotting requirements
+are optional regeneration tools; the normal frontend build needs no Python/models.
+Generated assets have their own LF attributes, and report hashes use normalized
+Git text form so Windows/Linux line endings do not invalidate provenance.
+
+Source cards show 349,030 NOAA rows, 122,270 station measurements, 55,524 NHC track
+points and 50 EIA reference locations. Charts show one archived 5,000-draw consistency
+experiment, 2024 Flood model-selection validation (KM wins; 95% bootstrap intervals)
+and mixed-inventory scale. Caveats distinguish retrospective estimates, current source
+evidence, model consistency and work authorization. No invented paths or accuracy claims.
+
+Existing hero/product markup and animation JavaScript, demo/sign-in links, crew and
+supervisor workflows, canonical schemas, backend/auth/services, ML algorithms/artifacts,
+scores/alerts, fixtures and task checkboxes are unchanged. Other worktrees and existing
+servers remain untouched. Rudra should preserve the generated section and qualifiers;
+Braydin has no configuration action. Normal static deployment remains a later owner step.
+
+Verified 198 frontend tests, lint/TypeScript, live/demo builds, Python Ruff/format,
+byte-identical export check and six source/six SVG hashes. Development and built-demo
+Edge smoke checks pass at 1440/768/390/320px with correct chart variants, open value
+tables, preserved CTA navigation, no clipping/overflow, exceptions or actual API calls.
+Desktop/mobile screenshots were inspected. [Audit and handoff](LANDING_RESEARCH_SECTION.md).
+The attachment initially requested an unmerged PR; the latest user follow-up
+explicitly authorizes merging the verified PR into main.
+`PROJECT_CONTEXT.md` records the same facts; implementation/PR attribution is in Git history.
+Main `748056b` reconciled without conflicts in `bdec23b`, retaining report-photo spacing
+and seeded demo analysis. Final frontend checks pass on that combined tree. An isolated
+replica with CRLF reports confirms portable source hashes and identical exports.
+
 ## Full-width crew score and alert sections (Cache for Rudra) - 2026-10-18
 
 Explicit user follow-up, branch `feature/cache-full-width-crew-sections` from main
