@@ -68,7 +68,7 @@ main,header{position:relative;z-index:3}
 .cta-btn:active{transform:scale(.97)}
 .cta-note{font:500 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
 
-/* stats: product facts from the spec, not performance claims; one centred row along the bottom of the screen */
+/* stats: product facts from the spec and dataset sizes from ml/EVALUATION.md (349,030 NOAA rows parsed; 8,406 flood records in the final fit), never accuracy claims; one centred row along the bottom */
 .stats{display:flex;justify-content:center;margin:0 calc(-1 * var(--gutter));padding:clamp(14px,2.4vh,26px) var(--gutter) clamp(16px,3vh,32px);list-style:none;border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(7,9,12,.15),rgba(7,9,12,.55))}
 .stats li{flex:0 1 260px;text-align:center;padding:0 clamp(12px,2.4vw,40px)}
 .stats li + li{border-left:1px solid var(--line)}
@@ -126,8 +126,8 @@ main,header{position:relative;z-index:3}
     <ul class="stats" aria-label="Foresite at a glance">
       <li><b data-to="50" data-suffix="+">0</b><span>Monitored sites</span></li>
       <li><b data-to="6">0</b><span>Live hazard feeds</span></li>
-      <li><b data-to="10" data-unit="mi">0</b><span>Lightning stop-work radius</span></li>
-      <li><b data-to="30" data-unit="min">0</b><span>All-clear, reset by every strike</span></li>
+      <li><b data-to="349" data-suffix="K">0</b><span>NOAA storm records analyzed, 2021–2025</span></li>
+      <li><b data-to="8406">0</b><span>Flood events behind the duration outlook</span></li>
     </ul>
   </section>
 
@@ -260,7 +260,7 @@ setTimeout(schedule, 1400);
 /* ================= Stats count up once on load ================= */
 document.querySelectorAll('.stats b').forEach((el, i) => {
   const to = +el.dataset.to, suf = el.dataset.suffix || '', unit = el.dataset.unit, t0 = performance.now() + 900 + i*120, D = reduce ? 1 : 1400;
-  const put = v => { el.textContent = v + suf; if (unit) { const s = document.createElement('small'); s.textContent = unit; el.append(s); } };
+  const put = v => { el.textContent = v.toLocaleString("en-US") + suf; if (unit) { const s = document.createElement('small'); s.textContent = unit; el.append(s); } };
   put(reduce ? to : 0);
   const tick = now => { const k = Math.min(1, Math.max(0, (now - t0)/D)), e = 1 - Math.pow(1 - k, 4); put(Math.round(to*e)); if (k < 1) requestAnimationFrame(tick); };
   if (!reduce) requestAnimationFrame(tick);

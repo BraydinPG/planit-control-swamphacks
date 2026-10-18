@@ -120,7 +120,8 @@
   body {
     margin: 0;
     font-family: var(--font-sans);
-    background: var(--pc-bg);
+    /* Transparent so the storm backdrop (StormBackdrop.tsx) shows; html keeps the solid colour. */
+    background: transparent;
     color: var(--pc-ink);
     line-height: 1.55;
   }
