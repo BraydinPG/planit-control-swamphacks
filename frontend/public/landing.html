@@ -1,0 +1,286 @@
+<!doctype html>
+<!-- Temporary landing page, served at /landing.html. The Sign in buttons open the app root, where the main Foresite sign-in lives. Delete this file to remove it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foresite</title>
+<meta name="description" content="Foresite gives utility field crews and supervisors one shared view of lightning, weather, flood and crew-reported hazards.">
+<link rel="icon" type="image/x-icon" href="/foresite-favicon.ico?v=56ddbbb3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07090c;
+  --bone:#eef0f2;
+  --mute:#8b95a3;
+  --line:rgba(238,240,242,.14);
+  --signal:#e5162f;
+  --volt:#cfe0ff;
+  --display:"Archivo", "Arial Narrow", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, monospace;
+  --ease:cubic-bezier(.2,.7,0,1);
+  --hdr:64px;
+  --gutter:max(clamp(16px,4vw,64px), calc((100vw - 1760px) / 2));
+}
+*{box-sizing:border-box}
+/* one screen, no scrolling */
+html,body{height:100%;overflow:hidden}
+html{background:var(--ink);color:var(--bone);-webkit-font-smoothing:antialiased}
+body{margin:0;font:400 clamp(15px,1.05vw,18px)/1.55 var(--display);font-variation-settings:"wdth" 100;background:var(--ink)}
+::selection{background:var(--signal);color:#fff}
+a{color:inherit}
+p,h1{text-wrap:pretty}
+:focus-visible{outline:2px solid var(--volt);outline-offset:3px}
+
+/* ——— Layers ——— */
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+#bolt{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}
+.grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(6) infinite}
+@keyframes grain{0%{background-position:0 0}20%{background-position:-48px 32px}40%{background-position:32px -64px}60%{background-position:-64px -16px}80%{background-position:48px 48px}}
+main,header{position:relative;z-index:3}
+
+/* ——— Chrome ——— */
+.top{position:fixed;top:0;left:0;right:0;z-index:50;height:var(--hdr);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 var(--gutter);background:var(--ink);border-bottom:1px solid var(--line);color:var(--bone)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.01em;text-decoration:none;font-size:15px}
+.brand svg{width:22px;height:22px}
+.signin{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;font:600 15px/1 var(--display);text-decoration:none;color:var(--bone);background:rgba(238,240,242,.06);border:1px solid rgba(238,240,242,.24);transition:background .25s,color .25s,border-color .25s}
+.signin svg,.cta-btn svg{width:16px;height:16px;transition:transform .25s var(--ease)}
+.signin:hover{background:var(--bone);border-color:var(--bone);color:var(--ink)}
+.signin:hover svg,.cta-btn:hover svg{transform:translateX(3px)}
+
+.kicker{font:500 12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.16em;color:var(--mute)}
+.kicker em{font-style:normal;color:var(--bone)}
+
+/* ——— The one screen: a big title, then the stats along the bottom ——— */
+.hero{height:100svh;display:grid;grid-template-rows:minmax(0,1fr) auto;padding:var(--hdr) var(--gutter) 0}
+.hero-copy{align-self:center;min-width:0;width:100%;container-type:inline-size;padding:clamp(12px,3vh,40px) 0}
+.hero h1{margin:clamp(12px,2.2vh,24px) 0 clamp(16px,2.8vh,30px);font-weight:900;text-transform:uppercase;line-height:.88;letter-spacing:-.01em;white-space:nowrap;font-size:min(210px,calc(100cqi / 8.6),16vh);font-variation-settings:"wdth" 62;text-shadow:0 10px 60px rgba(0,0,0,.55)}
+.hero h1 .thin{display:block;font-weight:200;font-variation-settings:"wdth" 125;letter-spacing:-.02em;font-size:.74em;margin-top:.1em;color:rgba(238,240,242,.92)}
+.hero-lede{margin:0;font-size:clamp(16px,.55vw + 12px,21px);line-height:1.55;color:rgba(238,240,242,.74);max-width:52ch}
+
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin-top:clamp(18px,3.4vh,38px)}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;font:700 16px/1 var(--display);text-decoration:none;background:var(--signal);color:#fff;box-shadow:0 10px 40px -10px rgba(229,22,47,.7);transition:background .25s,color .25s,transform .15s}
+.cta-btn:hover{background:#fff;color:var(--signal)}
+.cta-btn:active{transform:scale(.97)}
+.cta-note{font:500 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+
+/* stats: product facts from the spec, not performance claims; one centred row along the bottom of the screen */
+.stats{display:flex;justify-content:center;margin:0 calc(-1 * var(--gutter));padding:clamp(14px,2.4vh,26px) var(--gutter) clamp(16px,3vh,32px);list-style:none;border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(7,9,12,.15),rgba(7,9,12,.55))}
+.stats li{flex:0 1 260px;text-align:center;padding:0 clamp(12px,2.4vw,40px)}
+.stats li + li{border-left:1px solid var(--line)}
+.stats b{display:block;font:900 clamp(30px,5.4vh,60px)/1 var(--display);font-variation-settings:"wdth" 64;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stats b small{font-size:.46em;font-weight:500;font-variation-settings:"wdth" 100;color:var(--mute);margin-left:.15em}
+.stats span{display:block;margin-top:8px;font:500 10.5px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+@media (max-width:640px){.stats{flex-wrap:wrap;row-gap:14px}.stats li{flex:0 0 50%;padding:0 8px}.stats li:nth-child(3){border-left:0}}
+
+/* short screens: tighten so everything still fits */
+@media (max-height:760px){.hero-lede{font-size:15px;line-height:1.45}.stats span{margin-top:5px}}
+@media (max-height:600px){.hero-lede{display:none}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+/* page open: the fog lifts out of black, then the header, the copy and the stats fade in */
+@keyframes introSky{from{opacity:0}}
+@keyframes introIn{from{opacity:0;transform:translateY(14px);filter:blur(6px)}}
+@keyframes introFade{from{opacity:0}}
+#sky{animation:introSky 1.6s ease-out both}
+.top{animation:introFade .9s ease-out .25s both}
+.hero-copy > *,.stats{animation:introIn 1s var(--ease) both}
+.hero-copy > .kicker{animation-delay:.35s}
+.hero-copy > h1{animation-delay:.5s}
+.hero-copy > .hero-lede{animation-delay:.7s}
+.hero-copy > .cta{animation-delay:.85s}
+.stats{animation-delay:1s}
+@media (prefers-reduced-motion:reduce){#sky,.top,.hero-copy > *,.stats{animation-duration:.01s;animation-delay:0s}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<canvas id="bolt" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/landing.html" aria-label="Foresite home">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M13.2 4 7 13.4h4.4L10.6 20l6.4-9.6h-4.5z" fill="#000"/></svg>
+    Foresite
+  </a>
+  <a class="signin" href="/">Sign in<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h1">
+    <div class="hero-copy">
+      <div class="kicker"><em>Foresite</em> · Site safety for utility field crews</div>
+      <h1 id="h1">Every on-site hazard.<span class="thin">One shared view.</span></h1>
+      <p class="hero-lede">Lightning, flood, heat, hurricane and earthquake feeds plus crew reports, combined into one risk picture for every monitored site. Rules raise the alerts. People make the call.</p>
+      <div class="cta">
+        <a class="cta-btn" href="/">Sign in to Foresite<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <span class="cta-note">Crew and supervisor accounts</span>
+      </div>
+    </div>
+    <ul class="stats" aria-label="Foresite at a glance">
+      <li><b data-to="50" data-suffix="+">0</b><span>Monitored sites</span></li>
+      <li><b data-to="6">0</b><span>Live hazard feeds</span></li>
+      <li><b data-to="10" data-unit="mi">0</b><span>Lightning stop-work radius</span></li>
+      <li><b data-to="30" data-unit="min">0</b><span>All-clear, reset by every strike</span></li>
+    </ul>
+  </section>
+
+</main>
+
+<script>
+(() => {
+'use strict';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+
+/* ================= WebGL red fog ================= */
+const sky = $('#sky');
+const gl = sky.getContext('webgl', {antialias:false, premultipliedAlpha:false});
+const S = { flash:0, strike:[0,.3], tint:[.95,.12,.16], mouse:[0,0], mt:[0,0], density:.85 };
+let draw = () => {};
+const initSky = () => { // builds the fog shader; runs again if the browser drops and restores the WebGL context
+  const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const fs = `precision highp float;
+  uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uFlash;uniform vec2 uStrike;uniform vec3 uTint;uniform float uDensity;
+  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+    return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);for(int i=0;i<5;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}
+  void main(){
+    vec2 uv=gl_FragCoord.xy/uRes;
+    vec2 p=(gl_FragCoord.xy-.5*uRes)/uRes.y;
+    float t=uTime*.03;
+    // low, rolling fog: stretched sideways and drifting slowly
+    vec2 cp=p*vec2(.8,1.3);
+    vec2 q=vec2(fbm(cp*1.3+vec2(t,0.)),fbm(cp*1.3+vec2(5.2,1.3)-t));
+    vec2 r=vec2(fbm(cp*1.3+3.2*q+vec2(1.7,9.2)+t*1.4),fbm(cp*1.3+3.2*q+vec2(8.3,2.8)-t*1.1));
+    float f=fbm(cp*1.1+3.*r+uMouse*.15);
+    float fog=smoothstep(.2,.95,f)*(.55+.6*(1.-uv.y*.6))*uDensity*1.5;
+    float edge=smoothstep(.45,.75,f)-smoothstep(.75,1.,f);
+    // the fog itself stays close to black between strikes
+    vec3 col=mix(vec3(.012,.004,.005),uTint*.13,fog);
+    col+=uTint*edge*.025;
+    col+=uTint*.012*exp(-length(p-uMouse)*2.4)*fog*6.;
+    col+=uTint*.035*smoothstep(.6,0.,uv.y);
+    // lightning lights the fog from behind: brightest near the strike, carried by the fog's density and folds
+    float d=length(p-uStrike);
+    float reach=exp(-d*1.5)*1.5+.12;
+    float lit=uFlash*reach*(.02+fog*1.1+edge*.8);
+    col+=mix(uTint,vec3(1.,.8,.84),.3)*lit*.75;
+    // a soft glow hanging around the bolt itself, so the light clearly comes from the strike
+    col+=mix(uTint,vec3(1.,.85,.9),.5)*uFlash*exp(-d*3.2)*(.18+fog*.5);
+    col*=1.-.55*pow(length(uv-.5)*1.25,2.2);
+    col+=(h(gl_FragCoord.xy+fract(uTime))-.5)*.025;
+    gl_FragColor=vec4(max(col,0.),1.);
+  }`;
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
+  const pr = gl.createProgram();
+  gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,3,-1,-1,3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const U = {}; ['uRes','uTime','uMouse','uFlash','uStrike','uTint','uDensity'].forEach(k => U[k] = gl.getUniformLocation(pr,k));
+  const RES = .5; // render at half resolution; the softness reads as atmosphere
+  const size = () => { sky.width = Math.round(innerWidth*RES); sky.height = Math.round(innerHeight*RES); gl.viewport(0,0,sky.width,sky.height); };
+  size(); addEventListener('resize', size);
+  draw = (t) => {
+    gl.uniform2f(U.uRes, sky.width, sky.height); gl.uniform1f(U.uTime, t);
+    gl.uniform2f(U.uMouse, S.mouse[0], S.mouse[1]); gl.uniform1f(U.uFlash, S.flash);
+    gl.uniform2f(U.uStrike, S.strike[0], S.strike[1]); gl.uniform3fv(U.uTint, S.tint); gl.uniform1f(U.uDensity, S.density);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+};
+if (gl) {
+  initSky();
+  sky.addEventListener('webglcontextlost', e => { e.preventDefault(); draw = () => {}; });
+  sky.addEventListener('webglcontextrestored', initSky);
+} else { sky.style.background = 'radial-gradient(ellipse at 50% 100%, #2a060b, #07090c 70%)'; }
+
+addEventListener('pointermove', e => {
+  S.mt = [(e.clientX - innerWidth/2)/innerHeight, -(e.clientY - innerHeight/2)/innerHeight];
+}, {passive:true});
+
+/* ================= Bolt overlay ================= */
+const bc = $('#bolt'), bx = bc.getContext('2d');
+let bolts = [];
+const sizeBolt = () => { const d = Math.min(devicePixelRatio||1, 2); bc.width = innerWidth*d; bc.height = innerHeight*d; bx.setTransform(d,0,0,d,0,0); };
+sizeBolt(); addEventListener('resize', sizeBolt);
+function path(x0,y0,x1,y1,disp,out){
+  if (disp < 3) { out.push([x1,y1]); return; }
+  const mx = (x0+x1)/2 + (Math.random()-.5)*disp, my = (y0+y1)/2 + (Math.random()-.5)*disp*.3;
+  path(x0,y0,mx,my,disp/2,out); path(mx,my,x1,y1,disp/2,out);
+}
+function makeBolt(x, yEnd){
+  const segs = []; const main = [[x + (Math.random()-.5)*160, -20]];
+  path(main[0][0], -20, x, yEnd, 220, main); segs.push({pts:main, w:1.6});
+  for (let i = 0; i < 3; i++) {
+    const k = Math.floor(main.length*(.15 + Math.random()*.6)); const [sx,sy] = main[k];
+    const br = [[sx,sy]]; path(sx, sy, sx + (Math.random()-.5)*300, sy + 80 + Math.random()*200, 90, br); segs.push({pts:br, w:1});
+  }
+  bolts.push({segs, born:performance.now()});
+}
+function drawBolts(now){
+  bx.clearRect(0,0,innerWidth,innerHeight);
+  bolts = bolts.filter(b => now - b.born < 700);
+  for (const b of bolts) {
+    const age = Math.max(0, (now - b.born)/700);
+    const flick = (age < .12 || (age > .2 && age < .3) || (age > .38 && age < .45)) ? 1 : .25;
+    const a = (1-age)*flick;
+    for (const s of b.segs) {
+      bx.beginPath(); s.pts.forEach(([x,y],i) => i ? bx.lineTo(x,y) : bx.moveTo(x,y));
+      bx.strokeStyle = `rgba(255,190,200,${a*.22})`; bx.lineWidth = s.w*5; bx.shadowBlur = 18; bx.shadowColor = '#ff5a6e'; bx.stroke();
+      bx.strokeStyle = `rgba(255,255,255,${a*.8})`; bx.lineWidth = s.w; bx.shadowBlur = 0; bx.stroke();
+    }
+  }
+}
+
+/* ================= Random lightning ================= */
+// a strike lands somewhere across the sky every few seconds; sometimes a second one follows close behind
+function strike(strong){
+  const x = innerWidth*(.08 + Math.random()*.84);
+  const near = strong || Math.random() < .4;
+  S.flash = near ? .85 : .5;
+  S.flicker = performance.now();
+  const yEnd = innerHeight*(.45 + Math.random()*.4);
+  S.strike = [(x - innerWidth/2)/innerHeight, .5 - yEnd*.5/innerHeight]; // light centred halfway down the bolt
+  if (!reduce) makeBolt(x, yEnd);
+}
+const schedule = () => {
+  if (!document.hidden) { strike(); if (Math.random() < .3) setTimeout(strike, 180 + Math.random()*420); }
+  setTimeout(schedule, 3200 + Math.random()*5200);
+};
+setTimeout(schedule, 1400);
+
+/* ================= Stats count up once on load ================= */
+document.querySelectorAll('.stats b').forEach((el, i) => {
+  const to = +el.dataset.to, suf = el.dataset.suffix || '', unit = el.dataset.unit, t0 = performance.now() + 900 + i*120, D = reduce ? 1 : 1400;
+  const put = v => { el.textContent = v + suf; if (unit) { const s = document.createElement('small'); s.textContent = unit; el.append(s); } };
+  put(reduce ? to : 0);
+  const tick = now => { const k = Math.min(1, Math.max(0, (now - t0)/D)), e = 1 - Math.pow(1 - k, 4); put(Math.round(to*e)); if (k < 1) requestAnimationFrame(tick); };
+  if (!reduce) requestAnimationFrame(tick);
+  setTimeout(() => put(to), 900 + i*120 + D + 300); // lands on the real value even if animation frames are paused
+});
+
+/* ================= Main loop ================= */
+const t0 = performance.now();
+function frame(now){
+  S.flash *= .93; // the glow lingers in the fog a moment after the bolt
+  // the fog flickers with the bolt's own return strokes during its first half second
+  const age = now - (S.flicker || -1e9);
+  if (age < 450 && Math.random() < .25) S.flash = Math.min(.9, S.flash + .2);
+  S.mouse[0] += (S.mt[0] - S.mouse[0]) * .05; S.mouse[1] += (S.mt[1] - S.mouse[1]) * .05;
+  draw(reduce ? 12 : (now - t0)/1000);
+  drawBolts(now);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
