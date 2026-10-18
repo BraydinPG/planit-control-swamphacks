@@ -141,7 +141,7 @@ const sky = $('#sky');
 const gl = sky.getContext('webgl', {antialias:false, premultipliedAlpha:false});
 const S = { flash:0, strike:[0,.3], tint:[.95,.12,.16], mouse:[0,0], mt:[0,0], density:.85 };
 // the pointer's wake through the fog: recent path samples, faded over about a second
-const W = { trail:[], last:null, pos:new Float32Array(32), dir:new Float32Array(16) };
+const W = { trail:[], last:null, pos:new Float32Array(64), dir:new Float32Array(32) };
 let draw = () => {};
 const initSky = () => { // builds the fog shader; runs again if the browser drops and restores the WebGL context
   const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
@@ -149,20 +149,20 @@ const initSky = () => { // builds the fog shader; runs again if the browser drop
   uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uFlash;uniform vec2 uStrike;uniform vec3 uTint;uniform float uDensity;
   // the pointer's wake: the gas parts along its path, drags slightly forward and thins, then closes back in
   // (a copy of frontend/src/components/shell/fogWake.ts)
-  uniform vec4 uWake[8];uniform vec2 uWakeDir[8];
+  uniform vec4 uWake[16];uniform vec2 uWakeDir[16];
   vec3 wake(vec2 p){
     vec2 disp=vec2(0.);float cut=0.;
-    for(int i=0;i<8;i++){
+    for(int i=0;i<16;i++){
       vec4 t=uWake[i];
       if(t.z<.001) continue;
       vec2 d=p-t.xy, v=uWakeDir[i], n=vec2(-v.y,v.x);
       float along=dot(d,v), across=dot(d,n);
-      float k=exp(-across*across/.0016-along*along/.006)*t.z;
-      disp+=(n*across*35.+v*.6)*k; // parts smoothly to either side, drags slightly forward
+      float k=exp(-across*across/.000064-along*along/.000256)*t.z;
+      disp+=(n*across*175.+v*.6)*k; // parts smoothly to either side, drags slightly forward
       cut+=k;
     }
-    // averaged, not summed, and kept to ~1% of screen height so the fog never folds into rings
-    return vec3(disp*.01/max(1.,cut),clamp(cut,0.,1.));
+    // cursor-sized band; averaged, not summed, and kept to ~0.3% of screen height so the fog never folds into rings
+    return vec3(disp*.003/max(1.,cut),clamp(cut,0.,1.));
   }
   float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
   float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
@@ -227,9 +227,11 @@ addEventListener('pointermove', e => {
   const [x, y] = S.mt, now = performance.now(), last = W.last;
   if (!last) { W.last = { x, y, t:now }; return; }
   const dx = x - last.x, dy = y - last.y, dist = Math.hypot(dx, dy);
-  if (dist < .018) return; // sample the path every ~2% of screen height
-  W.trail.push({ x, y, dx:dx/dist, dy:dy/dist, speed:dist/(Math.max(16, now - last.t)/1000), born:now });
-  if (W.trail.length > 8) W.trail.shift();
+  if (dist < .006) return; // sample the path every ~0.6% of screen height (~5px)
+  // fill in between far-apart pointer events so a fast flick leaves a line, not dots
+  const steps = Math.ceil(dist/.01), speed = dist/(Math.max(16, now - last.t)/1000);
+  for (let i = 1; i <= steps; i++) W.trail.push({ x:last.x + dx*i/steps, y:last.y + dy*i/steps, dx:dx/dist, dy:dy/dist, speed, born:now });
+  while (W.trail.length > 16) W.trail.shift();
   W.last = { x, y, t:now };
 }, {passive:true});
 function updateWake(now){
