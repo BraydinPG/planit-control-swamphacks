@@ -70,8 +70,8 @@ deploy/deploy.sh root@SERVER
 ```
 
 It builds the frontend, ships `HEAD` with `git archive` plus the gitignored model artifact,
-keeps the server `.env`, installs requirements pinned by `deploy/constraints.txt`, and
-restarts the API. The previous version stays in `app.prev` / `frontend.prev`.
+keeps the server `.env`, installs requirements pinned by `deploy/constraints.txt`, applies
+missing database columns (`python -m app.db.init`), and restarts the API. The previous version stays in `app.prev` / `frontend.prev`.
 
 **Roll back:** `ssh root@SERVER 'cd /srv/foresite && mv app app.bad && mv app.prev app && mv frontend frontend.bad && mv frontend.prev frontend && systemctl restart foresite-api'`
 

@@ -60,6 +60,9 @@ chmod -R a+rX /srv/foresite/frontend
 chmod 600 app/backend/.env
 UV_PYTHON_INSTALL_DIR=/srv/foresite/python VIRTUAL_ENV=/srv/foresite/venv \
   uv pip install --quiet -r app/backend/requirements.txt -c app/deploy/constraints.txt
+# Apply missing tables, columns and hypertables to Tiger before the new code starts. It only
+# adds what's missing, so it's safe to run on every deploy.
+(cd app/backend && sudo -u foresite env PYTHONPATH=.. /srv/foresite/venv/bin/python -m app.db.init)
 systemctl restart foresite-api
 
 # Roll back on its own if the new version doesn't come up healthy.
