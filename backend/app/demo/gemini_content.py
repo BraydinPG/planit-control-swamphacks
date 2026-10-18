@@ -23,6 +23,7 @@ exception). Real sites are never read or written here.
 """
 
 import logging
+import math
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -128,7 +129,8 @@ def ensure_demo_notices(session: Session, now: datetime) -> int:
                 if miles_between(s.lat, s.lon, notice.lat, notice.lon) <= notice.radius_miles
             ]
             notice.radius_miles = min(
-                notice.radius_miles, max([radius, *(d + 0.5 for d in covered)])
+                notice.radius_miles,
+                max([radius, *(math.ceil((d + 0.5) * 10) / 10 for d in covered)]),
             )
             notice.radius_source = RadiusSource.GEMINI
             changed += 1

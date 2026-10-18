@@ -59,6 +59,7 @@ def test_seeded_notices_get_a_gemini_radius_and_a_sent_instruction(demo) -> None
         for notice in seeded:
             assert notice.radius_source == RadiusSource.GEMINI
             assert notice.radius_miles <= radii[notice.id]
+            assert notice.radius_miles == round(notice.radius_miles, 1)  # reads cleanly
         rows = session.scalars(
             select(db.NoticeAssessment).where(db.NoticeAssessment.organization_id == DEMO_ORG_ID)
         ).all()
