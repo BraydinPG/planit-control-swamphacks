@@ -199,8 +199,8 @@ def test_score_includes_regional_factors_without_changing_completeness() -> None
     with_site = compute_score("site-a", observations, [], [], NOW, settings=SETTINGS, site=SITE)
     without = compute_score("site-a", observations, [], [], NOW, settings=SETTINGS)
     points = {f.factor: f.contribution for f in with_site.factor_contributions}
-    assert points["hurricane"] == 2.0 and points["earthquake"] == 1.5
-    assert with_site.risk_score == 3.5
+    assert points["hurricane"] == 2.0 and points["earthquake"] == 4.0
+    assert with_site.risk_score == 6.0
     assert with_site.data_completeness == without.data_completeness
     assert "hurricane" not in {f.factor for f in without.factor_contributions}
 

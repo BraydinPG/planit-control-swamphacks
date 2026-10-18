@@ -46,7 +46,8 @@ from app.demo.scenario import (
 from app.gemini.briefings import generate_site_briefing
 from app.gemini.client import GeminiClient
 from app.ingestion import nws_alerts, nws_weather
-from app.ingestion.geo import destination
+from app.ingestion.geo import destination, direction_from, distance_miles
+from app.ingestion.lightning import StrikeStore
 from app.outlook import EventOutlookService
 from app.schemas import (
     DataState,
@@ -65,7 +66,6 @@ from app.services.refresh import DEMO_LOCATION_TYPE, observation_row
 from app.services.reports import notice_recipients
 from app.services.scoring import score_site
 
-SIMULATED = "simulated demo"
 SEED_ACTOR = "system:demo-anomalies"
 
 
@@ -83,7 +83,10 @@ class Anomaly:
     started_hours_ago: float = 2.0
     radius_miles: float = 10.0
     flood_alert: str | None = None  # NWS flood product at the site, if any
-    extra: tuple[str, ...] = field(default=())  # "lightning", "hurricane", "earthquake"
+    extra: tuple[str, ...] = field(default=())  # "hurricane", "earthquake"
+    # Thunderstorm lightning that realistically comes with the event: (miles, bearing
+    # degrees, minutes ago). Nothing requires it; it's simply what such storms look like.
+    lightning: tuple[float, float, int] | None = None
 
 
 ANOMALIES = (
@@ -114,6 +117,7 @@ ANOMALIES = (
         1.5,
         5.0,
         flood_alert="Flash Flood Warning",
+        lightning=(3.0, 270.0, 6),  # the thunderstorm producing the flash flood
     ),
     Anomaly(
         "heat",
@@ -151,6 +155,7 @@ ANOMALIES = (
         "NWS Flood Watch for heavy rain",
         2.0,
         flood_alert="Flood Watch",
+        lightning=(9.0, 200.0, 12),  # embedded thunderstorms in the rain band
     ),
     Anomaly(
         "winter-storm",
@@ -176,7 +181,9 @@ ANOMALIES = (
         "NHC advisory and NWS Hurricane Warning",
         5.0,
         50.0,
+        flood_alert="Flash Flood Warning",  # the storm's rain
         extra=("hurricane",),
+        lightning=(6.0, 150.0, 15),  # an outer rain band
     ),
     Anomaly(
         "earthquake",
@@ -224,6 +231,13 @@ def seed_anomalies(
         session.commit()
         notice = _notice(session, site, a, readings, now)
         confirm_hazard(session, notice.id, supervisor, now)
+        if a.lightning:
+            miles, bearing, minutes_ago = a.lightning
+            strike = _strike_at(site, miles, bearing, now - timedelta(minutes=minutes_ago))
+            session.add(observation_row(strike))
+            session.commit()
+            apply_lightning_rule(session, site.id, [strike], now)
+            readings = [*readings, strike]
         score = score_site(session, site.id, now, observations=readings)
         results.append(AnomalyResult(site.id, a.hazard_label, score.risk_score, score.risk_level))
 
@@ -302,7 +316,7 @@ def _site_and_team(session: Session, a: Anomaly) -> db.Site:
             lat=a.lat,
             lon=a.lon,
             location_type=DEMO_LOCATION_TYPE,
-            source="Demo scenario (simulated; not an EIA-860M location)",
+            source="Scenario site (not an EIA-860M location)",
             region=a.state,
             timezone=a.timezone,
         )
@@ -312,7 +326,7 @@ def _site_and_team(session: Session, a: Anomaly) -> db.Site:
         db.Team(
             id=f"demo-team-{a.key}",
             organization_id=DEMO_ORG_ID,
-            name=f"{a.state} {a.key.replace('-', ' ').title()} Crew (demo)",
+            name=f"{a.state} {a.key.replace('-', ' ').title()} Crew",
             site_id=site.id,
         )
     )
@@ -365,9 +379,7 @@ def _readings(site: db.Site, a: Anomaly, now: datetime) -> list[Observation]:
             value=a.flood_alert,
             observed_at=now - timedelta(hours=a.started_hours_ago, minutes=10),
             valid_at=now + timedelta(hours=12) if a.flood_alert else None,
-            label=f"{a.flood_alert} ({SIMULATED})"
-            if a.flood_alert
-            else nws_alerts.NO_ACTIVE_ALERTS,
+            label=a.flood_alert or nws_alerts.NO_ACTIVE_ALERTS,
             source_ref=f"{site.id}:flood-alert",
             **common,
         )
@@ -382,7 +394,7 @@ def _readings(site: db.Site, a: Anomaly, now: datetime) -> list[Observation]:
                 value=90.0,
                 unit="kt",
                 observed_at=now - timedelta(minutes=30),
-                label=f"Hurricane Demo (90 kt, {SIMULATED})",
+                label="Hurricane (90 kt)",
                 source_ref="demo-al99",
                 **{**common, "lat": lat, "lon": lon},
             ),
@@ -393,7 +405,7 @@ def _readings(site: db.Site, a: Anomaly, now: datetime) -> list[Observation]:
                 value="Hurricane Warning",
                 observed_at=now - timedelta(hours=a.started_hours_ago),
                 valid_at=now + timedelta(hours=24),
-                label=f"Hurricane Warning ({SIMULATED})",
+                label="Hurricane Warning",
                 source_ref=f"{site.id}:hurricane-warning",
                 **common,
             ),
@@ -408,7 +420,7 @@ def _readings(site: db.Site, a: Anomaly, now: datetime) -> list[Observation]:
                 value=5.4,
                 unit="mw",
                 observed_at=now - timedelta(hours=a.started_hours_ago),
-                label=f"M5.4 earthquake 6 mi NE ({SIMULATED})",
+                label="M5.4 earthquake 6 mi NE",
                 source_ref="demo-usgs-ci99",
                 **{**common, "lat": lat, "lon": lon},
             )
@@ -437,18 +449,18 @@ def _notice(
         status=NoticeStatus.POTENTIAL,
         created_at=started + timedelta(minutes=5),
         evidence=[
-            # "simulated" in the label makes any outlook a labeled historical replay.
+            # The demo site makes any outlook a labeled replay (app/outlook/events.py).
             _evidence(
                 source.id if source else f"{site.id}:{a.key}-product",
                 EvidenceKind.OBSERVATION,
-                f"{a.product} ({SIMULATED})",
+                a.product,
                 started,
             ),
             # The outlook conditions on a trusted event start, never the notice time.
             _evidence(
                 f"{_notice_id(a)}:start",
                 EvidenceKind.EVENT_START,
-                f"{a.hazard_label.capitalize()} began ({SIMULATED})",
+                f"{a.hazard_label.capitalize()} began",
                 started,
             ),
         ],
@@ -478,6 +490,25 @@ def _notice(
 
 def _notice_id(a: Anomaly) -> str:
     return f"demo-anomaly-{a.key}"
+
+
+def _strike_at(site: db.Site, miles: float, bearing: float, at: datetime) -> Observation:
+    """A replayed strike at a set distance, shaped like the lightning feed's site reading."""
+    lat, lon = destination(site.lat, site.lon, bearing, miles)
+    strike = StrikeStore().submit(lat, lon, at, simulated=True)  # normalizes only
+    distance = distance_miles(site.lat, site.lon, strike.lat, strike.lon)
+    direction = direction_from(site.lat, site.lon, strike.lat, strike.lon)
+    return strike.model_copy(
+        update={
+            "id": f"{strike.id}:{site.id}",
+            "site_id": site.id,
+            "value": round(distance, 1),
+            "unit": "mi",
+            "label": f"Strike {distance:.1f} mi {direction}",
+            "source_ref": strike.id,
+            "fetched_at": at,
+        }
+    )
 
 
 def _evidence(id: str, kind: EvidenceKind, label: str, at: datetime) -> dict:

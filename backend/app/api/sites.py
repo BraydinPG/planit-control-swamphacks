@@ -110,7 +110,7 @@ def get_site(
         site,
         event_inputs(site, notices, reports, observations, now),
         now,
-        demo=any(is_simulated(n) for n in notices),
+        demo=any(is_simulated(n, site) for n in notices),
     )
     return SiteDetail(
         **summary.model_dump(),
@@ -122,7 +122,7 @@ def get_site(
         alerts=alerts,
         reports=reports,
         notices=notices,
-        event_outlook=event_outlook_for(outlooks, summary, notices, now),
+        event_outlook=event_outlook_for(outlooks, summary, notices, now, at_site=site),
         event_outlooks=cards,
     )
 
@@ -132,14 +132,17 @@ def event_outlook_for(
     site: SiteLike,
     notices: list[HazardNotice],
     now: datetime,
+    at_site: SiteLike | None = None,
 ) -> EventOutlook | None:
     """T050 advisory for the newest confirmed flood notice covering the site, else None.
+
+    `at_site` is the stored site when `site` is its summary, so a demo site is recognized.
 
     Computed after the score and alerts and never fed back into them. The briefings and
     instruction suggestions (T058B) reuse it.
     """
     for notice in sorted(notices, key=lambda n: n.confirmed_at or n.created_at, reverse=True):
-        context = event_context_from_notice(notice, site, now)
+        context = event_context_from_notice(notice, at_site or site, now)
         if context is not None:
             return outlooks.outlook(site, context)
     return None

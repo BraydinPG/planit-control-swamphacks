@@ -123,7 +123,7 @@ def test_site_detail_shows_the_scenario(client) -> None:
     detail = client.get(f"/api/sites/{DEMO_SITE_ID}", headers=crew(CREW)).json()
     [report] = detail["reports"]
     assert (report["category"], report["review_status"]) == ("wildlife", "confirmed")
-    assert "Simulated" in report["note"]
+    assert report["note"] == "Alligator on the levee access road by the culvert."
     notices = {n["id"]: n for n in detail["notices"]}
     assert notices["demo-notice-wildlife"]["instruction"]
     assert notices["demo-notice-flood"]["status"] == "confirmed"

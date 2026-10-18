@@ -6,8 +6,8 @@
     "forecast_window_start": "2026-10-18T11:00:00Z",
     "forecast_window_end": "2026-10-18T23:00:00Z",
     "summary": "Simulated scenario: heat, a Flood Watch and a wildlife report at generation time. Afternoon storms are a scenario forecast, not current conditions.",
-    "risk_level": "high",
-    "risk_score": 6.1,
+    "risk_level": "critical",
+    "risk_score": 9.1,
     "data_completeness": 0.0,
     "hazards": [
       {
@@ -19,7 +19,7 @@
       },
       {
         "hazard": "Heat (simulated)",
-        "points": 1.11,
+        "points": 4.11,
         "evidence_ids": [
           "obs-wx-3"
         ]
@@ -113,8 +113,8 @@
     "forecast_window_start": "2026-10-18T11:00:00Z",
     "forecast_window_end": "2026-10-18T23:00:00Z",
     "summary": "Gemini unavailable. Template briefing built from current site data.",
-    "risk_level": "high",
-    "risk_score": 6.1,
+    "risk_level": "critical",
+    "risk_score": 9.1,
     "data_completeness": 0.0,
     "hazards": [
       {
@@ -126,7 +126,7 @@
       },
       {
         "hazard": "Heat (simulated)",
-        "points": 1.11,
+        "points": 4.11,
         "evidence_ids": [
           "obs-wx-3"
         ]

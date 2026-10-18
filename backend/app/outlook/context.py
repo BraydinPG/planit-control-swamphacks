@@ -38,8 +38,16 @@ def is_confirmed(notice: HazardNotice, now: datetime) -> bool:
     )
 
 
-def is_simulated(notice: HazardNotice) -> bool:
-    return any("simulated" in e.label.casefold() for e in notice.evidence)
+# Same value as app.services.refresh.DEMO_LOCATION_TYPE (importing it here would cycle).
+DEMO_LOCATION_TYPE = "demo_site"
+
+
+def is_simulated(notice: HazardNotice, site: object | None = None) -> bool:
+    """A replay, never a current event: the evidence says simulated, or the site is a demo
+    site (`location_type="demo_site"`), whose data is all simulated."""
+    return getattr(site, "location_type", None) == DEMO_LOCATION_TYPE or any(
+        "simulated" in e.label.casefold() for e in notice.evidence
+    )
 
 
 def trusted_event_start(notice: HazardNotice) -> datetime | None:
@@ -64,7 +72,7 @@ def event_context_from_notice(
     """
     if not is_confirmed_flood(notice, now):
         return None
-    simulated = is_simulated(notice)
+    simulated = is_simulated(notice, site)
     start = trusted_event_start(notice)
     return {
         "event_id": notice.id,

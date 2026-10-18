@@ -76,14 +76,48 @@ def test_crew_reports_are_cleared_and_backed_up_except_the_everglades_scenario(a
 
 
 def test_every_anomaly_scores_like_the_live_rules(anomalies) -> None:
-    _, results, _ = anomalies
+    factory, results, _ = anomalies
     scores = {r.site_id: r.risk_score for r in results}
     assert len(scores) == len(ANOMALIES) + 1
-    for site_id in ("demo-flood", "demo-flash-flood", "demo-heat", "demo-hurricane",
-                    "demo-earthquake", "demo-heavy-rain", DEMO_SITE_ID):  # fmt: skip
-        assert scores[site_id] > 0, site_id
-    # No live feed or rule scores wind or snow, so those stay honest.
-    assert scores["demo-high-wind"] == 0 and scores["demo-winter-storm"] == 0
+    # Co-occurring hazards add up; independent ones (heat, earthquake) weigh more alone.
+    assert scores == {
+        "demo-flood": 2.0,  # Flood Warning alone
+        "demo-flash-flood": 5.0,  # Flash Flood Warning + its thunderstorm (lightning 3 mi)
+        "demo-heavy-rain": 4.0,  # Flood Watch + lightning 9 mi
+        "demo-hurricane": 7.0,  # hurricane + Flash Flood Warning + outer-band lightning
+        "demo-heat": 4.2,  # heat index 114 °F alone
+        "demo-earthquake": 4.0,  # M5.4 at 6 mi alone
+        "demo-high-wind": 0.0,  # no rule scores wind
+        "demo-winter-storm": 0.0,  # no rule scores snow
+        DEMO_SITE_ID: 10.0,  # Rudra's scenario: lightning, heat, flood and a report (capped)
+    }
+    with factory() as session:
+        stop_work = set(
+            session.scalars(
+                select(db.Alert.site_id).where(
+                    db.Alert.rule == "lightning_stop_work", db.Alert.state == "active"
+                )
+            )
+        )
+    assert stop_work == {"demo-flash-flood", "demo-heavy-rain", "demo-hurricane", DEMO_SITE_ID}
+
+
+def test_only_the_site_title_says_demo(client) -> None:
+    for a in ANOMALIES:
+        detail = client.get(f"/api/sites/demo-{a.key}", headers=supervisor(SUPERVISOR)).json()
+        assert detail["name"].endswith("(demo)")
+        texts = [
+            detail["source"],
+            detail["assigned_team"]["name"],
+            *(o["label"] or "" for o in detail["observations"]),
+            *(e["label"] for n in detail["notices"] for e in n["evidence"]),
+        ]
+        assert not [t for t in texts if "demo" in t.casefold()], a.key
+        # Still stored as simulated, and its outlooks are labeled replays.
+        assert all(o["simulated"] for o in detail["observations"])
+        assert all(
+            c["presentation"] == "replay" for c in detail["event_outlooks"] if c["notice_id"]
+        )
 
 
 def test_each_site_shows_a_confirmed_event_and_its_duration_card(client) -> None:

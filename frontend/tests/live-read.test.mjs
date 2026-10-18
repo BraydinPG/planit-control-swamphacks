@@ -106,7 +106,7 @@ test('invalid alert states, timestamps, flags, acknowledgement identities and du
 test('one site payload cannot mix headline and nested stored-score versions', async () => {
   for (const override of [
     { risk_score: detail.risk_score - 1 },
-    { risk_level: 'critical' },
+    { risk_level: detail.risk_level === 'low' ? 'critical' : 'low' },
     { model_version: 'different-server-version' },
     { data_completeness: detail.data_completeness === 0 ? 1 : 0 },
     {

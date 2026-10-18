@@ -5,8 +5,8 @@
   "settings": {
     "heat_index_threshold_f": 103.0,
     "heat_index_extreme_f": 125.0,
-    "heat_min_points": 0.5,
-    "heat_max_points": 2.0,
+    "heat_min_points": 3.5,
+    "heat_max_points": 5.0,
     "heat_window_hours": 12,
     "flood_warning_points": 2.0,
     "flood_watch_points": 1.0,
@@ -14,7 +14,7 @@
     "hurricane_points": 2.0,
     "earthquake_min_magnitude": 4.0,
     "earthquake_distance_miles": 25.0,
-    "earthquake_points": 1.5,
+    "earthquake_points": 4.0,
     "lightning_stop_work_points": 3.0,
     "report_low_points": 0.5,
     "report_moderate_points": 1.0,
@@ -145,8 +145,8 @@
     },
     {
       "id": "heat_threshold",
-      "score": 0.5,
-      "band": "low",
+      "score": 3.5,
+      "band": "moderate",
       "completeness": 1.0,
       "contributions": [
         {
@@ -157,7 +157,7 @@
         },
         {
           "factor": "heat_index",
-          "points": 0.5,
+          "points": 3.5,
           "state": "observed",
           "evidence_id": "synthetic:weather:Heat index"
         },
@@ -171,8 +171,8 @@
     },
     {
       "id": "heat_elevated",
-      "score": 1.0,
-      "band": "low",
+      "score": 4.0,
+      "band": "moderate",
       "completeness": 1.0,
       "contributions": [
         {
@@ -183,7 +183,7 @@
         },
         {
           "factor": "heat_index",
-          "points": 0.98,
+          "points": 3.98,
           "state": "observed",
           "evidence_id": "synthetic:weather:Heat index"
         },
@@ -197,8 +197,8 @@
     },
     {
       "id": "heat_extreme",
-      "score": 2.0,
-      "band": "low",
+      "score": 5.0,
+      "band": "moderate",
       "completeness": 1.0,
       "contributions": [
         {
@@ -209,7 +209,7 @@
         },
         {
           "factor": "heat_index",
-          "points": 2.0,
+          "points": 5.0,
           "state": "observed",
           "evidence_id": "synthetic:weather:Heat index"
         },
@@ -223,8 +223,8 @@
     },
     {
       "id": "eligible_forecast_not_double_counted",
-      "score": 2.0,
-      "band": "low",
+      "score": 5.0,
+      "band": "moderate",
       "completeness": 1.0,
       "contributions": [
         {
@@ -235,7 +235,7 @@
         },
         {
           "factor": "heat_index",
-          "points": 2.0,
+          "points": 5.0,
           "state": "forecast",
           "evidence_id": "synthetic:forecast:Temperature"
         },
@@ -507,8 +507,8 @@
     },
     {
       "id": "earthquake_near",
-      "score": 1.5,
-      "band": "low",
+      "score": 4.0,
+      "band": "moderate",
       "completeness": 1.0,
       "contributions": [
         {
@@ -531,7 +531,7 @@
         },
         {
           "factor": "earthquake",
-          "points": 1.5,
+          "points": 4.0,
           "state": "observed",
           "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
         }
@@ -603,8 +603,8 @@
     },
     {
       "id": "duplicate_quake",
-      "score": 1.5,
-      "band": "low",
+      "score": 4.0,
+      "band": "moderate",
       "completeness": 1.0,
       "contributions": [
         {
@@ -627,7 +627,7 @@
         },
         {
           "factor": "earthquake",
-          "points": 1.5,
+          "points": 4.0,
           "state": "observed",
           "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
         }
@@ -869,8 +869,8 @@
     },
     {
       "id": "stale_heat_retained",
-      "score": 1.0,
-      "band": "low",
+      "score": 4.0,
+      "band": "moderate",
       "completeness": 0.67,
       "contributions": [
         {
@@ -881,7 +881,7 @@
         },
         {
           "factor": "heat_index",
-          "points": 0.98,
+          "points": 3.98,
           "state": "stale",
           "evidence_id": "synthetic:weather:Heat index"
         },
@@ -1063,7 +1063,7 @@
         },
         {
           "factor": "heat_index",
-          "points": 2.0,
+          "points": 5.0,
           "state": "observed",
           "evidence_id": "synthetic:weather:Heat index"
         },
@@ -1087,7 +1087,7 @@
         },
         {
           "factor": "earthquake",
-          "points": 1.5,
+          "points": 4.0,
           "state": "observed",
           "evidence_id": "synthetic:earthquake:Synthetic USGS earthquake"
         }
@@ -1114,8 +1114,8 @@
   ],
   "existing_demo_fixture": {
     "path": "frontend/src/fixtures/site-detail.json",
-    "archived_illustrative_score": 6.1,
-    "recomputed_index": 6.1,
+    "archived_illustrative_score": 9.1,
+    "recomputed_index": 9.1,
     "note": "Simulated rules-0.2 fixture recomputed with the same algorithm; not a live score or operational validation."
   },
   "canonical_examples": {
@@ -1286,7 +1286,7 @@
         {
           "factor": "heat_index",
           "label": "Heat index 125 °F (observed), above prototype threshold 103 °F",
-          "contribution": 2.0,
+          "contribution": 5.0,
           "value": 125.0,
           "unit": "°F",
           "source": "NWS",
@@ -1334,7 +1334,7 @@
         {
           "factor": "earthquake",
           "label": "M4.5 earthquake 0 mi from site (prototype M4+ within 25 mi rule)",
-          "contribution": 1.5,
+          "contribution": 4.0,
           "value": 4.5,
           "unit": "mw",
           "source": "USGS",
@@ -1353,8 +1353,8 @@
     },
     "existing_demo_detail_recomputed": {
       "site_id": "site-demo-everglades",
-      "risk_score": 6.1,
-      "risk_level": "high",
+      "risk_score": 9.1,
+      "risk_level": "critical",
       "factor_contributions": [
         {
           "factor": "lightning",
@@ -1371,7 +1371,7 @@
         {
           "factor": "heat_index",
           "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
-          "contribution": 1.11,
+          "contribution": 4.11,
           "value": 112.0,
           "unit": "°F",
           "source": "NWS",

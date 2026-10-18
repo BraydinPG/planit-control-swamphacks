@@ -16,10 +16,14 @@ class RuleSettings(BaseSettings):
 
     # Heat (T049): points scale from heat_min_points at the threshold to heat_max_points
     # at the extreme value. Below the threshold, heat adds nothing.
+    # Independent vs. co-occurring hazards (2026-10-18, user decision): flooding, lightning
+    # and hurricanes usually arrive together, so their points already add up. Extreme
+    # heat and earthquakes usually happen alone, so each alone outweighs any single
+    # co-occurring factor (largest: lightning, 3.0). No co-occurring weight was lowered.
     heat_index_threshold_f: float = 103.0
     heat_index_extreme_f: float = 125.0
-    heat_min_points: float = Field(default=0.5, ge=0, le=10, allow_inf_nan=False)
-    heat_max_points: float = Field(default=2.0, ge=0, le=10, allow_inf_nan=False)
+    heat_min_points: float = Field(default=3.5, ge=0, le=10, allow_inf_nan=False)
+    heat_max_points: float = Field(default=5.0, ge=0, le=10, allow_inf_nan=False)
     heat_window_hours: int = 12
 
     # Flood (T049): points from the strongest active NWS flood alert.
@@ -35,7 +39,7 @@ class RuleSettings(BaseSettings):
     # the site. Prototype values, not official policy.
     earthquake_min_magnitude: float = 4.0
     earthquake_distance_miles: float = 25.0
-    earthquake_points: float = Field(default=1.5, ge=0, le=10, allow_inf_nan=False)
+    earthquake_points: float = Field(default=4.0, ge=0, le=10, allow_inf_nan=False)
 
     # Score weights (T051).
     lightning_stop_work_points: float = Field(default=3.0, ge=0, le=10, allow_inf_nan=False)

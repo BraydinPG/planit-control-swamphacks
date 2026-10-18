@@ -152,7 +152,7 @@ def test_regional_factor_reaches_the_stored_score(session) -> None:
     refresh_all(session, NOW, [quake_feed(5.0)])
     score = session.scalars(select(db.HazardScore).where(db.HazardScore.site_id == "site-a")).one()
     factors = {f["factor"]: f["contribution"] for f in score.factor_contributions}
-    assert factors["earthquake"] == 1.5
+    assert factors["earthquake"] == 4.0
 
 
 def test_raising_feed_is_unavailable_and_others_still_run(session) -> None:

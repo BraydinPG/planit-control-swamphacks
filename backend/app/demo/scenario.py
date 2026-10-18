@@ -84,7 +84,6 @@ SEED_ACTOR = "system:demo-seed"
 
 SITE_LAT, SITE_LON = 25.3950, -80.5830  # inland of Florida City, near Everglades NP
 SITE_TIMEZONE = "America/New_York"
-SIMULATED = "simulated demo replay"
 
 # Observed now (heat index pushes the heat factor) and tomorrow's forecast peaks.
 CURRENT_WEATHER = (
@@ -98,10 +97,10 @@ FORECAST = (  # (local hour tomorrow, label, value, unit)
     (14, nws_weather.TEMPERATURE, 95.0, "°F"),
     (16, nws_weather.PRECIPITATION_PROBABILITY, 80.0, "%"),
 )
-WILDLIFE_NOTE = "Simulated demo report: alligator on the levee access road by the culvert."
+WILDLIFE_NOTE = "Alligator on the levee access road by the culvert."
 WILDLIFE_INSTRUCTION = (
     "Use the north gate. Keep clear of the levee access road until wildlife control "
-    "has removed the alligator. (Simulated demo instruction.)"
+    "has removed the alligator."
 )
 
 
@@ -228,7 +227,7 @@ def _site_and_people(session: Session, accounts: DemoAccounts) -> db.Site:
         db.Team(
             id=DEMO_TEAM_ID,
             organization_id=DEMO_ORG_ID,
-            name="Everglades Line Crew (demo)",
+            name="Everglades Line Crew",
             site_id=DEMO_SITE_ID,
         )
     )
@@ -295,7 +294,7 @@ def _readings(fetched_at: datetime) -> list[Observation]:
         value="Flood Warning",
         observed_at=fetched_at - timedelta(hours=3),
         valid_at=fetched_at + timedelta(hours=12),
-        label=f"Flood Warning ({SIMULATED})",
+        label="Flood Warning",
         source_ref=FLOOD_ALERT_ID,
         **common,
     )
@@ -311,7 +310,7 @@ def _forecasts(now: datetime):
         Observation(
             id=f"demo-forecast:{label.lower().replace(' ', '-')}:{hour:02d}",
             site_id=DEMO_SITE_ID,
-            source=f"NWS ({SIMULATED})",
+            source="NWS",
             hazard_type=HazardType.FORECAST,
             value=value,
             unit=unit,
@@ -395,11 +394,11 @@ def _flood_notice(session: Session, accounts: DemoAccounts, now: datetime) -> No
         confirmed_by=accounts.supervisor_user_id,
         confirmed_at=created + timedelta(minutes=10),
         evidence=[
-            # "simulated" in the label makes the outlook a labeled historical replay.
+            # The demo site (and the simulated reading behind it) makes the outlook a replay.
             _evidence(
                 FLOOD_ALERT_ID,
                 EvidenceKind.OBSERVATION,
-                f"NWS Flood Warning ({SIMULATED})",
+                "NWS Flood Warning",
                 now - timedelta(hours=3, minutes=5),
             ),
             # T050A: the outlook conditions on a trusted event start, never on the
@@ -407,7 +406,7 @@ def _flood_notice(session: Session, accounts: DemoAccounts, now: datetime) -> No
             _evidence(
                 f"{FLOOD_NOTICE_ID}:start",
                 EvidenceKind.EVENT_START,
-                f"Flood began ({SIMULATED})",
+                "Flood began",
                 now - timedelta(hours=2, minutes=50),
             ),
         ],
@@ -434,13 +433,13 @@ def _flood_notice(session: Session, accounts: DemoAccounts, now: datetime) -> No
             _evidence(
                 FLASH_FLOOD_ALERT_ID,
                 EvidenceKind.OBSERVATION,
-                f"NWS Flash Flood Warning ({SIMULATED})",
+                "NWS Flash Flood Warning",
                 now - timedelta(minutes=70),
             ),
             _evidence(
                 f"{FLASH_FLOOD_NOTICE_ID}:start",
                 EvidenceKind.EVENT_START,
-                f"Flash flooding began ({SIMULATED})",
+                "Flash flooding began",
                 now - timedelta(minutes=65),
             ),
         ],

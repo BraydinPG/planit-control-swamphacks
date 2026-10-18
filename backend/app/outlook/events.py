@@ -46,6 +46,7 @@ from app.schemas import (
 
 logger = logging.getLogger(__name__)
 
+
 FLOOD_DEFINITION = "noaa_recorded_flood_interval"
 # Server-owned evidence sources admitted by the adapter's TrustPolicy. They name backend
 # pathways, never values taken from a request.
@@ -85,8 +86,10 @@ def event_inputs(
     for notice in notices:
         if not is_confirmed(notice, now):
             continue
-        replay = is_simulated(notice)
         source = readings.get(notice.source_ref) if notice.source == NoticeSource.FEED else None
+        # A replay: the notice says so, it was raised from a simulated reading, or it sits
+        # at a demo site (`location_type="demo_site"`), whose data is all simulated.
+        replay = is_simulated(notice, site) or bool(source is not None and source.simulated)
         report = next((r for r in reports if r.id == notice.source_ref), None)
         event_type, official_id = _classify(notice, source, observations)
         event_id = _identifier(official_id or notice.id)
