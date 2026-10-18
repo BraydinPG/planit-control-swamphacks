@@ -8,7 +8,9 @@ navigation now includes Home and Data with an active-page indicator.
 
 The latest advanced-dashboard addendum explicitly says **do not merge automatically**;
 it supersedes the earlier merge follow-up. One review PR covers the move and expansion.
-Commit/PR attribution is available in Git history and the PR description.
+Main `b16bef4` was reconciled in `8bcb6d0` without conflicts, preserving PR90.
+Final checks pass on the combined tree. Commit/PR attribution is in Git history and
+the PR description.
 
 ## What runs
 

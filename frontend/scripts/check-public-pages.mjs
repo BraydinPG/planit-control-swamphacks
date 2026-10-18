@@ -108,6 +108,7 @@ try {
     await send('Page.navigate', { url: new URL('/landing.html', base).href }); await loaded('/landing.html')
     const home = await evaluate(layout)
     assert(!home.overflow && !home.clipped.length && home.headerFits && !home.headerOverlaps, JSON.stringify({ width, home }))
+    assert(await evaluate("document.querySelector('header a[aria-current=page]').getAttribute('href')==='/landing.html'"))
     assert(await evaluate("!document.querySelector('.lab')&&!document.querySelector('link[href=\"/data.css\"]')&&!document.querySelector('img[src*=\"/research/\"]')&&document.querySelectorAll('.feature').length===3&&document.querySelector('h1').textContent==='SEE THE RISK.PLAN BEYOND THE ALERT.'"))
     assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.stats b')).map(e=>e.textContent)"), ['526K+', '6', '5,000', '50+'])
     assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.signin,.cta-btn')).map(e=>e.getAttribute('href'))"), ['/?signin', '/?demo#/crew/overview', '/?signin'])
@@ -167,6 +168,7 @@ try {
   assert(await evaluate("document.querySelectorAll('.lab picture').length===12&&document.querySelectorAll('.lab-values table').length===12"))
   await send('Emulation.setScriptExecutionDisabled', { value: false })
   if (fixtures) {
+    await send('Page.navigate', { url: base.href }); await loaded('/landing.html')
     await send('Page.navigate', { url: new URL('/landing.html', base).href }); await loaded('/landing.html')
     await evaluate("document.querySelector('.cta-btn').click()")
     await until(() => evaluate("location.search==='?demo'&&location.hash==='#/crew/overview'&&document.body.innerText.includes('Simulated demo')"), 'existing demo CTA')
@@ -175,7 +177,7 @@ try {
   assert.deepEqual(unexpected, [])
   assert(!requests.some(p => p.startsWith('/api/')), 'No actual backend calls')
   await writeFile(join(output, 'public-pages-acceptance.json'), JSON.stringify({ results, errors, apiRequests: 0, fixtures }, null, 2))
-  console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), chartsPreserved: 6, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))
+  console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), figures: 12, originalChartAssetsPreserved: 6, savedSelectors: true, missingJsonFallback: true, scriptDisabledFallback: true, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))
 } finally {
   if (ws?.readyState === WebSocket.OPEN) { await send('Browser.close').catch(() => {}); ws.close() }
   browser.kill()
