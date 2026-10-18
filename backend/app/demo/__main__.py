@@ -52,6 +52,9 @@ def main(argv: list[str] | None = None) -> None:
         "anomalies",
         help="add one demo site per anomaly; restore the Everglades wildlife demo",
     )
+    commands.add_parser(
+        "freshen", help="slide the demo sites' times to now (the server does this every round)"
+    )
     strike = commands.add_parser("strike", help="replay one lightning step at the demo site")
     strike.add_argument("step", type=int, help="replay step, 1 to 3 (2 resets the countdown)")
     args = parser.parse_args(argv)
@@ -118,6 +121,14 @@ def _run(args: argparse.Namespace) -> None:
                 "Demo accounts are NOT linked: set DEMO_CREW_USER_ID and "
                 "DEMO_SUPERVISOR_USER_ID (Auth0 user IDs) in backend/.env and run again."
             )
+    elif args.command == "freshen":
+        from app.demo.freshen import keep_demo_fresh
+
+        with get_session() as session:
+            moved = keep_demo_fresh(session, now)
+        print(f"Moved {len(moved)} demo sites to {now:%Y-%m-%d %H:%M} UTC.")
+        for site_id, delta in moved.items():
+            print(f"  {site_id:24} +{delta}")
     else:
         with get_session() as session:
             transition = replay_lightning(session, args.step, now)

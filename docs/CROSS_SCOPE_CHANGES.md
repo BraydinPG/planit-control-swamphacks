@@ -3,6 +3,7 @@
 Explicit user authorization: expand crew for PC while retaining the approved mobile
 design. `feature/cache-crew-desktop-layout`, base main `8744aa8`; logo PR71 merged
 separately under the same instruction after integrating PR72 and rechecking acceptance.
+Reconciled main `a59e5d3` documentation entries, preserving its demo-freshness implementation.
 
 `AppShell.tsx` adds desktop crew navigation from 1024px and content up to 1440px;
 `ConnectedPages.tsx` pairs alerts/instructions and score/conditions from 1280px, with
@@ -21,6 +22,26 @@ warning remains. Backend and real-service acceptance were not rerun or claimed.
 [Review guide](CREW_RESPONSIVE_LAYOUT.md). Rudra reviews/maintains these frontend files.
 No other worktree/server, backend, auth, schema, scoring/ML, environment or task-state
 changes. T063-T068 real-service acceptance remains pending its own checks.
+
+## Demo sites slide forward in time (Braydin, touching Rudra's refresh loop) - 2026-10-18
+
+Explicit user request: keep the demo sites looking freshly seeded on the server, with no
+laptop. Live feeds still skip them; nothing about real sites changes.
+
+- New `backend/app/demo/freshen.py` (`keep_demo_fresh`, `python -m app.demo freshen`): per
+  demo site, moves readings and alerts (delete and reinsert on the hypertables, ids kept),
+  acknowledgements, crew reports, the site's notices and their evidence, and every
+  organization's assessments by `now` minus the newest reading's `fetched_at`; past events
+  never move past `now`. Then rescores the site (same score). Briefings and audit events are
+  left alone. One site's failure rolls back only that site.
+- `backend/app/services/refresh.py` (Rudra): `run_forever` starts the slide as its own task
+  every `FEED_REFRESH_SECONDS`, so a long live round can't let the demo's lightning timers
+  run out, and a slide failure never reaches the live round. The live loop body is unchanged
+  (moved into `_live_rounds`).
+- `backend/app/demo/__main__.py`: new `freshen` command.
+- Tests: `backend/tests/test_demo_freshen.py` (pages unchanged after 2 h, 30 h, 7 days; real
+  sites untouched; idempotent with constant row counts; testers' rows survive; failure
+  isolation). 963 backend tests pass. Checked on Tiger Data in a rolled-back transaction.
 
 ## Landing + hosted-login logo handoff (Cache for Rudra and Braydin) - 2026-10-18
 
