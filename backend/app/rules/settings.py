@@ -18,12 +18,13 @@ class RuleSettings(BaseSettings):
     # at the extreme value. Below the threshold, heat adds nothing.
     # Independent vs. co-occurring hazards (2026-10-18, user decision): flooding, lightning
     # and hurricanes usually arrive together, so their points already add up. Extreme
-    # heat and earthquakes usually happen alone, so each alone outweighs any single
-    # co-occurring factor (largest: lightning, 3.0). No co-occurring weight was lowered.
+    # heat and earthquakes usually happen alone, so each alone outweighs a single
+    # co-occurring factor. Heat stays well below a flood plus lightning together (5.0):
+    # 2.5 at the threshold, 3.0 at 114 °F, at most 3.5 (user decision, 2026-10-18).
     heat_index_threshold_f: float = 103.0
     heat_index_extreme_f: float = 125.0
-    heat_min_points: float = Field(default=3.5, ge=0, le=10, allow_inf_nan=False)
-    heat_max_points: float = Field(default=5.0, ge=0, le=10, allow_inf_nan=False)
+    heat_min_points: float = Field(default=2.5, ge=0, le=10, allow_inf_nan=False)
+    heat_max_points: float = Field(default=3.5, ge=0, le=10, allow_inf_nan=False)
     heat_window_hours: int = 12
 
     # Flood (T049): points from the strongest active NWS flood alert.

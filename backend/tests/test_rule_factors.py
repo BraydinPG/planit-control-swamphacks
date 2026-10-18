@@ -61,7 +61,7 @@ def test_below_threshold_adds_nothing_but_is_shown() -> None:
     assert factor.is_prototype
 
 
-@pytest.mark.parametrize(("hi", "points"), [(103.0, 3.5), (114.0, 4.25), (125.0, 5.0), (140, 5.0)])
+@pytest.mark.parametrize(("hi", "points"), [(103.0, 2.5), (114.0, 3.0), (125.0, 3.5), (140, 3.5)])
 def test_points_scale_from_threshold_to_extreme(hi, points) -> None:
     factor = heat_factor([obs(HazardType.WEATHER, HEAT_INDEX, hi)], NOW, SETTINGS)
     assert factor.contribution == points

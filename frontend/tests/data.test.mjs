@@ -94,7 +94,7 @@ test('reset replaces a saved legacy score with approved fixtures and preserves A
   restored.reset()
   const detail = await new DemoClient(() => 'supervisor', saved).site(assigned)
   const row = (await restored.sites()).find((s) => s.id === assigned)
-  assert.equal(detail.risk_score, 9.1)
+  assert.equal(detail.risk_score, 7.9)
   assert.equal(row.risk_score, detail.risk_score)
   assert.equal(detail.score.risk_score, detail.risk_score)
   assert.equal(detail.model_version, 'rules-0.2')

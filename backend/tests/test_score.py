@@ -119,9 +119,9 @@ def test_risk_level_bands(value, level) -> None:
 
 def test_score_sums_factors_with_contributions() -> None:
     result = score([heat(110.0), flood("Flood Watch"), no_lightning()], [lightning_alert()])
-    # lightning 3.0 + heat 110 °F (3.5 + 1.5 * 7/22 ≈ 3.98) + flood watch 1.0
-    assert result.risk_score == 8.0
-    assert result.risk_level is RiskLevel.CRITICAL
+    # lightning 3.0 + heat 110 °F (2.5 + 1.0 * 7/22 ≈ 2.82) + flood watch 1.0
+    assert result.risk_score == 6.8
+    assert result.risk_level is RiskLevel.HIGH
     assert {f.factor for f in result.factor_contributions} == {"lightning", "heat_index", "flood"}
     assert all(f.is_prototype for f in result.factor_contributions)
     assert result.model_version == MODEL_VERSION
@@ -288,11 +288,11 @@ def test_stored_score_is_returned_by_sites_api(session_factory) -> None:
     finally:
         app.dependency_overrides.clear()
 
-    assert summary["risk_score"] == second.risk_score == 8.0
-    assert summary["risk_level"] == "critical"
+    assert summary["risk_score"] == second.risk_score == 6.8
+    assert summary["risk_level"] == "high"
     assert summary["model_version"] == MODEL_VERSION
     assert summary["data_completeness"] == 0.67  # replay is not live coverage
-    assert [f["factor"] for f in summary["top_factors"]] == ["heat_index", "lightning", "flood"]
+    assert [f["factor"] for f in summary["top_factors"]] == ["lightning", "heat_index", "flood"]
     contributions = detail["score"]["factor_contributions"]
     assert {f["factor"] for f in contributions} == {"lightning", "heat_index", "flood"}
     assert all(f["source"] and f["is_prototype"] for f in contributions)

@@ -85,11 +85,11 @@ def test_every_anomaly_scores_like_the_live_rules(anomalies) -> None:
         "demo-flash-flood": 5.0,  # Flash Flood Warning + its thunderstorm (lightning 3 mi)
         "demo-heavy-rain": 4.0,  # Flood Watch + lightning 9 mi
         "demo-hurricane": 7.0,  # hurricane + Flash Flood Warning + outer-band lightning
-        "demo-heat": 4.2,  # heat index 114 °F alone
+        "demo-heat": 3.0,  # heat index 114 °F alone, well below a flood + lightning (5.0)
         "demo-earthquake": 4.0,  # M5.4 at 6 mi alone
         "demo-high-wind": 0.0,  # no rule scores wind
         "demo-winter-storm": 0.0,  # no rule scores snow
-        DEMO_SITE_ID: 10.0,  # Rudra's scenario: lightning, heat, flood and a report (capped)
+        DEMO_SITE_ID: 8.9,  # Rudra's scenario: lightning 3 + heat 2.9 + flood 2 + report 1
     }
     with factory() as session:
         stop_work = set(

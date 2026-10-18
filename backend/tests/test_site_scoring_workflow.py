@@ -85,7 +85,7 @@ def test_environment_to_api_report_confirmation_and_failed_feed(h, client, tmp_p
     with h.factory() as session:
         assert not refresh_all(session, clock[0], feeds).failed_sites
     initial = capture("canned_nws_ingested")
-    assert initial.score.risk_score == 5.1  # eligible forecast HI + one Flood Watch
+    assert initial.score.risk_score == 3.9  # eligible forecast HI + one Flood Watch
 
     # Change agency-shaped source JSON, not the stored score or frontend response.
     raw.routes["/stations/KTMB/observations/latest"] = latest(heat_index=51.7)
@@ -93,17 +93,17 @@ def test_environment_to_api_report_confirmation_and_failed_feed(h, client, tmp_p
     with h.factory() as session:
         assert not refresh_all(session, clock[0], feeds).failed_sites
     changed = capture("changed_source_observation")
-    assert changed.risk_score == 6 and changed.score.previous_score == initial.risk_score
+    assert changed.risk_score == 4.5 and changed.score.previous_score == initial.risk_score
 
     pending = submit(client, category="wildlife").json()
-    assert capture("pending_report").risk_score == 6
+    assert capture("pending_report").risk_score == 4.5
     assert (
         client.post(f"/api/hazards/{pending['notice_id']}/confirm", headers=crew()).status_code
         == 403
     )
     assert confirm(client, pending["notice_id"]).status_code == 200
     confirmed = capture("confirmed_present_report")
-    assert confirmed.risk_score == 7 and confirmed.score.previous_score == 6
+    assert confirmed.risk_score == 5.5 and confirmed.score.previous_score == 4.5
     assert any(
         f.factor == "crew_report" and f.evidence_id == pending["id"]
         for f in confirmed.score.factor_contributions
@@ -114,13 +114,13 @@ def test_environment_to_api_report_confirmation_and_failed_feed(h, client, tmp_p
     assert review(client, absent_id).status_code == 200
     rejected_id = absent(client)["id"]
     assert review(client, rejected_id, decision="rejected").status_code == 200
-    assert capture("absent_and_rejected_excluded").risk_score == 7
+    assert capture("absent_and_rejected_excluded").risk_score == 5.5
 
     clock[0] += timedelta(minutes=1)
     with h.factory() as session:
         refresh_all(session, clock[0], feeds + [strike_feed(4.2, clock[0])])
     triggered = capture("replayed_lightning_trigger")
-    assert triggered.risk_score == 10 and triggered.alerts[0].state.value == "active"
+    assert triggered.risk_score == 8.5 and triggered.alerts[0].state.value == "active"
     clear_after = triggered.alerts[0].clear_after
 
     def unavailable(*_args):
@@ -134,7 +134,7 @@ def test_environment_to_api_report_confirmation_and_failed_feed(h, client, tmp_p
         )
         assert not result.failed_sites and result.failed_feeds
     held = capture("failed_feed_held_alert")
-    assert held.risk_score == 10 and held.data_completeness == 0
+    assert held.risk_score == 8.5 and held.data_completeness == 0
     assert held.alerts[0].state.value == "active" and held.alerts[0].clear_after == clear_after
     assert any(f.data_state.value == "stale" for f in held.score.factor_contributions)
 

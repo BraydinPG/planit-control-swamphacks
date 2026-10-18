@@ -117,9 +117,9 @@ def test_unqualified_heat_never_becomes_a_current_zero(changes):
 @pytest.mark.parametrize(
     ("age", "state", "points"),
     [
-        (60, DataState.OBSERVED, 5),
-        (61, DataState.STALE, 5),
-        (360, DataState.STALE, 5),
+        (60, DataState.OBSERVED, 3.5),
+        (61, DataState.STALE, 3.5),
+        (360, DataState.STALE, 3.5),
         (361, DataState.UNAVAILABLE, 0),
     ],
 )
@@ -194,7 +194,7 @@ def test_observed_heat_pair_and_stale_humidity_provenance():
     temp = reading(value=100, label=TEMPERATURE)
     humidity = reading(value=60, label=RELATIVE_HUMIDITY, unit="%", data_state=DataState.STALE)
     heat = factor(run([temp, humidity]), "heat_index")
-    assert heat.contribution == 5 and heat.data_state == DataState.STALE
+    assert heat.contribution == 3.5 and heat.data_state == DataState.STALE
     assert humidity.id in heat.label and temp.id == heat.evidence_id
 
 
@@ -205,7 +205,7 @@ def test_raw_weather_does_not_add_another_heat_factor():
         reading(value=60, label=RELATIVE_HUMIDITY, unit="%"),
     ]
     result = run(extras * 3)
-    assert result.risk_score == 5
+    assert result.risk_score == 3.5
     assert len([f for f in result.factor_contributions if f.factor == "heat_index"]) == 1
 
 
@@ -369,7 +369,7 @@ def test_previous_score_and_inputs_remain_unchanged():
     previous = run([reading(value=125)])
     before = [o.model_dump_json() for o in observations]
     result = run(observations, previous=previous)
-    assert result.previous_score == 5 and result.created_at == NOW
+    assert result.previous_score == 3.5 and result.created_at == NOW
     assert [o.model_dump_json() for o in observations] == before
     assert run(previous=previous.model_copy(update={"site_id": "other"})).previous_score is None
 
@@ -430,7 +430,7 @@ print(result.model_version)
         {"report_high_points": float("nan")},
         {"flood_watch_points": float("inf")},
         {"report_category_max_points": 11},
-        {"heat_min_points": 6},  # above heat_max_points (5.0)
+        {"heat_min_points": 6},  # above heat_max_points (3.5)
         {"flood_watch_points": 3},
         {"report_low_points": 2},
     ],

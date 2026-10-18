@@ -226,10 +226,10 @@ def scenarios():
             0,
             1,
         ),
-        Scenario("heat_threshold", [reading(value=103), flood(), lightning()], 3.5, 1),
-        Scenario("heat_elevated", [reading(value=110), flood(), lightning()], 4, 1),
-        Scenario("heat_extreme", [reading(value=125), flood(), lightning()], 5, 1),
-        Scenario("eligible_forecast_not_double_counted", healthy() + forecast_pair(), 5, 1),
+        Scenario("heat_threshold", [reading(value=103), flood(), lightning()], 2.5, 1),
+        Scenario("heat_elevated", [reading(value=110), flood(), lightning()], 2.8, 1),
+        Scenario("heat_extreme", [reading(value=125), flood(), lightning()], 3.5, 1),
+        Scenario("eligible_forecast_not_double_counted", healthy() + forecast_pair(), 3.5, 1),
         Scenario("flood_watch", [reading(), flood("Flood Watch"), lightning()], 1, 1),
         Scenario("flood_warning", [reading(), flood("Flood Warning"), lightning()], 2, 1),
         Scenario(
@@ -315,7 +315,7 @@ def scenarios():
         Scenario(
             "stale_heat_retained",
             [reading(value=110, data_state=DataState.STALE), flood(), lightning()],
-            4,
+            2.8,
             0.67,
         ),
         Scenario(

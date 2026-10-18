@@ -9,23 +9,11 @@
       "name": "Line Crew A",
       "organization_id": "org-sunbelt"
     },
-    "risk_score": 9.1,
-    "risk_level": "critical",
+    "risk_score": 7.9,
+    "risk_level": "high",
     "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 2,
     "top_factors": [
-      {
-        "factor": "heat_index",
-        "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
-        "contribution": 4.11,
-        "value": 112.0,
-        "unit": "°F",
-        "source": "NWS",
-        "observed_at": "2026-10-17T17:40:00Z",
-        "data_state": "simulated",
-        "is_prototype": true,
-        "evidence_id": "obs-wx-3"
-      },
       {
         "factor": "lightning",
         "label": "Lightning stop-work active, latest qualifying strike 4.2 mi; feed coverage unknown [simulated; not live coverage]",
@@ -37,6 +25,18 @@
         "data_state": "simulated",
         "is_prototype": true,
         "evidence_id": "alert-ltg-demo"
+      },
+      {
+        "factor": "heat_index",
+        "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
+        "contribution": 2.91,
+        "value": 112.0,
+        "unit": "°F",
+        "source": "NWS",
+        "observed_at": "2026-10-17T17:40:00Z",
+        "data_state": "simulated",
+        "is_prototype": true,
+        "evidence_id": "obs-wx-3"
       },
       {
         "factor": "flood",
@@ -170,15 +170,15 @@
     "lat": 28.54,
     "lon": -81.38,
     "assigned_team": null,
-    "risk_score": 4.1,
-    "risk_level": "moderate",
+    "risk_score": 2.9,
+    "risk_level": "low",
     "updated_at": "2026-10-17T18:00:00Z",
     "active_alerts": 0,
     "top_factors": [
       {
         "factor": "heat_index",
         "label": "Heat index 112 °F (observed), above prototype threshold 103 °F [simulated; not live coverage]",
-        "contribution": 4.11,
+        "contribution": 2.91,
         "value": 112.0,
         "unit": "°F",
         "source": "NWS",

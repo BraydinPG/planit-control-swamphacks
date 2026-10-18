@@ -153,7 +153,7 @@ test('briefings show the 0–10 index and each hazard’s points, never a level 
   const text = renderToStaticMarkup(
     React.createElement(BriefingCard, { value: gemini }),
   ).replace(/<[^>]+>/g, '')
-  assert(text.includes('Score when written: 9.1 / 10 · Critical'))
+  assert(text.includes('Score when written: 7.9 / 10 · High'))
   assert(text.includes('Evidence incomplete; current conditions unknown'))
   assert(text.includes('Lightning stop-work (simulated) · +3.0 pts'))
   assert(text.includes('Afternoon thunderstorms · not in score'))
@@ -168,11 +168,11 @@ test('briefings show the 0–10 index and each hazard’s points, never a level 
       value: { ...gemini, risk_score: null, data_completeness: null },
     }),
   ).replace(/<[^>]+>/g, '')
-  assert(legacy.includes('Risk level when written: Critical'))
+  assert(legacy.includes('Risk level when written: High'))
 })
 test('briefing index and points are validated', () => {
   const gemini = fixtures.find((f) => f.generated_by === 'gemini')
-  assert.equal(validateBriefing(gemini).risk_score, 9.1)
+  assert.equal(validateBriefing(gemini).risk_score, 7.9)
   for (const bad of [
     { risk_score: 11 },
     { data_completeness: 1.5 },

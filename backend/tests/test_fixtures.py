@@ -109,7 +109,7 @@ def test_fixture_scores_come_from_rules_without_model_terms() -> None:
             assert detail.score == computed
             assert detail.top_factors == site.top_factors
     assert all(o.simulated for o in detail.observations)
-    assert detail.risk_score == 9.1  # 3 lightning + 4.11 heat + 1 watch + 1 confirmed wildlife
+    assert detail.risk_score == 7.9  # 3 lightning + 2.91 heat + 1 watch + 1 confirmed wildlife
 
 
 def test_both_briefings_cite_the_same_computed_score() -> None:
