@@ -39,6 +39,7 @@ import {
   LoadState,
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
+import { topTier, visibleAlertGroups } from '../presentation/alerts'
 import { EventOutlooks } from '../components/data/EventOutlooks'
 import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
@@ -170,7 +171,9 @@ function SitePage({
   if (dashboard) return <SupervisorOverview sites={sites} />
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
-    active = site.alerts.filter((a) => a.state === 'active')
+    active = site.alerts.filter((a) => a.state === 'active'),
+    // Only the most dangerous active tier is shown; lower tiers stay hidden until it clears.
+    top = topTier(site.alerts)
   // A demo site says so only in its name ("... (demo)"), never in a type label.
   const demoSite = isDemoSite(site)
   const siteKind = demoSite
@@ -302,12 +305,7 @@ function SitePage({
     return (
       <div className="pc-enter space-y-5">
         {header}
-        {active[0] && <AlertCard alert={active[0]} />}
-        {active.length > 1 && (
-          <a href={`#/${persona}/alerts`} className={control}>
-            View all {active.length} active alerts
-          </a>
-        )}
+        {top.length > 0 && <AlertCard alerts={top} />}
         {!active.length && (
           <Empty>
             No active alerts reported. Worksite conditions still require
@@ -385,8 +383,8 @@ function SitePage({
             <section className="space-y-3">
               <SectionHead title="Alerts" />
               {site.alerts.length ? (
-                site.alerts.map((a) => (
-                  <AlertCard key={a.id} alert={a} detail />
+                visibleAlertGroups(site.alerts).map((g) => (
+                  <AlertCard key={g[0].id} alerts={g} detail />
                 ))
               ) : (
                 <Empty>No alert record supplied for this site.</Empty>
@@ -757,7 +755,18 @@ function AlertsPage({ id }: { id: string | null }) {
   )
   const demo = demoClient(client)
   if (!alerts.data) return <LoadState error={alerts.error} />
-  const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
+  const groups = visibleAlertGroups(alerts.data)
+  // A link to an alert hidden under a more dangerous tier opens that site's top group.
+  const linked = id ? alerts.data.find((a) => a.id === id) : undefined
+  const rows = !id
+    ? groups
+    : groups
+        .filter((g) => g.some((a) => a.id === id))
+        .concat(
+          linked && !groups.some((g) => g.some((a) => a.id === id))
+            ? groups.filter((g) => g[0].site_id === linked.site_id).slice(0, 1)
+            : [],
+        )
   return (
     <div className="pc-enter space-y-5">
       <div className="flex flex-wrap items-center gap-3">
@@ -772,7 +781,7 @@ function AlertsPage({ id }: { id: string | null }) {
       </div>
       <div className="grid gap-5 @3xl:grid-cols-2 @3xl:items-start">
         {rows.length ? (
-          rows.map((a) => <AlertCard key={a.id} alert={a} detail />)
+          rows.map((g) => <AlertCard key={g[0].id} alerts={g} detail />)
         ) : (
           <Empty>No alert record supplied for this selection.</Empty>
         )}

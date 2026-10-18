@@ -12,7 +12,7 @@
     "risk_score": 7.9,
     "risk_level": "high",
     "updated_at": "2026-10-17T18:00:00Z",
-    "active_alerts": 2,
+    "active_alerts": 3,
     "top_factors": [
       {
         "factor": "lightning",
@@ -67,7 +67,7 @@
     "risk_score": 0.0,
     "risk_level": "low",
     "updated_at": "2026-10-17T18:00:00Z",
-    "active_alerts": 0,
+    "active_alerts": 2,
     "top_factors": [
       {
         "factor": "lightning",
