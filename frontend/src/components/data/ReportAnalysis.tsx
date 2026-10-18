@@ -5,7 +5,7 @@ import type {
   CrewReport,
 } from '../../types/api'
 import { useApplication, useClock } from '../../application/context'
-import { Icon } from '../shell/Icon'
+import { GeminiMark, Icon } from '../shell/Icon'
 import { RiskShape } from './Risk'
 import { displayLabel, reportCategories } from '../../presentation/display'
 import { Details } from './Details'
@@ -56,7 +56,7 @@ export function ReportAnalysis({ report }: { report: CrewReport }) {
       className="space-y-3 rounded-xl border border-dashed border-sim p-3 text-sm"
     >
       <p className="kicker flex items-center gap-1.5 text-sim!">
-        <Icon name="spark" className="size-3.5" />
+        <GeminiMark className="size-3.5" />
         Gemini analysis · suggestion only
       </p>
       {!analysis ? (
