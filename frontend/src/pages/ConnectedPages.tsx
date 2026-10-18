@@ -106,7 +106,14 @@ export function ConnectedPages() {
     'sites',
     useCallback(() => client.sites(), [client]),
   )
-  if (page === 'team' && persona === 'supervisor') return <TeamPage />
+  if (page === 'team' && persona === 'supervisor')
+    return client.capabilities.team ? (
+      <TeamPage />
+    ) : (
+      <p role="status" className={`${card} p-5 text-ink-2`}>
+        Sign in as a supervisor to manage a team.
+      </p>
+    )
   if (!sites.data) return <LoadState error={sites.error} />
   if (!sites.data.length)
     // A live crew account sees no sites until it joins a team with a code.
@@ -1216,8 +1223,8 @@ export function ReportForm({ site }: { site: SiteSummary }) {
       </button>
       {!client.capabilities.reports && (
         <p className="text-sm text-muted">
-          Live report submission and photo storage are unavailable on this
-          backend.
+          {client.readOnlyMessage ??
+            'Live report submission and photo storage are unavailable on this backend.'}
         </p>
       )}
       {message && (

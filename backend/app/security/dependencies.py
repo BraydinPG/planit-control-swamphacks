@@ -19,6 +19,12 @@ but its role or permissions do not allow the action; 503 when Auth0 is not confi
 or its signing keys cannot be fetched. The backend is the authority; frontend guards
 only improve the experience.
 
+Demo guests (DEMO_GUEST_ENABLED, default false): a request with no Authorization header
+may send `X-Demo-Role: crew` or `X-Demo-Role: supervisor` to read the demo organization
+as its guest crew member or supervisor (`GUEST_USER_IDS`, linked by `app.demo.freshen`).
+Guests may only read (GET/HEAD); every write is refused with 403, as are the team roster
+and supervisor keys. Their scope comes from those memberships, like any other user.
+
 Development bypass (DEV_AUTH_BYPASS, default false): when true, a request with no
 Authorization header may send `X-Dev-Role: crew` or `X-Dev-Role: supervisor`. It is
 honored only from a loopback client with no proxy forwarding headers, so it cannot be
@@ -34,6 +40,7 @@ from typing import Annotated, Any
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from app.security import roles
 from app.security.roles import ROLE_PERMISSIONS, ROLES, Role
 from app.security.settings import AuthSettings, get_auth_settings
 from app.security.tokens import AuthUnavailable, InvalidToken, TokenValidator
@@ -44,6 +51,17 @@ LOOPBACK_HOSTS = frozenset({"127.0.0.1", "::1", "localhost"})
 FORWARDING_HEADERS = ("x-forwarded-for", "x-real-ip", "forwarded")
 DEV_ROLE_HEADER = "x-dev-role"
 DEV_USER_HEADER = "x-dev-user"
+DEMO_ROLE_HEADER = "x-demo-role"
+# The demo organization's guest accounts; never real Auth0 users.
+GUEST_USER_IDS: dict[str, str] = {"crew": "demo-guest|crew", "supervisor": "demo-guest|supervisor"}
+GUEST_PERMISSIONS: dict[str, frozenset[str]] = {
+    "crew": frozenset({roles.READ_ASSIGNED_SITES, roles.READ_ORG_BRIEFINGS}),
+    "supervisor": frozenset(
+        {roles.READ_ASSIGNED_SITES, roles.READ_ALL_SITES, roles.READ_ORG_BRIEFINGS}
+    ),
+}
+GUEST_READ_METHODS = frozenset({"GET", "HEAD"})
+GUEST_BLOCKED_PATHS = ("/api/team", "/api/supervisor-invites")
 
 _bearer = HTTPBearer(auto_error=False, description="Auth0 access token")
 
@@ -60,6 +78,7 @@ class CurrentUser:
     role: Role
     permissions: frozenset[str]
     dev_bypass: bool = False
+    guest: bool = False
     email: str | None = None
     name: str | None = None
 
@@ -92,6 +111,9 @@ def get_current_user(
 ) -> CurrentUser:
     """The authenticated caller. Raises 401, 403, or 503 as described above."""
     if credentials is None:
+        guest = _guest_user(request, settings)
+        if guest is not None:
+            return guest
         dev_user = _dev_user(request, settings)
         if dev_user is not None:
             return dev_user
@@ -174,6 +196,23 @@ def require_role(*allowed: Role) -> Callable[..., CurrentUser]:
         return user
 
     return dependency
+
+
+def _guest_user(request: Request, settings: AuthSettings) -> CurrentUser | None:
+    if not settings.demo_guest_enabled:
+        return None
+    role = request.headers.get(DEMO_ROLE_HEADER, "").strip().lower()
+    if role not in GUEST_USER_IDS:
+        return None
+    if request.method not in GUEST_READ_METHODS:
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN, "The demo is read-only. Sign in to make changes."
+        )
+    if request.url.path.startswith(GUEST_BLOCKED_PATHS):
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Sign in to manage a team.")
+    return CurrentUser(
+        sub=GUEST_USER_IDS[role], role=role, permissions=GUEST_PERMISSIONS[role], guest=True
+    )
 
 
 def _dev_user(request: Request, settings: AuthSettings) -> CurrentUser | None:

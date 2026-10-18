@@ -12,6 +12,13 @@ export function cameFromLanding(): boolean {
   return new URLSearchParams(window.location.search).has(SIGN_IN_PARAM)
 }
 
+const GUEST_DEMO_PARAM = 'demo'
+
+/** The visitor chose Try demo: the read-only demo sites, no sign-in. Route changes keep it. */
+export function isGuestDemo(): boolean {
+  return new URLSearchParams(window.location.search).has(GUEST_DEMO_PARAM)
+}
+
 /** The plain app address with no route, query or callback parameters. */
 export function isBareEntry(): boolean {
   const { pathname, search, hash } = window.location
@@ -66,5 +73,9 @@ export function resetBackToLanding() {
 
 /** Drops `?signin` from the address bar, keeping any route. */
 export function clearSignInParam(hash = window.location.hash) {
-  window.history.replaceState(null, document.title, `${window.location.pathname}${hash}`)
+  window.history.replaceState(
+    null,
+    document.title,
+    `${window.location.pathname}${hash}`,
+  )
 }

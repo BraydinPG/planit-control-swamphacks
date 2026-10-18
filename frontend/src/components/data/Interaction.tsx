@@ -113,7 +113,8 @@ export function Action({
       </button>
       {!client.capabilities[capability] && (
         <p className="mt-2 text-sm text-muted">
-          This action is not available yet. No change has been made.
+          {client.readOnlyMessage ??
+            'This action is not available yet. No change has been made.'}
         </p>
       )}
       {message && (

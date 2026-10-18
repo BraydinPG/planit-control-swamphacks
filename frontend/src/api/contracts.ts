@@ -31,6 +31,8 @@ export interface Client {
     briefings: boolean
     team: boolean
   }
+  /** Shown beside actions that are off, when the reason isn't "not built yet". */
+  readOnlyMessage?: string
   now?(): number
   sites(): Promise<SiteSummary[]>
   site(id: string): Promise<SiteRecord>

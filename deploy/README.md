@@ -21,6 +21,9 @@ Start from `backend/.env.example` and fill every value. Production differences:
 - `CORS_ALLOWED_ORIGINS=https://<site address>` (the browser calls the same origin, so CORS is
   normally unused)
 - `DEV_AUTH_BYPASS=false`
+- `DEMO_GUEST_ENABLED=true` **on this server only**: the landing page's "Try a demo" opens the
+  demo sites read-only with no sign-in (`X-Demo-Role`, see `auth/SETUP.md`). Laptops leave it
+  `false`.
 - `FEED_REFRESH_ENABLED=true` and `BRIEFING_SCHEDULE_ENABLED=true` **on this server only**.
   Every laptop sharing the Tiger database sets both to `false`.
 - `PHOTO_LOCAL_DIR=/srv/foresite/photos`
@@ -112,7 +115,8 @@ It runs with the feed loop, so only where `FEED_REFRESH_ENABLED=true`.
 - Seed or reset the demo from a laptop:
   `cd backend && PYTHONPATH=.. .venv/bin/python -m app.demo anomalies`. Reseeding clears the
   anomaly sites' briefings until the next 6 PM run.
-- Slide once by hand: `python -m app.demo freshen`.
+- Slide once by hand: `python -m app.demo freshen`. It also links the "Try a demo" guest
+  accounts, which a reseed removes; run it right after reseeding.
 - Log lines: `demo_freshened` (sites moved, minutes) and `demo_freshen_failed` (one site rolled
   back; the live feed round is unaffected).
 

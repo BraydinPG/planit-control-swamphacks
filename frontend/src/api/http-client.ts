@@ -22,7 +22,7 @@ import type {
   TeamCreate,
   TeamUpdate,
 } from '../types/api'
-import { ApiError, type Client } from './contracts'
+import { ApiError, type Client, type Persona } from './contracts'
 
 export class HttpClient implements Client {
   mode = 'live' as const
@@ -35,6 +35,9 @@ export class HttpClient implements Client {
     briefings: true,
     team: true,
   }
+  readOnlyMessage?: string
+  // A "Try demo" guest sends X-Demo-Role instead of an Auth0 token; the server allows reads only.
+  private guest = false
   private base: URL
   private headers: () => Promise<Record<string, string>>
   private fetcher: typeof fetch
@@ -63,6 +66,25 @@ export class HttpClient implements Client {
       !['localhost', '127.0.0.1', '[::1]'].includes(this.base.hostname)
     )
       throw new ApiError(0, 'HTTPS is required for non-local APIs')
+  }
+  /** The public read-only demo as `persona`, with no sign-in (DEMO_GUEST_ENABLED). */
+  static guest(base: string, persona: Persona, fetcher?: typeof fetch) {
+    const client = new HttpClient(
+      base,
+      async () => ({ 'X-Demo-Role': persona }),
+      fetcher,
+    )
+    client.guest = true
+    client.capabilities = {
+      acknowledge: false,
+      reports: false,
+      reviewReports: false,
+      hazards: false,
+      briefings: true,
+      team: false,
+    }
+    client.readOnlyMessage = 'The demo is read-only. Sign in to make changes.'
+    return client
   }
   async request<T>(
     path: string,
@@ -94,7 +116,7 @@ export class HttpClient implements Client {
             )
         },
       )
-      if (!headers.Authorization?.startsWith('Bearer '))
+      if (!this.guest && !headers.Authorization?.startsWith('Bearer '))
         throw new ApiError(
           401,
           'A valid Auth0 session is required. Sign in again.',

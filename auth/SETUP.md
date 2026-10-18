@@ -186,6 +186,14 @@ The demo needs one account per role (`spec.md` section 8). Create them in the da
 
 The backend tests (`backend/tests/test_security.py`) cover missing, invalid, expired, and valid tokens, and crew being refused supervisor actions, without a tenant.
 
+## Public "Try demo" guests
+
+`DEMO_GUEST_ENABLED=true` (the deployed server only; default `false`) lets anyone read the demo organization with no sign-in. A request **without** an `Authorization` header that sends `X-Demo-Role: crew` or `X-Demo-Role: supervisor` acts as `demo-guest|crew` (a crew member on the Everglades team) or `demo-guest|supervisor` (a supervisor of the demo organization). These are not Auth0 users; their memberships are written by `python -m app.demo freshen` and the server's demo-freshen loop.
+
+- Guests may only read: sites, alerts, reports and photos within their scope, and briefings. Every other method is refused with 403, as are `/api/team` and `/api/supervisor-invites`.
+- A request that sends a token is always validated normally; a guest header never upgrades it.
+- The frontend's `/?demo` address uses this (`HttpClient.guest`), with every action shown as read-only.
+
 ## Local development without Auth0
 
 Use this only on your own machine, for building screens before the tenant exists.

@@ -27,6 +27,9 @@ at the same `now` changes nothing. A past event never moves past `now`: the seed
 confirmations and anything a tester did since the last slide are newer than the readings,
 so they stop at "just now". Timers and forecast times may lie ahead and move freely.
 
+Each round also links the public "Try demo" guests (`ensure_guest_memberships`): a seed
+clears the demo organization's memberships, and the guests' scope comes from theirs.
+
 `run_forever` repeats the slide every `FEED_REFRESH_SECONDS` next to the live feed loop
 (`app.services.refresh.run_forever`), so it runs only where `FEED_REFRESH_ENABLED` is on:
 the server. One-shot: `python -m app.demo freshen`.
@@ -43,7 +46,9 @@ from sqlalchemy import delete, func, insert, or_, select
 from sqlalchemy.orm import Session
 
 from app.db import models as db
+from app.demo.scenario import DEMO_ORG_ID, DEMO_TEAM_ID
 from app.ingestion import runtime
+from app.security.dependencies import GUEST_USER_IDS
 from app.services.refresh import DEMO_LOCATION_TYPE
 from app.services.scoring import score_site
 
@@ -59,6 +64,11 @@ def keep_demo_fresh(session: Session, now: datetime) -> dict[str, timedelta]:
     A failure at one site rolls back that site only and never raises.
     """
     now = now.astimezone(UTC)
+    try:
+        ensure_guest_memberships(session)
+    except Exception as exc:
+        session.rollback()
+        runtime.event("demo_guests_failed", failure=True, exception_type=type(exc).__name__)
     site_ids = list(
         session.scalars(
             select(db.Site.id)
@@ -89,6 +99,36 @@ def keep_demo_fresh(session: Session, now: datetime) -> dict[str, timedelta]:
             minutes=round(max(moved.values()).total_seconds() / 60, 1),
         )
     return moved
+
+
+# The guests' rows: crew on the Everglades team, and a supervisor of the demo organization.
+GUEST_MEMBERSHIPS = {
+    "crew": ("demo-membership-guest-crew", DEMO_TEAM_ID),
+    "supervisor": ("demo-membership-guest-supervisor", None),
+}
+
+
+def ensure_guest_memberships(session: Session) -> bool:
+    """Link the read-only demo guests (`X-Demo-Role`) to the demo organization. Idempotent;
+    commits. False, changing nothing, when the demo organization or team isn't seeded."""
+    if (
+        session.get(db.Organization, DEMO_ORG_ID) is None
+        or session.get(db.Team, DEMO_TEAM_ID) is None
+    ):
+        return False
+    for role, (membership_id, team_id) in GUEST_MEMBERSHIPS.items():
+        session.merge(
+            db.Membership(
+                id=membership_id,
+                user_id=GUEST_USER_IDS[role],
+                organization_id=DEMO_ORG_ID,
+                team_id=team_id,
+                role=role,
+                display_name=f"Demo guest {role} (read-only)",
+            )
+        )
+    session.commit()
+    return True
 
 
 def slide_site(session: Session, site_id: str, now: datetime) -> timedelta | None:
