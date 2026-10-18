@@ -2,6 +2,14 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Public Everglades Case Study - 2026-10-18
+
+[PR #94](https://github.com/BraydinPG/planit-control-swamphacks/pull/94): verified implementation `6e1fcbd`; user-authorized merge after checks.
+
+- Explicit user scope: `feature/cache-everglades-case-study` from main `787b1ba`; separate `/case-study.html` with seven stages, Crew/Supervisor perspectives, labeled schematic, actual fixture-app captures and read-only guest links. Accompanying message authorizes merge after verification. [Source audit, commands, screenshots and owner handoff](docs/CASE_STUDY.md).
+- Frozen bundled fixture: Oct 17 18:00 UTC, 7.9/10 `rules-0.2` (3 + 2.91 + 1 + 1, rounded), zero live completeness, west-gate wildlife instruction. Kept distinct from the rolling database seed. Existing Watch/Warning mismatch and synthetic/different-site duration examples are documented; no duration value is promoted to an Everglades forecast.
+- Verified 203 frontend tests, lint/TypeScript, development and live/fixture production public-page checks at 1440/768/390/320: seven stages × two perspectives, keyboard/mouse, no-JS, motion, deep links, 44px controls, preserved storage, no clipping/exceptions/API calls. Existing SPA chunk warning remains. Home/Platform/Data change only nav links; no app, backend/auth/DB, ML/scoring, task-state or deployment edits. Cross-scope record: 2026-10-18 09:48 UTC, Cache for Rudra.
+
 ## Interactive public Platform page - 2026-10-18
 
 [PR #93](https://github.com/BraydinPG/planit-control-swamphacks/pull/93): verified implementation `7f64b3b`; user-authorized merge.
