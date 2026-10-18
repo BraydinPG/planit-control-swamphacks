@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Dedicated public Data page: implementation checkpoint - 2026-10-18
+- `feature/cache-dedicated-data-page` from main `61ec526`: restores the concise homepage and moves research to independent `/data.html`, linked through public navigation. Shared public tokens/header CSS, Data-only styles, and a prep-script target guard prevent reinserting research on the homepage. All six original SVGs and evidence.json remain byte-identical.
+- Initial checks pass: 198 frontend tests, lint/TypeScript/build, exporter Ruff/check and development public-document browser checks at 1440/768/390/320, including keyboard navigation, direct access/reload, history and synthetic storage preservation. No actual API calls. Workspaces/auth/backend/models remain untouched; task checkboxes unchanged.
+- The latest user addendum expands this same Data page to an advanced 8–12-plot research dashboard; that work is in progress. It explicitly requests no automatic merge, superseding the preceding merge follow-up. Preserve this checkpoint while extending only supported static research exports and Data-page presentation.
+
 ## Landing research showcase - 2026-10-18
 - User-authorized `feature/cache-landing-research-evidence`, base main `a824964`: adds Built on Real Data. Tested with Real Simulations. after the homepage hero. Three saved-report charts show archived 5,000-draw Flood consistency, 2024 KM/logistic validation with bootstrap intervals, and historical source counts. Six source hashes, six responsive SVGs, accessible value tables and reproducible exporter; no new runtime JS. [Claims, sources, commands and screenshots](docs/LANDING_RESEARCH_SECTION.md).
 - Verified 198 frontend tests, lint/TypeScript, live/demo builds, exporter Ruff/byte-identical check and independent source/figure hashes. Development/built-demo Edge checks at 1440/768/390/320 pass chart variants, exact values, expanded-table layout, original hero/links and demo navigation; no clipping, exceptions or actual API calls. Desktop/mobile charts were visually inspected.

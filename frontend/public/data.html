@@ -1,0 +1,118 @@
+<!doctype html>
+<!-- Public static research document. No application router, authentication or session scripts. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data &amp; Research | FORESITE</title>
+<meta name="description" content="Explore the historical datasets, predictive models, statistical backtesting and Monte Carlo simulations behind FORESITE's research into weather-related disruption.">
+<link rel="icon" type="image/x-icon" href="/foresite-favicon.ico?v=daaf5322">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/public-site.css">
+<link rel="stylesheet" href="/data.css">
+</head>
+<body class="data-page">
+<header class="top">
+  <a class="brand" href="/landing.html" aria-label="FORESITE home">
+    <img src="/foresite-wordmark.png?v=daaf5322" width="768" height="166" alt="" decoding="async" draggable="false">
+  </a>
+  <nav class="public-nav" aria-label="Public website"><a class="public-link" href="/landing.html">Home</a><a class="public-link" href="/data.html" aria-current="page">Data</a></nav>
+  <a class="signin" href="/?signin">Sign In<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</header>
+<main>
+<!-- research-evidence:start -->
+  <section class="lab" aria-labelledby="data-title">
+    <div class="lab-heading">
+      <p class="lab-eyebrow">DATA &amp; RESEARCH</p>
+      <h1 id="data-title">THE SCIENCE BEHIND FORESITE.</h1>
+      <h2 id="lab-title">Built on Real Data.<br><span>Tested with Real Simulations.</span></h2>
+      <p class="lab-intro">Explore the historical datasets, predictive models, statistical backtesting, and Monte Carlo simulations behind FORESITE's research into weather-related disruption.</p>
+      <p class="lab-scope">Research estimates for certain already-active hazards. Decision support, with uncertainty kept visible.</p>
+    </div>
+
+    <div class="lab-sources" aria-label="Historical data and infrastructure sources">
+      <article><p class="lab-source-type">NOAA STORM EVENTS</p><strong>349,030</strong><h3>Recorded storm events</h3><p>2021–2025 records provide reported event intervals for duration research.</p></article>
+      <article><p class="lab-source-type">NOAA STATION WEATHER</p><strong>122,270</strong><h3>Hourly measurements</h3><p>Three evaluated stations support observed heat-index episode research.</p></article>
+      <article><p class="lab-source-type">NHC HURDAT2</p><strong>55,524</strong><h3>Historical track points</h3><p>Post-analysis Atlantic best tracks. Historical context, not issued forecasts.</p></article>
+      <article><p class="lab-source-type">EIA INFRASTRUCTURE</p><strong>50</strong><h3>Mapped reference locations</h3><p>Representative power plants, not proof of active crews or complete live coverage.</p></article>
+    </div>
+    <p class="lab-feed-note"><span class="lab-status-dot" aria-hidden="true"></span><strong>Live evidence is a separate layer.</strong> NWS, NHC and USGS observations and issued products add timestamped context. Coverage and freshness vary; missing inputs stay unknown.</p>
+
+    <div class="lab-methods" aria-label="How the research works">
+      <article><span aria-hidden="true">01</span><div><h3>Backtest against history.</h3><p>Group related episodes, separate time periods, and compare statistical models with simpler survival baselines.</p></div></article>
+      <article><span aria-hidden="true">02</span><div><h3>Explore uncertainty.</h3><p>Monte Carlo draws sample model-implied durations. Many possible outcomes replace a single exact future.</p></div></article>
+      <article><span aria-hidden="true">03</span><div><h3>Keep the evidence visible.</h3><p>Supported horizons, source provenance and limitations accompany each outlook. Unsupported predictions stay unavailable.</p></div></article>
+    </div>
+
+    <section class="lab-models" aria-labelledby="lab-model-title">
+      <p class="lab-eyebrow">PREDICTIVE MODELING</p>
+      <h3 id="lab-model-title">How long might an active event persist?</h3>
+      <p>A survival curve represents the probability that an already-active recorded event remains ongoing as time passes. It estimates persistence conditional on confirmation and elapsed event time—not when a disaster will start or whether a worksite is safe.</p>
+      <div class="lab-model-grid">
+        <article><h4>Kaplan–Meier survival analysis</h4><p>An empirical baseline uses durations of historical events to estimate conditional persistence. It remains selected when a more complex candidate does not improve the validation result.</p></article>
+        <article><h4>Discrete-time logistic hazard modeling</h4><p>A fitted statistical model estimates recorded-event ending in successive time intervals. Those estimates produce a conditional persistence curve; they do not measure local exposure or injury risk.</p></article>
+      </div>
+      <ul class="lab-targets" aria-label="Six retrospectively evaluated duration targets"><li>High Wind</li><li>Flash Flood</li><li>Heavy Rain</li><li>Winter Storm</li><li>Heat Index Exceedance</li><li>Flood</li></ul>
+      <p class="lab-target-note">Six retrospective research targets, with distinct definitions and supported horizons. Heat Index Exceedance is restricted to the evaluated stations. Unsupported event types, missing start times or insufficient evidence produce unavailable outlooks.</p>
+    </section>
+
+    <div class="lab-charts">
+      <div class="lab-chart lab-monte" role="group" aria-labelledby="lab-mc-title">
+        <div class="lab-chart-story"><p class="lab-eyebrow">01 / MONTE CARLO CONSISTENCY</p><h3 id="lab-mc-title">One model.<br>5,000 possible outcomes.</h3><p>In this saved flood replay, 5,000 seeded draws closely reproduce the model’s own persistence probabilities at 6, 12 and 24 hours.</p><p class="lab-callout"><strong>0.40 percentage points</strong><span>largest analytical–sampling difference</span></p><p class="lab-caveat">A consistency check—not proof of forecast accuracy. Archived 2024-09-10 replay using the logistic research model, not a current worksite forecast.</p></div>
+        <figure class="lab-chart-visual" aria-labelledby="lab-mc-title">
+          <picture><source media="(max-width: 600px)" width="370" height="350" srcset="/research/monte-carlo-mobile.svg?v=d44a06aef8"><img src="/research/monte-carlo.svg?v=e596ad3d5e" alt="Grouped bars compare analytical persistence with simulated ongoing proportions at 6, 12 and 24 hours, on a zero to 100 percent scale." width="700" height="370" loading="lazy" decoding="async"></picture>
+          <figcaption>Probability the recorded Flood event remains ongoing. 5,000 draws · seed 42. Offline research only.
+          <details class="lab-values"><summary>Exact values and experiment</summary><table><caption>Ongoing probability · archived simulated replay</caption><thead><tr><th>Horizon</th><th>Analytical</th><th>Simulated</th></tr></thead><tbody><tr><th scope="row">6h</th><td>0.619922</td><td>0.623000</td></tr><tr><th scope="row">12h</th><td>0.447168</td><td>0.451200</td></tr><tr><th scope="row">24h</th><td>0.281102</td><td>0.282000</td></tr></tbody></table><p><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/monte_carlo_summary.json">Original experiment JSON</a> · Model: noaa-flood-pooled-logistic-v2. No raw trial paths are shown.</p></details></figcaption>
+        </figure>
+      </div>
+
+      <figure class="lab-chart" aria-labelledby="lab-backtest-title">
+        <p class="lab-eyebrow">02 / HISTORICAL VALIDATION</p><h3 id="lab-backtest-title">Test the model. Keep the better baseline.</h3><p>On the 2024 Flood validation cohort, the simpler Kaplan–Meier survival baseline had lower Brier error at all three horizons. It remains the selected default.</p>
+        <picture><source media="(max-width: 600px)" width="370" height="350" srcset="/research/backtest-mobile.svg?v=20a391df22"><img src="/research/backtest.svg?v=a1b0be8b96" alt="Grouped Brier-error bars compare the Kaplan–Meier baseline and logistic model at 6, 12 and 24 hours. The baseline has lower error at every horizon; whiskers show 95 percent episode-bootstrap intervals." width="700" height="370" loading="lazy" decoding="async"></picture>
+        <figcaption>Trained through 2023; 4,053 validation snapshots from 583 reporting episodes. Whiskers: 95% episode-bootstrap intervals, 500 resamples. Lower Brier error is better.
+        <details class="lab-values"><summary>Exact values and evaluation</summary><table><caption>2024 validation Brier error</caption><thead><tr><th>Horizon</th><th>KM baseline</th><th>Logistic</th></tr></thead><tbody><tr><th scope="row">6h</th><td>0.211733</td><td>0.216986</td></tr><tr><th scope="row">12h</th><td>0.232385</td><td>0.242210</td></tr><tr><th scope="row">24h</th><td>0.224849</td><td>0.239856</td></tr></tbody></table><p><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/backtest_metrics.json">Full metrics, intervals and splits</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVALUATION.md">Evaluation limitations</a>. This is the model-selection cohort, not a new untouched holdout. Calibration and duration error still limit use; retrospective evaluation is not operational safety validation.</p></details></figcaption>
+      </figure>
+
+      <figure class="lab-chart" aria-labelledby="lab-data-title">
+        <p class="lab-eyebrow">03 / SOURCE SCALE</p><h3 id="lab-data-title">A traceable data foundation.</h3><p>526,824 historical records and measurements across three source inventories. Different units and reporting processes—not independent training examples.</p>
+        <picture><source media="(max-width: 600px)" width="370" height="350" srcset="/research/data-sources-mobile.svg?v=83efb2926b"><img src="/research/data-sources.svg?v=0a477d967a" alt="Horizontal bars show 349,030 NOAA Storm Events records, 122,270 station measurements, and 55,524 NHC historical track points on a shared zero-based count scale." width="700" height="370" loading="lazy" decoding="async"></picture>
+        <figcaption>Source volume, not forecast accuracy. These inventories include records outside the final eligible model cohorts; the NHC count covers the full historical archive.
+        <details class="lab-values"><summary>Exact counts and source reports</summary><table><caption>Historical source inventories</caption><thead><tr><th>Dataset</th><th>Records / measurements</th></tr></thead><tbody><tr><th scope="row">NOAA Storm Events</th><td>349,030</td></tr><tr><th scope="row">Station measurements</th><td>122,270</td></tr><tr><th scope="row">NHC track points</th><td>55,524</td></tr></tbody></table><p><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/purged_v2/backtest_metrics.json">NOAA rows</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/station_coverage.json">Station coverage</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/hurdat_coverage.json">NHC archive</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/worker_outlook/eia_coverage.json">EIA locations</a></p></details></figcaption>
+      </figure>
+    </div>
+
+    <section class="lab-limitations" aria-labelledby="lab-evidence-title">
+      <p class="lab-eyebrow">RESEARCH EVIDENCE &amp; LIMITATIONS</p>
+      <h3 id="lab-evidence-title">Test against history. Keep the limits visible.</h3>
+      <ul>
+        <li>Flood fitting uses 2021–2023 records for the displayed 2024 validation comparison. A separate 2025 period is evaluated after fitting through 2024. Related reporting episodes stay grouped, and episodes crossing fit/selection cutoffs are purged.</li>
+        <li>Calibration/reliability checks and episode-bootstrap intervals accompany prediction and duration errors. The 2025 Flood period was previously inspected; it is not a fresh untouched holdout. Retrospective evaluation does not establish operational safety validation.</li>
+        <li>Historical records describe regional reporting processes, not verified worker-site exposure. NHC best tracks are post-analysis, and mapped EIA locations do not establish active field work.</li>
+        <li>Missing or stale inputs remain unknown, never zero risk. Unsupported forecasts are withheld instead of substituting a different hazard's model.</li>
+        <li>The Monte Carlo chart checks model-implied sampling agreement. It is an archived experiment, not a live forecast, new historical backtest or proof of real-world accuracy.</li>
+      </ul>
+      <nav class="lab-reading-links" aria-label="Research documentation"><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/METHODOLOGY.md">Methodology</a><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVALUATION.md">Flood evaluation</a><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/MULTIDISASTER_EVALUATION.md">Multi-disaster evaluation</a><a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVENT_OUTLOOKS.md">Supported targets and contracts</a></nav>
+    </section>
+
+    <div class="lab-trust"><p class="lab-eyebrow">MODELS INFORM. PEOPLE DECIDE.</p><h3>Prediction is not permission.</h3><p>Statistical models estimate uncertainty. Deterministic rules raise alerts and calculate the separate 0–10 index. Supervisors make operational decisions. Neither ML nor Gemini can declare a site safe, authorize work or clear an alert.</p><a href="/research/evidence.json">Inspect the chart data and source hashes <span aria-hidden="true">↗</span></a></div>
+  </section>
+<!-- research-evidence:end -->
+<aside class="data-source-notes" aria-label="Source definitions">
+    <details class="research">
+      <summary>Research scope and sources</summary>
+      <p>The figures describe retrospective research and representative infrastructure locations. Models estimate persistence for certain already-active events. Their outlooks support human review; deterministic rules control alerts and the separate 0–10 hazard index.</p>
+      <ul>
+        <li><strong>526,824 mixed records and measurements:</strong> 349,030 NOAA Storm Events records, 122,270 hourly station measurements and 55,524 NHC historical track points. These are source inventories, not independent training examples. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/DISASTER_COVERAGE.md">Data coverage</a> · <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/multidisaster/hurdat_coverage.json">NHC archive counts</a>.</li>
+        <li><strong>Six research duration targets:</strong> Flood, Flash Flood, High Wind, Heavy Rain, Winter Storm and Heat Index Exceedance. Heat-index research is restricted to the evaluated stations. Retrospective evaluations do not establish operational safety certification. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVENT_OUTLOOKS.md">Target scope</a>.</li>
+        <li><strong>5,000 Monte Carlo draws:</strong> one seeded, offline flood-model distribution-consistency experiment. Historical backtesting evaluates predictive skill; sampling agreement alone does not. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/EVALUATION.md">Evaluation and limitations</a>.</li>
+        <li><strong>50 mapped reference locations:</strong> representative EIA infrastructure sites, with no implication of active crews or complete live coverage at each location. <a href="https://github.com/BraydinPG/planit-control-swamphacks/blob/main/ml/reports/worker_outlook/eia_coverage.json">Location provenance</a>.</li>
+      </ul>
+      <p>Gemini summarizes supplied evidence and suggests actions for review. Supervisors retain decision authority. Neither predictions nor AI suggestions authorize work or clear an alert.</p>
+    </details>
+</aside>
+</main>
+<footer class="public-footer"><span>FORESITE · Intelligent Worksite Operations</span><nav aria-label="Footer"><a href="/landing.html">Home</a><a href="/data.html" aria-current="page">Data</a><a href="/?signin">Sign In</a></nav></footer>
+</body>
+</html>

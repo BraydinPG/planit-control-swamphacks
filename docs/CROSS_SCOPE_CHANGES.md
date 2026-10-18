@@ -1,3 +1,21 @@
+## Dedicated public Data page checkpoint (Cache for Rudra) - 2026-10-18
+
+User-authorized correction to PR89, branch `feature/cache-dedicated-data-page` from
+main `61ec526`: homepage research markup/styles move to `/data.html` and `data.css`;
+public tokens/header styles are shared through `public-site.css`. The homepage keeps
+its hero, stats, features, atmosphere and original demo/sign-in destinations. Only
+public navigation gains Data; workspaces are unchanged. Research preparation now
+targets Data only and refuses missing markers instead of falling back to the homepage.
+All original six chart SVGs and evidence.json are byte-identical.
+
+198 frontend tests, lint/TypeScript/build, exporter Ruff/check and development public
+browser checks at four widths pass. New `check-public-pages.mjs` covers independent
+documents, keyboard navigation, direct access/reload, Back/Forward, synthetic storage
+preservation and no research loads on Home. No backend calls or service acceptance.
+No backend/auth/model/scoring/fixture/task-state or deployment changes. The user's
+latest addendum expands the same page to an advanced research dashboard; in progress.
+It explicitly requires no automatic merge. No duplicate PR is needed.
+
 ## Landing data, backtesting and simulation showcase (Cache for Rudra) - 2026-10-18
 
 Explicit user authorization, branch `feature/cache-landing-research-evidence` from

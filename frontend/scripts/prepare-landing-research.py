@@ -1,4 +1,4 @@
-"""Export landing-page evidence from saved reports; never train, sample or fetch.
+"""Export public Data-page evidence from saved reports; never train, sample or fetch.
 
 Requires scripts/landing-research-requirements.txt in an isolated Python environment.
 Run from any directory; --check verifies the committed assets and HTML without writes.
@@ -276,12 +276,14 @@ def section(data, assets):
         for d in data["datasets"]
     )
     max_error = 100 * max(mc["absolute_probability_error"].values())
+    target_names = "".join(f"<li>{name}</li>" for name in data["research_targets"])
     return f"""{START}
-  <section class="lab" aria-labelledby="lab-title">
+  <section class="lab" aria-labelledby="data-title">
     <div class="lab-heading">
-      <p class="lab-eyebrow">THE SCIENCE BEHIND THE OUTLOOK</p>
+      <p class="lab-eyebrow">DATA &amp; RESEARCH</p>
+      <h1 id="data-title">THE SCIENCE BEHIND FORESITE.</h1>
       <h2 id="lab-title">Built on Real Data.<br><span>Tested with Real Simulations.</span></h2>
-      <p class="lab-intro">Official environmental data. Historically evaluated models. Thousands of simulated outcomes. FORESITE brings these together to help teams understand disruption—not just detect it.</p>
+      <p class="lab-intro">Explore the historical datasets, predictive models, statistical backtesting, and Monte Carlo simulations behind FORESITE's research into weather-related disruption.</p>
       <p class="lab-scope">Research estimates for certain already-active hazards. Decision support, with uncertainty kept visible.</p>
     </div>
 
@@ -298,6 +300,18 @@ def section(data, assets):
       <article><span aria-hidden="true">02</span><div><h3>Explore uncertainty.</h3><p>Monte Carlo draws sample model-implied durations. Many possible outcomes replace a single exact future.</p></div></article>
       <article><span aria-hidden="true">03</span><div><h3>Keep the evidence visible.</h3><p>Supported horizons, source provenance and limitations accompany each outlook. Unsupported predictions stay unavailable.</p></div></article>
     </div>
+
+    <section class="lab-models" aria-labelledby="lab-model-title">
+      <p class="lab-eyebrow">PREDICTIVE MODELING</p>
+      <h3 id="lab-model-title">How long might an active event persist?</h3>
+      <p>A survival curve represents the probability that an already-active recorded event remains ongoing as time passes. It estimates persistence conditional on confirmation and elapsed event time—not when a disaster will start or whether a worksite is safe.</p>
+      <div class="lab-model-grid">
+        <article><h4>Kaplan–Meier survival analysis</h4><p>An empirical baseline uses durations of historical events to estimate conditional persistence. It remains selected when a more complex candidate does not improve the validation result.</p></article>
+        <article><h4>Discrete-time logistic hazard modeling</h4><p>A fitted statistical model estimates recorded-event ending in successive time intervals. Those estimates produce a conditional persistence curve; they do not measure local exposure or injury risk.</p></article>
+      </div>
+      <ul class="lab-targets" aria-label="Six retrospectively evaluated duration targets">{target_names}</ul>
+      <p class="lab-target-note">Six retrospective research targets, with distinct definitions and supported horizons. Heat Index Exceedance is restricted to the evaluated stations. Unsupported event types, missing start times or insufficient evidence produce unavailable outlooks.</p>
+    </section>
 
     <div class="lab-charts">
       <div class="lab-chart lab-monte" role="group" aria-labelledby="lab-mc-title">
@@ -323,6 +337,19 @@ def section(data, assets):
         <details class="lab-values"><summary>Exact counts and source reports</summary><table><caption>Historical source inventories</caption><thead><tr><th>Dataset</th><th>Records / measurements</th></tr></thead><tbody>{source_rows}</tbody></table><p>{source(SOURCES["flood"], "NOAA rows")} · {source(SOURCES["stations"], "Station coverage")} · {source(SOURCES["nhc"], "NHC archive")} · {source(SOURCES["eia"], "EIA locations")}</p></details></figcaption>
       </figure>
     </div>
+
+    <section class="lab-limitations" aria-labelledby="lab-evidence-title">
+      <p class="lab-eyebrow">RESEARCH EVIDENCE &amp; LIMITATIONS</p>
+      <h3 id="lab-evidence-title">Test against history. Keep the limits visible.</h3>
+      <ul>
+        <li>Flood fitting uses 2021–2023 records for the displayed 2024 validation comparison. A separate 2025 period is evaluated after fitting through 2024. Related reporting episodes stay grouped, and episodes crossing fit/selection cutoffs are purged.</li>
+        <li>Calibration/reliability checks and episode-bootstrap intervals accompany prediction and duration errors. The 2025 Flood period was previously inspected; it is not a fresh untouched holdout. Retrospective evaluation does not establish operational safety validation.</li>
+        <li>Historical records describe regional reporting processes, not verified worker-site exposure. NHC best tracks are post-analysis, and mapped EIA locations do not establish active field work.</li>
+        <li>Missing or stale inputs remain unknown, never zero risk. Unsupported forecasts are withheld instead of substituting a different hazard's model.</li>
+        <li>The Monte Carlo chart checks model-implied sampling agreement. It is an archived experiment, not a live forecast, new historical backtest or proof of real-world accuracy.</li>
+      </ul>
+      <nav class="lab-reading-links" aria-label="Research documentation">{source("ml/METHODOLOGY.md", "Methodology")}{source("ml/EVALUATION.md", "Flood evaluation")}{source("ml/MULTIDISASTER_EVALUATION.md", "Multi-disaster evaluation")}{source("ml/EVENT_OUTLOOKS.md", "Supported targets and contracts")}</nav>
+    </section>
 
     <div class="lab-trust"><p class="lab-eyebrow">MODELS INFORM. PEOPLE DECIDE.</p><h3>Prediction is not permission.</h3><p>Statistical models estimate uncertainty. Deterministic rules raise alerts and calculate the separate 0–10 index. Supervisors make operational decisions. Neither ML nor Gemini can declare a site safe, authorize work or clear an alert.</p><a href="/research/evidence.json">Inspect the chart data and source hashes <span aria-hidden="true">↗</span></a></div>
   </section>
@@ -350,19 +377,16 @@ def main():
     assets["evidence.json"] = (
         json.dumps(data, indent=2, ensure_ascii=False) + "\n"
     ).encode()
-    landing = PUBLIC / "landing.html"
-    original = landing.read_text(encoding="utf-8")
+    page = PUBLIC / "data.html"
+    original = page.read_text(encoding="utf-8")
     fragment = section(data, assets)
     if START in original:
         before, rest = original.split(START, 1)
         _, after = rest.split(END, 1)
         updated = before + fragment + after
     else:
-        # Keep the hero and existing product-intelligence section intact.
-        updated = original.replace(
-            '  <section class="intelligence"',
-            fragment + '\n\n  <section class="intelligence"',
-            1,
+        raise SystemExit(
+            "data.html must contain the research markers; never insert into the homepage"
         )
     assert updated != original or START in original
     mismatches = []
@@ -371,22 +395,23 @@ def main():
         if args.check:
             if not path.exists() or path.read_bytes() != content:
                 mismatches.append(str(path.relative_to(ROOT)))
-        else:
+        elif not path.exists() or path.read_bytes() != content:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(content)
     if args.check:
         if original != updated:
-            mismatches.append("frontend/public/landing.html")
+            mismatches.append("frontend/public/data.html")
         if mismatches:
             raise SystemExit(
                 "Research exports differ; regenerate: " + ", ".join(mismatches)
             )
     else:
-        landing.write_text(updated, encoding="utf-8", newline="\n")
+        page.write_text(updated, encoding="utf-8", newline="\n")
     print(
         json.dumps(
             {
                 "check": args.check,
+                "page": "/data.html",
                 "charts": 3,
                 "responsive_variants": 6,
                 "total_source_records": data["total_records_and_measurements"],
