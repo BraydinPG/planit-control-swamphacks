@@ -9,7 +9,12 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react'
-import type { CrewReport, ReportCategory, SiteSummary } from '../types/api'
+import type {
+  CrewReport,
+  MatCondition,
+  ReportCategory,
+  SiteSummary,
+} from '../types/api'
 import {
   useApplication,
   useResource,
@@ -743,12 +748,19 @@ export function ReportForm({ site }: { site: SiteSummary }) {
   const [category, setCategory] = useState<ReportCategory>(
       'broken_pole_downed_line',
     ),
-    [presence, setPresence] = useState(''),
+    [answer, setAnswer] = useState(''),
+    // T034B: access mat reports ask for the crew's A-D grade instead of
+    // present/absent. A is no hazard; B, C and D are hazard present.
+    [condition, setCondition] = useState<MatCondition | ''>(''),
     [note, setNote] = useState(''),
     [photo, setPhoto] = useState<File | null>(null),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState('')
   const inFlight = useRef(false)
+  const isMat = category === 'access_mat_deterioration'
+  const presence = isMat
+    ? condition && (condition === 'A' ? 'absent' : 'present')
+    : answer
   // T034A: device location with the crew member's permission, else the site's
   // coordinates (approximate); editing the coordinates makes it a manual pin.
   const location = useReportLocation(site, client.mode)
@@ -806,6 +818,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
           lon: at.lon,
           location_source: at.source,
           location_accuracy_m: at.source === 'device' ? at.accuracyM : null,
+          mat_condition: isMat && condition ? condition : null,
           note: note || null,
         },
         photo,
@@ -865,36 +878,73 @@ export function ReportForm({ site }: { site: SiteSummary }) {
         </div>
       </fieldset>
       <div>
-        <fieldset>
-          <legend className={step}>
-            2 · Is the hazard present? (required)
-          </legend>
-          <div className="grid grid-cols-2 gap-2">
-            {(
-              [
-                ['present', 'Hazard present', presentChoice],
-                ['absent', 'Hazard absent', absentChoice],
-              ] as const
-            ).map(([value, label, look]) => (
-              <label
-                key={value}
-                className={`relative flex min-h-16 cursor-pointer items-center justify-center rounded-xl border-2 border-line px-3 py-2 text-base font-bold text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${look}`}
-              >
-                <input
-                  type="radio"
-                  name="presence"
-                  value={value}
-                  required
-                  checked={presence === value}
-                  onChange={() => setPresence(value)}
-                  className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        {isMat ? (
+          <fieldset>
+            <legend className={step}>
+              2 · What is the condition? (required)
+            </legend>
+            <div className="grid grid-cols-4 gap-2">
+              {matGrades.map(([grade, hint]) => (
+                <label
+                  key={grade}
+                  className={`relative flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-line px-2 py-2 text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${grade === 'A' ? absentChoice : presentChoice}`}
+                >
+                  <input
+                    type="radio"
+                    name="mat-condition"
+                    value={grade}
+                    required
+                    aria-label={`Condition ${grade}${hint ? `, ${hint}` : ''}`}
+                    checked={condition === grade}
+                    onChange={() => setCondition(grade)}
+                    className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
+                  />
+                  <span className="text-xl font-bold">{grade}</span>
+                  {hint && (
+                    <span className="text-sm font-semibold">{hint}</span>
+                  )}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : (
+          <fieldset>
+            <legend className={step}>
+              2 · Is the hazard present? (required)
+            </legend>
+            <div className="grid grid-cols-2 gap-2">
+              {(
+                [
+                  ['present', 'Hazard present', presentChoice],
+                  ['absent', 'Hazard absent', absentChoice],
+                ] as const
+              ).map(([value, label, look]) => (
+                <label
+                  key={value}
+                  className={`relative flex min-h-16 cursor-pointer items-center justify-center rounded-xl border-2 border-line px-3 py-2 text-base font-bold text-ink-2 transition-colors hover:border-line-strong has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-focus ${look}`}
+                >
+                  <input
+                    type="radio"
+                    name="presence"
+                    value={value}
+                    required
+                    checked={answer === value}
+                    onChange={() => setAnswer(value)}
+                    className="absolute inset-0 m-0 size-full cursor-pointer opacity-0"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
         <p className="mt-2 text-sm text-muted">
+          {isMat && condition && (
+            <>
+              Grade {condition} counts as hazard{' '}
+              {condition === 'A' ? 'absent' : 'present'}.{' '}
+            </>
+          )}
           {presence === 'present'
             ? 'Nearby teams receive a potential-hazard notice. Supervisor confirmation is required before instructions.'
             : presence === 'absent'
@@ -1051,6 +1101,14 @@ export function ReportForm({ site }: { site: SiteSummary }) {
     </form>
   )
 }
+// T034B access mat grades. No approved rubric defines the letters, so only D's
+// meaning ("unusable") is shown.
+const matGrades: [MatCondition, string][] = [
+  ['A', ''],
+  ['B', ''],
+  ['C', ''],
+  ['D', 'Unusable'],
+]
 // Checked states for the present/absent choice (step 2), like the category step.
 const presentChoice =
   'has-checked:border-stop has-checked:bg-stop has-checked:text-white'
@@ -1146,6 +1204,12 @@ function ReportCard({ report }: { report: CrewReport }) {
             >
               {report.hazard_present ? 'Reported present' : 'Reported absent'}
             </span>
+            {report.mat_condition && (
+              <span className="chip inline-flex items-center border border-ink font-bold text-ink">
+                Condition {report.mat_condition}
+                {report.mat_condition === 'D' && ' · unusable'}
+              </span>
+            )}
           </div>
           <h3 className="text-lg font-bold">{categories[report.category]}</h3>
           <p className="text-sm text-muted">

@@ -110,6 +110,16 @@ Explicit user requests (Braydin): join codes (`XXXX-XXXX`, 7 days); supervisors 
 - **`scripts/check-shell.mjs`**: the supervisor Overview waits for "Needs your attention", and the map and list checks run on Worksites ("55 locations"). It still stops earlier, on main's existing crew 320 px layout issue.
 
 Checks: 800+ backend and 121 frontend tests, Ruff, oxlint, `tsc -b`, and build clean. The demo-mode supervisor tabs were re-read in headless Chrome.
+## Access mat A-D condition (T034B, Rudra; cross-scope into Braydin's DB/Gemini and Cache's form) — 2026-10-17
+
+Explicit user request (Rudra): for access mat deterioration, step 2 of the report form asks "What is the condition?" with A-D instead of present/absent; other categories unchanged. User decisions: A = hazard absent, B-D = hazard present; no Unsure choice.
+
+- **Rudra (owned):** `MatCondition` enum and `mat_condition` on `ReportCreate` (required for access mats only, must match `hazard_present`) and `CrewReport`; `POST /api/reports` form field; `create_report`; site report serializer; TS mirror; fixtures regenerated; spec route row; T034B status.
+- **Braydin (review requested):** `crew_reports.mat_condition` column in `db/models.py` plus an idempotent `ADDED_COLUMNS` entry in `db/init.py` (run `python -m app.db.init` against Tiger Data once); `gemini/report_analysis.py` adds the crew's grade as `crew:mat_condition` evidence (no rubric, so Gemini still must not assign a grade).
+- **Cache (review requested):** `ReportForm` step 2 for access mats, grade chip on `ReportCard`, `validateReport`, submit echo check, demo client rule, `tests/mock-service.ts`.
+
+Checks: 887 backend tests (new validation, grade-A/no-notice and Gemini-evidence cases) and 170 frontend tests; ruff, oxlint, `tsc -b`, both builds; browser check of the form and a submitted grade-C demo report.
+
 ## Site species context (Rudra; cross-scope into Braydin's Gemini and Cache's frontend) — 2026-10-17
 
 Explicit user request (Rudra): a read-only, site-aware species guide for team sites using the USFWS IPaC Location API, USFWS critical habitat boundaries on the existing map, and the existing Gemini client. Guide: [SPECIES_CONTEXT.md](SPECIES_CONTEXT.md).

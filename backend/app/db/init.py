@@ -21,6 +21,7 @@ ADDED_COLUMNS = (
     ("crew_reports", "location_source", "VARCHAR"),  # T053A
     ("crew_reports", "location_accuracy_m", "DOUBLE PRECISION"),
     ("crew_reports", "site_distance_miles", "DOUBLE PRECISION"),
+    ("crew_reports", "mat_condition", "VARCHAR"),  # T034B
     ("briefings", "risk_score", "DOUBLE PRECISION"),  # T058C
     ("briefings", "data_completeness", "DOUBLE PRECISION"),
     ("memberships", "email", "VARCHAR"),  # team roster and join codes

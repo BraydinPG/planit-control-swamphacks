@@ -235,11 +235,19 @@ export interface Alert {
 // ---- reports ----
 
 export type ReportCategory =
-  'broken_pole_downed_line' | 'on_site_fire' | 'access_mat_deterioration' | 'wildlife' | 'flooding' | 'other'
+  | 'broken_pole_downed_line'
+  | 'on_site_fire'
+  | 'access_mat_deterioration'
+  | 'wildlife'
+  | 'flooding'
+  | 'other'
 
 export type ReviewStatus = 'pending' | 'confirmed' | 'rejected'
 
 export type Severity = 'low' | 'moderate' | 'high'
+
+/** The crew's A-D access mat grade (T034B). D is unusable; A is recorded as no hazard. */
+export type MatCondition = 'A' | 'B' | 'C' | 'D'
 
 /** Where a report's coordinates came from (T053A). `site` is approximate. */
 export type LocationSource = 'device' | 'site' | 'pin'
@@ -296,6 +304,8 @@ export interface CrewReport {
   /** Null for reports filed before T053A. */
   location_source: LocationSource | null
   location_accuracy_m: number | null
+  /** The crew's A-D grade; access mat reports only, else null. */
+  mat_condition: MatCondition | null
   /** Backend-computed distance from the report to its site, in miles. */
   site_distance_miles: number | null
   /** Null while the analysis runs (it starts after the report is saved). */
@@ -316,6 +326,8 @@ export interface ReportCreate {
   location_source?: LocationSource
   /** Only with `location_source: 'device'`. */
   location_accuracy_m?: number | null
+  /** Required for access_mat_deterioration, else omitted. A means hazard_present false. */
+  mat_condition?: MatCondition | null
 }
 
 /** Body for POST /api/reports/{id}/review. */

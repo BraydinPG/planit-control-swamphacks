@@ -275,7 +275,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `GET /api/sites/{id}` | Site details, observations, score, reports. |
 | `GET /api/alerts` | Visible alerts and countdown state. |
 | `POST /api/alerts/{id}/acknowledge` | Record user and acknowledgement time. |
-| `POST /api/reports` | Submit category, photo, coordinates with their source and accuracy, whether the hazard is present, and an optional note. Starts Gemini's report analysis in the background. |
+| `POST /api/reports` | Submit category, photo, coordinates with their source and accuracy, whether the hazard is present, and an optional note. Access mat reports also send `mat_condition` (A-D, D unusable; required for that category only). A is recorded as hazard absent and B-D as present; the backend rejects a mismatch. Starts Gemini's report analysis in the background. |
 | `GET /api/reports` | List reports visible to the caller, optionally filtered by site. |
 | `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
