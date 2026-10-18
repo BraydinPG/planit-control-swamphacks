@@ -17,6 +17,14 @@ checks; T065 real Auth0/Tiger lifecycle acceptance is not claimed. Edge regressi
 passes eleven destinations at 1440/768/390/320 and the new demo/mock-live role checks,
 with no browser exceptions or real API calls. Rudra reviews the focused frontend
 guard; no automatic merge or deployment.
+
+Merge follow-up: the user explicitly requested merging PR56. Incorporated main
+`08d1e80` without conflicts, preserving the team's latest sign-in, home-link, report,
+species and disclosure changes. Reverified 174 frontend tests, 22 backend hazard tests,
+lint, TypeScript, production build and whitespace. Focused Edge checks on the existing
+mocked-session fixture show no crew notice-review action before/after reload and a
+working supervisor review link at 390/1440, with no browser exceptions. This is merge
+acceptance, not a new real Auth0/Tiger test or a task checkbox update.
 ## Sign-in logo contrast (Cache for Braydin and Rudra) - 2026-10-17
 
 Explicit screenshot-based user request authorizes the narrow auth-presentation fix.

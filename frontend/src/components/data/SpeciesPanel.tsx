@@ -35,7 +35,7 @@ const confirmationLabels: Record<WildlifeReportRef['confirmation'], string> = {
 const nameOf = (s: {
   common_name: string | null
   scientific_name: string | null
-}) => s.common_name ?? s.scientific_name ?? 'Unnamed species'
+}) => (s.common_name ?? s.scientific_name ?? 'Unnamed species').replace(/=\s*/g, '')
 
 /** Loads and shows species context for a site with an assigned team. */
 export function SpeciesSection({ site }: { site: SiteDetail }) {

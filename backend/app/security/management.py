@@ -53,7 +53,8 @@ class Auth0Management:
     def _role_id(self, name: str) -> str:
         if name not in self._roles:
             roles = self._call("GET", "/api/v2/roles", params={"name_filter": name})
-            match = [r for r in roles or [] if r.get("name") == name]
+            # Capitalization doesn't matter (auth/SETUP.md): "Supervisor" is "supervisor".
+            match = [r for r in roles or [] if str(r.get("name", "")).casefold() == name.casefold()]
             if not match:
                 raise ManagementUnavailable(f"Auth0 has no role named {name!r}")
             self._roles[name] = match[0]["id"]

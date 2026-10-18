@@ -64,3 +64,10 @@ def test_not_configured_without_the_secret():
     )
     assert Auth0Management.from_settings(full) is not None
     assert "hunter2-value" not in repr(full)
+
+
+def test_role_names_ignore_capitalization():
+    calls = []
+    transport = fake_auth0(calls, roles=[{"id": "rol_sup", "name": "Supervisor"}])
+    client(transport).assign_role("auth0|new", "supervisor")
+    assert ("POST", "/api/v2/roles/rol_sup/users", "Bearer mgmt") in calls
