@@ -15,7 +15,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 
 from app.api.deps import get_now
-from app.api.sites import DbSession, alert_schemas, visible_site_ids
+from app.api.sites import DbSession, alert_schemas, rank_alerts, visible_site_ids
 from app.db import models as db
 from app.schemas import Alert, AlertState
 from app.security import AuthenticatedUser, CurrentUser, require_permission, roles
@@ -35,7 +35,10 @@ def list_alerts(
     state: Literal["active", "cleared", "all"] = "active",
     site_id: Annotated[str | None, Query(description="Only this site's alerts")] = None,
 ) -> list[Alert]:
-    """Alerts the caller may see, newest trigger first. Defaults to active alerts."""
+    """Alerts the caller may see. Defaults to active alerts.
+
+    Active alerts come first, most dangerous tier first, then newest trigger first.
+    """
     query = select(db.Alert).order_by(db.Alert.triggered_at.desc()).limit(ALERT_LIMIT)
     visible = visible_site_ids(session, user)
     if visible is not None:
@@ -44,7 +47,7 @@ def list_alerts(
         query = query.where(db.Alert.site_id == site_id)
     if state != "all":
         query = query.where(db.Alert.state == state)
-    return alert_schemas(session, list(session.scalars(query).all()))
+    return rank_alerts(alert_schemas(session, list(session.scalars(query).all())))
 
 
 @router.post("/{alert_id}/acknowledge", response_model=Alert)

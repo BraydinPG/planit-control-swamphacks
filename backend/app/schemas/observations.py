@@ -16,6 +16,7 @@ class HazardType(StrEnum):
     LIGHTNING_STRIKE = "lightning_strike"
     HURRICANE = "hurricane"
     EARTHQUAKE = "earthquake"
+    SEVERE_STORM = "severe_storm"
 
 
 class Observation(Schema):
