@@ -195,6 +195,10 @@ export class DemoClient implements Client {
           Array.isArray(value.reports) &&
           Array.isArray(value.notices) &&
           Array.isArray(value.alerts) &&
+          // Saved before danger tiers existed: start over rather than hide alerts.
+          value.alerts.every(
+            (a: { danger_tier?: unknown }) => typeof a.danger_tier === 'number',
+          ) &&
           typeof value.started === 'number' &&
           value.details
         )

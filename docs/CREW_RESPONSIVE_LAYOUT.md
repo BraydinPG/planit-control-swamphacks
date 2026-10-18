@@ -44,7 +44,7 @@ conditions, retaining source details and research/historical limitations. Option
 display props default to the prior presentation outside the crew worksite.
 
 Focused browser checks cover 24 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
-with zero horizontal overflow, exceptions or real backend calls. Unit count: 181.
+with zero horizontal overflow, exceptions or real backend calls. Unit count: 186.
 Lint, TypeScript, default/live and explicit-demo production builds and the complete
 development/built-demo browser workflow suites also pass.
 Existing bundle-size warnings remain; browser evidence is demo/mocked verification,

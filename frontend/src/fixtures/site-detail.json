@@ -11,7 +11,7 @@
   "risk_score": 7.9,
   "risk_level": "high",
   "updated_at": "2026-10-17T18:00:00Z",
-  "active_alerts": 2,
+  "active_alerts": 3,
   "top_factors": [
     {
       "factor": "lightning",
@@ -308,7 +308,35 @@
           "user_id": "user-crew-1",
           "acknowledged_at": "2026-10-17T17:50:00Z"
         }
-      ]
+      ],
+      "danger_tier": 2,
+      "event_label": "Lightning 4.2 mi from site"
+    },
+    {
+      "id": "alert-svr-tstorm-demo",
+      "site_id": "site-demo-everglades",
+      "rule": "severe_thunderstorm",
+      "state": "active",
+      "triggered_at": "2026-10-17T17:20:00Z",
+      "latest_event_at": "2026-10-17T17:20:00Z",
+      "clear_after": "2026-10-17T18:20:00Z",
+      "distance_miles": null,
+      "trigger_observation_ids": [
+        "obs-svr-1"
+      ],
+      "evidence": [
+        {
+          "id": "obs-svr-1",
+          "kind": "observation",
+          "label": "Severe Thunderstorm Warning",
+          "observed_at": "2026-10-17T17:20:00Z"
+        }
+      ],
+      "simulated": true,
+      "is_prototype_rule": true,
+      "acknowledgements": [],
+      "danger_tier": 2,
+      "event_label": "Severe Thunderstorm Warning"
     },
     {
       "id": "alert-flood-demo",
@@ -326,13 +354,15 @@
         {
           "id": "obs-flood-1",
           "kind": "observation",
-          "label": "Flood Watch",
+          "label": "Flood Warning",
           "observed_at": "2026-10-17T16:30:00Z"
         }
       ],
-      "simulated": false,
+      "simulated": true,
       "is_prototype_rule": true,
-      "acknowledgements": []
+      "acknowledgements": [],
+      "danger_tier": 3,
+      "event_label": "Flood Warning"
     }
   ],
   "reports": [

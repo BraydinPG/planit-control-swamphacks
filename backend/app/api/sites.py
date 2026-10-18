@@ -277,7 +277,23 @@ def load_active_alerts(session: Session, site_id: str) -> list[Alert]:
         .where(db.Alert.site_id == site_id, db.Alert.state == AlertState.ACTIVE)
         .order_by(db.Alert.triggered_at.desc())
     ).all()
-    return alert_schemas(session, list(rows))
+    return rank_alerts(alert_schemas(session, list(rows)))
+
+
+def rank_alerts(alerts: list[Alert]) -> list[Alert]:
+    """Active alerts first, most dangerous tier first, then newest trigger first.
+
+    Ranking only orders the list. Every alert is still returned; hiding lower tiers is a
+    presentation choice in the interface, never a server-side suppression.
+    """
+    return sorted(
+        alerts,
+        key=lambda a: (
+            a.state is not AlertState.ACTIVE,
+            a.danger_tier if a.state is AlertState.ACTIVE else 0,
+            -a.triggered_at.timestamp(),
+        ),
+    )
 
 
 def alert_schemas(session: Session, rows: list[db.Alert]) -> list[Alert]:

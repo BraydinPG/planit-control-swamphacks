@@ -227,12 +227,81 @@ ALERT_FLOOD = Alert(
     latest_event_at=ago(90),
     trigger_observation_ids=["obs-flood-1"],
     evidence=[
-        Evidence(id="obs-flood-1", kind="observation", label="Flood Watch", observed_at=ago(90))
+        Evidence(id="obs-flood-1", kind="observation", label="Flood Warning", observed_at=ago(90))
     ],
+    simulated=True,
+    is_prototype_rule=True,
+)
+# Same tier as lightning (2): the interface merges the two into one stop-work alert.
+# The warning has ended, so its 30-minute all-clear window is running.
+ALERT_SVR_TSTORM = Alert(
+    id="alert-svr-tstorm-demo",
+    site_id=DEMO_SITE,
+    rule="severe_thunderstorm",
+    state="active",
+    triggered_at=ago(40),
+    latest_event_at=ago(40),
+    clear_after=ahead(20),
+    trigger_observation_ids=["obs-svr-1"],
+    evidence=[
+        Evidence(
+            id="obs-svr-1",
+            kind="observation",
+            label="Severe Thunderstorm Warning",
+            observed_at=ago(40),
+        )
+    ],
+    simulated=True,
+    is_prototype_rule=True,
+)
+# Tier 1 at another site: the flash flood hides the tier-3 tropical storm warning there.
+ALERT_FLASH_FLOOD = Alert(
+    id="alert-flash-flood-b",
+    site_id="site-fixture-b",
+    rule="flash_flood",
+    state="active",
+    triggered_at=ago(25),
+    latest_event_at=ago(25),
+    trigger_observation_ids=["obs-ffw-b1"],
+    evidence=[
+        Evidence(
+            id="obs-ffw-b1",
+            kind="observation",
+            label="Flash Flood Warning",
+            observed_at=ago(25),
+        )
+    ],
+    simulated=True,
+    is_prototype_rule=True,
+)
+ALERT_TROPICAL_STORM = Alert(
+    id="alert-tropical-storm-b",
+    site_id="site-fixture-b",
+    rule="tropical_storm",
+    state="active",
+    triggered_at=ago(70),
+    latest_event_at=ago(70),
+    trigger_observation_ids=["obs-tsw-b1"],
+    evidence=[
+        Evidence(
+            id="obs-tsw-b1",
+            kind="observation",
+            label="Tropical Storm Warning",
+            observed_at=ago(70),
+        )
+    ],
+    simulated=True,
     is_prototype_rule=True,
 )
 # The reset state: a second strike moved latest_event_at and clear_after forward.
-ALERTS = [ALERT_LIGHTNING_ACTIVE, ALERT_FLOOD, ALERT_LIGHTNING_CLEARED]
+ALERTS = [
+    ALERT_LIGHTNING_ACTIVE,
+    ALERT_SVR_TSTORM,
+    ALERT_FLOOD,
+    ALERT_FLASH_FLOOD,
+    ALERT_TROPICAL_STORM,
+    ALERT_LIGHTNING_CLEARED,
+]
 
 # ---- reports ----
 
@@ -564,7 +633,8 @@ SITE_DETAIL = SiteDetail(
     region="South Florida",
     observations=OBSERVATIONS,
     score=SCORES[DEMO_SITE],
-    alerts=[ALERT_LIGHTNING_ACTIVE, ALERT_FLOOD],
+    # Ranked like the API: most dangerous tier first, then newest trigger.
+    alerts=[ALERT_LIGHTNING_ACTIVE, ALERT_SVR_TSTORM, ALERT_FLOOD],
     reports=[REPORT_POLE_PENDING, REPORT_WILDLIFE_CONFIRMED],
     notices=NOTICES,
     event_outlook=EVENT_OUTLOOK,

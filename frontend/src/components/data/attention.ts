@@ -7,6 +7,12 @@ import type {
 import type { RiskShape } from './Risk'
 import { evidenceOf } from './evidence'
 import { displayLabel, reportCategories } from '../../presentation/display'
+import {
+  isStopWork,
+  stopWorkTitle,
+  tierLabel,
+  visibleAlertGroups,
+} from '../../presentation/alerts'
 
 /** What waits on a supervisor, for the Overview (spec.md sections 3 and 7). */
 export type Shape = Parameters<typeof RiskShape>[0]['kind']
@@ -20,7 +26,6 @@ export interface AttentionItem {
 }
 
 const categoryNames = reportCategories
-const rule = displayLabel
 
 /** Everything waiting on the supervisor, most urgent first. */
 export function attentionItems(
@@ -31,14 +36,15 @@ export function attentionItems(
 ): AttentionItem[] {
   const name = (id: string) => sites.find((s) => s.id === id)?.name ?? id
   return [
-    ...alerts
-      .filter((a) => a.state === 'active')
-      .map((a) => ({
-        key: `alert:${a.id}`,
-        shape: 'stop' as Shape,
-        title: `${rule(a.rule)} alert`,
-        detail: name(a.site_id),
-        href: `#/supervisor/alerts/${encodeURIComponent(a.id)}`,
+    // One item per site: its most dangerous active tier, merged. Lower tiers stay hidden.
+    ...visibleAlertGroups(alerts)
+      .filter((g) => g[0].state === 'active')
+      .map((g) => ({
+        key: `alert:${g[0].id}`,
+        shape: (isStopWork(g[0]) ? 'stop' : 'warn') as Shape,
+        title: stopWorkTitle(g),
+        detail: `${name(g[0].site_id)} · ${tierLabel(g[0])}`,
+        href: `#/supervisor/alerts/${encodeURIComponent(g[0].id)}`,
         action: 'Review alert',
       })),
     ...notices.map(({ notice, site }) => ({

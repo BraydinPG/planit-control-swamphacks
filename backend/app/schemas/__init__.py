@@ -3,7 +3,14 @@
 The TypeScript mirror is frontend/src/types/api.ts.
 """
 
-from app.schemas.alerts import Acknowledgement, Alert, AlertRule, AlertState
+from app.schemas.alerts import (
+    ADVISORY_TIER,
+    DANGER_TIERS,
+    Acknowledgement,
+    Alert,
+    AlertRule,
+    AlertState,
+)
 from app.schemas.briefings import (
     Briefing,
     BriefingHazard,
@@ -106,8 +113,10 @@ __all__ = [
     "LocationSource",
     "Acknowledgement",
     "Alert",
+    "ADVISORY_TIER",
     "AlertRule",
     "AlertState",
+    "DANGER_TIERS",
     "Briefing",
     "CriticalHabitatArea",
     "BriefingHazard",

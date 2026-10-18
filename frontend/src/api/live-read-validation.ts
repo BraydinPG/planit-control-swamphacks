@@ -324,11 +324,19 @@ export function validateAlert(v: unknown, expectedId?: string): Alert {
     !v.site_id ||
     ![
       'lightning_stop_work',
+      'tornado',
+      'hurricane',
+      'flash_flood',
+      'earthquake',
+      'severe_thunderstorm',
+      'tropical_storm',
       'flood',
       'heat',
-      'hurricane',
-      'earthquake',
     ].includes(String(v.rule)) ||
+    !Number.isInteger(v.danger_tier) ||
+    (v.danger_tier as number) < 1 ||
+    (v.danger_tier as number) > 4 ||
+    !text(v.event_label) ||
     !['active', 'cleared'].includes(String(v.state)) ||
     !date(v.triggered_at) ||
     !date(v.latest_event_at) ||
@@ -414,6 +422,7 @@ export function validateSiteDetail(v: unknown, id: string): SiteDetail {
           'lightning_strike',
           'hurricane',
           'earthquake',
+          'severe_storm',
         ].includes(String(o.hazard_type)) &&
         scalar(o.value) &&
         nullableText(o.unit) &&

@@ -102,6 +102,29 @@ def test_every_anomaly_scores_like_the_live_rules(anomalies) -> None:
     assert stop_work == {"demo-flash-flood", "demo-heavy-rain", "demo-hurricane", DEMO_SITE_ID}
 
 
+def test_anomaly_sites_show_tiered_stop_work_alerts(client) -> None:
+    def active(site_id):
+        detail = client.get(f"/api/sites/{site_id}", headers=supervisor(SUPERVISOR)).json()
+        return [(a["rule"], a["danger_tier"]) for a in detail["alerts"] if a["state"] == "active"]
+
+    # Ranked most dangerous tier first; the server returns every active alert.
+    assert active("demo-flash-flood") == [("flash_flood", 1), ("lightning_stop_work", 2)]
+    assert sorted(active("demo-hurricane")) == [
+        ("flash_flood", 1),
+        ("hurricane", 1),
+        ("lightning_stop_work", 2),
+    ]
+    assert active("demo-hurricane")[-1] == ("lightning_stop_work", 2)
+    assert sorted(active("demo-heavy-rain")) == [
+        ("lightning_stop_work", 2),
+        ("severe_thunderstorm", 2),
+    ]
+    assert active("demo-earthquake") == [("earthquake", 2)]
+    assert active("demo-flood") == [("flood", 3)]
+    for key in ("heat", "high-wind", "winter-storm"):
+        assert active(f"demo-{key}") == [], key
+
+
 def test_only_the_site_title_says_demo(client) -> None:
     for a in ANOMALIES:
         detail = client.get(f"/api/sites/demo-{a.key}", headers=supervisor(SUPERVISOR)).json()
