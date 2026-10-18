@@ -1,6 +1,6 @@
 # Public Data & Research page
 
-[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91) is open for review; verified implementation `0b1269b`.
+[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91) is verified; the subsequent user follow-up authorizes merge.
 
 Verified 2026-10-18. Branch `feature/cache-dedicated-data-page`, initially based on
 main `61ec526`. This corrects PR89: research lives at **`/data.html`**, an independent
@@ -8,11 +8,13 @@ public document. The homepage keeps its original hero, four statistics, three
 features, brand, fog/lightning effects and demo/sign-in destinations. Public
 navigation now includes Home and Data with an active-page indicator.
 
-The latest advanced-dashboard addendum explicitly says **do not merge automatically**;
-it supersedes the earlier merge follow-up. One review PR covers the move and expansion.
-Main `b16bef4` was reconciled in `8bcb6d0` without conflicts, preserving PR90.
-Final checks pass on the combined tree. Commit/PR attribution is in Git history and
-the PR description.
+The advanced-dashboard addendum initially requested no automatic merge. The user's
+subsequent request explicitly authorizes merging PR91 after verification. Main
+`b16bef4` was reconciled in `8bcb6d0`; the later `c951ae0` briefing update was
+reconciled in `cf24867`, both without conflicts. The frontend tree is identical to
+verified implementation `0b1269b`; all 12 additional upstream backend demo checks
+pass, with one existing dependency deprecation warning. Commit/PR attribution is
+in Git history and the PR description.
 
 ## What runs
 

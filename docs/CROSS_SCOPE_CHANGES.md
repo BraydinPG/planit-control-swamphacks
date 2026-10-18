@@ -1,15 +1,15 @@
 ## Public Data & Research dashboard (Cache for Rudra) - 2026-10-18
 
-[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91), open for review. Verified implementation `0b1269b`;
-main `b16bef4` incorporated without conflicts.
+[PR #91](https://github.com/BraydinPG/planit-control-swamphacks/pull/91), verified; latest user follow-up authorizes merge. Implementation `0b1269b`;
+main `c951ae0` incorporated in `cf24867` without conflicts.
 
 User-authorized correction/expansion of PR89, `feature/cache-dedicated-data-page`,
 initial base main `61ec526`. Independent `/data.html` and Data-only styles/controls;
 shared public CSS and verbatim extracted atmosphere. Home keeps hero/stats/features,
 branding and existing CTA destinations. Public navigation alone gains Home/Data.
 No authenticated workspace, backend/auth/contracts, task states, fixtures, scoring,
-models, estimators, training inputs or deployment files change. Latest addendum
-explicitly requests one review PR and **no automatic merge**.
+models, estimators, training inputs or deployment files change. The subsequent user follow-up
+explicitly authorizes merging PR91 after verification.
 
 Added 12 defensible figures, exact static exports/CSV, source/model/figure hashes,
 mobile variants and accessible tables. Original six SVGs and evidence.json stay
@@ -18,7 +18,10 @@ byte-identical. Approved artifact and archived NOAA hashes reproduce seed42's
 Briers and both MAEs. No fitting/download/service call. Unknown interval bounds
 remain null; research gates and the inspected-2025 warning stay visible.
 
-Reconciled main `b16bef4` in `8bcb6d0` without conflicts, retaining PR90. Final
+Reconciled main `b16bef4` in `8bcb6d0` and `c951ae0` in `cf24867` without
+conflicts, retaining PR90 and upstream briefing work. The frontend tree is unchanged
+from its verified build; 12 upstream backend demo checks also pass (one dependency
+deprecation warning). Final
 198 frontend tests, seven MC/backtest tests, lint/TypeScript/build, byte checks,
 development and built live/demo Edge checks at four widths pass. Native controls,
 missing-JSON/no-script fallback, independent access/reload/history and synthetic
