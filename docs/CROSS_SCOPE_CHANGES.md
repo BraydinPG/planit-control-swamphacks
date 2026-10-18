@@ -1229,3 +1229,7 @@ The user wanted the landing page's demo button to open the live demo sites with 
 ### 2026-10-18 — Braydin: crew Home halves, collapsible hazard rows, header logo to landing (user request; Rudra's frontend)
 
 **For Rudra:** `ConnectedPages.tsx` crew Home puts the alert and hazards side by side at `lg` (stacked below), stretching to equal height while every hazard row is collapsed. `SiteHazards.tsx` wraps each hazard row in `<details open data-hazard-row>` with a chevron summary (also on the supervisor site page). `AppShell.tsx` header logo links to `LANDING_PATH`. `scripts/check-shell.mjs` asserts the halves, the collapsed heights and the logo link instead of the full-width stack on desktop.
+
+### 2026-10-18 — Braydin: briefings look ahead; demo notices get Gemini radius and sent instructions (user request)
+
+**For Rudra (seeded scenario data, no file of his edited):** each `freshen` round now gives the seeded demo notices (`demo-notice-*`, `demo-anomaly-*`) `radius_source="gemini"` with a radius no wider than stored and still covering their demo site, and fills the demo organization's confirmation with a suggested instruction sent unchanged two minutes after confirming. A reseed leaves them as seeded until the next round. Briefing prompt (Braydin's module) now writes a next-workday outlook; the template's forecast action moved first.
