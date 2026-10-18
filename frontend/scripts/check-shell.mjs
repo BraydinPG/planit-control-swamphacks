@@ -404,6 +404,10 @@ try {
     })
     await hash('/crew/sites', 'Score factors and evidence')
     assert(
+      await evaluate("!document.querySelector('[aria-labelledby=\"advisory-title\"]') && !document.body.innerText.includes('Unverified worksite conditions')"),
+      'Redundant unverified-conditions panel is absent',
+    )
+    assert(
       await evaluate(`(()=>{
         const more=Array.from(document.querySelectorAll('main button,main summary')).filter(e=>e.getClientRects().length&&/^View (more|less)/i.test(e.textContent.trim()));
         return more.length===0&&document.querySelectorAll('[data-observation-list] > li').length===${scoreFixture.observations.length}&&
@@ -428,11 +432,11 @@ try {
     if (width >= 1280)
       assert(
         await evaluate(`(()=>{
-          const score=document.querySelector('[data-crew-score]').getBoundingClientRect();
-          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+          const score=document.querySelector('[data-crew-score] [aria-label="Site score"]').getBoundingClientRect();
+          const conditions=document.querySelector('[data-crew-conditions] [data-observation-list]').parentElement.getBoundingClientRect();
           return conditions.left>score.right&&Math.abs(conditions.top-score.top)<2;
         })()`),
-        'Desktop worksite score and conditions sit side by side',
+        'Desktop worksite cards sit side by side with aligned tops',
       )
     await evaluate(
       'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',
@@ -440,6 +444,15 @@ try {
     await screenshot(`demo-score-${name}`)
     await hash('/crew/overview', 'Stop work alert - Lightning')
     await alertCardLoaded()
+    assert(
+      await evaluate(`(()=>{
+        const rows=Array.from(document.querySelectorAll('[data-site-hazard]'));
+        return ['lightning','heat_index','flood','severe_thunderstorm'].every(id=>rows.some(r=>r.dataset.siteHazard===id)) &&
+          rows.filter(r=>r.dataset.siteHazard==='lightning').length===1 &&
+          !!document.querySelector('[aria-label="Confirmed hazards"]');
+      })()`),
+      'Hazard list includes lightning, every environmental contributor and lower-tier alerts alongside confirmed notices',
+    )
   }
   await click('Alerts')
   await loaded('Acknowledging does not clear the alert')
@@ -576,14 +589,12 @@ try {
     map: '55 geographic Leaflet points; point popup navigation and equivalent location list passed; online basemap optional',
   })
   await click('Flood advisory replay')
-  // The advisory body sits behind its View more disclosure.
-  await disclose('View more')
-  await loaded('Simulated research replay')
-  await disclose('Research replay and source assessments')
+  await loaded('Score factors and evidence')
+  assert(await evaluate("!document.querySelector('[aria-labelledby=\"advisory-title\"]')"))
   await disclose('Location and source')
   assert(
     await evaluate(
-      "document.body.innerText.includes('eia860m-FL-59611') && document.body.innerText.includes('no work clearance is provided')",
+      "document.body.innerText.includes('eia860m-FL-59611')",
     ),
   )
   await hash(
