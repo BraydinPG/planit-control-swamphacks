@@ -76,7 +76,7 @@ function AccessPanel({ title, children, showBrand }: { title: string; children: 
   return (
     <section
       aria-labelledby="access-panel-title"
-      className="mx-auto my-8 flex max-w-md flex-col gap-4 rounded-lg border-2 border-neutral-900 bg-white p-6 text-lg text-neutral-950"
+      className="mx-auto my-8 flex max-w-md flex-col gap-4 rounded-lg bg-white p-6 text-lg text-neutral-950 shadow-[0_8px_32px_rgba(0,0,0,0.12)]"
     >
       {showBrand && <Brand variant="full" />}
       <h2 id="access-panel-title" className="text-2xl font-semibold">
