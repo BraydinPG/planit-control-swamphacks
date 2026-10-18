@@ -28,7 +28,15 @@ uv python install 3.14
 [ -x /srv/foresite/venv/bin/python ] || uv venv --python 3.14 /srv/foresite/venv
 
 chown -R foresite:foresite /srv/foresite
-chmod 750 /srv/foresite /srv/foresite/photos
+# Caddy only traverses /srv/foresite to read the built frontend; photos and .env stay private.
+chmod 711 /srv/foresite
+chmod 750 /srv/foresite/photos
+
+# Vultr's Ubuntu image enables ufw with only SSH open; Caddy needs 80 and 443.
+if command -v ufw >/dev/null; then
+  ufw allow 80/tcp >/dev/null
+  ufw allow 443/tcp >/dev/null
+fi
 
 # Unattended security updates.
 apt-get install -y -q unattended-upgrades

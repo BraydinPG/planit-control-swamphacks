@@ -4,6 +4,8 @@
 #   deploy/deploy.sh root@SERVER
 # Secrets travel over SSH only. Nothing here prints them.
 set -euo pipefail
+# Keep macOS file metadata out of the tarballs.
+export COPYFILE_DISABLE=1
 SERVER="${1:?usage: deploy/deploy.sh root@SERVER}"
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
@@ -34,6 +36,9 @@ rm -rf app.prev frontend.prev
 mv app.next app
 mv frontend.next frontend
 chown -R foresite:foresite /srv/foresite
+chmod 711 /srv/foresite
+chmod -R a+rX /srv/foresite/frontend
+chmod 600 app/backend/.env
 UV_PYTHON_INSTALL_DIR=/srv/foresite/python VIRTUAL_ENV=/srv/foresite/venv \
   uv pip install --quiet -r app/backend/requirements.txt -c app/deploy/constraints.txt
 systemctl restart foresite-api

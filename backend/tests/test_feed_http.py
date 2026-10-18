@@ -214,3 +214,23 @@ def test_failed_shared_provider_request_without_site_region_has_valid_summary():
         with runtime.round_scope() as run, pytest.raises(RequestFailure):
             client.get("https://shared-failure.test/summary", None, {}, provider="USGS")
         assert run.report()["requests"]["USGS"]["failures_by_region"] == {"shared": 1}
+
+
+def test_gzip_responses_decode_once():
+    # Real NWS and USGS responses are gzip-compressed. The streamed body is already
+    # decoded, so the reused response must not try to decode it again.
+    import gzip
+
+    body = json.dumps({"properties": {"ok": True}}).encode()
+
+    def handler(request):
+        return httpx.Response(
+            200,
+            headers={"Content-Encoding": "gzip", "Content-Type": "application/geo+json"},
+            content=gzip.compress(body),
+        )
+
+    with _http(policy(), handler) as client:
+        response = client.get("https://api.weather.test/points/1,2", None, {}, provider="NWS")
+    assert response.json() == {"properties": {"ok": True}}
+    assert "content-encoding" not in response.headers

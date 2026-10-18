@@ -202,8 +202,15 @@ class PooledHttp:
                             if len(body) > self.policy.max_response_bytes:
                                 raise FeedError("Feed response exceeds size limit")
                         # A detached response can be safely reused across parsing workers.
+                        # iter_bytes() already decoded gzip/deflate, so drop the encoding
+                        # headers; otherwise httpx decodes the body a second time and fails.
+                        plain_headers = [
+                            (k, v)
+                            for k, v in response.headers.multi_items()
+                            if k.lower() not in ("content-encoding", "content-length")
+                        ]
                         detached = httpx.Response(
-                            status, headers=response.headers, content=bytes(body), request=request
+                            status, headers=plain_headers, content=bytes(body), request=request
                         )
                         detached.extensions["feed_attempt"] = {
                             "attempt": attempt,
