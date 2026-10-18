@@ -403,6 +403,18 @@ try {
       crew_layout: layout,
     })
     await hash('/crew/sites', 'Score factors and evidence')
+    await loaded('Species sources and coverage')
+    assert(
+      await evaluate(`(()=>{
+        const panel=document.querySelector('[aria-labelledby="species-title"]');
+        const provenance=panel?.querySelector('[data-species-provenance]');
+        const details=provenance?.querySelector('details');
+        const map=panel?.querySelector('.leaflet-container');
+        return !!details && !details.open && details.textContent.includes('USFWS IPaC') &&
+          !panel.querySelector('footer') && (!map || !!(provenance.compareDocumentPosition(map)&Node.DOCUMENT_POSITION_FOLLOWING));
+      })()`),
+      'Species attribution stays in its source disclosure above the map',
+    )
     assert(
       await evaluate("!document.querySelector('[aria-labelledby=\"advisory-title\"]') && !document.body.innerText.includes('Unverified worksite conditions')"),
       'Redundant unverified-conditions panel is absent',

@@ -15,10 +15,17 @@ row move during a GET refresh; successful sends discard the cached draft. No aut
 scoring/alert logic, API contract, fixture, model, task checkbox or external service
 change. Rudra should preserve this composition during future UI work.
 
-197 frontend tests, lint/TypeScript and live/demo production builds pass. Browser
-acceptance is being completed before publication; see the current layout guide for
-final verification. Initial full-browser run hit a CDP navigation timeout without
-browser exceptions or failed API requests; it is being rerun independently.
+User follow-up moves the detached USFWS Observed/source/time footer from below the
+habitat map into Species sources and coverage under Local species. All metadata,
+regional-context caveats and map attribution remain. `SpeciesPanel.tsx`, its existing
+unit test and the browser regression now verify this placement.
+
+198 frontend tests, lint/TypeScript and live/demo builds pass. Development/built-demo
+workflows and 40 focused cases pass for the unified list; species placement is being
+verified before publication. An initial CDP navigation timeout did not recur after
+restarting only this checkout's owned preview. Reconciled main `c285cf5` in `e96b190`;
+the sole context-document conflict preserves both entries and the read-only guest
+feature. Final results are in the current layout guide.
 
 ## Worksite alignment and hazard evidence (Cache for Rudra) - 2026-10-18 06:46 UTC
 

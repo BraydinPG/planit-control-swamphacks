@@ -31,9 +31,13 @@ data, permissions and actions across screen sizes.
   notices remain outside the list; rejected, absent and missing reports are excluded.
   A page-local cache preserves supervisor drafts when confirmation moves a notice
   into its merged row during refresh. Existing owner/role checks still control sending.
+- Species source, state and retrieval time are contained in **Species sources and
+  coverage** under Local species. No detached USFWS status footer sits below the habitat
+  map. Regional-context caveats, unavailable states and map attribution remain intact.
 
 [Home desktop](crew-desktop.png) ? [Home phone](crew-mobile.png) ?
 [Expanded worksite](worksite-expanded.png) ? [Full-width alerts](alerts-full-width.png)
+[Unified hazards on phone](confirmed-hazards-mobile.png).
 
 ## Review locally
 
@@ -60,13 +64,13 @@ research/historical limitations remain available with their associated evidence.
 
 Focused browser checks cover 40 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
 with zero horizontal overflow, exceptions or real backend calls and score/weather card
-top alignment within 1px at desktop widths. Unit count: 197.
+top alignment within 1px at desktop widths. Unit count: 198.
 Lint, TypeScript, default/live and explicit-demo production builds and the complete
 development/built-demo browser workflow suites also pass.
-139 focused backend scoring, confirmed-report, lightning/stop-work and TypeScript
-mirror checks pass. Implemented in `3124b74`; reconciliation `e1f6fb8` preserves
-main `ce3292b` / PR79 without conflicts.
-[Review branch](https://github.com/BraydinPG/planit-control-swamphacks/compare/main...feature/cache-worksite-hazard-evidence).
+Unified-list implementation `2d293fb` and `d82a30f`; reconciliation `e96b190`
+preserves main `c285cf5` / read-only guests. The prior PR80 baseline also passed
+139 backend score/report/lightning/contract checks; this feature changes no backend code.
+[Review branch](https://github.com/BraydinPG/planit-control-swamphacks/compare/main...feature/cache-unified-confirmed-hazards).
 Existing bundle-size warnings remain; browser evidence is demo/mocked verification,
 not live Auth0/Tiger Data or operational safety acceptance.
 
