@@ -148,6 +148,7 @@ export function ConfirmedHazards({
   notices: HazardNotice[]
   outlook?: EventOutlook | null
 }) {
+  const { persona, principalId } = useApplication()
   if (!notices.length) return null
   return (
     <section
@@ -175,27 +176,30 @@ export function ConfirmedHazards({
               {displayLabel(notice.hazard_label)}
             </h4>
             <Details title="View more" label={`View more about ${displayLabel(notice.hazard_label)}`}>
-            {notice.instruction_sent_at && notice.instruction ? (
-              <div className="rounded-xl bg-surface-2 p-3 ring-1 ring-line-strong">
-                <strong className="kicker text-ink!">
-                  Supervisor-approved instruction
-                </strong>
-                <p className="mt-1 text-base font-semibold">
-                  {notice.instruction}
+              {notice.instruction_sent_at && notice.instruction ? (
+                <div className="rounded-xl bg-surface-2 p-3 ring-1 ring-line-strong">
+                  <strong className="kicker text-ink!">
+                    Supervisor-approved instruction
+                  </strong>
+                  <p className="mt-1 text-base font-semibold">
+                    {notice.instruction}
+                  </p>
+                  <p className="mt-1 text-sm text-muted">
+                    Sent <Timestamp value={notice.instruction_sent_at} />
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm">
+                  Confirmed; no approved instruction has been sent.
+                  {persona === 'supervisor' &&
+                    notice.confirmed_by !== principalId &&
+                    ' Only the supervisor who confirmed this hazard can send its instruction.'}
                 </p>
-                <p className="mt-1 text-sm text-muted">
-                  Sent <Timestamp value={notice.instruction_sent_at} />
-                </p>
-              </div>
-            ) : (
-              <p className="text-sm">
-                Confirmed; no approved instruction has been sent.
-              </p>
-            )}
-            {outlook?.event_id === notice.id && (
-              <ExpectedDuration outlook={outlook} />
-            )}
-            <NoticeSource notice={notice} />
+              )}
+              {outlook?.event_id === notice.id && (
+                <ExpectedDuration outlook={outlook} />
+              )}
+              <NoticeSource notice={notice} />
             </Details>
           </li>
         ))}

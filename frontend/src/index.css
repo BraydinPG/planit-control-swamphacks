@@ -28,8 +28,9 @@
   --pc-focus: #0071e3;
   --pc-link: #0066cc;
   --pc-accent: #0071e3;
-  --pc-stop: #d70015;
-  --pc-stop-text: #c4000f;
+  /* Softened from #d70015 / #c4000f; white text stays above 5.5:1. */
+  --pc-stop: #c0262d;
+  --pc-stop-text: #b5262c;
   --pc-warn: #c93400;
   --pc-warn-text: #b02e00;
   --pc-caution: #ffcc00;
