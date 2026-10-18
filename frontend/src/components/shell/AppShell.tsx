@@ -3,6 +3,7 @@ import { shellContext, shellMode } from '../../api/shell-fixtures'
 import { Icon, type IconName } from './Icon'
 import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
+import { useVividStorm } from './stormLevel'
 
 export type Workspace = 'crew' | 'supervisor'
 export type ShellPage =
@@ -88,6 +89,8 @@ export function AppShell({
     workspace: workspaceOverride ?? locationRoute.workspace,
   }
   const heading = useRef<HTMLHeadingElement>(null)
+  // App pages get the brighter fog and more frequent lightning; sign-in stays calm.
+  useVividStorm()
   const context = shellContext(shellMode)
   const isFixture = shellMode === 'fixture'
   const visible = destinationsFor(route.workspace)
