@@ -2,6 +2,12 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Supervisor-only notice review link - 2026-10-17
+- Explicit user merge authorization for [PR56](https://github.com/BraydinPG/planit-control-swamphacks/pull/56): incorporated current main `08d1e80`, preserving sign-in/logo-home and report/disclosure changes. Merge acceptance passes: 174 frontend tests, 22 backend hazard tests, lint, TypeScript, production build and focused mock-browser crew/supervisor checks at 390/1440, including crew reload; no browser exceptions or real-service acceptance claim.
+- User-authorized frontend fix on `feature/cache-supervisor-notice-review`, base main `f42ddaf`: pending photo reports keep the supervisor-confirmation status for crew, but only supervisors see "Review worksite notice". Existing notice confirmation/instruction guards and backend permission checks remain authoritative.
+- Scope: `ConnectedPages.tsx`, existing browser regression and coordination docs. No schema, Auth0, backend, scoring, ML or task checkbox changes. T065 real-account lifecycle acceptance remains pending.
+- Verification: 172 frontend tests, lint, TypeScript, production build, 21 offline backend hazard tests and Edge browser regression pass. New demo/mock-live photo-report checks cover hidden crew review actions (including reload) and retained supervisor links; 11 destinations at 1440/768/390/320 pass without exceptions or real API requests. Crew 403 and authorized supervisor confirmation are backend-tested. Existing bundle-size/deprecation warnings remain.
+
 ## Upstream deployment merge - 2026-10-18 01:25 UTC
 - Integrated `origin/main` through `98387c8` into `feature/rudra-species-context`, preserving the automatic GitHub Actions deploy workflow and model-artifact safeguards in `deploy/`.
 - Verification on the merged tree: **932 backend tests** and Ruff checks pass; **171 frontend tests**, TypeScript build checks, and the frontend production build pass. No deployment was triggered from this feature branch.
@@ -195,6 +201,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Verification: all 171 frontend tests, frontend lint, TypeScript checks and production build pass. Browser visual verification was not run.
 - Follow-up: confirmed hazard rows and the unverified-conditions advisory now collapse behind keyboard-accessible View more disclosures. Site reports show category titles and pending supervisor-action text before their disclosure; the Reports page retains its full workflow. Existing confirmation/instruction actions remain unchanged. All 171 frontend tests, lint and production build pass; no push/merge or browser visual check.
 - Publication authorized by Rudra: integrated origin/main f42ddaf, reconciling both project notes and AlertCard acknowledgement/expired-window refresh behavior. All 172 frontend tests, lint, TypeScript and production build pass on the merged tree.
+- PR56 conflict resolution: incorporated main f4c0d56, retaining both supervisor-link and deployment context entries plus the compact report UI. Supervisor-only notice links remain guarded. All 172 frontend tests, lint and production build pass; no browser rerun.
 
 ## Crew UI follow-up - 2026-10-17
 - User-authorized: alert toolbar spacing and removal of All alerts/View alert links and acknowledgement subtitle; solid red partial-evidence score bar with existing incomplete-data warnings; three-second site-score animation; hidden crew-home location card and redundant report/briefing actions; top logo returns to the current workspace home. Backend rules, alert timer, permissions and services are unchanged. User authorizes push and merge.
