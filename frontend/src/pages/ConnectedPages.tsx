@@ -516,7 +516,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
               ))}
           </select>
         </label>
-        <label className="flex min-h-11 items-center gap-3 rounded-xl border border-line-strong px-3 text-sm font-semibold text-ink-2">
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface px-3 text-sm font-semibold text-ink">
           <input
             type="checkbox"
             className="size-5"
