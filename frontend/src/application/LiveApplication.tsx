@@ -1,14 +1,28 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { RequireRole, useAuth } from '../auth'
 import { HttpClient } from '../api/http-client'
 import { ApplicationProvider } from './Provider'
 import { AppShell } from '../components/shell/AppShell'
 import { ConnectedPages } from '../pages/ConnectedPages'
 import { control } from '../components/data/Interaction'
+import { cameFromLanding, isBareEntry, showLanding } from './landing'
 
 export function LiveApplication() {
   const auth = useAuth()
-  const { mode, isAuthenticated, getAccessToken } = auth
+  const { mode, isAuthenticated, isLoading, error, login, getAccessToken } = auth
+  // Read once: Sign in on the landing page starts Auth0 straight away instead of
+  // showing the old sign-in card. If that fails, the card stays as the fallback.
+  const [fromLanding] = useState(cameFromLanding)
+  const [loginFailed, setLoginFailed] = useState(false)
+  const startSignIn = fromLanding && mode === 'auth0' && !loginFailed
+  // An Auth0 sign-in error (for example a failed callback) stays on the sign-in card.
+  const toLanding = !fromLanding && !(mode === 'auth0' && error) && isBareEntry()
+  const leaving = !isLoading && !isAuthenticated && (startSignIn || toLanding)
+  useEffect(() => {
+    if (!leaving) return
+    if (startSignIn) login({ returnTo: '/' }).catch(() => setLoginFailed(true))
+    else showLanding()
+  }, [leaving, startSignIn, login])
   const client = useMemo(
     () =>
       new HttpClient(
@@ -24,6 +38,7 @@ export function LiveApplication() {
       ),
     [mode, isAuthenticated, getAccessToken],
   )
+  if (leaving) return null
   return (
     <RequireRole role={['crew', 'supervisor']}>
       <LiveSession client={client} />
