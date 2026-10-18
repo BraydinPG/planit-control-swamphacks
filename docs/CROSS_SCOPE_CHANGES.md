@@ -793,3 +793,13 @@ The user asked that a hazard notice reach every organization in its radius, and 
 - `backend/app/api/teams.py`: `DELETE /api/teams/{team_id}/members/{user_id}` deletes that crew member's membership (own organization only; 404 otherwise) and audits `team.member.remove`. Their reports stay on record, and they can rejoin with a new join code.
 - Frontend: `removeMember` in the client contract, HTTP and demo clients; a two-step **Remove** on each member row of the Team tab.
 - Tests: `backend/tests/test_teams_api.py`, `frontend/tests/team.test.mjs`.
+
+### 2026-10-18 — Braydin: supervisor keys and the new-account choice (user-authorized)
+
+The user asked that a new member choose crew or supervisor, and that supervisors be created without manual Auth0 role assignment: an existing supervisor creates a one-use key.
+
+- `backend/app/db/models.py`: new `supervisor_invites` table (code, creator, expiry, revoked, used by/at).
+- `backend/app/security/management.py` (new): minimal Auth0 Management API client (client-credentials token, role lookup by name, add user to role) with settings `AUTH0_MGMT_CLIENT_ID`/`AUTH0_MGMT_CLIENT_SECRET` (auth/SETUP.md section 6a).
+- `backend/app/api/teams.py`: `POST /api/onboarding/supervisor`, `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}`. The key is claimed in the same transaction, Auth0 assigns the role, then the organization and supervisor membership are saved; any failure saves nothing.
+- Frontend (Rudra's lane): the unlinked-account screen offers **Crew member** (join code) or **Start an organization** (supervisor key + name), then signs in again for the new role; the Team tab gets **Invite a supervisor**; types `SupervisorInvite`/`SupervisorSignup` mirrored; client methods in contract, HTTP and demo clients.
+- Tests: `backend/tests/test_teams_api.py`, `backend/tests/test_auth0_management.py`, `frontend/tests/team.test.mjs`.

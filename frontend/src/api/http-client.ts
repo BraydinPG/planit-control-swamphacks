@@ -8,6 +8,7 @@ import {
   validateAccount,
   validateBriefing,
   validateJoinCode,
+  validateSupervisorInvite,
   validateReport,
   validateNotice,
   validateConfirmation,
@@ -339,6 +340,29 @@ export class HttpClient implements Client {
       method: 'POST',
       body: JSON.stringify({ code }),
     }).then(validateAccount)
+  }
+  becomeSupervisor(code: string, organizationName: string) {
+    return this.request<unknown>('/api/onboarding/supervisor', {
+      method: 'POST',
+      body: JSON.stringify({ code, organization_name: organizationName }),
+    }).then(validateAccount)
+  }
+  supervisorInvites() {
+    return this.request<unknown>('/api/supervisor-invites').then((rows) => {
+      if (!Array.isArray(rows))
+        throw new ApiError(502, 'Invalid supervisor key list')
+      return rows.map(validateSupervisorInvite)
+    })
+  }
+  createSupervisorInvite() {
+    return this.request<unknown>('/api/supervisor-invites', {
+      method: 'POST',
+    }).then(validateSupervisorInvite)
+  }
+  async revokeSupervisorInvite(code: string) {
+    await this.request(`/api/supervisor-invites/${encodeURIComponent(code)}`, {
+      method: 'DELETE',
+    })
   }
   renameOrganization(name: string) {
     return this.request<unknown>('/api/organization', {

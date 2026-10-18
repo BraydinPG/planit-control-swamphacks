@@ -13,6 +13,7 @@ import type {
   CrewReport,
   HazardNotice,
   JoinCode,
+  SupervisorInvite,
   OrganizationTeams,
   ReportCreate,
   ReportReview,
@@ -526,6 +527,33 @@ export class DemoClient implements Client {
     this.supervisor()
     for (const t of this.roster.teams)
       t.join_codes = t.join_codes.filter((c) => c.code !== code)
+  }
+  private invites: SupervisorInvite[] = []
+  async supervisorInvites() {
+    this.supervisor()
+    const now = this.now()
+    return clone(this.invites.filter((i) => Date.parse(i.expires_at) > now))
+  }
+  async createSupervisorInvite() {
+    this.supervisor()
+    const now = this.now()
+    const invite: SupervisorInvite = {
+      code: joinCode(),
+      created_at: new Date(now).toISOString(),
+      expires_at: new Date(now + 7 * 24 * 3600 * 1000).toISOString(),
+    }
+    this.invites.unshift(invite)
+    return clone(invite)
+  }
+  async revokeSupervisorInvite(code: string) {
+    this.supervisor()
+    this.invites = this.invites.filter((i) => i.code !== code)
+  }
+  async becomeSupervisor(): Promise<Account> {
+    throw new ApiError(
+      409,
+      'Simulated demo: preview accounts already have an organization. Supervisor keys work with a live sign-in.',
+    )
   }
   private freeSite(siteId: string | null | undefined, teamId: string | null) {
     if (!siteId) return null

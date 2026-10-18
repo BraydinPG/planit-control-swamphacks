@@ -253,7 +253,8 @@ Use two roles: `crew` and `supervisor`. Validate access tokens on the backend. H
 | Confirm a potential hazard from a received notice | No | A notified supervisor, for their own organization |
 | Edit and send the instruction for that hazard | No | The supervisor who confirmed it for their organization; it reaches only that organization's teams |
 | Read organization-wide briefings | Own organization only | Own organization only |
-| Join a team with a join code | Only when on no team yet | No (linked by an administrator) |
+| Join a team with a join code | Only when on no team yet | No |
+| Start an organization with a supervisor key | Only when in no organization yet (becomes its supervisor) | Create and revoke keys |
 | See the team roster; create and revoke join codes | No | Own organization only |
 | Add, rename, move, or remove teams; remove a team member | No | Own organization only |
 
@@ -291,6 +292,8 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `PATCH /api/organization` | Supervisor: rename their organization. |
 | `POST /api/teams`, `PATCH /api/teams/{id}`, `DELETE /api/teams/{id}` | Supervisor: add a team to their organization, rename it or change its site (a site has at most one team), or remove a team with no members and no reports. |
 | `DELETE /api/teams/{id}/members/{user_id}` | Supervisor: take a crew member off one of their organization's teams. Their reports stay on record; they can rejoin with a new join code. |
+| `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}` | Supervisor: their one-use supervisor keys (7 days, revocable). |
+| `POST /api/onboarding/supervisor` | An account in no organization redeems a supervisor key and names its organization; Auth0 gives it the supervisor role. |
 | `GET /api/sites/{id}/species` | Read-only species context for a team site: USFWS IPaC federally listed species whose range overlaps the site (regional context, not a sighting), USFWS critical habitat nearby, curated encounter guidance, and the site's crew wildlife reports kept separate. Same access as site detail; 404 `no_team` for sites without a team. Never affects the score, alerts, or clearance. See `docs/SPECIES_CONTEXT.md`. |
 
 Use a stable response contract. Site summaries include `id`, `name`, `lat`, `lon`, `assigned_team`, `risk_score`, `risk_level`, `updated_at`, `active_alerts`, `top_factors`, `data_completeness`, and `model_version`. `assigned_team` is null when no team is assigned.

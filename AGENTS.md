@@ -161,7 +161,7 @@ Adapter rules:
 - `POST /api/hazards/{id}/instruction`
 - `GET /api/sites/{id}/briefing`
 - `GET /api/briefings`
-- `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `PATCH /api/organization`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}`, `DELETE /api/teams/{id}/members/{user_id}` (team onboarding and management)
+- `GET /api/me`, `POST /api/join`, `GET /api/team`, `POST /api/teams/{id}/join-codes`, `DELETE /api/join-codes/{code}`, `PATCH /api/organization`, `POST /api/teams`, `PATCH|DELETE /api/teams/{id}`, `DELETE /api/teams/{id}/members/{user_id}`, `POST /api/onboarding/supervisor`, `GET|POST /api/supervisor-invites`, `DELETE /api/supervisor-invites/{code}` (team onboarding and management)
 - `GET /api/sites/{id}/species` (read-only species context for team sites; see `docs/SPECIES_CONTEXT.md`)
 
 These routes are FastAPI routes in `backend/app/`. Do not add a second API server. Rudra consumes these routes through `frontend/src/api/`. The frontend must support fixture mode until routes are ready.
@@ -301,7 +301,8 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 | Confirm a potential hazard from a received notice | No | A notified supervisor, for their own organization |
 | Edit and send the instruction for that hazard | No | The supervisor who confirmed it for their organization (reaches only its teams) |
 | Read organization-wide briefings | Own organization only | Own organization only |
-| Join a team with a join code | Only when on no team yet | No (linked by an administrator) |
+| Join a team with a join code | Only when on no team yet | No |
+| Start an organization with a supervisor key | Only when in no organization yet (becomes its supervisor) | Create and revoke keys |
 | See the team roster; create and revoke join codes | No | Own organization only |
 | Add, rename, move, or remove teams; remove a team member | No | Own organization only |
 

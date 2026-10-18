@@ -88,6 +88,18 @@ export interface JoinCode {
   expires_at: string
 }
 
+/** One-use key that lets a new account become a supervisor of its own organization. */
+export interface SupervisorInvite {
+  code: string
+  created_at: string
+  expires_at: string
+}
+
+export interface SupervisorSignup {
+  code: string
+  organization_name: string
+}
+
 export interface TeamRoster {
   id: string
   name: string

@@ -230,6 +230,21 @@ class JoinCode(Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class SupervisorInvite(Base):
+    """A supervisor's one-use key that lets a new account start its own organization as a
+    supervisor, until it expires, is revoked, or is used."""
+
+    __tablename__ = "supervisor_invites"
+
+    code: Mapped[str] = mapped_column(String, primary_key=True)  # XXXX-XXXX
+    created_by: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    used_by: Mapped[str | None] = mapped_column(String, nullable=True)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class HazardNotice(Base):
     """Potential notice. The instruction stays empty until a supervisor sends it."""
 

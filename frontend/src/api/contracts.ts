@@ -6,6 +6,7 @@ import type {
   HazardNotice,
   HazardConfirmResponse,
   JoinCode,
+  SupervisorInvite,
   OrganizationTeams,
   TeamCreate,
   TeamRoster,
@@ -54,6 +55,12 @@ export interface Client {
   revokeJoinCode(code: string): Promise<void>
   /** Crew account with no team joins the team behind a code. */
   join(code: string): Promise<Account>
+  /** New account redeems a supervisor key and starts its own organization. */
+  becomeSupervisor(code: string, organizationName: string): Promise<Account>
+  /** Supervisor: their one-use supervisor keys that can still be used. */
+  supervisorInvites(): Promise<SupervisorInvite[]>
+  createSupervisorInvite(): Promise<SupervisorInvite>
+  revokeSupervisorInvite(code: string): Promise<void>
   /** Supervisor: rename their organization. */
   renameOrganization(name: string): Promise<OrganizationTeams>
   /** Supervisor: add, rename or move (site), and remove teams in their organization. */

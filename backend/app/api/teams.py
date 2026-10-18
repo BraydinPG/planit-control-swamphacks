@@ -3,7 +3,7 @@
 - `GET /api/me`: the caller's organization, team, and site, or nulls when the account has
   not joined one. It also refreshes the name and email shown on the roster.
 - `POST /api/join`: a crew account that belongs to no organization joins the team behind
-  a valid code. Supervisor accounts are linked by an administrator instead.
+  a valid code. A new supervisor redeems a supervisor key and names their organization.
 - `GET /api/team`: the supervisor's organization: its supervisors and, for every team,
   the site, the members, and the active join codes.
 - `POST /api/teams/{team_id}/join-codes`: a supervisor creates a code for a team in their
@@ -24,7 +24,7 @@ from typing import Annotated
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Response
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_now
@@ -36,18 +36,26 @@ from app.schemas import (
     JoinRequest,
     OrganizationTeams,
     OrganizationUpdate,
+    SupervisorInvite,
+    SupervisorSignup,
     TeamCreate,
     TeamMember,
     TeamRoster,
     TeamUpdate,
 )
 from app.security import AuthenticatedUser, CurrentUser, membership_for, require_role
+from app.security.management import (
+    Auth0Management,
+    ManagementUnavailable,
+    get_auth0_management,
+)
 from app.services.alerts import audit
 
 router = APIRouter(tags=["teams"])
 
 Now = Annotated[datetime, Depends(get_now)]
 Supervisor = Annotated[CurrentUser, Depends(require_role("supervisor"))]
+Management = Annotated[Auth0Management | None, Depends(get_auth0_management)]
 
 CODE_LIFETIME = timedelta(days=7)
 # No 0/O, 1/I/L: codes are read aloud and typed on phones.
@@ -65,7 +73,9 @@ def me(user: AuthenticatedUser, session: DbSession) -> Account:
 @router.post("/api/join", response_model=Account)
 def join(body: JoinRequest, user: AuthenticatedUser, session: DbSession, now: Now) -> Account:
     if user.role != "crew":
-        raise _refuse(409, "supervisor", "Supervisor accounts are linked by an administrator.")
+        raise _refuse(
+            409, "supervisor", "Supervisor accounts start an organization with a supervisor key."
+        )
     if membership_for(session, user) is not None:
         raise _refuse(409, "already_member", "This account already belongs to a team.")
     code = session.get(db.JoinCode, normalize(body.code))
@@ -86,6 +96,128 @@ def join(body: JoinRequest, user: AuthenticatedUser, session: DbSession, now: No
     audit(session, user.sub, "team.join", f"{code.team_id} via {code.code}", now)
     session.commit()
     return _account(user, membership)
+
+
+@router.post("/api/onboarding/supervisor", response_model=Account)
+def become_supervisor(
+    body: SupervisorSignup,
+    user: AuthenticatedUser,
+    session: DbSession,
+    now: Now,
+    management: Management,
+) -> Account:
+    """A new account redeems a supervisor invite key and starts its own organization.
+
+    Auth0 gets the supervisor role first; the invite, organization and membership are
+    saved only if that worked, so a failure changes nothing. The new role reaches the
+    browser on the next sign-in.
+    """
+    if membership_for(session, user) is not None:
+        raise _refuse(409, "already_member", "This account already belongs to an organization.")
+    name = body.organization_name.strip()
+    if not name:
+        raise _refuse(422, "no_name", "Name your organization.")
+    invite = session.get(db.SupervisorInvite, normalize(body.code))
+    if invite is None or invite.revoked_at is not None or invite.used_by is not None:
+        raise _refuse(
+            404, "invalid_code", "That supervisor key isn't valid. Ask the supervisor who sent it."
+        )
+    if _aware(invite.expires_at) <= now:
+        raise _refuse(410, "expired", "That supervisor key has expired. Ask for a new one.")
+    if management is None:
+        raise _refuse(
+            503,
+            "not_configured",
+            "Supervisor sign-up isn't set up on this server yet (Auth0 role manager missing).",
+        )
+    # Claim the key in this transaction, so two accounts can't both use it.
+    claimed = session.execute(
+        update(db.SupervisorInvite)
+        .where(
+            db.SupervisorInvite.code == invite.code,
+            db.SupervisorInvite.used_by.is_(None),
+            db.SupervisorInvite.revoked_at.is_(None),
+        )
+        .values(used_by=user.sub, used_at=now)
+        .execution_options(synchronize_session=False)
+    )
+    if claimed.rowcount != 1:
+        session.rollback()
+        raise _refuse(
+            404, "invalid_code", "That supervisor key isn't valid. Ask the supervisor who sent it."
+        )
+    try:
+        management.assign_role(user.sub, "supervisor")
+    except ManagementUnavailable:
+        session.rollback()
+        raise _refuse(
+            502,
+            "auth0_unavailable",
+            "Auth0 couldn't give this account the supervisor role. Try again.",
+        ) from None
+    organization = db.Organization(id=f"org:{uuid4().hex}", name=name)
+    membership = db.Membership(
+        id=f"membership:{uuid4().hex}",
+        user_id=user.sub,
+        organization_id=organization.id,
+        team_id=None,
+        role="supervisor",
+        joined_at=now,
+    )
+    _refresh_profile(membership, user)
+    session.add(organization)
+    session.flush()
+    session.add(membership)
+    audit(session, user.sub, "supervisor.onboard", f"{organization.id} via {invite.code}", now)
+    session.commit()
+    session.refresh(membership)
+    account = _account(user, membership)
+    return account.model_copy(update={"role": "supervisor"})
+
+
+@router.post("/api/supervisor-invites", response_model=SupervisorInvite, status_code=201)
+def create_supervisor_invite(user: Supervisor, session: DbSession, now: Now) -> SupervisorInvite:
+    """A one-use key that lets a new account become a supervisor of its own organization."""
+    _organization_of(session, user)
+    row = db.SupervisorInvite(
+        code=_unused_code(session),
+        created_by=user.sub,
+        created_at=now,
+        expires_at=now + CODE_LIFETIME,
+    )
+    session.add(row)
+    audit(session, user.sub, "supervisor_invite.create", row.code, now)
+    session.commit()
+    return _invite(row)
+
+
+@router.get("/api/supervisor-invites", response_model=list[SupervisorInvite])
+def list_supervisor_invites(
+    user: Supervisor, session: DbSession, now: Now
+) -> list[SupervisorInvite]:
+    """This supervisor's keys that can still be used."""
+    rows = session.scalars(
+        select(db.SupervisorInvite)
+        .where(
+            db.SupervisorInvite.created_by == user.sub,
+            db.SupervisorInvite.used_by.is_(None),
+            db.SupervisorInvite.revoked_at.is_(None),
+        )
+        .order_by(db.SupervisorInvite.created_at.desc())
+    ).all()
+    return [_invite(r) for r in rows if _aware(r.expires_at) > now]
+
+
+@router.delete("/api/supervisor-invites/{code}", status_code=204)
+def revoke_supervisor_invite(code: str, user: Supervisor, session: DbSession, now: Now) -> Response:
+    row = session.get(db.SupervisorInvite, normalize(code))
+    if row is None or row.created_by != user.sub:
+        raise HTTPException(404, "Supervisor key not found")
+    if row.revoked_at is None and row.used_by is None:
+        row.revoked_at = now
+        audit(session, user.sub, "supervisor_invite.revoke", row.code, now)
+        session.commit()
+    return Response(status_code=204)
 
 
 @router.get("/api/team", response_model=OrganizationTeams)
@@ -245,7 +377,10 @@ def new_code() -> str:
 def _unused_code(session: Session) -> str:
     for _ in range(10):
         code = new_code()
-        if session.get(db.JoinCode, code) is None:
+        if (
+            session.get(db.JoinCode, code) is None
+            and session.get(db.SupervisorInvite, code) is None
+        ):
             return code
     raise HTTPException(503, "Could not create a unique join code; try again")
 
@@ -324,6 +459,12 @@ def _member(m: db.Membership) -> TeamMember:
         email=m.email,
         role=m.role,
         joined_at=_aware(m.joined_at) if m.joined_at else None,
+    )
+
+
+def _invite(row: db.SupervisorInvite) -> SupervisorInvite:
+    return SupervisorInvite(
+        code=row.code, created_at=_aware(row.created_at), expires_at=_aware(row.expires_at)
     )
 
 
