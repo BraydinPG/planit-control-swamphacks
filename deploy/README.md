@@ -24,6 +24,9 @@ Start from `backend/.env.example` and fill every value. Production differences:
 - `FEED_REFRESH_ENABLED=true` and `BRIEFING_SCHEDULE_ENABLED=true` **on this server only**.
   Every laptop sharing the Tiger database sets both to `false`.
 - `PHOTO_LOCAL_DIR=/srv/foresite/photos`
+- `USGS_HTTP_CONNECTIONS=4`, `FLOOD_GAUGE_BATCH_DEGREES=1`, `FEED_ROUND_BUDGET_SECONDS=900`: USGS
+  takes about 9 s per box, and with the defaults the gauge feed hit the 480 s round budget
+  with about two thirds of sites unfetched. Still well inside the 60-minute stale window.
 - `VULTR_OBJECT_STORAGE_ENDPOINT`, `_ACCESS_KEY`, `_SECRET_KEY`, `_BUCKET` from the Object
   Storage subscription (`vultr-cli object-storage get <id>`).
 
