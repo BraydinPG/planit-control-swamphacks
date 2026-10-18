@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AuthProvider } from './auth'
 import { AppShell } from './components/shell/AppShell'
 import { shellMode } from './api/shell-fixtures'
@@ -10,6 +10,7 @@ import { Details } from './components/data/Details'
 import { LiveApplication } from './application/LiveApplication'
 import { ApplicationProvider } from './application/Provider'
 import type { Persona } from './api/contracts'
+import { cameFromLanding, clearSignInParam, isBareEntry, showLanding } from './application/landing'
 import './styles/map.css'
 
 function DemoApplication() {
@@ -95,6 +96,20 @@ function DemoApplication() {
     </ApplicationProvider>
   )
 }
+/** The bare address opens the landing page; its Sign in button opens the crew demo. */
+function DemoEntry() {
+  const [leaving] = useState(() => {
+    if (cameFromLanding()) {
+      clearSignInParam('#/crew/overview')
+      return false
+    }
+    return isBareEntry()
+  })
+  useEffect(() => {
+    if (leaving) showLanding()
+  }, [leaving])
+  return leaving ? null : <DemoApplication />
+}
 export default function App() {
   if (shellMode === 'invalid')
     return (
@@ -109,7 +124,7 @@ export default function App() {
       </main>
     )
   return shellMode === 'fixture' ? (
-    <DemoApplication />
+    <DemoEntry />
   ) : (
     <AuthProvider>
       <LiveApplication />
