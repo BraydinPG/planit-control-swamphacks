@@ -11,6 +11,7 @@ import {
 } from 'react'
 import type {
   CrewReport,
+  HazardNotice,
   MatCondition,
   ReportCategory,
   SiteSummary,
@@ -39,7 +40,7 @@ import {
 } from '../components/data/Interaction'
 import { AlertCard } from '../components/data/AlertCard'
 import { EventOutlooks } from '../components/data/EventOutlooks'
-import { NoticeCard } from '../components/data/NoticeCard'
+import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
 import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
 import { SupervisorOverview } from '../components/data/SupervisorOverview'
@@ -160,7 +161,7 @@ function SitePage({
   dashboard: boolean
   sites: SiteSummary[]
 }) {
-  const { client, persona, refresh } = useApplication()
+  const { client, persona, refresh, principalId } = useApplication()
   const result = useResource(
     `site:${id}`,
     useCallback(() => client.site(id), [client, id]),
@@ -169,6 +170,14 @@ function SitePage({
   if (!result.data) return <LoadState error={result.error} />
   const site = result.data,
     active = site.alerts.filter((a) => a.state === 'active')
+  // Potential notices need a supervisor to confirm them; a confirmed one still
+  // needs its confirming supervisor to send the instruction. Everything else is
+  // settled and listed together under Confirmed hazards.
+  const needsAction = (n: HazardNotice) =>
+    n.status === 'potential' ||
+    (persona === 'supervisor' &&
+      n.confirmed_by === principalId &&
+      !n.instruction_sent_at)
   const actions = (
     <div className="space-y-3">
       <div className="grid gap-3 @lg:grid-cols-2">
@@ -275,16 +284,22 @@ function SitePage({
               )}
             </section>
           )}
-          <section className="space-y-3">
+          <section className={`${card} space-y-3 border border-line p-3`}>
             <SectionHead title="Hazards and supervisor instructions" />
             {site.notices.length ? (
-              site.notices.map((n) => (
-                <NoticeCard
-                  key={n.id}
-                  notice={n}
+              <>
+                {site.notices.filter(needsAction).map((n) => (
+                  <NoticeCard
+                    key={n.id}
+                    notice={n}
+                    outlook={site.event_outlook}
+                  />
+                ))}
+                <ConfirmedHazards
+                  notices={site.notices.filter((n) => !needsAction(n))}
                   outlook={site.event_outlook}
                 />
-              ))
+              </>
             ) : (
               <Empty>
                 No notices supplied. Local electrical, structural and access
@@ -295,14 +310,14 @@ function SitePage({
         </div>
       </div>
       {/* Full width so reports sit side by side on wide screens. */}
-      <section className="space-y-3">
-        <SectionHead kicker="Crew reports" title="Reports at this site" />
+      <section className={`${card} space-y-3 border border-line p-3`}>
+        <SectionHead title="Reports at this site" />
         {site.reports.length ? (
           <Masonry
             label="Reports at this site"
             items={site.reports.map((r) => ({
               key: r.id,
-              node: <ReportCard report={r} />,
+              node: <ReportCard report={r} compact />,
             }))}
           />
         ) : (
@@ -609,7 +624,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                   ) : (
                     <>
                       <p className="text-lg leading-none font-bold tabular-nums">
-                        {s.risk_score}{' '}
+                        <CountUp value={s.risk_score} decimals={1} />{' '}
                         <span className="text-sm font-semibold text-muted">
                           / 10
                         </span>
@@ -673,7 +688,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
   )
 }
 function AlertsPage({ id }: { id: string | null }) {
-  const { client, refresh } = useApplication()
+  const { client, refresh, persona } = useApplication()
   const alerts = useResource(
     'alerts',
     useCallback(() => client.alerts(), [client]),
@@ -683,6 +698,10 @@ function AlertsPage({ id }: { id: string | null }) {
   const rows = id ? alerts.data.filter((a) => a.id === id) : alerts.data
   return (
     <div className="pc-enter space-y-5">
+      <a href={`#/${persona}/overview`} className={control}>
+        <Icon name="back" className="size-4" />
+        Back to {persona === 'crew' ? 'home' : 'overview'}
+      </a>
       {id && (
         <a
           href={`#${location.hash.split('/').slice(0, 3).join('/').slice(1)}`}
@@ -1234,7 +1253,7 @@ function StoredPhoto({ id, alt }: { id: string; alt: string }) {
   )
 }
 
-function ReportCard({ report }: { report: CrewReport }) {
+function ReportCard({ report, compact = false }: { report: CrewReport; compact?: boolean }) {
   const { client, persona } = useApplication()
   const photo = demoClient(client)?.photo(report.id)
   const [reviewCategory, setReviewCategory] = useState<ReportCategory>(
@@ -1242,6 +1261,21 @@ function ReportCard({ report }: { report: CrewReport }) {
   )
   const [severity, setSeverity] = useState<'' | 'low' | 'moderate' | 'high'>('')
   const look = reviewLook[report.review_status]
+  if (compact) return (
+    <article data-report-id={report.id} className={card + ' space-y-2 rounded-xl border border-line p-3'}>
+      <h3 className="text-lg font-bold">{categories[report.category]}</h3>
+      {report.review_status === 'pending' && (
+        <p className="text-sm font-semibold text-warn-text">
+          {report.hazard_present
+            ? 'Action needed: supervisor confirmation of the hazard notice.'
+            : 'Action needed: supervisor review of this report.'}
+        </p>
+      )}
+      <Details title="View more" label={'View more about ' + categories[report.category] + ' report'}>
+        <ReportCard report={report} />
+      </Details>
+    </article>
+  )
   return (
     <article
       data-report-id={report.id}
