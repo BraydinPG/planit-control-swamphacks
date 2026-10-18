@@ -43,7 +43,24 @@ ssh root@SERVER 'mkdir -p /etc/systemd/system/caddy.service.d &&
   systemctl daemon-reload && systemctl enable foresite-api && systemctl restart caddy'
 ```
 
-## Deploy a commit
+## Automatic deploys (GitHub Actions)
+
+Every push to `main` runs `.github/workflows/deploy.yml`: backend tests and lint, the
+frontend type check and tests, then `deploy/deploy.sh` and a live check of `/health` and
+`/api/sites` (401). Teammates only merge to `main`; nobody needs server access.
+
+- Watch a deploy: GitHub → Actions → Deploy. Rerun or deploy by hand: "Run workflow".
+- A failing test stops the deploy. If the new version fails its health check on the server,
+  `deploy.sh` rolls back to the previous version.
+- Secrets: `DEPLOY_HOST`, `DEPLOY_SSH_KEY` (a key used only by Actions,
+  `github-actions-deploy@foresite` in the server's `authorized_keys`), `DEPLOY_KNOWN_HOSTS`.
+  Variables: `VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, `VITE_AUTH0_AUDIENCE` (public).
+- CI doesn't have the gitignored model artifact, so the server keeps the one it has. Ship a
+  new model from a laptop with `deploy/deploy.sh`.
+- Revoke: delete the `github-actions-deploy@foresite` line from `/root/.ssh/authorized_keys`
+  and the `DEPLOY_SSH_KEY` secret.
+
+## Deploy a commit by hand
 
 From a clean checkout with `backend/.env`-independent `frontend/.env.local` (public Auth0 SPA
 values) and the provisioned model in `ml/artifacts/provisioned_v2`:
