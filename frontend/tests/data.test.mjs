@@ -419,6 +419,24 @@ test('missing token sends no request; token acquisition and network timeouts rej
   )
   await assert.rejects(() => timeout.sites(), /timed out/)
 })
+test('expanded worksite observations retain every reading and its source without View more', async () => {
+  const { Observations } = await server.ssrLoadModule('/src/components/data/Status.tsx')
+  const site = await new DemoClient(() => 'crew', storage()).site(assigned)
+  assert(site.observations.length > 4)
+  const html = renderToStaticMarkup(React.createElement(Observations, { rows: site.observations, showAll: true }))
+  assert.equal((html.split('<details')[0].match(/<li\b/g) ?? []).length, site.observations.length)
+  assert.doesNotMatch(html, /View more|View less/)
+  assert.match(html, /Source and timing for each reading/)
+})
+
+test('expanded worksite advisory shows field-verification unknowns without View more', async () => {
+  const site = await new DemoClient(() => 'crew', storage()).site(assigned)
+  const html = renderToStaticMarkup(React.createElement(Advisory, { site, demo: true, showAll: true }))
+  assert.doesNotMatch(html, /View more|View less/)
+  assert.match(html, /Electrical, structural, chemical and access conditions remain unknown/)
+  assert.match(html, /ML never changes scores, alerts or acknowledgement state/)
+})
+
 test('malformed/invalid API replies and unsafe destinations reject', async () => {
   const api = new HttpClient(
     'http://localhost:8000',

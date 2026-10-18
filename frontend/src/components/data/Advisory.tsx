@@ -5,7 +5,15 @@ import { ExpectedDuration } from './Duration'
 import { NO_ESTIMATE } from './duration-text'
 import { displayLabel } from '../../presentation/display'
 import { Details } from './Details'
-export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
+export function Advisory({
+  site,
+  demo,
+  showAll = false,
+}: {
+  site: SiteRecord
+  demo: boolean
+  showAll?: boolean
+}) {
   const replay = demo ? advisories.find((a) => a.site.id === site.id) : null
   const compact = site.event_outlook
   return (
@@ -16,7 +24,7 @@ export function Advisory({ site, demo }: { site: SiteRecord; demo: boolean }) {
       <h2 id="advisory-title" className="text-base font-bold text-ink">
         Unverified worksite conditions
       </h2>
-      <Details title="View more" label="View more about unverified worksite conditions">
+      <Details inline={showAll} title="View more" label="View more about unverified worksite conditions">
       <p className="text-sm text-ink-2">
         Electrical, structural, chemical and access conditions remain unknown
         without verified field or utility evidence.

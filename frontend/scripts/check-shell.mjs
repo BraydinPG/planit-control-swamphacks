@@ -365,7 +365,9 @@ try {
       const main=document.querySelector('main').getBoundingClientRect();
       const alerts=document.querySelector('[data-crew-alerts]').getBoundingClientRect();
       const instructions=document.querySelector('[data-crew-alerts]').nextElementSibling.getBoundingClientRect();
-      return {mainWidth:main.width,desktopNav:visible(document.querySelector('nav[aria-label="Workspace"]')),
+      const nav=document.querySelector('header nav[aria-label="Workspace"]').getBoundingClientRect();
+      return {mainWidth:main.width,desktopNav:visible(document.querySelector('header nav[aria-label="Workspace"]')),
+        navCenterError:Math.abs(nav.left+nav.width/2-document.documentElement.clientWidth/2),
         mobileNav:visible(document.querySelector('nav[aria-label="Mobile workspace"]')),
         sideBySide:instructions.left>alerts.right&&Math.abs(instructions.top-alerts.top)<2,
         supervisorTeamLink:!!document.querySelector('a[href="#/crew/team"]')};
@@ -373,6 +375,7 @@ try {
     assert.equal(layout.desktopNav, width >= 1024)
     assert.equal(layout.mobileNav, width < 1024)
     assert.equal(layout.supervisorTeamLink, false)
+    if (width >= 1024) assert(layout.navCenterError < 1, 'Desktop navigation is centered')
     if (width >= 1024) assert(layout.mainWidth > 600 && layout.mainWidth <= 1440)
     else assert(layout.mainWidth <= 512)
     assert.equal(layout.sideBySide, width >= 1280)
@@ -400,6 +403,15 @@ try {
       crew_layout: layout,
     })
     await hash('/crew/sites', 'Score factors and evidence')
+    assert(
+      await evaluate(`(()=>{
+        const more=Array.from(document.querySelectorAll('main button,main summary')).filter(e=>e.getClientRects().length&&/^View (more|less)/i.test(e.textContent.trim()));
+        return more.length===0&&document.querySelectorAll('[data-observation-list] > li').length===${scoreFixture.observations.length}&&
+          !!document.querySelector('section[aria-label="Score factors and evidence"]')&&
+          document.querySelectorAll('[data-report-id]').length===${scoreFixture.reports.length};
+      })()`),
+      'Crew worksite shows all readings, reports and score factors without View more',
+    )
     // Crew outlook tiles show four; expand to count every outlook.
     await evaluate("document.querySelector('[data-outlook-more][aria-expanded=false]')?.click()")
     assert(
@@ -704,6 +716,16 @@ try {
           await evaluate('document.documentElement.scrollWidth <= innerWidth'),
           `Page overflow: ${width}/${persona}/${page}`,
         )
+        if (width >= 1024)
+          assert(
+            await evaluate("(()=>{const r=document.querySelector('header nav[aria-label=\"Workspace\"]').getBoundingClientRect();return Math.abs(r.left+r.width/2-document.documentElement.clientWidth/2)<1&&!document.querySelector('[data-theme] > aside')})()"),
+            `Centered top navigation: ${persona}/${page}`,
+          )
+        if (page === 'alerts')
+          assert(
+            await evaluate("(()=>{const list=document.querySelector('[data-alert-list]'),width=list.getBoundingClientRect().width;return Array.from(list.querySelectorAll('[data-alert-id]')).every(e=>Math.abs(e.getBoundingClientRect().width-width)<1)})()"),
+            'Every alert spans the content width',
+          )
         await checkBranding()
         assert(
           await evaluate(

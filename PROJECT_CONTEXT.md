@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Centered top bar and expanded worksite - 2026-10-18
+- User-authorized `feature/cache-worksite-open-layout`, base main `1c1dc6b` (PR75 already merged top navigation): center desktop navigation for both Crew and Supervisor; retain mobile tabs and existing role options.
+- My Worksite shows all readings/available event tiles, full report cards, score factors and unverified-condition summary without View more controls. Responsive grids and report-count-aware columns use the space; named provenance disclosures remain. Alert pages show one full-width card per row. [Current guide](docs/CREW_RESPONSIVE_LAYOUT.md).
+- Verified 181 frontend tests, lint/TypeScript, default/live and explicit-demo builds, development/built-demo browser workflow suites, and 24 focused browser cases over eight widths; no overflow, exceptions or real backend calls. Changes are presentation-only with default-compatible component props; no backend, auth, model/scoring, fixture or task-state changes. User explicitly authorizes publishing and merging after verification.
+
 ## Crew desktop workspace - 2026-10-18
 - User-authorized PR73 merge includes the follow-up sidebar wordmark increase from 144px to 168px for crew/supervisors; phone headers retain their size. Reverified 178 frontend tests, lint, TypeScript/production build and 44 focused browser destinations across 1440/768/390/320 (transparent artwork, exact desktop width, no overflow/exceptions/API calls). [PR73](https://github.com/BraydinPG/planit-control-swamphacks/pull/73).
 - Merge reconciliation preserves main `f5f4969` / PR74's supervisor auto-hide navigation and contiguous-US map. Crew desktop navigation stays pinned. Reverified the 40-view crew layout comparison, 44 branding views, supervisor pointer collapse/edge reopen and phone header sizing, with 178 tests/lint/TypeScript/build passing on the combined tree.

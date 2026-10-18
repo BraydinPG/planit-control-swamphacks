@@ -36,9 +36,11 @@ const kindText: Record<EventOutlookCard['forecast']['kind'], string> = {
 export function EventOutlooks({
   cards,
   tiles = false,
+  showAll = false,
 }: {
   cards: EventOutlookCard[]
   tiles?: boolean
+  showAll?: boolean
 }) {
   // Only events with an estimate get a card; an unavailable outlook shows nothing.
   cards = cards.filter((card) => card.status === 'available')
@@ -58,7 +60,7 @@ export function EventOutlooks({
         </p>
       </div>
       {tiles ? (
-        <OutlookTiles cards={cards} />
+        <OutlookTiles cards={cards} showAll={showAll} />
       ) : (
         <div className="grid items-start gap-3 @3xl:grid-cols-2">
           {cards.map((card) => (
@@ -216,17 +218,23 @@ const tileLimit = 4
 
 // Same shape as the crew Weather and conditions pane: compact tiles, a
 // View more toggle past four, then one shared disclosure for the evidence.
-function OutlookTiles({ cards }: { cards: EventOutlookCard[] }) {
+function OutlookTiles({
+  cards,
+  showAll,
+}: {
+  cards: EventOutlookCard[]
+  showAll: boolean
+}) {
   const demoSite = useDemoSite()
   const [expanded, setExpanded] = useState(false)
   return (
     <div className="@container space-y-2 rounded-2xl border border-line bg-surface p-3">
-      <ul className="grid gap-2 @md:grid-cols-2">
-        {(expanded ? cards : cards.slice(0, tileLimit)).map((card) => (
+      <ul className={`grid gap-2 @md:grid-cols-2 ${showAll ? '@3xl:grid-cols-3' : ''}`}>
+        {(showAll || expanded ? cards : cards.slice(0, tileLimit)).map((card) => (
           <OutlookTile key={card.event_id} card={card} />
         ))}
       </ul>
-      {cards.length > tileLimit && (
+      {!showAll && cards.length > tileLimit && (
         <button
           type="button"
           aria-expanded={expanded}

@@ -138,14 +138,20 @@ export function Timestamp({ value }: { value: string | null }) {
     <span>Time unavailable</span>
   )
 }
-export function Factors({ factors }: { factors: FactorContribution[] }) {
+export function Factors({
+  factors,
+  columns = false,
+}: {
+  factors: FactorContribution[]
+  columns?: boolean
+}) {
   const max = Math.max(1, ...factors.map((f) => Math.abs(f.contribution)))
   return (
-    <ul className="divide-y divide-line">
+    <ul className={columns ? '@container grid gap-x-6 @3xl:grid-cols-2' : 'divide-y divide-line'}>
       {factors.map((factor, i) => (
         <li
           key={`${factor.factor}-${i}`}
-          className="grid gap-2 py-3 text-sm @lg:grid-cols-[minmax(0,1fr)_auto] @lg:items-start"
+          className={`grid min-w-0 gap-2 py-3 text-sm @lg:grid-cols-[minmax(0,1fr)_auto] @lg:items-start ${columns ? 'border-b border-line' : ''}`}
         >
           <div className="min-w-0 space-y-1.5">
             <strong className="block text-base text-ink">
@@ -319,7 +325,13 @@ export function ScorePanel({
     </section>
   )
 }
-export function Observations({ rows }: { rows: Observation[] }) {
+export function Observations({
+  rows,
+  showAll = false,
+}: {
+  rows: Observation[]
+  showAll?: boolean
+}) {
   const [expanded, setExpanded] = useState(false)
   if (!rows.length)
     return (
@@ -334,8 +346,8 @@ export function Observations({ rows }: { rows: Observation[] }) {
   // reading's source and timestamps.
   return (
     <div className="@container space-y-2 rounded-2xl border border-line bg-surface p-3">
-      <ul className="grid gap-2 @md:grid-cols-2">
-        {(expanded ? rows : rows.slice(0, 4)).map((row, index) => {
+      <ul data-observation-list className={`grid gap-2 @md:grid-cols-2 ${showAll ? '@3xl:grid-cols-3' : ''}`}>
+        {(showAll || expanded ? rows : rows.slice(0, 4)).map((row, index) => {
           const missing = row.value === null || row.data_state === 'unavailable'
           return (
             <li
@@ -369,7 +381,7 @@ export function Observations({ rows }: { rows: Observation[] }) {
           )
         })}
       </ul>
-      {rows.length > 4 && (
+      {!showAll && rows.length > 4 && (
         <button type="button" aria-expanded={expanded}
           className="inline-flex min-h-11 items-center rounded-xl bg-surface-2 px-4 py-2 text-sm font-semibold text-ink"
           onClick={() => setExpanded((value) => !value)}>
