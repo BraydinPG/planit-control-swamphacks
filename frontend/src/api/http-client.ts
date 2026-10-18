@@ -63,7 +63,11 @@ export class HttpClient implements Client {
     )
       throw new ApiError(0, 'HTTPS is required for non-local APIs')
   }
-  async request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  async request<T>(
+    path: string,
+    options: RequestInit = {},
+    as: 'json' | 'blob' = 'json',
+  ): Promise<T> {
     const controller = new AbortController()
     const deadline = setTimeout(() => controller.abort(), this.timeout)
     try {
@@ -127,6 +131,7 @@ export class HttpClient implements Client {
         )
       }
       if (response.status === 204) return undefined as T
+      if (as === 'blob') return (await response.blob()) as T
       try {
         return (await response.json()) as T
       } catch {
@@ -168,6 +173,13 @@ export class HttpClient implements Client {
         throw new ApiError(502, 'Invalid report-list response')
       return rows.map((row) => validateReport(row))
     })
+  }
+  reportPhoto(id: string) {
+    return this.request<Blob>(
+      `/api/reports/${encodeURIComponent(id)}/photo`,
+      {},
+      'blob',
+    )
   }
   acknowledge(id: string) {
     return this.request(`/api/alerts/${encodeURIComponent(id)}/acknowledge`, {

@@ -35,6 +35,8 @@ export interface Client {
   site(id: string): Promise<SiteRecord>
   alerts(): Promise<Alert[]>
   reports(): Promise<CrewReport[]>
+  /** A report's private photo, fetched with the session token. Live API only. */
+  reportPhoto?(id: string): Promise<Blob>
   acknowledge(id: string): Promise<Alert>
   submit(input: ReportCreate, photo: File | null): Promise<CrewReport>
   review(id: string, input: ReportReview): Promise<CrewReport>

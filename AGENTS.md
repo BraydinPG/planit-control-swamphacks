@@ -155,6 +155,7 @@ Adapter rules:
 - `POST /api/alerts/{id}/acknowledge`
 - `POST /api/reports`
 - `GET /api/reports`
+- `GET /api/reports/{id}/photo` (the report's private photo, same visibility as the report)
 - `POST /api/reports/{id}/review`
 - `POST /api/hazards/{id}/confirm`
 - `POST /api/hazards/{id}/instruction`

@@ -1117,6 +1117,50 @@ const reviewLook = {
     cls: 'border-line-strong text-muted',
   },
 } as const
+/** A report's private photo, loaded with the session token (an <img> can't send one). */
+function StoredPhoto({ id, alt }: { id: string; alt: string }) {
+  const { client } = useApplication()
+  const [state, setState] = useState<
+    { url: string } | { error: string } | null
+  >(null)
+  useEffect(() => {
+    let url: string | null = null
+    let live = true
+    client.reportPhoto?.(id).then(
+      (blob) => {
+        url = URL.createObjectURL(blob)
+        if (live) setState({ url })
+        else URL.revokeObjectURL(url)
+      },
+      (error: unknown) => {
+        if (!live) return
+        const missing =
+          error instanceof Error && 'status' in error && error.status === 404
+        setState({
+          error: missing
+            ? "This photo isn't in storage."
+            : "The photo couldn't be loaded. Refresh to try again.",
+        })
+      },
+    )
+    return () => {
+      live = false
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [client, id])
+  if (state === null)
+    return <p className="text-sm text-muted">Loading photo…</p>
+  if ('error' in state)
+    return <p className="text-sm text-muted">{state.error}</p>
+  return (
+    <img
+      className="max-h-48 max-w-full rounded-xl border border-line object-cover"
+      src={state.url}
+      alt={alt}
+    />
+  )
+}
+
 function ReportCard({ report }: { report: CrewReport }) {
   const { client, persona } = useApplication()
   const photo = demoClient(client)?.photo(report.id)
@@ -1171,10 +1215,14 @@ function ReportCard({ report }: { report: CrewReport }) {
               src={photo}
               alt={`Selected demo evidence for ${categories[report.category]}`}
             />
+          ) : report.photo_url && client.reportPhoto ? (
+            <StoredPhoto
+              id={report.id}
+              alt={`Crew photo for ${categories[report.category]}`}
+            />
           ) : report.photo_url ? (
             <p className="text-sm text-muted">
-              Photo reference supplied; private photo retrieval is not
-              connected.
+              This report has a photo, but it can't be shown here.
             </p>
           ) : (
             <p className="text-sm text-muted">

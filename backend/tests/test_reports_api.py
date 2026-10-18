@@ -334,3 +334,34 @@ def test_report_creation_is_audited(h, client) -> None:
     actions = {(e.action, e.entity) for e in h.rows(db.AuditEvent)}
     assert ("report.create", report["id"]) in actions
     assert ("notice.create", report["notice_id"]) in actions
+
+
+# ---- photo retrieval ----
+
+
+def test_report_photo_follows_report_visibility(h, client) -> None:
+    report = submit(client).json()
+    url = f"/api/reports/{report['id']}/photo"
+    for headers in (crew("auth0|crew-a"), supervisor()):
+        response = client.get(url, headers=headers)
+        assert response.status_code == 200
+        assert response.content == JPEG
+        assert response.headers["content-type"] == "image/jpeg"
+        assert response.headers["cache-control"] == "private, max-age=300"
+    # Crew on another site and another organization's supervisor can't tell it exists.
+    assert client.get(url, headers=crew("auth0|crew-b")).status_code == 404
+    assert client.get(url, headers=supervisor("auth0|supervisor-2")).status_code == 404
+    assert client.get(url).status_code == 401
+    assert client.get("/api/reports/no-such-report/photo", headers=supervisor()).status_code == 404
+
+
+def test_report_photo_missing_from_storage_is_a_clear_404(h, client, tmp_path) -> None:
+    report = submit(client).json()
+    (h.photos.root / report["photo_url"]).unlink()
+    response = client.get(f"/api/reports/{report['id']}/photo", headers=supervisor())
+    assert response.status_code == 404
+    assert response.json()["detail"] == "The photo isn't in storage"
+    absent = submit(client, category="on_site_fire", hazard_present="false", photo=None).json()
+    response = client.get(f"/api/reports/{absent['id']}/photo", headers=supervisor())
+    assert response.status_code == 404
+    assert response.json()["detail"] == "This report has no photo"

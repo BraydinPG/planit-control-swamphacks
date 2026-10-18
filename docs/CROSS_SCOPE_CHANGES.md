@@ -654,3 +654,14 @@ singular `event_outlook` is kept. Focused edits outside Rudra's paths: frontend
 `tests/mock-service.ts` (default `event_outlooks: []`), new `EventOutlooks.tsx` and its
 placement on site detail (Claude). No `ml/**`, score, alert, auth or DB-schema change; notice
 evidence is existing JSON. Cache/Codex: please review the contract before live testing.
+
+### 2026-10-18 — Braydin: report photo retrieval (deployment finding)
+
+Supervisors on the deployed site saw "private photo retrieval is not connected" on every report: reports stored a private photo key, but no route returned the image. Added with the user's authorization, touching Rudra's paths:
+
+- `backend/app/api/reports.py`: `GET /api/reports/{id}/photo` streams the photo through the backend. Visibility matches `GET /api/reports` (crew: their team's sites; supervisor: their organization). A report the caller can't see, a report without a photo, and an object missing from storage are all 404s. `Cache-Control: private`.
+- `frontend/src/api/{contracts,http-client}.ts`: optional `reportPhoto(id)` fetches the photo as a blob with the session token, since an `<img>` can't send one.
+- `frontend/src/pages/ConnectedPages.tsx`: `StoredPhoto` shows the image, or "This photo isn't in storage."
+- Tests: `backend/tests/test_reports_api.py` (visibility, 401, missing object), `frontend/tests/team.test.mjs` (authorized blob request).
+
+The seven reports created before deployment have photo keys whose files were stored on teammates' laptops, so they show "This photo isn't in storage." New photos go to the private `foresite-photos` bucket.

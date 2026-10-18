@@ -418,3 +418,23 @@ test('supervisors rename their organization (demo and live)', async () => {
   )
   assert.deepEqual(calls, ['PATCH /api/organization {"name":"Gator Power"}'])
 })
+
+test('report photos load as an authorized blob from the live API', async () => {
+  const calls = []
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer t' }),
+    async (url, options) => {
+      calls.push(
+        `${options.method ?? 'GET'} ${new URL(url).pathname} ${options.headers.Authorization}`,
+      )
+      return new Response(new Uint8Array([0xff, 0xd8, 0xff]), {
+        headers: { 'Content-Type': 'image/jpeg' },
+      })
+    },
+  )
+  const blob = await api.reportPhoto('r 1')
+  assert.equal(blob.type, 'image/jpeg')
+  assert.equal(blob.size, 3)
+  assert.deepEqual(calls, ['GET /api/reports/r%201/photo Bearer t'])
+})

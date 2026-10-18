@@ -277,6 +277,7 @@ Tiger Data is the PostgreSQL-compatible database. Connect with a Postgres URL an
 | `POST /api/alerts/{id}/acknowledge` | Record user and acknowledgement time. |
 | `POST /api/reports` | Submit category, photo, coordinates with their source and accuracy, whether the hazard is present, and an optional note. Starts Gemini's report analysis in the background. |
 | `GET /api/reports` | List reports visible to the caller, optionally filtered by site. |
+| `GET /api/reports/{id}/photo` | The report's photo bytes for anyone who may see the report (404 otherwise). The stored object stays private in Vultr Object Storage. |
 | `POST /api/reports/{id}/review` | A supervisor in the reporting organization reviews a report that no hazard is present. |
 | `POST /api/hazards/{id}/confirm` | A notified supervisor confirms a potential hazard and receives Gemini’s suggested instruction. |
 | `POST /api/hazards/{id}/instruction` | The confirming supervisor sends the accepted or edited instruction to teams inside the stored radius. |
