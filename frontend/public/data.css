@@ -93,9 +93,6 @@
 .lab-limitations li + li{margin-top:10px}
 .lab-reading-links{display:flex;flex-wrap:wrap;gap:4px 24px}
 .lab-reading-links a{display:inline-flex;align-items:center;min-height:44px;font-size:14px;text-decoration:underline;text-underline-offset:4px}
-.public-footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding:24px var(--gutter);border-top:1px solid var(--line);color:#c0c5ce;font-size:13px}
-.public-footer nav{display:flex;gap:8px;flex-wrap:wrap}
-.public-footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;text-underline-offset:4px}
 @media (max-width:700px){.lab-model-grid{grid-template-columns:1fr}.research{max-width:100%}}
 
 .data-source-notes{padding:0 var(--gutter) 40px;background:var(--ink)}

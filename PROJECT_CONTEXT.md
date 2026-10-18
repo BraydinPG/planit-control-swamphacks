@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Interactive public Platform page - 2026-10-18
+- Explicit stage-one scope, `feature/cache-interactive-platform` from main `88b87ae`: independent `/platform.html` with five layers, 27 source-backed component explanations, a separate research branch, human approval workflow, connected stack and the qualified 67.8% controlled ingestion benchmark. Logo remains Home; all three public headers link Platform/Data/Sign In with a two-row phone layout. [Sources, commands, screenshots and handoff](docs/PLATFORM_PAGE.md).
+- Progressive static references work without JS; read-only controls make no network/storage/token calls. Shared motion now honors initial and changed reduced-motion preferences, including static redraw on resize. Homepage hero/stats/features and the entire generated Data dashboard remain exact; original chart hashes unchanged. No app/auth/backend/model/scoring/deployment or task-state edits.
+- Verified 198 frontend tests, lint/TypeScript, default/live and fixture production builds, source/benchmark/hash checks and Data export reproducibility. Development and built Edge checks at 1440/768/390/320 pass all three pages, 27 components, keyboard/mouse, phone switching/resizing, motion modes, static fallback and existing demo entry with zero clipping/exceptions/API calls. Existing SPA chunk warning remains. User's accompanying message explicitly authorizes merge after verification, superseding the attachment hold.
+
 ## Public-page simplification - 2026-10-18
 
 [PR #92](https://github.com/BraydinPG/planit-control-swamphacks/pull/92): verified implementation `96c7dd2`; user-authorized merge.

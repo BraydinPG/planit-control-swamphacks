@@ -1,3 +1,31 @@
+## Interactive public Platform page (Cache for Rudra) - 2026-10-18
+
+Explicit user authorization for stage one, `feature/cache-interactive-platform`,
+base main `88b87ae`. Adds `frontend/public/platform.{html,css,js}` as an independent
+public document. Five layers / 27 explorable components use actual source references;
+research and human approval boundaries remain explicit. Homepage and Data get only
+shared navigation/style integration; their content and all research exports remain.
+The logo remains Home, preserving the preceding request. Phones use two header rows.
+
+Shared public CSS owns footer styles. Shared atmosphere now respects reduced-motion
+preferences at load and when changed, redraws static fog on resize/context restore,
+and keeps normal effects. Expanded existing public-browser checks cover every new
+component, responsive selection, mouse/keyboard, static references, motion, all
+three documents and preserved demo/sign-in links. The 67.8% figure reuses the archived
+256-site synthetic benchmark; report counts and matching hashes are checked.
+
+Passed: 198 frontend tests, lint/TypeScript, live/default and fixture production
+builds, source/data/figure checks and development/built-browser suites at
+1440/768/390/320. No overflow/exceptions/API calls. Existing SPA chunk warning remains.
+No authenticated workflow, backend/auth/contract, research model/scoring, credential,
+deployment, manifest/lockfile or task-state changes; other worktrees are preserved.
+The user's accompanying message authorizes merge after verification, superseding
+the attachment's original hold. Exact commit/PR attribution is in Git history.
+
+[Source audit, screenshots, commands and owner handoff](PLATFORM_PAGE.md).
+Rudra maintains public assets/reference articles; Braydin has no service action.
+Only the requested first public-site stage is included.
+
 ## Simplify the public header and Data page (Cache for Rudra) - 2026-10-18
 
 [PR #92](https://github.com/BraydinPG/planit-control-swamphacks/pull/92): verified implementation `96c7dd2`; user-authorized merge.

@@ -40,7 +40,8 @@ async function evaluate(expression) {
   return result.result.value
 }
 async function loaded(path) {
-  await until(() => evaluate(`location.pathname===${JSON.stringify(path)}&&document.readyState==='complete'&&!!document.querySelector(${JSON.stringify(path === '/data.html' ? '#data-title' : '.hero h1')})`), path)
+  const heading = path === '/data.html' ? '#data-title' : path === '/platform.html' ? '#platform-title' : '.hero h1'
+  await until(() => evaluate(`location.pathname===${JSON.stringify(path)}&&document.readyState==='complete'&&!!document.querySelector(${JSON.stringify(heading)})`), path)
   await evaluate('document.fonts.ready')
   await until(() => evaluate("document.querySelector('.brand img').complete&&document.querySelector('.brand img').naturalWidth>0"), 'logo')
 }
@@ -84,6 +85,7 @@ try {
     else if (event.method === 'Network.requestWillBeSent') requests.push(new URL(event.params.request.url).pathname)
   })
   await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable')
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.__publicRafCount=0;const nativeRaf=window.requestAnimationFrame;window.requestAnimationFrame=callback=>{window.__publicRafCount++;return nativeRaf(callback)}' })
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
   const evidence = JSON.parse(await readFile(join(root, 'public/research/evidence.json'), 'utf8'))
   for (const figure of evidence.figures) {
@@ -91,7 +93,13 @@ try {
   }
   const ledger = JSON.parse(await readFile(join(root, 'public/research/dashboard-figures.json'), 'utf8'))
   for (const figure of ledger.figures) assert.equal(createHash('sha256').update(await readFile(join(root, 'public/research', figure.file))).digest('hex'), figure.sha256)
-  for (const path of ['/landing.html', '/data.html', '/public-site.css', '/data.css']) {
+  const benchmarkBefore = JSON.parse(await readFile(join(root, '../docs/feed-refresh-baseline.json'), 'utf8'))
+  const benchmarkAfter = JSON.parse(await readFile(join(root, '../docs/feed-refresh-optimized.json'), 'utf8'))
+  assert.equal(Object.values(benchmarkBefore.http_requests).reduce((a, b) => a + b, 0), 1794)
+  assert.equal(Object.values(benchmarkAfter.http_requests).reduce((a, b) => a + b, 0), 578)
+  assert.deepEqual(benchmarkBefore.observation_sha256_by_feed, benchmarkAfter.observation_sha256_by_feed)
+  assert.equal(benchmarkBefore.site_score_sha256, benchmarkAfter.site_score_sha256)
+  for (const path of ['/landing.html', '/platform.html', '/data.html', '/public-site.css', '/platform.css', '/platform.js', '/data.css']) {
     const response = await fetch(new URL(path, base))
     assert.equal(response.status, 200, path)
     if (path === '/data.html') {
@@ -109,11 +117,11 @@ try {
     const home = await evaluate(layout)
     assert(!home.overflow && !home.clipped.length && home.headerFits && !home.headerOverlaps, JSON.stringify({ width, home }))
     assert(await evaluate("document.querySelector('header a[aria-current=page]').getAttribute('href')==='/landing.html'"))
-    assert(await evaluate("document.querySelector('.top .brand').getAttribute('href')==='/landing.html'&&document.querySelectorAll('.top .public-nav a').length===1&&document.querySelector('.top .public-nav a').textContent==='Data'&&!Array.from(document.querySelectorAll('.top a')).some(a=>a.textContent.trim()==='Home')"))
+    assert(await evaluate("document.querySelector('.top .brand').getAttribute('href')==='/landing.html'&&Array.from(document.querySelectorAll('.top .public-nav a')).map(a=>a.textContent).join(',')==='Platform,Data'&&!Array.from(document.querySelectorAll('.top a')).some(a=>a.textContent.trim()==='Home')"))
     assert(await evaluate("!document.querySelector('.lab')&&!document.querySelector('link[href=\"/data.css\"]')&&!document.querySelector('img[src*=\"/research/\"]')&&document.querySelectorAll('.feature').length===3&&document.querySelector('h1').textContent==='SEE THE RISK.PLAN BEYOND THE ALERT.'"))
     assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.stats b')).map(e=>e.textContent)"), ['526K+', '6', '5,000', '50+'])
     assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.signin,.cta-btn')).map(e=>e.getAttribute('href'))"), ['/?signin', '/?demo#/crew/overview', '/?signin'])
-    assert(!requests.slice(requestStart).some(p => p.startsWith('/research/') || p === '/data.css'), 'Homepage loads no research assets')
+    assert(!requests.slice(requestStart).some(p => p.startsWith('/research/') || ['/data.css', '/platform.css', '/platform.js'].includes(p)), 'Homepage loads no research or Platform assets')
     await shot(`public-home-${width}`)
     await evaluate("document.querySelector('header a[href=\"/data.html\"]').focus()")
     assert(await evaluate("document.activeElement.matches('a[href=\"/data.html\"]')"))
@@ -155,8 +163,59 @@ try {
     await loaded('/landing.html')
     await evaluate("document.querySelector('header a[href=\"/data.html\"]').click()"); await loaded('/data.html')
     await evaluate("document.querySelector('.brand').click()"); await loaded('/landing.html')
+    await evaluate("document.querySelector('.top a[href=\"/platform.html\"]').focus()")
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
+    await loaded('/platform.html')
+    await send('Page.reload'); await loaded('/platform.html')
+    await until(() => evaluate("document.querySelector('.architecture-section').dataset.enhanced==='true'"), 'architecture enhancement')
+    assert(await evaluate("document.querySelectorAll('.system-node').length===27&&document.querySelectorAll('.component-reference article').length===27&&document.querySelectorAll('.architecture-lane').length===5&&document.querySelector('.top a[aria-current=page]').getAttribute('href')==='/platform.html'&&!document.querySelector('#root')&&!document.querySelector('link[href=\"/data.css\"]')&&!document.querySelector('img[src*=\"/research/\"]')"))
+    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.platform-button[href*=\"demo\"]')).map(a=>a.getAttribute('href'))"), ['/?demo#/crew/overview', '/?demo#/crew/overview'])
+    // Exercise every actual component reference through the explorer, then real keyboard/mouse selection.
+    assert(await evaluate(`(()=>{
+      const links=Array.from(document.querySelectorAll('.system-node'));
+      for(const link of links){
+        const lane=link.closest('.architecture-lane');
+        if(innerWidth<=900)document.querySelector('[data-layer="'+lane.id.slice(5)+'"]').click();
+        link.click();
+        const reference=document.getElementById(link.getAttribute('href').slice(1));
+        if(document.querySelector('#component-detail-title').textContent!==reference.querySelector('h3').textContent)return false;
+      }
+      return document.querySelectorAll('.system-node[aria-current=true]').length===1&&new Set(Array.from(document.querySelectorAll('[id]')).map(e=>e.id)).size===document.querySelectorAll('[id]').length;
+    })()`))
+    await evaluate("document.querySelector('[data-layer=analysis]').click();document.querySelector('[data-node=monte-carlo]').focus()")
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
+    assert(await evaluate("document.querySelector('#component-detail-title').textContent==='Offline Monte Carlo'&&document.querySelector('#architecture-detail').textContent.includes('does not execute for every live request')&&!location.hash"))
+    if (width <= 900) {
+      assert.equal(await evaluate("Array.from(document.querySelectorAll('.architecture-lane')).filter(l=>getComputedStyle(l).display!=='none').length"), 1)
+      assert(await evaluate("document.querySelector('[data-layer=analysis]').getAttribute('aria-pressed')==='true'"))
+    } else assert.equal(await evaluate("Array.from(document.querySelectorAll('.architecture-lane')).filter(l=>getComputedStyle(l).display!=='none').length"), 5)
+    await evaluate("document.querySelector('[data-node=score]').scrollIntoView({block:'center'})")
+    const scoreTarget = await evaluate("(()=>{const r=document.querySelector('[data-node=score]').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()")
+    await send('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, ...scoreTarget })
+    await send('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...scoreTarget })
+    assert(await evaluate("document.querySelector('#component-detail-title').textContent==='Deterministic hazard index'&&document.querySelector('#architecture-detail').textContent.includes('Gemini output never contribute')"))
+    const platform = await evaluate(layout)
+    assert(!platform.overflow && !platform.clipped.length && platform.headerFits && !platform.headerOverlaps, JSON.stringify({ width, platform }))
+    assert(await evaluate("getComputedStyle(document.querySelector('.rail-pulse')).animationName==='none'&&getComputedStyle(document.querySelector('.grain')).animationName==='none'"))
+    const rafCount = await evaluate('window.__publicRafCount')
+    await delay(150)
+    assert.equal(await evaluate('window.__publicRafCount'), rafCount, 'Reduced motion stops the decorative frame loop')
+    await evaluate("document.querySelector('.component-reference').open=true")
+    const references = await evaluate(layout)
+    assert(!references.overflow && !references.clipped.length, JSON.stringify({ width, references }))
+    await evaluate("document.querySelector('.component-reference').open=false;document.querySelector('[data-node=monte-carlo]').click()")
+    await shot(`public-platform-${width}`); await shot(`public-platform-top-${width}`, false)
+    await evaluate("document.querySelector('#architecture').scrollIntoView({block:'start'})")
+    const architectureShot = await send('Page.captureScreenshot', { format: 'png' })
+    await writeFile(join(output, `public-platform-architecture-${width}.png`), Buffer.from(architectureShot.data, 'base64'))
+    assert.equal(await evaluate(storage), originalStorage, 'Platform preserves sessions')
+    await evaluate("document.querySelector('.top a[href=\"/data.html\"]').click()"); await loaded('/data.html')
+    await evaluate("document.querySelector('.top a[href=\"/platform.html\"]').click()"); await loaded('/platform.html')
+    await evaluate("document.querySelector('.top .brand').click()"); await loaded('/landing.html')
     assert.equal(await evaluate(storage), originalStorage)
-    results.push({ width, home, data, separateDocuments: true, reload: true, history: true, sessionStoragePreserved: true })
+    results.push({ width, home, data, platform, componentReferences: 27, separateDocuments: true, reload: true, history: true, sessionStoragePreserved: true })
   }
   // Direct access has no preceding homepage or app initialization requirement.
   await send('Page.navigate', { url: new URL('/data.html', base).href }); await loaded('/data.html')
@@ -171,8 +230,34 @@ try {
   await send('Emulation.setScriptExecutionDisabled', { value: true })
   await send('Page.reload'); await loaded('/data.html')
   assert(await evaluate("document.querySelectorAll('.lab picture').length===12&&document.querySelectorAll('.lab-values table').length===12"))
+  await send('Page.navigate', { url: new URL('/platform.html', base).href }); await loaded('/platform.html')
+  assert.equal(await evaluate("Array.from(document.querySelectorAll('.architecture-lane')).filter(l=>getComputedStyle(l).display!=='none').length"), 5)
+  assert(await evaluate("document.querySelectorAll('.component-reference article').length===27&&document.querySelector('.layer-picker').hidden"))
+  await evaluate("document.querySelector('.component-reference').open=true")
+  assert(await evaluate("document.querySelector('#component-monte-carlo').textContent.includes('does not execute for every live request')"))
   await send('Emulation.setScriptExecutionDisabled', { value: false })
+  // Normal motion retains the shared storm atmosphere and diagram flow.
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] })
+  await send('Page.reload'); await loaded('/platform.html')
+  const animatedRaf = await evaluate('window.__publicRafCount')
+  await delay(200)
+  assert(await evaluate(`window.__publicRafCount>${animatedRaf}&&getComputedStyle(document.querySelector('.rail-pulse')).animationName==='signal-flow'`))
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
+  await delay(150)
+  const changedRaf = await evaluate('window.__publicRafCount')
+  await delay(150)
+  assert.equal(await evaluate('window.__publicRafCount'), changedRaf, 'Changing the motion preference pauses the storm without a reload')
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false })
+  await evaluate("document.querySelector('[data-node=monte-carlo]').click()")
+  const beforeResizeRaf = await evaluate('window.__publicRafCount')
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
+  await delay(150)
+  assert(await evaluate(`window.__publicRafCount>${beforeResizeRaf}`), 'Reduced-motion sky redraws after resizing')
+  assert(await evaluate("getComputedStyle(document.querySelector('#lane-analysis')).display!=='none'&&document.querySelector('[data-layer=analysis]').getAttribute('aria-pressed')==='true'&&document.querySelector('#component-detail-title').textContent==='Offline Monte Carlo'"), 'Selected component survives desktop-to-phone resize')
   if (fixtures) {
+    await send('Page.navigate', { url: new URL('/platform.html', base).href }); await loaded('/platform.html')
+    await evaluate("document.querySelector('.platform-button[href*=\"demo\"]').click()")
+    await until(() => evaluate("location.search==='?demo'&&location.hash==='#/crew/overview'&&document.body.innerText.includes('Simulated demo')"), 'Platform uses existing demo entry')
     await send('Page.navigate', { url: base.href }); await loaded('/landing.html')
     await send('Page.navigate', { url: new URL('/landing.html', base).href }); await loaded('/landing.html')
     await evaluate("document.querySelector('.cta-btn').click()")
@@ -182,7 +267,7 @@ try {
   assert.deepEqual(unexpected, [])
   assert(!requests.some(p => p.startsWith('/api/')), 'No actual backend calls')
   await writeFile(join(output, 'public-pages-acceptance.json'), JSON.stringify({ results, errors, apiRequests: 0, fixtures }, null, 2))
-  console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), figures: 12, originalChartAssetsPreserved: 6, savedSelectors: true, missingJsonFallback: true, scriptDisabledFallback: true, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))
+  console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), publicPages: 3, architectureComponents: 27, keyboardAndMouse: true, reducedAndNormalMotion: true, figures: 12, originalChartAssetsPreserved: 6, savedSelectors: true, missingJsonFallback: true, scriptDisabledFallback: true, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))
 } finally {
   if (ws?.readyState === WebSocket.OPEN) { await send('Browser.close').catch(() => {}); ws.close() }
   browser.kill()
