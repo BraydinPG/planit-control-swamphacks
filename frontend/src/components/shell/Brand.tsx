@@ -21,7 +21,7 @@ export function Brand({
       className={`inline-block max-w-full shrink-0 align-middle leading-none ${className ?? image.size}`}
     >
       <img
-        src={`/${image.file}?v=56ddbbb3`}
+        src={`/${image.file}?v=daaf5322`}
         width={image.width}
         height={image.height}
         alt={decorative ? '' : variant === 'full' ? 'FORESITE — Intelligent Worksite Operations' : 'FORESITE'}
