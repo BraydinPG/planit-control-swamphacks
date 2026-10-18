@@ -46,15 +46,18 @@ source is not downloaded merely to render a small header mark.
 `frontend/src/components/shell/Brand.tsx` is the single display implementation:
 
 ```tsx
-<Brand variant="compact" /> // header/sidebar, default width 160 CSS px
-<Brand variant="full" />    // tagline where there is room, max width 320 CSS px
+<Brand variant="compact" /> // header/sidebar, default width 128 CSS px
+<Brand variant="full" />    // tagline where there is room, max width 240 CSS px
 <Brand variant="icon" />    // compact cyclone, default 32 CSS px
 ```
 
 It declares intrinsic image dimensions, preserves aspect ratio, bounds width and
 provides meaningful alt text. The sidebar link already has an accessible name and
-uses a decorative image to avoid redundant announcements. A dark-mode white contrast
-plate preserves the approved navy lettering rather than recoloring the artwork.
+uses a decorative image to avoid redundant announcements. The wrapper has no colored
+background or padding: the existing PNG alpha blends directly into its parent surface.
+The approved artwork is unchanged. Header width is 112 px (128 px from `sm`), sidebar
+width is 144 px, and full/footer/sign-in width is 240 px. Navigation touch targets retain
+their existing minimum sizes.
 
 - AppShell: same compact wordmark in Crew/mobile header and Supervisor sidebar;
   existing desktop breadcrumbs retained; full logo/tagline in the existing footer.
@@ -92,6 +95,12 @@ ICO sizes were checked. Pillow was installed only in this new ignored tool envir
 no existing environment, frontend dependency, manifest or lockfile was altered.
 
 ## Verification and screenshots
+
+Transparent/smaller follow-up (2026-10-17, base `6e7850e`): lint, TypeScript, 171 tests,
+live/demo builds and both development/built-demo browser suites pass. Wrappers are
+transparent, widths are bounded across all four viewports, and screenshots below
+reflect the updated presentation. The original PNGs/hashes are unchanged. Navy
+lettering is retained on dark surfaces too; there is no longer a white backing plate.
 
 - Frontend lint, explicit TypeScript check and **171 existing frontend tests pass**.
 - Default/live-mode and explicit-demo production builds pass. The existing default

@@ -176,7 +176,7 @@ export function AppShell({
             aria-label="FORESITE overview"
             className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
           >
-            <Brand variant="compact" className="w-44" decorative />
+            <Brand variant="compact" className="w-36" decorative />
           </a>
           <div className="space-y-2">
             <p className="kicker px-3">
@@ -202,7 +202,7 @@ export function AppShell({
           <div className="flex min-w-0 items-center gap-2.5">
             <Brand
               variant="compact"
-              className={`w-36 sm:w-40 ${crew ? '' : 'lg:hidden'}`}
+              className={`w-28 sm:w-32 ${crew ? '' : 'lg:hidden'}`}
             />
             <p className={`hidden min-w-0 truncate text-sm ${crew ? '' : 'lg:block'}`}>
               <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
