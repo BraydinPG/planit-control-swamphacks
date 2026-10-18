@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import type { Alert } from '../../types/api'
 import { countdown } from '../../api/contracts'
 import { useApplication, useClock } from '../../application/context'
@@ -104,7 +104,7 @@ export function AlertCard({
   alert: Alert
   detail?: boolean
 }) {
-  const { client, persona } = useApplication(),
+  const { client, persona, refresh } = useApplication(),
     now = useClock()
   const style = look(alert),
     left = remaining(alert, now)
@@ -115,6 +115,14 @@ export function AlertCard({
   const title = `${name} alert${alert.state === 'active' ? ' active' : ' cleared'}`
   const simulated = alert.simulated || client.mode === 'demo'
   const acks = alert.acknowledgements.length
+  const elapsed = left === 0
+  useEffect(() => {
+    if (client.mode !== 'live' || !elapsed) return
+    // An expired watch window is not clearance. Ask for authoritative state.
+    refresh()
+    const timer = setInterval(refresh, 15000)
+    return () => clearInterval(timer)
+  }, [client, elapsed, refresh])
   return (
     <section
       aria-label={`Alert ${alert.id}`}
@@ -148,7 +156,7 @@ export function AlertCard({
             <Icon name="arrow" className="size-5 shrink-0" />
           </a>
         )}
-        {!detail && left !== null && (
+        {!detail && left !== null && left > 0 && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
             <span className="text-base font-semibold">Watch window</span>
             <span
@@ -159,7 +167,7 @@ export function AlertCard({
             </span>
           </div>
         )}
-        {detail && left !== null && (
+        {detail && left !== null && left > 0 && (
           <Ring
             alert={alert}
             left={left}
@@ -197,6 +205,9 @@ export function AlertCard({
         <p className="text-sm text-ink-2">
           The timer does not clear this alert or authorize work.
         </p>
+        {elapsed && client.mode === 'live' && (
+          <p className="text-sm text-ink-2">Awaiting updated alert status. Checking every 15 seconds.</p>
+        )}
         {detail && (
           <div className="space-y-4">
             <Details title="Alert evidence and timing">

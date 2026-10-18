@@ -909,8 +909,12 @@ try {
       'Live role selector leaked',
     )
     await hash('/crew/overview', 'Stop-work alert active')
+    assert(await evaluate("document.querySelector('header button').textContent.trim()==='Sign out' && !document.body.innerText.includes('Authenticated API') && !document.body.innerText.includes('Connected mode.')"))
+    await evaluate('window.harness.alertWindow(90)')
     await click('View alert')
     await loaded('Acknowledge alert')
+    const ticking = await evaluate("document.querySelector('[role=timer]').textContent")
+    await until(async () => (await evaluate("document.querySelector('[role=timer]').textContent")) !== ticking, 'live countdown ticks')
     await click('Acknowledge alert')
     await loaded('Action recorded.')
     assert(
@@ -918,6 +922,12 @@ try {
         "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
       ),
     )
+    await evaluate('window.harness.alertWindow(-1)')
+    await click('Refresh alerts')
+    await loaded('Awaiting updated alert status')
+    assert(await evaluate("!document.body.innerText.includes('00:00') && document.body.innerText.includes('Alert remains active')"))
+    await evaluate("window.harness.alertWindow(-1, 'cleared')")
+    await loaded('Server reports cleared')
     await hash('/crew/briefings', 'Gemini draft')
     await set('main select', 'organization')
     await loaded('Template fallback')
@@ -967,7 +977,7 @@ try {
     )
     // These requests stay inside the browser's explicit mock fetch, never FastAPI.
     await click('Submit report')
-    await loaded('Report accepted by backend')
+    await loaded('Report successful')
     const absentId = await evaluate('window.harness.snapshot().reports[0].id')
     for (const [code, text] of [
       [401, 'Session expired'],
@@ -1000,8 +1010,13 @@ try {
       })
     }
     await attachMockPhoto()
+    await loaded('Remove image')
+    await click('Remove image')
+    assert(await evaluate("document.querySelector('form input[type=file]').files.length===0 && !document.querySelector('img[alt=\"Preview of the selected photo\"]') && document.querySelector('form button[type=submit]').disabled"))
+    await attachMockPhoto()
+    await loaded('Remove image')
     await click('Submit report')
-    await loaded('Report accepted by backend')
+    await loaded('Report successful')
     const created = await evaluate('window.harness.snapshot().reports[0]')
     assert.equal(created.review_status, 'pending')
     const mockNotice = created.notice_id
@@ -1100,7 +1115,7 @@ try {
     await choose('presence', 'present')
     await attachMockPhoto()
     await click('Submit report')
-    await loaded('Report accepted by backend')
+    await loaded('Report successful')
     const manualId = await evaluate(
       'window.harness.snapshot().reports[0].notice_id',
     )
@@ -1168,7 +1183,7 @@ try {
         'Error substituted fixture data',
       )
     }
-    await evaluate("window.harness.mount('logged-out')")
+    await click('Sign out')
     await loaded('Sign in required')
     results.push({
       auth: 'mocked existing provider: loading/logged out/no role/dev rejection/crew/supervisor/session transitions',
