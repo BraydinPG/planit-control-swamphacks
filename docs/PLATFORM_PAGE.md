@@ -5,7 +5,10 @@
 Verified 2026-10-18. User-authorized stage one only, branch
 `feature/cache-interactive-platform`, initially based on main `88b87ae`.
 Main `bc525ea` is reconciled in `78794bf` without conflicts, preserving the
-team's map-color changes. Final frontend/build/browser checks pass on this tree.
+team's map-color changes. The subsequent organization/ownership update `9bb0e4e`
+is reconciled in `0f5c8b5`, also without conflicts. Final frontend/build/browser
+checks pass, plus 47 upstream organization/Auth0 mock tests (one existing
+dependency deprecation warning).
 The accompanying user message explicitly authorizes merge after verification,
 superseding the attachment's original request to leave the PR open.
 
@@ -67,7 +70,8 @@ The human approval boundary states that Gemini supplies structured suggestions;
 the notified organization's supervisor confirms and sends its own instruction.
 Neither AI output nor a countdown authorizes work or clears an alert. Organization
 and backend permission boundaries follow the current spec/services, including the
-per-organization confirmation implementation.
+per-organization confirmation implementation. Organization ownership is database-backed,
+not an Auth0 role; the latest team update limits each organization to one supervisor.
 
 The stack section connects React/TypeScript/Vite/Tailwind to Python/FastAPI, then
 explains the Auth0, Tiger Data, scikit-learn/survival, Gemini, Vultr and source-adapter
@@ -118,7 +122,7 @@ npm run build
 node scripts/check-public-pages.mjs http://localhost:5177/ --fixtures
 ```
 
-Verified: **198 frontend tests**, lint/TypeScript, both production builds and the
+Verified: **199 frontend tests**, lint/TypeScript, both production builds and the
 development/built browser suites pass with zero clipping, exceptions or API calls.
 Saved-report/figure reproducibility checks pass; no research retraining is performed.
 

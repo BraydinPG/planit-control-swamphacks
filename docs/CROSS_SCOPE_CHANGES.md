@@ -2,8 +2,11 @@
 
 [PR #93](https://github.com/BraydinPG/planit-control-swamphacks/pull/93): verified implementation `7f64b3b`; user-authorized merge.
 
-Main `bc525ea` reconciled in `78794bf` without conflicts; teammate map coloring
-is preserved. Final combined-tree frontend/build/browser checks pass.
+Main `bc525ea` reconciled in `78794bf`; `9bb0e4e` organization update reconciled
+in `0f5c8b5`, both without conflicts. Teammate map colors and ownership flows are
+preserved. Platform explains database ownership and one supervisor per organization.
+Final checks: 199 frontend tests and 47 upstream organization/Auth0 mock tests
+(one dependency deprecation), plus frontend/build/browser verification.
 
 Explicit user authorization for stage one, `feature/cache-interactive-platform`,
 base main `88b87ae`. Adds `frontend/public/platform.{html,css,js}` as an independent
@@ -19,7 +22,7 @@ component, responsive selection, mouse/keyboard, static references, motion, all
 three documents and preserved demo/sign-in links. The 67.8% figure reuses the archived
 256-site synthetic benchmark; report counts and matching hashes are checked.
 
-Passed: 198 frontend tests, lint/TypeScript, live/default and fixture production
+Passed: 199 frontend tests, lint/TypeScript, live/default and fixture production
 builds, source/data/figure checks and development/built-browser suites at
 1440/768/390/320. No overflow/exceptions/API calls. Existing SPA chunk warning remains.
 No authenticated workflow, backend/auth/contract, research model/scoring, credential,
