@@ -16,6 +16,7 @@ from app.db import models as db
 from app.demo import DEMO_SITE_ID, freshen
 from app.demo.anomalies import ANOMALIES
 from app.demo.freshen import keep_demo_fresh
+from app.demo.scenario import FLOOD_ALERT_ID, WILDLIFE_REPORT_ID
 from app.main import app
 from app.outlook import get_event_outlook_service
 from app.schemas import ReportCategory
@@ -328,3 +329,31 @@ def _supervisor(user_id: str):
 
 def _utc(value: datetime) -> datetime:
     return freshen._aware(value)
+
+
+def test_the_everglades_report_gets_its_analysis_and_it_keeps_its_age(demo, at) -> None:
+    def report() -> dict:
+        reports = at["client"].get(
+            f"/api/reports?site_id={DEMO_SITE_ID}", headers=supervisor(SUPERVISOR)
+        )
+        return next(r for r in reports.json() if r["id"] == WILDLIFE_REPORT_ID)
+
+    slide(demo, NOW + timedelta(hours=2))
+    at["now"] = NOW + timedelta(hours=2)
+    first = report()["enrichment"]
+    assert first["status"] == "complete" and first["verdict"] == "supports"
+    cited = {i for p in first["supporting"] + first["contradicting"] for i in p["evidence_ids"]}
+    assert cited <= {e["id"] for e in first["evidence"]}
+    assert {"crew:note", FLOOD_ALERT_ID} <= cited
+
+    def lag(r: dict) -> timedelta:
+        return datetime.fromisoformat(r["enrichment"]["analyzed_at"]) - datetime.fromisoformat(
+            r["created_at"]
+        )
+
+    before = lag(report())
+    slide(demo, NOW + timedelta(days=7))
+    at["now"] = NOW + timedelta(days=7)
+    later = report()
+    assert lag(later) == before == timedelta(minutes=1)
+    assert later["enrichment"]["summary"] == first["summary"]  # filled once, never rewritten
