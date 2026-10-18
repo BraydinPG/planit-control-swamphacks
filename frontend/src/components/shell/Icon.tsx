@@ -1,4 +1,5 @@
 import type { SVGProps } from 'react'
+import { Brand } from './Brand'
 
 export type IconName =
   | 'refresh'
@@ -65,18 +66,7 @@ export function Icon({
   )
 }
 
-/** Logo mark: stop octagon with a bolt, from the design mockups. */
+/** Compatibility export for compact branding; operational icons stay separate. */
 export function Logo({ className = 'size-8' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-      <polygon
-        points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86"
-        fill="currentColor"
-      />
-      <polygon
-        points="13 5.5 8 13 11.5 13 10.5 18.5 16 11 12.5 11 13 5.5"
-        fill="var(--pc-bg)"
-      />
-    </svg>
-  )
+  return <Brand variant="icon" className={className} />
 }

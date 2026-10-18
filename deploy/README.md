@@ -24,6 +24,9 @@ Start from `backend/.env.example` and fill every value. Production differences:
 - `FEED_REFRESH_ENABLED=true` and `BRIEFING_SCHEDULE_ENABLED=true` **on this server only**.
   Every laptop sharing the Tiger database sets both to `false`.
 - `PHOTO_LOCAL_DIR=/srv/foresite/photos`
+- `USGS_HTTP_CONNECTIONS=4`, `FLOOD_GAUGE_BATCH_DEGREES=1`, `FEED_ROUND_BUDGET_SECONDS=900`: USGS
+  takes about 9 s per box, and with the defaults the gauge feed hit the 480 s round budget
+  with about two thirds of sites unfetched. Still well inside the 60-minute stale window.
 - `VULTR_OBJECT_STORAGE_ENDPOINT`, `_ACCESS_KEY`, `_SECRET_KEY`, `_BUCKET` from the Object
   Storage subscription (`vultr-cli object-storage get <id>`).
 
@@ -40,7 +43,24 @@ ssh root@SERVER 'mkdir -p /etc/systemd/system/caddy.service.d &&
   systemctl daemon-reload && systemctl enable foresite-api && systemctl restart caddy'
 ```
 
-## Deploy a commit
+## Automatic deploys (GitHub Actions)
+
+Every push to `main` runs `.github/workflows/deploy.yml`: backend tests and lint, the
+frontend type check and tests, then `deploy/deploy.sh` and a live check of `/health` and
+`/api/sites` (401). Teammates only merge to `main`; nobody needs server access.
+
+- Watch a deploy: GitHub → Actions → Deploy. Rerun or deploy by hand: "Run workflow".
+- A failing test stops the deploy. If the new version fails its health check on the server,
+  `deploy.sh` rolls back to the previous version.
+- Secrets: `DEPLOY_HOST`, `DEPLOY_SSH_KEY` (a key used only by Actions,
+  `github-actions-deploy@foresite` in the server's `authorized_keys`), `DEPLOY_KNOWN_HOSTS`.
+  Variables: `VITE_AUTH0_DOMAIN`, `VITE_AUTH0_CLIENT_ID`, `VITE_AUTH0_AUDIENCE` (public).
+- CI doesn't have the gitignored model artifact, so the server keeps the one it has. Ship a
+  new model from a laptop with `deploy/deploy.sh`.
+- Revoke: delete the `github-actions-deploy@foresite` line from `/root/.ssh/authorized_keys`
+  and the `DEPLOY_SSH_KEY` secret.
+
+## Deploy a commit by hand
 
 From a clean checkout with `backend/.env`-independent `frontend/.env.local` (public Auth0 SPA
 values) and the provisioned model in `ml/artifacts/provisioned_v2`:

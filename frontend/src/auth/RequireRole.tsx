@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useAuth } from './context'
 import { ROLE_LABELS, type Role } from './roles'
+import { Brand } from '../components/shell/Brand'
 
 interface RequireRoleProps {
   /** Role or roles allowed to see `children`. */
@@ -8,19 +9,21 @@ interface RequireRoleProps {
   children: ReactNode
   /** Replaces the default access state for a signed-in user with the wrong role. */
   fallback?: ReactNode
+  /** A standalone screen shows its brand once; embedded guard examples may omit it. */
+  showBrand?: boolean
 }
 
 /**
  * Shows `children` only to signed-in users with an allowed role. This guard is for the
  * interface only: the backend checks every request on its own.
  */
-export function RequireRole({ role, children, fallback }: RequireRoleProps) {
+export function RequireRole({ role, children, fallback, showBrand = true }: RequireRoleProps) {
   const auth = useAuth()
   const allowed: readonly Role[] = typeof role === 'string' ? [role] : role
 
   if (auth.isLoading) {
     return (
-      <AccessPanel title="Checking sign-in">
+      <AccessPanel title="Checking sign-in" showBrand={showBrand}>
         <p role="status" aria-live="polite">
           Checking your sign-in…
         </p>
@@ -30,7 +33,7 @@ export function RequireRole({ role, children, fallback }: RequireRoleProps) {
 
   if (!auth.isAuthenticated) {
     return (
-      <AccessPanel title="Sign in required">
+      <AccessPanel title="Sign in required" showBrand={showBrand}>
         <p>Sign in to see this screen.</p>
         {auth.error && <ErrorText message={auth.error} />}
         {auth.mode !== 'unconfigured' && (
@@ -42,7 +45,7 @@ export function RequireRole({ role, children, fallback }: RequireRoleProps) {
 
   if (auth.role === null) {
     return (
-      <AccessPanel title="No role assigned">
+      <AccessPanel title="No role assigned" showBrand={showBrand}>
         <p>
           You are signed in, but your account has no FORESITE role. Ask the project admin
           to assign Crew or Supervisor, then sign in again.
@@ -56,7 +59,7 @@ export function RequireRole({ role, children, fallback }: RequireRoleProps) {
     if (fallback !== undefined) return <>{fallback}</>
     const needed = allowed.map((name) => ROLE_LABELS[name]).join(' or ')
     return (
-      <AccessPanel title="Not available for your role">
+      <AccessPanel title="Not available for your role" showBrand={showBrand}>
         <p>
           This screen is for {needed}. You are signed in as{' '}
           <strong>{ROLE_LABELS[auth.role]}</strong>.
@@ -69,12 +72,13 @@ export function RequireRole({ role, children, fallback }: RequireRoleProps) {
   return <>{children}</>
 }
 
-function AccessPanel({ title, children }: { title: string; children: ReactNode }) {
+function AccessPanel({ title, children, showBrand }: { title: string; children: ReactNode; showBrand: boolean }) {
   return (
     <section
       aria-labelledby="access-panel-title"
       className="mx-auto my-8 flex max-w-md flex-col gap-4 rounded-lg border-2 border-neutral-900 bg-white p-6 text-lg text-neutral-950 dark:border-neutral-100 dark:bg-neutral-900 dark:text-neutral-50"
     >
+      {showBrand && <Brand variant="full" />}
       <h2 id="access-panel-title" className="text-2xl font-semibold">
         {title}
       </h2>

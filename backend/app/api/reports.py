@@ -27,6 +27,7 @@ from fastapi import (
     Form,
     HTTPException,
     Query,
+    Response,
     UploadFile,
 )
 from pydantic import ValidationError
@@ -38,7 +39,14 @@ from app.api.sites import DbSession, report_schema, visible_site_ids
 from app.db import models as db
 from app.gemini import GeminiClient, get_gemini_client
 from app.gemini.report_analysis import run_report_analysis
-from app.schemas import CrewReport, LocationSource, ReportCategory, ReportCreate, ReportReview
+from app.schemas import (
+    CrewReport,
+    LocationSource,
+    MatCondition,
+    ReportCategory,
+    ReportCreate,
+    ReportReview,
+)
 from app.security import (
     AuthenticatedUser,
     CurrentUser,
@@ -88,6 +96,7 @@ def submit_report(
     note: Annotated[str | None, Form()] = None,
     location_source: Annotated[LocationSource, Form()] = LocationSource.SITE,
     location_accuracy_m: Annotated[float | None, Form()] = None,
+    mat_condition: Annotated[MatCondition | None, Form()] = None,
     photo: Annotated[UploadFile | None, File()] = None,
 ) -> CrewReport:
     try:
@@ -100,6 +109,7 @@ def submit_report(
             note=note or None,
             location_source=location_source,
             location_accuracy_m=location_accuracy_m,
+            mat_condition=mat_condition,
         )
     except ValidationError as exc:
         raise HTTPException(
@@ -143,6 +153,7 @@ def submit_report(
         now,
         location_source=form.location_source,
         location_accuracy_m=form.location_accuracy_m,
+        mat_condition=form.mat_condition,
     )
     # T060: Gemini's analysis runs after the response, so the crew member never waits on it.
     background.add_task(
@@ -170,6 +181,48 @@ def list_reports(
     if site_id is not None:
         query = query.where(db.CrewReport.site_id == site_id)
     return [report_schema(r) for r in session.scalars(query).all()]
+
+
+PHOTO_MEDIA_TYPES = {
+    "jpg": "image/jpeg",
+    "png": "image/png",
+    "webp": "image/webp",
+    "heic": "image/heic",
+}
+
+
+@router.get(
+    "/{report_id}/photo",
+    response_class=Response,
+    responses={200: {"content": {m: {} for m in PHOTO_MEDIA_TYPES.values()}}},
+)
+def report_photo(
+    report_id: str, user: AuthenticatedUser, session: DbSession, photos: Photos
+) -> Response:
+    """A report's photo for anyone who may see the report. The stored object stays private."""
+    report = session.get(db.CrewReport, report_id)
+    if report is None or not _can_see(session, user, report):
+        raise HTTPException(status_code=404, detail="Report not found")
+    if not report.photo_url:
+        raise HTTPException(status_code=404, detail="This report has no photo")
+    try:
+        data = photos.load(report.photo_url)
+    except Exception as exc:  # a missing object, an invalid key, or storage down
+        raise HTTPException(status_code=404, detail="The photo isn't in storage") from exc
+    media_type = PHOTO_MEDIA_TYPES[report.photo_url.rsplit(".", 1)[1]]
+    return Response(
+        data,
+        media_type=media_type,
+        headers={"Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff"},
+    )
+
+
+def _can_see(session, user: CurrentUser, report: db.CrewReport) -> bool:
+    """The same visibility as GET /api/reports."""
+    if user.can(roles.READ_ALL_SITES):
+        membership = membership_for(session, user)
+        return membership is not None and report.organization_id == membership.organization_id
+    return report.site_id in (visible_site_ids(session, user) or set())
 
 
 def _reporter(session, user: CurrentUser, site: db.Site) -> Reporter:

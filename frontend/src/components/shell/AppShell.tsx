@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { shellContext, shellMode } from '../../api/shell-fixtures'
-import { Icon, Logo, type IconName } from './Icon'
+import { Icon, type IconName } from './Icon'
+import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
 
 export type Workspace = 'crew' | 'supervisor'
@@ -119,7 +120,7 @@ export function AppShell({
         className={
           mobile
             ? `grid ${visible.length > 5 ? 'grid-cols-6 gap-0.5' : 'grid-cols-5 gap-1.5'}`
-            : 'space-y-1'
+            : 'space-y-4'
         }
       >
         {visible.map((item) => {
@@ -132,7 +133,7 @@ export function AppShell({
               className={
                 mobile
                   ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-xs leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
-                  : `flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
+                  : `flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
               }
             >
               <Icon
@@ -175,10 +176,7 @@ export function AppShell({
             aria-label="FORESITE overview"
             className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
           >
-            <Logo className="size-7 text-ink" />
-            <span className="text-lg font-bold tracking-tight">
-              FORESITE
-            </span>
+            <Brand variant="compact" className="w-44" decorative />
           </a>
           <div className="space-y-2">
             <p className="kicker px-3">
@@ -202,13 +200,11 @@ export function AppShell({
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
         >
           <div className="flex min-w-0 items-center gap-2.5">
-            <Logo
-              className={`size-7 shrink-0 text-ink ${crew ? '' : 'lg:hidden'}`}
+            <Brand
+              variant="compact"
+              className={`w-36 sm:w-40 ${crew ? '' : 'lg:hidden'}`}
             />
-            <p className="min-w-0 truncate text-sm">
-              <span className={`font-bold ${crew ? '' : 'lg:hidden'}`}>
-                FORESITE
-              </span>
+            <p className={`hidden min-w-0 truncate text-sm ${crew ? '' : 'lg:block'}`}>
               <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
                 {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}
                 <span className="px-2 text-line-strong">/</span>
@@ -324,7 +320,7 @@ export function AppShell({
             </section>
           ))}
         <footer className="mt-10 flex flex-col gap-2 border-t border-line pt-5 text-xs leading-relaxed text-muted @2xl:flex-row @2xl:justify-between">
-          <span className="font-semibold text-ink-2">FORESITE</span>
+          <Brand variant="full" />
           <span>
             Advisory context does not authorize work or clear an alert.
           </span>

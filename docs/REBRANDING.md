@@ -31,11 +31,11 @@ of the open feed-performance PR #50; that branch and all teammate work are prese
 
 ## Logo and assets
 
-The existing abstract utility symbol, colors, fonts and layouts are retained. The
-favicon's SVG title is FORESITE; its geometry is unchanged. `/planit-mark.svg` remains
-a legacy asset URL for compatibility with existing HTML/caches. It contains no old
-wordmark. A new FORESITE logo can be designed separately; it is not required to render
-the new text wordmark and browser identity.
+The initial text rebrand retained the abstract utility symbol. The subsequent
+[official logo integration](OFFICIAL_LOGO.md) uses the approved cyclone-in-O artwork,
+compact wordmark, full tagline and derived favicons. Existing colors/fonts/layouts
+remain. `/planit-mark.svg` remains a historical compatibility asset, with no active
+frontend reference; current branding uses the new FORESITE files.
 
 ## Intentional legacy references
 

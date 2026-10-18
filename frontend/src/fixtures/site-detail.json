@@ -355,6 +355,7 @@
       "confirmed_severity": null,
       "location_source": "device",
       "location_accuracy_m": 12.0,
+      "mat_condition": null,
       "site_distance_miles": 0.21,
       "enrichment": {
         "status": "complete",
@@ -426,6 +427,7 @@
       "confirmed_severity": "moderate",
       "location_source": null,
       "location_accuracy_m": null,
+      "mat_condition": null,
       "site_distance_miles": null,
       "enrichment": {
         "status": "unavailable",

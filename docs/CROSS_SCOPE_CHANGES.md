@@ -11,6 +11,56 @@ API contracts, backend alert decisions or stored photos are changed. Expired liv
 windows stay active until updated server state arrives. Demo controls and simulated
 labels are preserved. Browser acceptance uses the existing isolated mock harness.
 
+## Official FORESITE logo (Cache for Rudra and Braydin) - 2026-10-17
+
+Explicit user authorization permits narrow visual identity integration, including
+app-owned auth presentation. Branch `feature/cache-official-foresite-logo` starts
+from main `991c52f`, preserving merged branding, feeds, photos, reports and deployment
+work. No deployment files or another worktree/process were changed.
+
+- `frontend/public/foresite-logo.png`: unmodified approved 2172×724 transparent PNG.
+  New `foresite-{logo-full,wordmark,cyclone,favicon-16,favicon-32,apple-touch-icon,
+  icon-192,social}.png`, multi-size `foresite-favicon.ico` and
+  `foresite-brand-assets.json`: extracted approved pixels, dimensions and hashes.
+- `frontend/scripts/prepare-brand-assets.py`: optional reproducible Pillow 13 extraction;
+  no production dependency/lockfile change. No drawing/redesign/vector-wrapper claim.
+- `frontend/src/components/shell/Brand.tsx` (new): shared full/compact/icon rendering,
+  intrinsic dimensions, aspect ratio/alt/contrast and cache version.
+  `AppShell.tsx`: logo placement in existing navigation/header/footer, bounded sizing
+  and hidden empty mobile breadcrumb. `Icon.tsx`: existing Logo export delegates to
+  the cyclone; operational icons unchanged.
+- `frontend/src/auth/RequireRole.tsx`: add logo to existing access/loading panels and
+  optional presentation-only showBrand prop. `AuthCheckPage.tsx`: one full logo and
+  omit duplicates in embedded examples. Guard conditions, login/logout/token flow,
+  roles and provider configuration unchanged. Braydin reviews these presentation edits.
+- `frontend/index.html`, `auth-check.html`: cyclone favicon/touch refs, main social
+  imagery, exact FORESITE title retained. Old planit-mark asset remains for compatibility
+  but is no longer referenced by current frontend source/entrypoints.
+- Existing `frontend/scripts/check-shell.mjs`: assert image decode/source/aspect/alt,
+  actual 16/32/180/social assets, tablet viewport and light/dark DPR2 sign-in captures.
+- Docs: new `docs/OFFICIAL_LOGO.md` and public simulated screenshots/contact sheet in
+  `docs/branding/`; current logo section in `docs/REBRANDING.md`; concise context/log.
+
+Final checks: frontend lint, TypeScript, **171 tests**, live/demo production builds,
+asset regeneration/hash/alpha/ICO checks pass. Dev Edge smoke passes all 11 destinations
+at 1440/768/390/320, preserving six outlooks, 6.1/10, report/photo/confirmation/instruction,
+alerts, teams and briefings, with no browser exceptions or real backend requests.
+First browser attempt found 5177 absent; a new explicit demo was started from this
+checkout (PID 25276), no existing server stopped. Built-demo Edge suite also passes
+all eleven destinations/four widths, assets and lifecycle; no browser exceptions or
+real API calls. Temporary 5182 preview closed; public simulated screenshots committed.
+Backend suite not rerun: no backend changes. Existing live bundle-size warning remains.
+
+Rudra reviews placement; Braydin reviews app-owned auth presentation and separately
+coordinates external Universal Login imagery. Vultr owner performs the normal frontend
+release with committed assets; no backend/migration/config/secret/DNS/workflow changes.
+No task check-off, real-account acceptance, automatic merge or deployment.
+
+Published [PR53](https://github.com/BraydinPG/planit-control-swamphacks/pull/53),
+**Integrate Official FORESITE Logo and Branding Assets**, open against main;
+tested implementation `4508e9d`, base `991c52f`. Later main `6aa528b` contains
+deployment-only work with no overlap; no deployment files edited in this PR.
+
 ## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
 
 Explicit task-specific user authorization permits focused ingestion/refresh edits.
@@ -248,6 +298,16 @@ Explicit user requests (Braydin): join codes (`XXXX-XXXX`, 7 days); supervisors 
 - **`scripts/check-shell.mjs`**: the supervisor Overview waits for "Needs your attention", and the map and list checks run on Worksites ("55 locations"). It still stops earlier, on main's existing crew 320 px layout issue.
 
 Checks: 800+ backend and 121 frontend tests, Ruff, oxlint, `tsc -b`, and build clean. The demo-mode supervisor tabs were re-read in headless Chrome.
+## Access mat A-D condition (T034B, Rudra; cross-scope into Braydin's DB/Gemini and Cache's form) — 2026-10-17
+
+Explicit user request (Rudra): for access mat deterioration, step 2 of the report form asks "What is the condition?" with A-D instead of present/absent; other categories unchanged. User decisions: A = hazard absent, B-D = hazard present; no Unsure choice.
+
+- **Rudra (owned):** `MatCondition` enum and `mat_condition` on `ReportCreate` (required for access mats only, must match `hazard_present`) and `CrewReport`; `POST /api/reports` form field; `create_report`; site report serializer; TS mirror; fixtures regenerated; spec route row; T034B status.
+- **Braydin (review requested):** `crew_reports.mat_condition` column in `db/models.py` plus an idempotent `ADDED_COLUMNS` entry in `db/init.py` (run `python -m app.db.init` against Tiger Data once); `gemini/report_analysis.py` adds the crew's grade as `crew:mat_condition` evidence (no rubric, so Gemini still must not assign a grade).
+- **Cache (review requested):** `ReportForm` step 2 for access mats, grade chip on `ReportCard`, `validateReport`, submit echo check, demo client rule, `tests/mock-service.ts`.
+
+Checks: 887 backend tests (new validation, grade-A/no-notice and Gemini-evidence cases) and 170 frontend tests; ruff, oxlint, `tsc -b`, both builds; browser check of the form and a submitted grade-C demo report.
+
 ## Site species context (Rudra; cross-scope into Braydin's Gemini and Cache's frontend) — 2026-10-17
 
 Explicit user request (Rudra): a read-only, site-aware species guide for team sites using the USFWS IPaC Location API, USFWS critical habitat boundaries on the existing map, and the existing Gemini client. Guide: [SPECIES_CONTEXT.md](SPECIES_CONTEXT.md).
@@ -667,3 +727,14 @@ singular `event_outlook` is kept. Focused edits outside Rudra's paths: frontend
 `tests/mock-service.ts` (default `event_outlooks: []`), new `EventOutlooks.tsx` and its
 placement on site detail (Claude). No `ml/**`, score, alert, auth or DB-schema change; notice
 evidence is existing JSON. Cache/Codex: please review the contract before live testing.
+
+### 2026-10-18 — Braydin: report photo retrieval (deployment finding)
+
+Supervisors on the deployed site saw "private photo retrieval is not connected" on every report: reports stored a private photo key, but no route returned the image. Added with the user's authorization, touching Rudra's paths:
+
+- `backend/app/api/reports.py`: `GET /api/reports/{id}/photo` streams the photo through the backend. Visibility matches `GET /api/reports` (crew: their team's sites; supervisor: their organization). A report the caller can't see, a report without a photo, and an object missing from storage are all 404s. `Cache-Control: private`.
+- `frontend/src/api/{contracts,http-client}.ts`: optional `reportPhoto(id)` fetches the photo as a blob with the session token, since an `<img>` can't send one.
+- `frontend/src/pages/ConnectedPages.tsx`: `StoredPhoto` shows the image, or "This photo isn't in storage."
+- Tests: `backend/tests/test_reports_api.py` (visibility, 401, missing object), `frontend/tests/team.test.mjs` (authorized blob request).
+
+The seven reports created before deployment have photo keys whose files were stored on teammates' laptops, so they show "This photo isn't in storage." New photos go to the private `foresite-photos` bucket.

@@ -177,6 +177,16 @@ def gather_evidence(
             observed_at=report.created_at,
         ),
     ]
+    if report.mat_condition:
+        evidence.append(
+            Evidence(
+                id="crew:mat_condition",
+                kind=EvidenceKind.REPORT,
+                label=f"Crew member's access mat condition grade: {report.mat_condition} "
+                "(A-D, D unusable; no approved grading rubric)",
+                observed_at=report.created_at,
+            )
+        )
     if report.note:
         evidence.append(
             Evidence(
