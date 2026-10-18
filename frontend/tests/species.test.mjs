@@ -105,7 +105,7 @@ test('fixture keeps regional context and crew reports apart', () => {
   assert.ok(!JSON.stringify(fixture).toLowerCase().includes('moccasin"'))
 })
 
-test('panel always shows the caveat, source, date, and match labels', () => {
+test('species source disclosure retains provenance above the habitat map, with no detached footer', () => {
   const text = panel(fixture)
   assert.match(text, /Regional context, not a sighting/)
   assert.match(text, /USFWS IPaC Location API/)
@@ -115,6 +115,13 @@ test('panel always shows the caveat, source, date, and match labels', () => {
   assert.match(text, /Confirmed by supervisor review/)
   assert.doesNotMatch(text, /What this does not tell you/)
   assert.doesNotMatch(text, /USFWS field office:/)
+  const source = text.split('data-species-provenance="true"')[1]?.split('</details>')[0]
+  assert(source?.includes('Species sources and coverage'))
+  assert(source.includes(fixture.source))
+  assert(source.includes(fixture.fetched_at))
+  assert(source.includes(html(React.createElement('p', null, fixture.caveat))))
+  assert.doesNotMatch(text, /<footer/)
+  assert(text.indexOf('data-species-provenance') < text.indexOf('aria-labelledby="critical-habitat-map"'))
 })
 
 test('protection, habitat and encounter render independently; unknown never reads as harmless', () => {

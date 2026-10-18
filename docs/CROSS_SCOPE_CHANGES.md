@@ -1,3 +1,76 @@
+## Predictive-intelligence landing messaging (Cache for Rudra) - 2026-10-18
+
+Explicit user authorization covers the public homepage copy/presentation and the
+later request to merge after verification. Branch
+`feature/cache-predictive-landing-messaging` starts from main `d801615`.
+`frontend/public/landing.html` is the only changed application source: requested
+headline, description, statistics, three feature blocks and a source/limitations
+disclosure. Existing logo, dark/red atmosphere, inline shader/counter JavaScript
+and demo/sign-in destinations are retained. Responsive typography, natural scrolling
+and a reduced-motion entrance fix keep all copy accessible on small/short screens.
+
+The source audit supports every requested number, with explicit mixed-record,
+retrospective research, offline consistency and reference-location qualifications.
+No dashboards, API/backend/auth, score weights, alerts, models, fixtures, shared
+manifests, credentials, deployment or task checkboxes change. Rudra should preserve
+the existing navigation targets and research qualifiers. Braydin has no required
+configuration action. Other worktrees and existing servers are untouched.
+
+Verified 198 frontend tests, lint/TypeScript, live/demo builds and Edge/CDP checks
+plus visual screenshots at 1440/768/390/320px. Short-screen/fallback-font, reduced-motion,
+count-up, disclosure and actual demo navigation checks pass without clipping,
+browser exceptions or real API calls. [Audit, evidence and handoff](LANDING_PREDICTIVE_MESSAGING.md).
+`PROJECT_CONTEXT.md` records this same verification; commit/PR attribution is in
+Git history. The latest user instruction supersedes the attached prompt's earlier
+request to leave the PR unmerged.
+
+## Score/evidence row on My Worksite (Cache for Rudra) - 2026-10-18
+
+Explicit user follow-up, `feature/cache-score-evidence-layout` from main `6f563fe`:
+crew My Worksite places the existing full score-factor panel beside Site score at
+1280px and above, with matched headings/card tops. Weather and conditions moves to
+the full-width row underneath; narrow screens read score, factors, then weather.
+`ConnectedPages.tsx` changes composition only. Existing browser geometry assertions
+now check that ordering, aligned cards and full-width weather. No supervisor layout,
+schema, fixture, backend/auth/scoring/alert logic or task checkbox changes.
+
+Verified 198 frontend tests, lint/TypeScript, live/demo builds, the built-demo browser
+workflow suite and 40 focused cases over eight widths. Score/factor card tops align,
+weather fills the row below, and narrow screens preserve reading order. No overflow,
+exceptions or actual backend calls. User explicitly requests merge after verification.
+The layout guide records commands and the refreshed desktop screenshot.
+
+## Unified confirmed hazards (Cache for Rudra) - 2026-10-18
+
+User follow-up to PR80 requests a single Confirmed hazards section. Branch
+`feature/cache-unified-confirmed-hazards` starts from main `8cc25ff`. The projection
+now joins known hazard names/categories (Flood/Flooding) and exact report/notice
+links. Flash Flood and unfamiliar notice IDs remain separate. Each merged row keeps
+all alerts, original score contributions, source states, confirmations, duration
+estimate and verbatim supervisor instructions. Counts refer to merged hazard rows.
+
+`SiteHazards` renders the sole confirmed list and the existing pending notice cards.
+`NoticeCard` gains an embedded presentation option instead of a second confirmed-list
+renderer. Confirmed instructions are inline; supervisor-only confirmation/editor
+guards remain. A page-local draft cache preserves edits across the pending-to-confirmed
+row move during a GET refresh; successful sends discard the cached draft. No auth,
+scoring/alert logic, API contract, fixture, model, task checkbox or external service
+change. Rudra should preserve this composition during future UI work.
+
+User follow-up moves the detached USFWS Observed/source/time footer from below the
+habitat map into Species sources and coverage under Local species. All metadata,
+regional-context caveats and map attribution remain. `SpeciesPanel.tsx`, its existing
+unit test and the browser regression now verify this placement.
+
+198 frontend tests, lint/TypeScript, live/demo builds, development/built-demo workflow
+suites and 40 focused built-browser cases across eight widths pass, including species
+source containment/order and unified hazard rows. No overflow, browser exceptions or
+actual backend calls. An initial CDP navigation timeout did not recur after
+restarting only this checkout's owned preview. Reconciled main `c285cf5` in `e96b190`;
+the sole context-document conflict preserves both entries and the read-only guest
+feature. Also preserved main `fc72b1c` / PR82 in `3430f4e`. User explicitly authorizes
+push, conflict resolution and merge. Screenshots and final commands are in the layout guide.
+
 ## Worksite alignment and hazard evidence (Cache for Rudra) - 2026-10-18 06:46 UTC
 
 Explicit user authorization covers focused frontend edits, push and merge after

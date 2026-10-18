@@ -26,13 +26,13 @@ void main(){
   vec2 uv=gl_FragCoord.xy/uRes;
   vec2 p=(gl_FragCoord.xy-.5*uRes)/uRes.y;
   float t=uTime*.025;
-  // the pointer's wake: the gas parts along its path and thins slightly, then closes back in
+  // the pointer's wake: the gas parts along its path, then closes back in (no darkening)
   vec3 wk=wake(p);
   vec2 cp=(p-wk.xy)*vec2(.8,1.3);
   vec2 q=vec2(fbm(cp*1.3+vec2(t,0.)),fbm(cp*1.3+vec2(5.2,1.3)-t));
   vec2 r=vec2(fbm(cp*1.3+3.2*q+vec2(1.7,9.2)+t*1.4),fbm(cp*1.3+3.2*q+vec2(8.3,2.8)-t*1.1));
   float f=fbm(cp*1.1+3.*r);
-  float fog=smoothstep(.2,.95,f)*(.55+.6*(1.-uv.y*.6))*1.25*(1.-.25*wk.z);
+  float fog=smoothstep(.2,.95,f)*(.55+.6*(1.-uv.y*.6))*1.25;
   float edge=smoothstep(.45,.75,f)-smoothstep(.75,1.,f);
   vec3 tint=vec3(.95,.12,.16);
   // base matches the app background (#121214) so plain areas look unchanged at rest

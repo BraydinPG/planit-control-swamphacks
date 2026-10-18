@@ -1,0 +1,442 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "overflow": false,
+      "clipped": [],
+      "headline": "SEE THE RISK.PLAN BEYOND THE ALERT.",
+      "lede": [
+        {
+          "text": "Weather alerts tell you what's happening. FORESITE helps you understand what could happen next.",
+          "display": "block"
+        },
+        {
+          "text": "We combine live environmental monitoring, field reports, and explainable risk assessments with historically backtested predictive models. By estimating how long certain ongoing hazards may persist, FORESITE gives supervisors deeper insight into potential disruptions while keeping crews informed and connected.",
+          "display": "block"
+        }
+      ],
+      "stats": [
+        {
+          "text": "526K+",
+          "label": "Historical weather records analyzed",
+          "x": 192.5,
+          "y": 875,
+          "width": 260,
+          "height": 95,
+          "right": 452.5,
+          "bottom": 970
+        },
+        {
+          "text": "6",
+          "label": "Backtested event-duration targets",
+          "x": 452.5,
+          "y": 875,
+          "width": 260,
+          "height": 95,
+          "right": 712.5,
+          "bottom": 970
+        },
+        {
+          "text": "5,000",
+          "label": "Monte Carlo simulations",
+          "x": 712.5,
+          "y": 875,
+          "width": 260,
+          "height": 95,
+          "right": 972.5,
+          "bottom": 970
+        },
+        {
+          "text": "50+",
+          "label": "Mapped infrastructure locations",
+          "x": 972.5,
+          "y": 875,
+          "width": 260,
+          "height": 95,
+          "right": 1232.5,
+          "bottom": 970
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 1258,
+          "y": 9.5,
+          "width": 109.40625,
+          "height": 44,
+          "right": 1367.40625,
+          "bottom": 53.5
+        },
+        {
+          "text": "Explore Live Demo",
+          "href": "/?demo#/crew/overview",
+          "x": 57.59375,
+          "y": 715.5625,
+          "width": 220.484375,
+          "height": 52,
+          "right": 278.078125,
+          "bottom": 767.5625
+        },
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 298.078125,
+          "y": 715.5625,
+          "width": 132.078125,
+          "height": 52,
+          "right": 430.15625,
+          "bottom": 767.5625
+        }
+      ],
+      "features": 3,
+      "logo": {
+        "src": "/foresite-wordmark.png?v=daaf5322",
+        "x": 57.59375,
+        "y": 14.640625,
+        "width": 156,
+        "height": 33.71875,
+        "right": 213.59375,
+        "bottom": 48.359375
+      },
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 1425,
+        "height": 1000,
+        "right": 1425,
+        "bottom": 1000
+      },
+      "researchAfterStats": true
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "clipped": [],
+      "headline": "SEE THE RISK.PLAN BEYOND THE ALERT.",
+      "lede": [
+        {
+          "text": "Weather alerts tell you what's happening. FORESITE helps you understand what could happen next.",
+          "display": "block"
+        },
+        {
+          "text": "We combine live environmental monitoring, field reports, and explainable risk assessments with historically backtested predictive models. By estimating how long certain ongoing hazards may persist, FORESITE gives supervisors deeper insight into potential disruptions while keeping crews informed and connected.",
+          "display": "block"
+        }
+      ],
+      "stats": [
+        {
+          "text": "526K+",
+          "label": "Historical weather records analyzed",
+          "x": 30.71875,
+          "y": 880.484375,
+          "width": 172.59375,
+          "height": 112.796875,
+          "right": 203.3125,
+          "bottom": 993.28125
+        },
+        {
+          "text": "6",
+          "label": "Backtested event-duration targets",
+          "x": 203.3125,
+          "y": 880.484375,
+          "width": 173,
+          "height": 112.796875,
+          "right": 376.3125,
+          "bottom": 993.28125
+        },
+        {
+          "text": "5,000",
+          "label": "Monte Carlo simulations",
+          "x": 376.3125,
+          "y": 880.484375,
+          "width": 172.984375,
+          "height": 112.796875,
+          "right": 549.296875,
+          "bottom": 993.28125
+        },
+        {
+          "text": "50+",
+          "label": "Mapped infrastructure locations",
+          "x": 549.296875,
+          "y": 880.484375,
+          "width": 172.984375,
+          "height": 112.796875,
+          "right": 722.28125,
+          "bottom": 993.28125
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 612.875,
+          "y": 9.5,
+          "width": 109.40625,
+          "height": 44,
+          "right": 722.28125,
+          "bottom": 53.5
+        },
+        {
+          "text": "Explore Live Demo",
+          "href": "/?demo#/crew/overview",
+          "x": 30.71875,
+          "y": 649.65625,
+          "width": 220.484375,
+          "height": 52,
+          "right": 251.203125,
+          "bottom": 701.65625
+        },
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 271.203125,
+          "y": 649.65625,
+          "width": 132.078125,
+          "height": 52,
+          "right": 403.28125,
+          "bottom": 701.65625
+        }
+      ],
+      "features": 3,
+      "logo": {
+        "src": "/foresite-wordmark.png?v=daaf5322",
+        "x": 30.71875,
+        "y": 18.09375,
+        "width": 124,
+        "height": 26.796875,
+        "right": 154.71875,
+        "bottom": 44.890625
+      },
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 753,
+        "height": 1024,
+        "right": 753,
+        "bottom": 1024
+      },
+      "researchAfterStats": true
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "clipped": [],
+      "headline": "SEE THE RISK.PLAN BEYOND THE ALERT.",
+      "lede": [
+        {
+          "text": "Weather alerts tell you what's happening. FORESITE helps you understand what could happen next.",
+          "display": "block"
+        },
+        {
+          "text": "We combine live environmental monitoring, field reports, and explainable risk assessments with historically backtested predictive models. By estimating how long certain ongoing hazards may persist, FORESITE gives supervisors deeper insight into potential disruptions while keeping crews informed and connected.",
+          "display": "block"
+        }
+      ],
+      "stats": [
+        {
+          "text": "526K+",
+          "label": "Historical weather records analyzed",
+          "x": 16,
+          "y": 696.5625,
+          "width": 179,
+          "height": 86.578125,
+          "right": 195,
+          "bottom": 783.140625
+        },
+        {
+          "text": "6",
+          "label": "Backtested event-duration targets",
+          "x": 195,
+          "y": 696.5625,
+          "width": 179,
+          "height": 86.578125,
+          "right": 374,
+          "bottom": 783.140625
+        },
+        {
+          "text": "5,000",
+          "label": "Monte Carlo simulations",
+          "x": 16,
+          "y": 797.140625,
+          "width": 179,
+          "height": 86.578125,
+          "right": 195,
+          "bottom": 883.71875
+        },
+        {
+          "text": "50+",
+          "label": "Mapped infrastructure locations",
+          "x": 195,
+          "y": 797.140625,
+          "width": 179,
+          "height": 86.578125,
+          "right": 374,
+          "bottom": 883.71875
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 264.59375,
+          "y": 9.5,
+          "width": 109.40625,
+          "height": 44,
+          "right": 374,
+          "bottom": 53.5
+        },
+        {
+          "text": "Explore Live Demo",
+          "href": "/?demo#/crew/overview",
+          "x": 16,
+          "y": 598,
+          "width": 180.671875,
+          "height": 52,
+          "right": 196.671875,
+          "bottom": 650
+        },
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 206.671875,
+          "y": 598,
+          "width": 103.5625,
+          "height": 52,
+          "right": 310.234375,
+          "bottom": 650
+        }
+      ],
+      "features": 3,
+      "logo": {
+        "src": "/foresite-wordmark.png?v=daaf5322",
+        "x": 16,
+        "y": 18.09375,
+        "width": 124,
+        "height": 26.796875,
+        "right": 140,
+        "bottom": 44.890625
+      },
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 909.03125,
+        "right": 390,
+        "bottom": 909.03125
+      },
+      "researchAfterStats": true
+    },
+    {
+      "width": 320,
+      "overflow": false,
+      "clipped": [],
+      "headline": "SEE THE RISK.PLAN BEYOND THE ALERT.",
+      "lede": [
+        {
+          "text": "Weather alerts tell you what's happening. FORESITE helps you understand what could happen next.",
+          "display": "block"
+        },
+        {
+          "text": "We combine live environmental monitoring, field reports, and explainable risk assessments with historically backtested predictive models. By estimating how long certain ongoing hazards may persist, FORESITE gives supervisors deeper insight into potential disruptions while keeping crews informed and connected.",
+          "display": "block"
+        }
+      ],
+      "stats": [
+        {
+          "text": "526K+",
+          "label": "Historical weather records analyzed",
+          "x": 16,
+          "y": 723.359375,
+          "width": 144,
+          "height": 94.453125,
+          "right": 160,
+          "bottom": 817.8125
+        },
+        {
+          "text": "6",
+          "label": "Backtested event-duration targets",
+          "x": 160,
+          "y": 723.359375,
+          "width": 144,
+          "height": 94.453125,
+          "right": 304,
+          "bottom": 817.8125
+        },
+        {
+          "text": "5,000",
+          "label": "Monte Carlo simulations",
+          "x": 16,
+          "y": 831.8125,
+          "width": 144,
+          "height": 94.453125,
+          "right": 160,
+          "bottom": 926.265625
+        },
+        {
+          "text": "50+",
+          "label": "Mapped infrastructure locations",
+          "x": 160,
+          "y": 831.8125,
+          "width": 144,
+          "height": 94.453125,
+          "right": 304,
+          "bottom": 926.265625
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 194.59375,
+          "y": 9.5,
+          "width": 109.40625,
+          "height": 44,
+          "right": 304,
+          "bottom": 53.5
+        },
+        {
+          "text": "Explore Live Demo",
+          "href": "/?demo#/crew/overview",
+          "x": 16,
+          "y": 568.421875,
+          "width": 180.671875,
+          "height": 52,
+          "right": 196.671875,
+          "bottom": 620.421875
+        },
+        {
+          "text": "Sign In",
+          "href": "/?signin",
+          "x": 16,
+          "y": 630.421875,
+          "width": 103.5625,
+          "height": 52,
+          "right": 119.5625,
+          "bottom": 682.421875
+        }
+      ],
+      "features": 3,
+      "logo": {
+        "src": "/foresite-wordmark.png?v=daaf5322",
+        "x": 16,
+        "y": 18.09375,
+        "width": 124,
+        "height": 26.796875,
+        "right": 140,
+        "bottom": 44.890625
+      },
+      "hero": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 948.453125,
+        "right": 320,
+        "bottom": 948.453125
+      },
+      "researchAfterStats": true
+    }
+  ],
+  "errors": [],
+  "apiRequests": []
+}

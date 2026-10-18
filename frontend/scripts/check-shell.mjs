@@ -101,7 +101,7 @@ async function loaded(text) {
   await until(
     () =>
       evaluate(
-        // Confirmed hazards keep instructions behind View more; open them to read.
+        // Source/evidence disclosures are optional; instructions stay inline.
         `(document.querySelectorAll('[aria-label="Confirmed hazards"] details:not([open])').forEach(d=>{d.open=true}), document.readyState === 'complete') && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
       ),
     text,
@@ -403,6 +403,18 @@ try {
       crew_layout: layout,
     })
     await hash('/crew/sites', 'Score factors and evidence')
+    await loaded('Species sources and coverage')
+    assert(
+      await evaluate(`(()=>{
+        const panel=document.querySelector('[aria-labelledby="species-title"]');
+        const provenance=panel?.querySelector('[data-species-provenance]');
+        const details=provenance?.querySelector('details');
+        const map=panel?.querySelector('.leaflet-container');
+        return !!details && !details.open && details.textContent.includes('USFWS IPaC') &&
+          !panel.querySelector('footer') && (!map || !!(provenance.compareDocumentPosition(map)&Node.DOCUMENT_POSITION_FOLLOWING));
+      })()`),
+      'Species attribution stays in its source disclosure above the map',
+    )
     assert(
       await evaluate("!document.querySelector('[aria-labelledby=\"advisory-title\"]') && !document.body.innerText.includes('Unverified worksite conditions')"),
       'Redundant unverified-conditions panel is absent',
@@ -433,10 +445,23 @@ try {
       assert(
         await evaluate(`(()=>{
           const score=document.querySelector('[data-crew-score] [aria-label="Site score"]').getBoundingClientRect();
-          const conditions=document.querySelector('[data-crew-conditions] [data-observation-list]').parentElement.getBoundingClientRect();
-          return conditions.left>score.right&&Math.abs(conditions.top-score.top)<2;
+          const factors=document.querySelector('[data-crew-factors] > div:last-child').getBoundingClientRect();
+          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+          return factors.left>score.right&&Math.abs(factors.top-score.top)<2 &&
+            conditions.top>=Math.max(score.bottom,factors.bottom) &&
+            Math.abs(conditions.left-score.left)<2 && Math.abs(conditions.right-factors.right)<2;
         })()`),
-        'Desktop worksite cards sit side by side with aligned tops',
+        'Score and factors align side by side with full-width weather underneath',
+      )
+    else
+      assert(
+        await evaluate(`(()=>{
+          const score=document.querySelector('[data-crew-score]').getBoundingClientRect();
+          const factors=document.querySelector('[data-crew-factors]').getBoundingClientRect();
+          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+          return factors.top>=score.bottom && conditions.top>=factors.bottom;
+        })()`),
+        'Narrow worksite stacks score, factors and weather in reading order',
       )
     await evaluate(
       'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',
@@ -449,7 +474,10 @@ try {
         const rows=Array.from(document.querySelectorAll('[data-site-hazard]'));
         return ['lightning','heat_index','flood','severe_thunderstorm'].every(id=>rows.some(r=>r.dataset.siteHazard===id)) &&
           rows.filter(r=>r.dataset.siteHazard==='lightning').length===1 &&
-          !!document.querySelector('[aria-label="Confirmed hazards"]');
+          document.querySelectorAll('[aria-label="Confirmed hazards"]').length===1 &&
+          !document.body.innerText.includes('Active alerts and score contributors') &&
+          !!document.querySelector('[data-site-hazard="flood"] [data-notice-id="notice-flood-1"]') &&
+          !!document.querySelector('[data-site-hazard="wildlife"] [data-notice-id="notice-wildlife-1"]');
       })()`),
       'Hazard list includes lightning, every environmental contributor and lower-tier alerts alongside confirmed notices',
     )
