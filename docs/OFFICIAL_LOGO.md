@@ -1,5 +1,11 @@
 # Official FORESITE logo integration
 
+**Current artwork (2026-10-18):** the user replaced the navy-letter logo with the
+white-letter/cyan-cyclone version. See the [current source, transparent cutout,
+reproduction and handoff guide](../frontend/branding/README.md). Active assets and
+screenshots now show that replacement. The original integration notes below are a
+historical record; the team's always-dark theme supplies current contrast.
+
 Review: [PR53](https://github.com/BraydinPG/planit-control-swamphacks/pull/53),
 tested implementation `4508e9d`; open against main, no automatic merge/deployment.
 
@@ -69,9 +75,11 @@ their existing minimum sizes.
   presentation-only optional prop on RequireRole; embedded guards in the development
   sign-in-check page omit duplicate logos because that page has its own full logo.
   Authentication conditions, actions, context and tokens are unchanged.
-  These panels and their controls stay light even when the device prefers dark mode,
-  matching the application's light theme and retaining readable original navy artwork.
-  The logo itself stays transparent without a backing plate, outline or color filter.
+  Since 2026-10-18 the whole application, including these panels, is always dark
+  (user decision). The logo artwork is unchanged: it stays transparent without a
+  backing plate, outline or color filter, so the navy lettering has low contrast on
+  the dark surfaces. That trade-off was accepted; any light logo variant needs a new
+  approved asset.
 - Both HTML entrypoints reference cyclone favicons. Main metadata includes the
   full-logo social image. The tab title remains exactly **FORESITE**.
 

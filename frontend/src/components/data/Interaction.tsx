@@ -7,9 +7,10 @@ import { errorSummary } from '../../presentation/display'
 const base =
   'pc-press inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'
 /** Secondary button / link. */
-export const control = base + ' bg-[#e5e5ea] text-ink hover:bg-[#dcdce1]'
-/** Primary action: inverse of the theme (bone on dark, ink on light). */
-export const primary = base + ' bg-accent text-white hover:bg-[#0077ed]'
+export const control = base + ' bg-control text-ink hover:bg-control-hover'
+/** Primary action: system blue fill with white text. */
+export const primary =
+  base + ' bg-accent-fill text-white hover:bg-accent-fill-hover'
 /** Large field action for gloved use (acknowledge, report). */
 // Important modifiers so these win over the base size when concatenated.
 export const big =

@@ -7,6 +7,7 @@ import { Action } from './Interaction'
 import { RiskShape, type RiskShapeKind } from './Risk'
 import { Icon } from '../shell/Icon'
 import { displayLabel } from '../../presentation/display'
+import { alertTitle, alertTone } from '../../presentation/alerts'
 import { Details } from './Details'
 
 function remaining(alert: Alert, now: number) {
@@ -38,11 +39,13 @@ function look(alert: Alert): {
       ring: 'border-stop',
       word: 'Stop work',
     }
-  // Every active alert shares the stop red; the shape and title tell them apart.
+  // Heat advisories are orange; every other active alert shares the stop red.
+  // The shape and title tell them apart.
+  const heat = alertTone(alert) === 'heat'
   return {
     kind: 'warn',
-    band: 'bg-stop text-white',
-    ring: 'border-stop',
+    band: heat ? 'bg-warn text-white' : 'bg-stop text-white',
+    ring: heat ? 'border-warn' : 'border-stop',
     word: 'Warning',
   }
 }
@@ -105,7 +108,7 @@ function Acknowledged({ big = false }: { big?: boolean }) {
       role="status"
       className={`flex items-center gap-3 rounded-2xl border-2 border-ok bg-ok/10 px-4 text-ok ${big ? 'min-h-[72px]' : 'min-h-14'}`}
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok text-white">
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ok-fill text-white">
         <Icon name="check" className="size-5" />
       </span>
       <span>
@@ -129,11 +132,8 @@ export function AlertCard({
     now = useClock()
   const style = look(alert),
     left = remaining(alert, now)
-  const name =
-    alert.rule === 'lightning_stop_work'
-      ? 'Stop-work'
-      : displayLabel(alert.rule)
-  const title = `${name} alert${alert.state === 'active' ? ' active' : ' cleared'}`
+  const title = `${alertTitle(alert)}${alert.state === 'active' ? '' : ' · Cleared'}`
+  const lightning = alert.rule === 'lightning_stop_work'
   const simulated = alert.simulated || client.mode === 'demo'
   const acks = alert.acknowledgements.length
   // The viewer's own acknowledgement. Green marks the acknowledgement only:
@@ -172,6 +172,15 @@ export function AlertCard({
         </h2>
       </div>
       <div className="space-y-3 p-4">
+        {lightning && (
+          <p className="text-base font-semibold">
+            Lightning strike{' '}
+            {alert.distance_miles !== null
+              ? `${alert.distance_miles.toFixed(1)} mi from this site`
+              : 'within 10 mi of this site'}{' '}
+            · <Timestamp value={alert.latest_event_at} />
+          </p>
+        )}
         {!detail && mine && <Acknowledged />}
         {!detail && left !== null && left > 0 && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
@@ -188,7 +197,11 @@ export function AlertCard({
           <Ring
             alert={alert}
             left={left}
-            color="var(--pc-stop-text)"
+            color={
+              alertTone(alert) === 'heat'
+                ? 'var(--pc-warn-text)'
+                : 'var(--pc-stop-text)'
+            }
           />
         )}
         <p className="text-sm text-ink-2">

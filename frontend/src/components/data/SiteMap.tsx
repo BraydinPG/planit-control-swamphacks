@@ -25,7 +25,7 @@ const network = () => (navigator.onLine ? reconnects : -1)
 
 // Critical habitat outlines: dashed for proposed, solid for final, so status never
 // depends on colour alone. Each outline also carries its name as a tooltip.
-const HABITAT_COLOR = '#5e4b8b'
+const HABITAT_COLOR = '#9d8ad6'
 
 export function SiteMap({
   sites,
@@ -91,7 +91,8 @@ export function SiteMap({
       button.onclick = () => select(s.id)
       L.circleMarker([s.lat, s.lon], {
         radius: s.assigned_team ? 9 : 5,
-        color: s.assigned_team ? '#1d1d1f' : '#ffffff',
+        // Light outline on the dark map; assigned sites get the heavier ring.
+        color: s.assigned_team ? '#f5f5f7' : '#1d1d1f',
         weight: s.assigned_team ? 2.5 : 1,
         // No evidence reads as unknown; partial evidence gets a dashed outline.
         fillColor:
@@ -172,14 +173,14 @@ export function SiteMap({
             <>
               <li className="inline-flex items-center gap-1.5">
                 <span
-                  className="h-3 w-5 border-2 border-[#5e4b8b] bg-[#5e4b8b]/15"
+                  className="h-3 w-5 border-2 border-[#9d8ad6] bg-[#9d8ad6]/15"
                   aria-hidden="true"
                 />
                 Final critical habitat (solid)
               </li>
               <li className="inline-flex items-center gap-1.5">
                 <span
-                  className="h-3 w-5 border-2 border-dashed border-[#5e4b8b] bg-[#5e4b8b]/15"
+                  className="h-3 w-5 border-2 border-dashed border-[#9d8ad6] bg-[#9d8ad6]/15"
                   aria-hidden="true"
                 />
                 Proposed critical habitat (dashed)

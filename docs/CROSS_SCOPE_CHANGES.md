@@ -1,3 +1,33 @@
+## Replacement white/cyan logo (Cache for Rudra and Braydin) - 2026-10-18
+
+Explicit user request replaces logos everywhere in the app and removes the supplied
+dark background. User approved a pixel cutout after two imagegen drafts produced
+artifacts; neither draft is used. Branch `feature/cache-white-cyclone-branding` began
+at `7aacfe5` and incorporated main `0605e7b` with PR63/64 notifications/dark theme intact.
+
+- `frontend/branding/foresite-logo-source.png`: unmodified upload; README documents
+  pinned source, exact cutout method, hashes, reproduction and owner handoff.
+- `frontend/scripts/prepare-brand-assets.py`: alpha key/enclosed eye removal and
+  deterministic derivation. RGB of retained pixels is unchanged; removed pixels are
+  transparent. No generative redraw or vector conversion is claimed.
+- Existing `frontend/public/foresite-*` full/compact/cyclone/favicon/touch/social assets
+  and hash manifest are replaced. Metadata preview has a documented dark canvas;
+  logo/icon files themselves are transparent.
+- `frontend/src/components/shell/Brand.tsx`, `frontend/index.html`, `auth-check.html`:
+  asset cache version `daaf5322`; sizes, accessibility and home links remain intact.
+- Existing browser regression checks verify real transparency/white lettering and
+  current assets. Context/guide and public simulated screenshots are updated.
+
+177 frontend tests, lint, TypeScript, live/demo builds, Python script lint/format,
+deterministic regeneration and all asset hashes pass. Focused Edge checks pass eleven
+destinations at 1440/768/390/320 in development and built-demo modes; mocked sign-in
+appearance and Sign out contrast pass under both OS preferences, with no exceptions or
+real API requests. Full mutation browser suite/backend tests not rerun for this asset
+change. Existing build-size warnings remain. Other worktrees/processes/configuration
+are preserved. No auth implementation, style/surface, backend/API, score/ML/Gemini,
+deployment or task-state changes relative to main. Rudra reviews frontend release;
+Braydin coordinates external hosted Auth0 imagery separately. No automatic merge.
+
 ## Supervisor-only worksite notice review (Cache for Rudra) - 2026-10-17
 
 Explicit user request: crew must not see the notice-review option after a photo
@@ -862,3 +892,7 @@ The user asked that a new member choose crew or supervisor, and that supervisors
 ### 2026-10-18 — Braydin: Everglades wildlife scenario restored and protected
 
 The user asked to restore the Everglades site (the owners' wildlife demonstration). `python -m app.demo anomalies` now leaves crew reports and notices at the Everglades site alone, and finishes by rebuilding Rudra's T069 scenario there from `app/demo/scenario.py`'s own pieces (`_readings`, `_wildlife_report`, `_flood_notice`, `_strike`, `_forecasts`), using the demo accounts already linked in the database (so nothing is relinked and no teams are touched). Anomaly notices are now `demo-anomaly-{key}` (the first version reused `demo-notice-flood`/`demo-notice-flash-flood`; old ones are found by location and removed). `scenario._remove_previous` now deletes `notice_assessments` for the demo notices before the notices themselves, so `python -m app.demo seed` keeps working after a per-organization confirmation. Note: `seed` still removes every team in the demo organization, including the anomaly teams; run `anomalies` after it.
+
+### 2026-10-18 — Rudra: always-dark theme touches Braydin's sign-in panels (user-authorized)
+
+The user made the whole site always dark, sign-in included, with the logo artwork untouched. Outside Rudra's lanes: `frontend/src/auth/RequireRole.tsx` (`AccessPanel` uses `bg-surface text-ink border-line`, the Sign in/Sign out button uses `bg-accent-fill`, error text uses `text-stop-text`) and `frontend/src/auth/AuthCheckPage.tsx` (neutral/dark: pairs replaced by tokens). No authentication logic, conditions or tokens changed. `check-shell.mjs` now expects the dark sign-in surface `rgb(28, 28, 30)` and still asserts the logo is transparent and unfiltered in both OS preferences. `docs/OFFICIAL_LOGO.md` records the accepted low-contrast navy logo on dark.
