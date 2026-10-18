@@ -50,7 +50,7 @@ function NoticeWorkflow({
       data-notice-id={notice.id}
       className={embedded ? 'scroll-mt-20 space-y-3' : `scroll-mt-20 space-y-3 rounded-2xl border-2 bg-surface p-4 ${potential ? 'border-dashed border-caution' : 'border-line-strong'}`}
     >
-      {embedded ? <p className="kicker">Supervisor-confirmed notice · {displayLabel(notice.hazard_label)}</p> : <div className="flex items-start gap-3">
+      {embedded ? <p className="kicker">{potential ? 'Potential hazard · awaiting confirmation' : `Supervisor-confirmed notice · ${displayLabel(notice.hazard_label)}`}</p> : <div className="flex items-start gap-3">
         <RiskShape
           kind={potential ? 'caution' : 'warn'}
           className="mt-0.5 size-6"

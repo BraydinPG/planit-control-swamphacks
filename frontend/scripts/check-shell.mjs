@@ -102,7 +102,7 @@ async function loaded(text) {
     () =>
       evaluate(
         // Source/evidence disclosures are optional; instructions stay inline.
-        `(document.querySelectorAll('[aria-label="Confirmed hazards"] details:not([open])').forEach(d=>{d.dataset.openedByCheck='1';d.open=true}), document.readyState === 'complete') && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
+        `(document.querySelectorAll('[aria-label="Confirmed hazards"] details:not([open]), [aria-label="Potential hazards"] details:not([open])').forEach(d=>{d.dataset.openedByCheck='1';d.open=true}), document.readyState === 'complete') && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
       ),
     text,
   )

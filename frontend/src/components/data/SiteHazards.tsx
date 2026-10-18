@@ -6,16 +6,11 @@ import { RiskShape } from './Risk'
 import { Status, Timestamp } from './Status'
 import { NoticeCard } from './NoticeCard'
 import { Icon } from '../shell/Icon'
+import { displayLabel } from '../../presentation/display'
 
-/** One hazard row holds its alerts, score evidence, confirmations and instructions. */
-export function SiteHazards({
-  site,
-  collapsed = false,
-}: {
-  site: SiteRecord
-  /** Start every hazard row folded (crew Home); otherwise rows start open. */
-  collapsed?: boolean
-}) {
+/** One hazard row holds its alerts, score evidence, confirmations and instructions.
+ * Every row, confirmed or still potential, starts folded to save space. */
+export function SiteHazards({ site }: { site: SiteRecord }) {
   // Confirmation can move a notice from pending to its merged hazard row during
   // a GET refresh. Preserve an in-flight supervisor draft across that move.
   const [drafts] = useState(() => new Map<string, string>())
@@ -33,8 +28,7 @@ export function SiteHazards({
       <ul className="divide-y divide-line">
         {hazards.map((hazard) => (
           <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0">
-            {/* Each row folds on its own; crew Home starts them folded. */}
-            <details open={!collapsed} data-hazard-row className="group/hazard">
+            <details data-hazard-row className="group/hazard">
             <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
               <h4 className="text-lg font-bold">{hazard.label}</h4>
               <Icon name="back" className="size-5 shrink-0 -rotate-90 transition-transform group-open/hazard:rotate-90" />
@@ -81,9 +75,27 @@ export function SiteHazards({
         ))}
       </ul>
     </section>}
-    {pending.map((notice) => (
-      <NoticeCard key={notice.id} notice={notice} drafts={drafts} outlook={site.event_outlook} />
-    ))}
+    {pending.length > 0 && <section aria-label="Potential hazards"
+      className="scroll-mt-20 overflow-hidden rounded-2xl border-2 border-dashed border-caution bg-surface">
+      <ul className="divide-y divide-line">
+        {pending.map((notice) => (
+          <li key={notice.id} className="min-w-0">
+            <details data-hazard-row className="group/hazard">
+            <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+              <span className="flex min-w-0 items-center gap-3">
+                <RiskShape kind="caution" className="size-5 shrink-0" />
+                <h4 className="text-lg font-bold">{displayLabel(notice.hazard_label)}</h4>
+              </span>
+              <Icon name="back" className="size-5 shrink-0 -rotate-90 transition-transform group-open/hazard:rotate-90" />
+            </summary>
+            <div className="px-4 pb-4">
+              <NoticeCard notice={notice} embedded drafts={drafts} outlook={site.event_outlook} />
+            </div>
+            </details>
+          </li>
+        ))}
+      </ul>
+    </section>}
     {!hazards.length && !pending.length && <p className="text-sm text-muted">No confirmed hazards supplied. Unmeasured conditions remain unknown.</p>}
     </>
   )
