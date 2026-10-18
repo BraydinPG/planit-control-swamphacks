@@ -1,4 +1,6 @@
 import { useCallback, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { usePageActions } from '../shell/pageActions'
 import type { Briefing, SiteSummary } from '../../types/api'
 import { useApplication, useResource } from '../../application/context'
 import { field, labelText, LoadState } from './Interaction'
@@ -171,9 +173,9 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
       }
     }, [client, selection]),
   )
-  return (
-    <section className="space-y-5" aria-label="Stored briefings">
-      <div className="grid gap-4 rounded-2xl border border-line bg-surface p-4 @lg:grid-cols-[minmax(0,22rem)_1fr] @lg:items-end">
+  const titleSlot = usePageActions()
+  const picker = (
+      <div className="grid gap-4 rounded-2xl border border-line bg-surface p-4 @5xl:grid-cols-[minmax(0,22rem)_1fr] @5xl:items-end">
         <label className={labelText}>
           Choose a worksite or organization
           <select
@@ -189,17 +191,22 @@ export function StoredBriefings({ sites }: { sites: SiteSummary[] }) {
             <option value="organization">Organization briefings</option>
           </select>
         </label>
-        {/* Beside the dropdown: centred between it and the right edge, and top to bottom.
+        {/* Beside the dropdown on wide pages: centred between it and the right edge, and top to bottom.
             The half-gap shift (gap-4 / 2) centres it on the space between the dropdown and
             the edge, not on its grid cell, which starts after the column gap. */}
-        <p className="flex items-start gap-2 text-sm text-ink-2 @lg:-translate-x-2 @lg:items-center @lg:self-center @lg:justify-self-center">
-          <Icon name="clock" className="mt-0.5 size-4 shrink-0 @lg:mt-0" />
+        <p className="flex items-start gap-2 text-sm text-ink-2 @5xl:-translate-x-2 @5xl:items-center @5xl:self-center @5xl:justify-self-center">
+          <Icon name="clock" className="mt-0.5 size-4 shrink-0 @5xl:mt-0" />
           <span>
             Briefings are scheduled for 6 PM, in the worksite's local time.
             Organization briefings require permission.
           </span>
         </p>
       </div>
+  )
+  return (
+    <section className="space-y-5" aria-label="Stored briefings">
+      {/* The picker sits beside the "Shift briefings" title, right-aligned; inline if there is no title slot. */}
+      {titleSlot ? createPortal(picker, titleSlot) : picker}
       {client.mode === 'demo' && (
         <p className="rounded-xl border border-dotted border-sim px-4 py-3 text-sm text-ink-2">
           <strong className="text-sim">Simulated briefing.</strong> Saved
