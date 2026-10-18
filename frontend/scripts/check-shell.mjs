@@ -433,10 +433,27 @@ try {
   const noticeId = await evaluate(
     "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
   )
+  await until(
+    () => evaluate(`document.querySelector('[data-report-id="${reportId}"]')!==null`),
+    'submitted demo photo report appears',
+  )
+  assert(
+    await evaluate("!document.body.innerText.includes('Review worksite notice') && !document.body.innerText.includes('Confirm potential hazard') && document.body.innerText.includes('Awaiting supervisor confirmation')"),
+    'Crew sees pending status without notice review or confirmation actions',
+  )
   assert(await evaluate("!document.body.innerText.includes('Confirm report')"))
   await reload('Reported present')
+  assert(
+    await evaluate("!document.body.innerText.includes('Review worksite notice')"),
+    'Reload must not expose the supervisor review link to crew',
+  )
   await click('Supervisor')
   await loaded('Needs your attention')
+  await hash('/supervisor/reports', 'Reported present')
+  assert(
+    await evaluate(`document.querySelector('[data-report-id="${reportId}"] a')?.getAttribute('href')==='#/supervisor/sites/site-demo-everglades'`),
+    'Supervisor retains the pending photo report notice review link',
+  )
   // The supervisor Overview lists what needs a decision; the map and list are on Worksites.
   await hash('/supervisor/sites', '55 locations')
   await until(
@@ -1020,10 +1037,22 @@ try {
     const created = await evaluate('window.harness.snapshot().reports[0]')
     assert.equal(created.review_status, 'pending')
     const mockNotice = created.notice_id
+    await until(
+      () => evaluate(`document.querySelector('[data-report-id="${created.id}"]')!==null`),
+      'submitted mock-live photo report appears',
+    )
+    assert(
+      await evaluate("!document.body.innerText.includes('Review worksite notice') && !document.body.innerText.includes('Confirm potential hazard') && document.body.innerText.includes('Awaiting supervisor confirmation')"),
+      'Live crew photo report must not offer supervisor notice review',
+    )
     await evaluate("window.harness.mount('supervisor')")
     await hash(
       '/supervisor/sites/site-demo-everglades',
       'Hazards and supervisor instructions',
+    )
+    assert(
+      await evaluate(`document.querySelector('[data-report-id="${created.id}"] a')?.getAttribute('href')==='#/supervisor/sites/site-demo-everglades'`),
+      'Live supervisor retains the photo report notice review link',
     )
     assert(
       await evaluate(

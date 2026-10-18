@@ -1377,12 +1377,14 @@ function ReportCard({ report }: { report: CrewReport }) {
           <p className="min-w-0 flex-1">
             Awaiting supervisor confirmation in the worksite's hazard notices.
           </p>
-          <a
-            className={control}
-            href={`#/${persona}/sites/${encodeURIComponent(report.site_id)}`}
-          >
-            Review worksite notice
-          </a>
+          {persona === 'supervisor' && (
+            <a
+              className={control}
+              href={`#/supervisor/sites/${encodeURIComponent(report.site_id)}`}
+            >
+              Review worksite notice
+            </a>
+          )}
         </div>
       )}
       <p className="text-sm text-muted">

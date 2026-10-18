@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Supervisor-only notice review link - 2026-10-17
+- User-authorized frontend fix on `feature/cache-supervisor-notice-review`, base main `f42ddaf`: pending photo reports keep the supervisor-confirmation status for crew, but only supervisors see "Review worksite notice". Existing notice confirmation/instruction guards and backend permission checks remain authoritative.
+- Scope: `ConnectedPages.tsx`, existing browser regression and coordination docs. No schema, Auth0, backend, scoring, ML or task checkbox changes. T065 real-account lifecycle acceptance remains pending.
+- Verification: 172 frontend tests, lint, TypeScript, production build, 21 offline backend hazard tests and Edge browser regression pass. New demo/mock-live photo-report checks cover hidden crew review actions (including reload) and retained supervisor links; 11 destinations at 1440/768/390/320 pass without exceptions or real API requests. Crew 403 and authorized supervisor confirmation are backend-tested. Existing bundle-size/deprecation warnings remain.
+
 ## Alert, report and header maintenance - 2026-10-17
 - Explicit user request on `feature/alert-report-header-fixes`: expired live watch windows show pending authoritative status instead of a stuck 00:00 and refresh every 15 seconds; only the server can clear an alert. Alerts also have a manual refresh button. User follow-up reverted the acknowledgement button changes to their original behavior.
 - Report photo selections can be removed before submission, clearing the preview and file input so the same image can be selected again. Saved report photos are unchanged. Live submission copy is "Report successful" / "Report failed"; supervisor review remains pending.
