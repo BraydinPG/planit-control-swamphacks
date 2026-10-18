@@ -2,6 +2,12 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Official FORESITE artwork integration - 2026-10-17
+- Explicit narrow logo authorization; `feature/cache-official-foresite-logo` starts from main `991c52f`. PR50/51/52 are maintainer-merged; new report/photo/deployment changes are preserved. No edits to another checkout or deployment configuration.
+- Approved Downloads PNG copied byte-identically to `frontend/public/foresite-logo.png`; transparent full/compact/cyclone/favicon/mobile assets are extracted, not redesigned. Shared `Brand` component covers shell/sidebar/mobile/footer and app-owned auth/loading screens. Original colors and layout retained; dark-mode contrast plate; no raster-as-SVG claim.
+- [Logo guide](docs/OFFICIAL_LOGO.md): assets/hashes, reproducible optional extraction, cross-owner interfaces, screenshots and Auth0/Vultr handoff. New favicon URLs/cache version and metadata imagery; old asset kept unreferenced. No backend, schema, auth behavior, scoring, ML, Gemini, photo, environment or task-state changes.
+- Frontend lint/TypeScript, 171 tests and live/demo builds pass; development and built-demo Edge smoke pass eleven destinations at 1440/768/390/320, real image/metadata loading, no exceptions/real API calls; dark/light mocked sign-in captured at DPR2. Local demo http://localhost:5177/ (new owned PID 25276; prior server absent), no backend launched; temporary built preview closed. Braydin coordinates external Universal Login branding; deployment owner uses the existing frontend release.
+
 ## Feed refresh performance review - 2026-10-17 23:12 UTC
 - Explicit Cache cross-owner authorization; branch `feature/cache-feed-refresh-performance`, baseline main `11c62b6`. Implementation `ffff712`; reviewed main `cdba4c3` incorporated as `e0120fb` (only incoming UI hover styling, no backend changes). PR47/48/49 are maintainer-merged. No frontend, ML, scoring weights/rules, lightning detector/timer, schema, Auth0 or database migration changes in this PR.
 - Network-only bounded workers (6), pooled HTTP, host gates (NWS4/USGS2), time budgets/retries, coordinate/TTL metadata cache, shared NWS alert/zone resources and gauge batches. Immutable site snapshots precede serial ORM writes/rules/scoring. Missing forecasts/source subresults are explicit unavailable; no missing-to-zero or outage clearance.

@@ -1,3 +1,48 @@
+## Official FORESITE logo (Cache for Rudra and Braydin) - 2026-10-17
+
+Explicit user authorization permits narrow visual identity integration, including
+app-owned auth presentation. Branch `feature/cache-official-foresite-logo` starts
+from main `991c52f`, preserving merged branding, feeds, photos, reports and deployment
+work. No deployment files or another worktree/process were changed.
+
+- `frontend/public/foresite-logo.png`: unmodified approved 2172×724 transparent PNG.
+  New `foresite-{logo-full,wordmark,cyclone,favicon-16,favicon-32,apple-touch-icon,
+  icon-192,social}.png`, multi-size `foresite-favicon.ico` and
+  `foresite-brand-assets.json`: extracted approved pixels, dimensions and hashes.
+- `frontend/scripts/prepare-brand-assets.py`: optional reproducible Pillow 13 extraction;
+  no production dependency/lockfile change. No drawing/redesign/vector-wrapper claim.
+- `frontend/src/components/shell/Brand.tsx` (new): shared full/compact/icon rendering,
+  intrinsic dimensions, aspect ratio/alt/contrast and cache version.
+  `AppShell.tsx`: logo placement in existing navigation/header/footer, bounded sizing
+  and hidden empty mobile breadcrumb. `Icon.tsx`: existing Logo export delegates to
+  the cyclone; operational icons unchanged.
+- `frontend/src/auth/RequireRole.tsx`: add logo to existing access/loading panels and
+  optional presentation-only showBrand prop. `AuthCheckPage.tsx`: one full logo and
+  omit duplicates in embedded examples. Guard conditions, login/logout/token flow,
+  roles and provider configuration unchanged. Braydin reviews these presentation edits.
+- `frontend/index.html`, `auth-check.html`: cyclone favicon/touch refs, main social
+  imagery, exact FORESITE title retained. Old planit-mark asset remains for compatibility
+  but is no longer referenced by current frontend source/entrypoints.
+- Existing `frontend/scripts/check-shell.mjs`: assert image decode/source/aspect/alt,
+  actual 16/32/180/social assets, tablet viewport and light/dark DPR2 sign-in captures.
+- Docs: new `docs/OFFICIAL_LOGO.md` and public simulated screenshots/contact sheet in
+  `docs/branding/`; current logo section in `docs/REBRANDING.md`; concise context/log.
+
+Final checks: frontend lint, TypeScript, **171 tests**, live/demo production builds,
+asset regeneration/hash/alpha/ICO checks pass. Dev Edge smoke passes all 11 destinations
+at 1440/768/390/320, preserving six outlooks, 6.1/10, report/photo/confirmation/instruction,
+alerts, teams and briefings, with no browser exceptions or real backend requests.
+First browser attempt found 5177 absent; a new explicit demo was started from this
+checkout (PID 25276), no existing server stopped. Built-demo Edge suite also passes
+all eleven destinations/four widths, assets and lifecycle; no browser exceptions or
+real API calls. Temporary 5182 preview closed; public simulated screenshots committed.
+Backend suite not rerun: no backend changes. Existing live bundle-size warning remains.
+
+Rudra reviews placement; Braydin reviews app-owned auth presentation and separately
+coordinates external Universal Login imagery. Vultr owner performs the normal frontend
+release with committed assets; no backend/migration/config/secret/DNS/workflow changes.
+No task check-off, real-account acceptance, automatic merge or deployment.
+
 ## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
 
 Explicit task-specific user authorization permits focused ingestion/refresh edits.
