@@ -24,7 +24,7 @@ function alertMarkup(value, user = 'crew-current', now = Date.parse(alert.clear_
   return renderToStaticMarkup(React.createElement(ApplicationContext.Provider, {
     value: { client: { mode: 'live', capabilities: { acknowledge: true }, now: () => now },
       persona: 'crew', principalId: user, refresh() {}, revision: 0 },
-  }, React.createElement(AlertCard, { alert: value, detail: true })))
+  }, React.createElement(AlertCard, { alerts: [value], detail: true })))
 }
 
 test('expired live windows do not display a stuck zero or claim clearance', () => {

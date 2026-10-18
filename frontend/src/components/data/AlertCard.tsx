@@ -7,8 +7,27 @@ import { Action } from './Interaction'
 import { RiskShape, type RiskShapeKind } from './Risk'
 import { Icon } from '../shell/Icon'
 import { displayLabel } from '../../presentation/display'
-import { alertTitle, alertTone } from '../../presentation/alerts'
+import {
+  alertTone,
+  isStopWork,
+  stopWorkTitle,
+  tierLabel,
+} from '../../presentation/alerts'
 import { Details } from './Details'
+
+/**
+ * The alert whose window decides the group's countdown: none while any alert in the
+ * group has no all-clear time (a warning still in effect), otherwise the latest one.
+ */
+function timing(alerts: Alert[]): Alert {
+  const latest = alerts.reduce((a, b) =>
+    Date.parse(b.latest_event_at) > Date.parse(a.latest_event_at) ? b : a,
+  )
+  if (alerts.some((a) => !a.clear_after)) return { ...latest, clear_after: null }
+  return alerts.reduce((a, b) =>
+    Date.parse(b.clear_after!) > Date.parse(a.clear_after!) ? b : a,
+  )
+}
 
 function remaining(alert: Alert, now: number) {
   if (alert.state !== 'active' || !alert.clear_after) return null
@@ -32,21 +51,19 @@ function look(alert: Alert): {
       ring: 'border-line-strong',
       word: 'Not active',
     }
-  if (alert.rule === 'lightning_stop_work')
+  if (isStopWork(alert))
     return {
       kind: 'stop',
       band: 'bg-stop text-white',
       ring: 'border-stop',
       word: 'Stop work',
     }
-  // Heat advisories are orange; every other active alert shares the stop red.
-  // The shape and title tell them apart.
-  const heat = alertTone(alert) === 'heat'
+  // Advisories (heat) are orange with a warning shape; stop-work alerts share the stop red.
   return {
     kind: 'warn',
-    band: heat ? 'bg-warn text-white' : 'bg-stop text-white',
-    ring: heat ? 'border-warn' : 'border-stop',
-    word: 'Warning',
+    band: 'bg-warn text-white',
+    ring: 'border-warn',
+    word: 'Advisory',
   }
 }
 
@@ -121,25 +138,37 @@ function Acknowledged({ big = false }: { big?: boolean }) {
   )
 }
 
+/**
+ * One alert, or one merged card for a same-tier group (`visibleAlertGroups`). The title
+ * names every event, each event gets its own line, and acknowledging records an
+ * acknowledgement on every alert in the group.
+ */
 export function AlertCard({
-  alert,
+  alerts: group,
   detail = false,
 }: {
-  alert: Alert
+  alerts: Alert[]
   detail?: boolean
 }) {
   const { client, persona, principalId, refresh } = useApplication(),
     now = useClock()
-  const style = look(alert),
+  const first = group[0],
+    alert = timing(group)
+  const style = look(first),
     left = remaining(alert, now)
-  const title = `${alertTitle(alert)}${alert.state === 'active' ? '' : ' · Cleared'}`
-  const lightning = alert.rule === 'lightning_stop_work'
-  const simulated = alert.simulated || client.mode === 'demo'
-  const acks = alert.acknowledgements.length
-  // The viewer's own acknowledgement. Green marks the acknowledgement only:
-  // the alert itself stays active until the server clears it.
-  const mine = alert.acknowledgements.find((a) => a.user_id === principalId)
+  const title = `${stopWorkTitle(group)}${first.state === 'active' ? '' : ' · Cleared'}`
+  const simulated = group.some((a) => a.simulated) || client.mode === 'demo'
+  const prototype = group.some((a) => a.is_prototype_rule)
+  const lightningOnly = group.every((a) => a.rule === 'lightning_stop_work')
+  const evidence = group.flatMap((a) => a.evidence)
+  const acks = Math.min(...group.map((a) => a.acknowledgements.length))
+  // The viewer's own acknowledgement of every alert in the group. Green marks the
+  // acknowledgement only: the alerts stay active until the server clears them.
+  const ackedBy = (a: Alert) =>
+    a.acknowledgements.some((x) => x.user_id === principalId)
+  const mine = group.every(ackedBy)
   const elapsed = left === 0
+  const inEffect = first.state === 'active' && !alert.clear_after && prototype
   useEffect(() => {
     if (client.mode !== 'live' || !elapsed) return
     // An expired watch window is not clearance. Ask for authoritative state.
@@ -149,14 +178,14 @@ export function AlertCard({
   }, [client, elapsed, refresh])
   return (
     <section
-      aria-label={`Alert ${alert.id}`}
-      data-alert-id={alert.id}
+      aria-label={`Alert ${group.map((a) => a.id).join(', ')}`}
+      data-alert-id={first.id}
       className={`overflow-hidden rounded-2xl border-[3px] bg-surface ${style.ring}`}
     >
       <div className={`flex items-center gap-3 px-4 py-3 ${style.band}`}>
         <span
           className={
-            style.kind === 'stop' && alert.state === 'active'
+            style.kind === 'stop' && first.state === 'active'
               ? 'pc-beacon'
               : 'inline-flex'
           }
@@ -167,20 +196,21 @@ export function AlertCard({
             className={detail ? 'size-8' : 'size-8 @lg:size-10'}
           />
         </span>
-        <h2 className="text-2xl font-bold leading-tight @lg:text-3xl">
-          {title}
-        </h2>
+        <div>
+          <h2 className="text-2xl font-bold leading-tight @lg:text-3xl">
+            {title}
+          </h2>
+          <p className="text-sm font-semibold">{tierLabel(first)}</p>
+        </div>
       </div>
       <div className="space-y-3 p-4">
-        {lightning && (
-          <p className="text-base font-semibold">
-            Lightning strike{' '}
-            {alert.distance_miles !== null
-              ? `${alert.distance_miles.toFixed(1)} mi from this site`
-              : 'within 10 mi of this site'}{' '}
-            · <Timestamp value={alert.latest_event_at} />
-          </p>
-        )}
+        <ul className="space-y-1" aria-label="Events in this alert">
+          {group.map((a) => (
+            <li key={a.id} className="text-base font-semibold">
+              {a.event_label} · <Timestamp value={a.latest_event_at} />
+            </li>
+          ))}
+        </ul>
         {!detail && mine && <Acknowledged />}
         {!detail && left !== null && left > 0 && (
           <div className="flex items-baseline justify-between gap-3 border-t border-line pt-3">
@@ -206,9 +236,9 @@ export function AlertCard({
         )}
         <p className="text-sm text-ink-2">
           Status:{' '}
-          <strong className="text-ink">{displayLabel(alert.state)}</strong>
+          <strong className="text-ink">{displayLabel(first.state)}</strong>
           {simulated ? ' · Simulated replay' : ''}
-          {alert.is_prototype_rule ? ' · Prototype rule' : ''}
+          {prototype ? ' · Prototype rule' : ''}
         </p>
         <p className="text-sm text-muted">
           Latest qualifying event: <Timestamp value={alert.latest_event_at} />
@@ -221,12 +251,14 @@ export function AlertCard({
               : `font-semibold ${detail ? 'text-center text-lg' : 'text-base'}`
           }
         >
-          {countdown(alert, now)
-            .replace('remaining in server window', 'left in watch window')
-            .replace(
-              'No countdown supplied by server.',
-              'No watch window available.',
-            )}
+          {inEffect
+            ? 'Warning still in effect. The watch window starts when it ends.'
+            : countdown(alert, now)
+                .replace('remaining in server window', 'left in watch window')
+                .replace(
+                  'No countdown supplied by server.',
+                  'No watch window available.',
+                )}
         </p>
         <p className="text-sm text-ink-2">
           The timer does not clear this alert or authorize work.
@@ -242,21 +274,32 @@ export function AlertCard({
                   [
                     [
                       'Triggered',
-                      <Timestamp key="t" value={alert.triggered_at} />,
+                      <Timestamp
+                        key="t"
+                        value={group.reduce((a, b) =>
+                          Date.parse(b.triggered_at) < Date.parse(a.triggered_at)
+                            ? b
+                            : a,
+                        ).triggered_at}
+                      />,
                     ],
-                    alert.distance_miles !== null && [
-                      'Distance',
-                      `${alert.distance_miles} mi`,
-                    ],
+                    group.length === 1 &&
+                      first.distance_miles !== null && [
+                        'Distance',
+                        `${first.distance_miles} mi`,
+                      ],
                     alert.clear_after && [
                       'Watch window ends',
                       <Timestamp key="w" value={alert.clear_after} />,
                     ],
+                    ['Danger tier', tierLabel(first) + ' (prototype ranking)'],
                     [
                       'Rule',
-                      alert.is_prototype_rule
-                        ? 'Prototype rule, not employer policy'
-                        : 'Stop for any strike within 10 mi. Clear after 30 minutes without one.',
+                      lightningOnly
+                        ? 'Stop for any strike within 10 mi. Clear after 30 minutes without one.'
+                        : prototype && group.some((a) => !a.is_prototype_rule)
+                          ? 'Lightning: required 10 mi / 30 minute rule. Others: prototype rules, not employer policy'
+                          : 'Prototype rule, not employer policy',
                     ],
                     [
                       'Source',
@@ -276,13 +319,13 @@ export function AlertCard({
                 ))}
               </dl>
               {/* Crew see trigger, distance, rule and source above; evidence IDs stay on the supervisor view. */}
-              {persona === 'supervisor' && alert.evidence.length > 0 && (
+              {persona === 'supervisor' && evidence.length > 0 && (
                 <div>
                   <h3 className="kicker mb-2">Evidence</h3>
                   <ul className="space-y-1.5 text-sm">
-                    {alert.evidence.map((e) => (
+                    {evidence.map((e, i) => (
                       <li
-                        key={e.id}
+                        key={`${e.id}:${i}`}
                         className="break-words rounded-lg bg-surface-2 px-3 py-2"
                       >
                         {e.label} ·{' '}
@@ -307,12 +350,18 @@ export function AlertCard({
               <Action
                 capability="acknowledge"
                 tone="big"
-                disabled={alert.state !== 'active'}
-                run={() => client.acknowledge(alert.id)}
+                disabled={first.state !== 'active'}
+                run={async () => {
+                  // One acknowledgement per alert in the group, never a shared one.
+                  for (const a of group.filter((a) => !ackedBy(a)))
+                    await client.acknowledge(a.id)
+                }}
               >
                 {client.mode === 'demo'
                   ? 'Acknowledge in demo'
-                  : 'Acknowledge alert'}
+                  : group.length > 1
+                    ? `Acknowledge all ${group.length} alerts`
+                    : 'Acknowledge alert'}
               </Action>
             )}
           </div>

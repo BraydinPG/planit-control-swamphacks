@@ -59,7 +59,7 @@ def test_score_consumer_does_not_infer_alert_clearance_from_elapsed_clock(sessio
             **{
                 k: v
                 for k, v in alert.model_dump().items()
-                if k not in {"evidence", "acknowledgements"}
+                if k not in {"evidence", "acknowledgements", "danger_tier", "event_label"}
             }
         )
     )

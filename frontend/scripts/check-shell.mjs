@@ -808,10 +808,11 @@ try {
     data.sites.find(s=>s.id===id).name=site.name;
     site.observations[0]={...site.observations[0],data_state:'stale',value:null,simulated:true};
     site.observations.push({...site.observations[0],id:'copy-long-observation',label:'Simulated visibility and access observation with a deliberately long label',value:'Unavailable pending local observation',unit:null});
-    const alert={...data.alerts[0],id:'copy-second-alert',rule:'flash_flood_warning',clear_after:null};
+    const alert={...data.alerts[0],id:'copy-second-alert',rule:'flash_flood',danger_tier:1,event_label:'Flash Flood Warning',is_prototype_rule:true,clear_after:null,acknowledgements:[]};
     data.alerts.push(alert);
-    site.active_alerts=2;
-    data.sites.find(s=>s.id===id).active_alerts=2;
+    const count=data.alerts.filter(a=>a.site_id===id&&a.state==='active').length;
+    site.active_alerts=count;
+    data.sites.find(s=>s.id===id).active_alerts=count;
     const notice=data.notices.find(n=>n.instruction_sent_at);
     notice.instruction='SIMULATED SUPERVISOR TEXT: '+ 'Await qualified inspection and follow the approved worksite procedure. '.repeat(5);
     data.reports[0].note='SIMULATED CREW TEXT: '+ 'Long report detail; original wording stays intact. '.repeat(15);
@@ -834,9 +835,10 @@ try {
     )
     assert(
       await evaluate(
-        `document.querySelectorAll('[data-outlook-id]').length===${scoreFixture.event_outlooks.filter(c => c.status === 'available').length} && document.querySelectorAll('[data-alert-id]').length===3 && document.querySelectorAll('[data-alert-id="copy-second-alert"]').length===1`,
+        // A tier-1 flash flood hides the tier-2 lightning + severe thunderstorm and tier-3 flood.
+        `document.querySelectorAll('[data-outlook-id]').length===${scoreFixture.event_outlooks.filter(c => c.status === 'available').length} && document.querySelectorAll('[data-alert-id]').length===1 && document.querySelectorAll('[data-alert-id="copy-second-alert"]').length===1 && document.querySelector('[data-alert-id] h2').textContent.includes('Stop work alert - Flash Flood') && document.body.innerText.includes('Tier 1 · Extreme danger')`,
       ),
-      'Multiple alerts and every available outlook retained',
+      'Tier 1 alert shown alone and every available outlook retained',
     )
     assert(
       await evaluate('document.documentElement.scrollWidth<=innerWidth'),
@@ -877,7 +879,7 @@ try {
   await reload('Not scored yet')
   results.push({
     readability:
-      'Long site/team/crew text and approved instructions, stale/null observations, every available outlook, multiple active alerts and all expanded details at 1440/390/320; empty reference-site state checked. Controlled simulation only.',
+      'Long site/team/crew text and approved instructions, stale/null observations, every available outlook, tier-ranked active alerts and all expanded details at 1440/390/320; empty reference-site state checked. Controlled simulation only.',
   })
   if (restartCheck) {
     const saved = await evaluate(
@@ -996,15 +998,17 @@ try {
     assert(await evaluate("document.querySelector('header button').textContent.trim()==='Sign out' && !document.body.innerText.includes('Authenticated API') && !document.body.innerText.includes('Connected mode.')"))
     await evaluate('window.harness.alertWindow(90)')
     await click('Alerts')
-    await loaded('Acknowledge alert')
+    // Lightning and the severe thunderstorm share tier 2: one merged card, one button.
+    await loaded('Acknowledge all 2 alerts')
     const ticking = await evaluate("document.querySelector('[role=timer]').textContent")
     await until(async () => (await evaluate("document.querySelector('[role=timer]').textContent")) !== ticking, 'live countdown ticks')
-    await click('Acknowledge alert')
+    await click('Acknowledge all 2 alerts')
     await loaded('Action recorded.')
     assert(
       await evaluate(
-        "window.harness.requests.some(r=>r==='POST /api/alerts/alert-ltg-demo/acknowledge')",
+        "['alert-ltg-demo','alert-svr-tstorm-demo'].every(id=>window.harness.requests.includes('POST /api/alerts/'+id+'/acknowledge')) && !window.harness.requests.some(r=>r.includes('alert-flood-demo/acknowledge'))",
       ),
+      'Merged acknowledgement posts once per alert in the top tier only',
     )
     await evaluate('window.harness.alertWindow(-1)')
     await click('Refresh alerts')

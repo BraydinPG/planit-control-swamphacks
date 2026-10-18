@@ -160,6 +160,7 @@ export type HazardType =
   | 'lightning_strike'
   | 'hurricane'
   | 'earthquake'
+  | 'severe_storm'
 
 export interface Observation {
   source: string
@@ -213,7 +214,15 @@ export interface HazardScore {
 // ---- alerts ----
 
 export type AlertRule =
-  'lightning_stop_work' | 'flood' | 'heat' | 'hurricane' | 'earthquake'
+  | 'lightning_stop_work'
+  | 'tornado'
+  | 'hurricane'
+  | 'flash_flood'
+  | 'earthquake'
+  | 'severe_thunderstorm'
+  | 'tropical_storm'
+  | 'flood'
+  | 'heat'
 
 export type AlertState = 'active' | 'cleared'
 
@@ -233,7 +242,10 @@ export interface Alert {
   triggered_at: string
   /** Latest qualifying event, e.g. the newest strike. */
   latest_event_at: string
-  /** Lightning: latest_event_at + 30 minutes. Resets on each strike. */
+  /**
+   * All-clear time. Lightning: latest strike + 30 minutes. Warnings: null while the
+   * warning is listed, then 30 minutes after a healthy feed stops listing it.
+   */
   clear_after: string | null
   distance_miles: number | null
   trigger_observation_ids: string[]
@@ -242,6 +254,10 @@ export interface Alert {
   /** False only for the required lightning rule. */
   is_prototype_rule: boolean
   acknowledgements: Acknowledgement[]
+  /** Set from the rule by the server. 1 is most dangerous; 1–3 stop work; 4 is an advisory. */
+  danger_tier: number
+  /** Plain event name, e.g. "Flash Flood Warning". */
+  event_label: string
 }
 
 // ---- reports ----
