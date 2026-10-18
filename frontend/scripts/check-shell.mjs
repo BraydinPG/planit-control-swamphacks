@@ -1237,6 +1237,10 @@ try {
       'accepting sends the notice',
     )
     const mockNotice = await evaluate('window.harness.snapshot().reports.find(r=>r.id==='+JSON.stringify(created.id)+').notice_id')
+    assert(
+      await evaluate("!document.body.textContent.includes('Invalid report review response')"),
+      'Accepting a present report shows no error',
+    )
     await loaded('Suggested instruction')
     assert(
       await evaluate(

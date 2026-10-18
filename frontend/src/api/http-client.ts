@@ -247,15 +247,17 @@ export class HttpClient implements Client {
       { method: 'POST', body: JSON.stringify(input) },
     ).then((value) => {
       const report = validateReport(value, id)
+      // Accepting a present report sends its notice, so the reply must name it.
+      const accepted = input.decision === 'confirmed' && report.hazard_present
       if (
-        report.hazard_present ||
         report.review_status !== input.decision ||
         !report.reviewed_by ||
-        !report.reviewed_at
+        !report.reviewed_at ||
+        (accepted && !report.notice_id)
       )
         throw new ApiError(
           502,
-          'Invalid absent-report review response. Refresh before retrying.',
+          'Invalid report review response. Refresh before retrying.',
         )
       return report
     })

@@ -44,7 +44,7 @@ function setup() {
   }
 }
 
-test('mock HTTP present lifecycle: photo -> pending/no instruction -> notice confirmation -> edited send -> independent read-back', async () => {
+test('mock HTTP present lifecycle: photo -> pending, nothing sent -> supervisor accepts (notice + draft) -> edited send -> independent read-back', async () => {
   const { crew, supervisor, client, requests } = setup()
   const before = await crew.site(site)
   await assert.rejects(
@@ -57,18 +57,19 @@ test('mock HTTP present lifecycle: photo -> pending/no instruction -> notice con
   const pending = await crew.site(site)
   assert.equal(pending.risk_score, before.risk_score)
   assert.deepEqual(pending.alerts, before.alerts)
-  let notice = pending.notices.find((n) => n.id === report.notice_id)
-  assert.equal(notice.status, 'potential')
-  assert.equal(notice.instruction, null)
-  assert.equal(notice.suggested_instruction, null)
+  assert.equal(report.notice_id, null) // nothing is sent before review
+  assert.equal(pending.notices.length, before.notices.length)
   await assert.rejects(
-    () => supervisor.review(report.id, { decision: 'confirmed' }),
-    (e) => e.status === 409,
+    () => crew.review(report.id, { decision: 'confirmed' }),
+    (e) => e.status === 403,
   )
-  const confirmation = await supervisor.confirm(notice.id)
-  assert.equal(confirmation.notice.confirmed_by, 'mock-supervisor')
-  assert.equal(confirmation.generated_by, 'gemini')
-  assert.equal(confirmation.notice.instruction, null)
+  const accepted = await supervisor.review(report.id, { decision: 'confirmed' })
+  let notice = (await supervisor.site(site)).notices.find(
+    (n) => n.id === accepted.notice_id,
+  )
+  assert.equal(notice.confirmed_by, 'mock-supervisor')
+  assert.match(notice.suggested_instruction, /Mocked Gemini draft/)
+  assert.equal(notice.instruction, null)
   assert.equal(requests.filter((r) => r[2].endsWith('/instruction')).length, 0)
   assert(
     (await supervisor.site(site)).reports.find((r) => r.id === report.id)
@@ -110,10 +111,12 @@ test('mock HTTP absent/rejected review: no required photo, no notice or score mu
 test('mock HTTP manual draft fallback requires explicit nonblank instruction, never auto sends', async () => {
   const { crew, supervisor, service, requests } = setup()
   service.draft = null
-  const report = await crew.submit(input, photo())
-  const result = await supervisor.confirm(report.notice_id)
-  assert.equal(result.suggested_instruction, null)
-  assert.equal(result.generated_by, null)
+  const submitted = await crew.submit(input, photo())
+  const report = await supervisor.review(submitted.id, {
+    decision: 'confirmed',
+  })
+  const notice = service.notices.find((n) => n.id === report.notice_id)
+  assert.equal(notice.suggested_instruction, null)
   const count = requests.length
   for (const value of ['', '  ', 'a'.repeat(501)])
     await assert.rejects(
@@ -133,18 +136,23 @@ test('mock policy denials and conflicts remain backend-authoritative with no own
     () => crew.submit({ ...input, site_id: 'site-fixture-b' }, photo()),
     (e) => e.status === 403,
   )
-  const report = await crew.submit(input, photo())
+  const submitted = await crew.submit(input, photo())
+  const accept = { decision: 'confirmed' }
   await assert.rejects(
-    () => crew.confirm(report.notice_id),
+    () => crew.review(submitted.id, accept),
     (e) => e.status === 403,
   )
   service.denyMutation = true
   await assert.rejects(
-    () => supervisor.confirm(report.notice_id),
+    () => supervisor.review(submitted.id, accept),
     (e) => e.status === 403,
   )
   service.denyMutation = false
-  await supervisor.confirm(report.notice_id)
+  const report = await supervisor.review(submitted.id, accept)
+  await assert.rejects(
+    () => supervisor.review(submitted.id, accept),
+    (e) => e.status === 409,
+  )
   await assert.rejects(
     () => supervisor.confirm(report.notice_id),
     (e) => e.status === 409,
@@ -183,9 +191,18 @@ for (const status of [401, 403, 404, 409, 422, 503])
     assert.equal(calls, 4)
   })
 test('malformed confirmation/delivery/report replies cannot become a successful local state', async () => {
-  const { crew, service } = setup()
-  const report = await crew.submit(input, photo())
-  const potential = service.notices.find((n) => n.id === report.notice_id)
+  const { crew, supervisor, service } = setup()
+  const submitted = await crew.submit(input, photo())
+  const report = await supervisor.review(submitted.id, {
+    decision: 'confirmed',
+  })
+  const potential = {
+    ...service.notices.find((n) => n.id === report.notice_id),
+    status: 'potential',
+    confirmed_by: null,
+    confirmed_at: null,
+    suggested_instruction: null,
+  }
   for (const value of [
     {},
     { notice: potential, suggested_instruction: null, generated_by: null },
@@ -242,4 +259,22 @@ test('network failure and abort timeout leave mutation outcome unknown without f
       (e) => e.status === 0 && !e.message.includes('private provider'),
     )
   }
+})
+test('accepting a present report returns it confirmed with its notice; a reply without the notice is refused', async () => {
+  const { crew, supervisor } = setup()
+  const submitted = await crew.submit(input, photo())
+  const accepted = await supervisor.review(submitted.id, {
+    decision: 'confirmed',
+  })
+  assert.equal(accepted.review_status, 'confirmed')
+  assert(accepted.notice_id)
+  const api = new HttpClient(
+    'http://localhost:8000',
+    async () => ({ Authorization: 'Bearer mock' }),
+    async () => Response.json({ ...accepted, notice_id: null }),
+  )
+  await assert.rejects(
+    () => api.review(submitted.id, { decision: 'confirmed' }),
+    (e) => e.status === 502,
+  )
 })
