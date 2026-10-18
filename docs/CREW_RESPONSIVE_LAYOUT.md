@@ -10,14 +10,24 @@ data, permissions and actions across screen sizes.
   has five destinations; only supervisors have Team. The main crew area is capped
   at **1440 px**, without a sidebar gutter.
 - From **1280 px**, Home places the active alert beside supervisor instructions.
-  My Worksite pairs the score and weather conditions, then shows the complete
-  score-factor breakdown in a separate responsive grid.
+  My Worksite pairs the score and weather conditions with matching section headings
+  so both cards start at the same height, then shows the complete score-factor
+  breakdown in a separate responsive grid.
 - My Worksite shows every supplied observation, available event tile, full report
-  card and unverified-condition summary without View more/View less controls. Reading
+  card and score factor without View more/View less controls. Reading
   and event grids gain columns when space permits; report columns are bounded by
   the actual report count. Named technical source/evidence disclosures remain available.
 - Alerts uses one full-width card per row for both roles. The existing countdown,
   server status, evidence, acknowledgement and instruction behavior is preserved.
+- The redundant **Unverified worksite conditions** panel is removed from crew and
+  supervisor site pages. Duration estimates remain on the relevant confirmed notice
+  and in the independent event outlooks; no ML contract or model was removed.
+- Home and supervisor site hazards include lightning and all active alert tiers,
+  plus positive stored score contributors. Responsive evidence tiles retain exact
+  backend points, sources, times and observed/forecast/stale/simulated distinctions.
+  They supplement the separate supervisor-confirmed notice/instruction list. A scored
+  report without a notice appears only if it is confirmed-present at the same site;
+  pending, rejected, absent and missing reports cannot become confirmed hazards.
 
 [Home desktop](crew-desktop.png) ? [Home phone](crew-mobile.png) ?
 [Expanded worksite](worksite-expanded.png) ? [Full-width alerts](alerts-full-width.png)
@@ -39,12 +49,14 @@ node scripts/check-shell.mjs http://localhost:5177/
 
 Regression checks cover centered navigation, full-width alerts, complete worksite
 readings/reports/outlooks, visible score factors and absent View more controls.
-Three new rendering checks cover expanded observations, event cards and unverified
-conditions, retaining source details and research/historical limitations. Optional
-display props default to the prior presentation outside the crew worksite.
+Eight hazard regression tests cover tier-independent lightning, source states,
+all supported environmental score contributors, outage/elapsed-window alert retention,
+report eligibility/deduplication and site identity. Source details and existing
+research/historical limitations remain available with their associated evidence.
 
-Focused browser checks cover 24 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
-with zero horizontal overflow, exceptions or real backend calls. Unit count: 186.
+Focused browser checks cover 32 role/page cases at 320/390/768/1024/1280/1440/1920/2560,
+with zero horizontal overflow, exceptions or real backend calls and score/weather card
+top alignment within 1px at desktop widths. Unit count: 194.
 Lint, TypeScript, default/live and explicit-demo production builds and the complete
 development/built-demo browser workflow suites also pass.
 Existing bundle-size warnings remain; browser evidence is demo/mocked verification,

@@ -2,9 +2,14 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Aligned worksite cards and complete hazard evidence - 2026-10-18
+- Explicit user authorization, `feature/cache-worksite-hazard-evidence`, base main `4567883`: align score/weather card tops with matching section headings and remove the redundant Unverified worksite conditions panel. Existing event outlooks and notice-linked duration estimates remain.
+- Crew Home and supervisor site hazards now include every server-active alert (including lightning and lower tiers) and positive deterministic score contributors. Source states stay observed/forecast/stale/simulated; supervisor-confirmed notices/instructions remain separate. Confirmed-present scored reports without notices are included; pending/rejected/absent reports are excluded and reports already represented by confirmed notices are not duplicated.
+- Verified 194 frontend tests, lint/TypeScript, production build and 32 focused browser cases over eight widths; card tops align within 1px and no overflow, exceptions or backend calls occurred. [Current layout and validation guide](docs/CREW_RESPONSIVE_LAYOUT.md). No scoring weights, alert rules, backend/auth/contracts/fixtures/models or task checkboxes changed. User authorizes push and merge after checks.
+
 ## Centered top bar and expanded worksite - 2026-10-18
 - User-authorized `feature/cache-worksite-open-layout`, base main `1c1dc6b` (PR75 already merged top navigation): center desktop navigation for both Crew and Supervisor; retain mobile tabs and existing role options.
-- My Worksite shows all readings/available event tiles, full report cards, score factors and unverified-condition summary without View more controls. Responsive grids and report-count-aware columns use the space; named provenance disclosures remain. Alert pages show one full-width card per row. [Current guide](docs/CREW_RESPONSIVE_LAYOUT.md).
+- My Worksite shows all readings/available event tiles, full report cards and score factors without View more controls. The later update above removes its original unverified-condition panel. Responsive grids and report-count-aware columns use the space; named provenance disclosures remain. Alert pages show one full-width card per row. [Current guide](docs/CREW_RESPONSIVE_LAYOUT.md).
 - Incorporated main `a86110f`, preserving Rudra's PR76 tiered/merged stop-work cards, per-alert acknowledgement and canonical fixture/type updates, plus Braydin's hosted-login theme work. This PR does not change alert rules, rankings, scoring or authentication.
 - Verified 186 frontend tests, lint/TypeScript, default/live and explicit-demo builds, development/built-demo browser workflow suites, and 24 focused browser cases over eight widths; no overflow, exceptions or real backend calls. Changes are presentation-only with default-compatible component props; no backend, auth, model/scoring, fixture or task-state changes. User explicitly authorizes publishing and merging after verification.
 

@@ -42,6 +42,7 @@ import { AlertCard } from '../components/data/AlertCard'
 import { topTier, visibleAlertGroups } from '../presentation/alerts'
 import { EventOutlooks } from '../components/data/EventOutlooks'
 import { ConfirmedHazards, NoticeCard } from '../components/data/NoticeCard'
+import { SiteHazards } from '../components/data/SiteHazards'
 import { ReportAnalysis } from '../components/data/ReportAnalysis'
 import { JoinTeam, TeamPage } from '../components/data/TeamRoster'
 import { SupervisorOverview } from '../components/data/SupervisorOverview'
@@ -64,9 +65,6 @@ import {
 } from '../presentation/display'
 import { Details } from '../components/data/Details'
 import { DemoSiteContext, isDemoSite } from '../components/data/demo-site'
-const Advisory = lazy(() =>
-  import('../components/data/Advisory').then((m) => ({ default: m.Advisory })),
-)
 const SiteMap = lazy(() =>
   import('../components/data/SiteMap').then((m) => ({ default: m.SiteMap })),
 )
@@ -245,6 +243,7 @@ function SitePage({
   const hazards = (
     <section className={`${card} space-y-3 border border-line p-3`}>
       <SectionHead title="Hazards and supervisor instructions" />
+      <SiteHazards site={site} />
       {site.notices.length ? (
         <>
           {site.notices.filter(needsAction).map((n) => (
@@ -290,15 +289,6 @@ function SitePage({
       />
       {/* Read-only regional context for team sites; never feeds score or alerts. */}
       {site.assigned_team && <SpeciesSection site={site} />}
-      <Suspense
-        fallback={
-          <p role="status" className="kicker">
-            Loading advisory…
-          </p>
-        }
-      >
-        <Advisory site={site} demo={client.mode === 'demo'} showAll={persona === 'crew'} />
-      </Suspense>
     </>
   )
 
@@ -358,7 +348,8 @@ function SitePage({
             {locationDetails}
           </div>
           <div className="space-y-5 xl:grid xl:grid-cols-12 xl:items-start xl:gap-6 xl:space-y-0">
-            <div className="min-w-0 space-y-5 xl:col-span-4" data-crew-score>
+            <div className="min-w-0 space-y-3 xl:col-span-4" data-crew-score>
+              <SectionHead title="Site score" />
               {score}
             </div>
             <div className="min-w-0 xl:col-span-8" data-crew-conditions>

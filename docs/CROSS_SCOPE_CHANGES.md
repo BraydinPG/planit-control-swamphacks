@@ -1,3 +1,29 @@
+## Worksite alignment and hazard evidence (Cache for Rudra) - 2026-10-18 06:46 UTC
+
+Explicit user authorization covers focused frontend edits, push and merge after
+verification. Branch `feature/cache-worksite-hazard-evidence` starts from main
+`4567883`, preserving the landing-demo button and PR76/77 navigation/alert changes.
+`ConnectedPages.tsx` gives score/weather matching headings, removes the rendered
+Unverified worksite conditions panel and consumes the new read-only `SiteHazards`
+component / `presentation/site-hazards.ts` projection. Existing EventOutlooks,
+notice-linked duration estimates and supervisor instruction workflows are retained.
+
+Every active alert tier remains visible as hazard evidence, including lightning;
+only the existing primary alert card applies tier priority. Positive stored factors
+keep their exact points and source states. A report-only row requires a linked,
+same-site confirmed-present report; confirmed notices already represent their report.
+No inferred human confirmation, frontend score computation, timer/alert transitions,
+API contract/auth/backend/model/fixture changes, task check-offs or external writes.
+Rudra should retain these component interfaces during future UI work; Braydin's
+Auth0/Tiger Data acceptance remains independent. The obsolete Advisory module remains
+available for independent replay tooling but is no longer mounted in application pages.
+
+194 frontend tests, lint/TypeScript, production build and 32 focused browser cases
+across 320/390/768/1024/1280/1440/1920/2560 pass. Card tops align within 1px; no
+overflow, browser exceptions or actual API calls. Existing browser regression checks
+now exercise complete hazard coverage and the removed panel. Commit/PR are recorded
+by this entry's Git history and the review link in the layout guide.
+
 ## Expanded worksite, full-width alerts and centered top bar (Cache for Rudra) - 2026-10-18
 
 Explicit user requests authorize the presentation changes and merge after verification.
