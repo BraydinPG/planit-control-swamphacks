@@ -1,5 +1,7 @@
 ## Public Everglades Case Study (Cache for Rudra) - 2026-10-18 09:48 UTC
 
+[PR #94](https://github.com/BraydinPG/planit-control-swamphacks/pull/94), verified implementation `6e1fcbd`; merge authorized by the user.
+
 Explicit user request authorizes the standalone Case Study and merge after checks,
 superseding the attachment hold. Branch `feature/cache-everglades-case-study`,
 base main `787b1ba`; no existing tracked task is checked off.

@@ -1,5 +1,7 @@
 # Public Everglades Case Study
 
+[PR #94](https://github.com/BraydinPG/planit-control-swamphacks/pull/94): verified implementation `6e1fcbd`; user-authorized merge after checks.
+
 Verified 2026-10-18, feature branch `feature/cache-everglades-case-study`,
 initially based on main `787b1ba`. The user's accompanying message authorizes
 merge after checks, superseding the attachment's request to leave the PR open.
