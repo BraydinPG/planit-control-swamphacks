@@ -7,7 +7,7 @@
  * Coordinates are the fog shader's: x and y in fractions of screen height, origin at the
  * centre, y up. public/landing.html carries a copy of this for the landing page.
  */
-export const WAKE_POINTS = 8
+export const WAKE_POINTS = 16
 
 /** GLSL: declares the uniforms and wake(p) -> vec3(displacement.xy, thinning 0-1). */
 export const WAKE_GLSL = `
@@ -20,15 +20,16 @@ vec3 wake(vec2 p){
     if(t.z<.001) continue;
     vec2 d=p-t.xy, v=uWakeDir[i], n=vec2(-v.y,v.x);
     float along=dot(d,v), across=dot(d,n);
-    // a narrow band along the path, a little longer than wide
-    float k=exp(-across*across/.0016-along*along/.006)*t.z;
+    // a cursor-sized band along the path: about 0.8% of screen height wide (~14px across
+    // at 900px tall), twice that long
+    float k=exp(-across*across/.000064-along*along/.000256)*t.z;
     // parts smoothly to either side (zero on the path itself) and drags slightly forward
-    disp+=(n*across*35.+v*.6)*k;
+    disp+=(n*across*175.+v*.6)*k;
     cut+=k;
   }
-  // Averaged over overlapping trail points, not summed, and kept to about 1% of screen
+  // Averaged over overlapping trail points, not summed, and kept to about 0.3% of screen
   // height: well below the band width, so the fog never folds over itself into rings.
-  return vec3(disp*.01/max(1.,cut),clamp(cut,0.,1.));
+  return vec3(disp*.003/max(1.,cut),clamp(cut,0.,1.));
 }
 `
 
@@ -52,10 +53,13 @@ export class FogWake {
     const dx = x - last.x
     const dy = y - last.y
     const dist = Math.hypot(dx, dy)
-    if (dist < 0.018) return // sample the path every ~2% of screen height
+    if (dist < 0.006) return // sample the path every ~0.6% of screen height (~5px)
     const seconds = Math.max(16, now - last.t) / 1000
-    this.trail.push({ x, y, dx: dx / dist, dy: dy / dist, speed: dist / seconds, born: now })
-    if (this.trail.length > WAKE_POINTS) this.trail.shift()
+    // fill in between far-apart pointer events so a fast flick leaves a line, not dots
+    const steps = Math.ceil(dist / 0.01)
+    for (let i = 1; i <= steps; i++)
+      this.trail.push({ x: last.x + (dx * i) / steps, y: last.y + (dy * i) / steps, dx: dx / dist, dy: dy / dist, speed: dist / seconds, born: now })
+    while (this.trail.length > WAKE_POINTS) this.trail.shift()
     this.last = { x, y, t: now }
   }
 
