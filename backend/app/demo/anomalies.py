@@ -8,7 +8,10 @@ the model covers, while behaving like the live system:
 - Each event gets a notice with the real delivery receipts, and the demo supervisor
   confirms it through the real per-organization path (`confirm_hazard`), which is what
   lets its duration outlook appear. Instructions are left for a supervisor to send.
-- Lightning goes through the real stop-work rule and 30-minute timer.
+- Lightning goes through the real stop-work rule and 30-minute timer, and the warnings and
+  earthquake through the prototype tiered stop-work rules (T049C). Kerrville's Flash
+  Flood Warning (tier 1) hides its lightning (tier 2); Mobile merges the hurricane and
+  flash flood (tier 1); Macon merges lightning and a Severe Thunderstorm Warning (tier 2).
 - Scores come from the real algorithm. Briefings come from the 6 PM schedule.
 
 It also removes every crew report outside the Everglades site (and its notices) so the
@@ -45,7 +48,7 @@ from app.demo.scenario import (
 )
 from app.gemini.briefings import generate_site_briefing
 from app.gemini.client import GeminiClient
-from app.ingestion import nws_alerts, nws_weather
+from app.ingestion import nws_alerts, nws_weather, severe_storms
 from app.ingestion.geo import destination, direction_from, distance_miles
 from app.ingestion.lightning import LIVE_SOURCE as LIVE_LIGHTNING
 from app.ingestion.lightning import StrikeStore
@@ -61,7 +64,7 @@ from app.schemas import (
     RadiusSource,
 )
 from app.security import CurrentUser, roles
-from app.services.alerts import apply_lightning_rule, audit
+from app.services.alerts import apply_lightning_rule, apply_stop_work_rules, audit
 from app.services.hazards import confirm_hazard
 from app.services.refresh import DEMO_LOCATION_TYPE, observation_row
 from app.services.reports import notice_recipients
@@ -85,6 +88,7 @@ class Anomaly:
     started_hours_ago: float = 2.0
     radius_miles: float = 10.0
     flood_alert: str | None = None  # NWS flood product at the site, if any
+    storm_alert: str | None = None  # NWS tornado / severe thunderstorm product, if any
     extra: tuple[str, ...] = field(default=())  # "hurricane", "earthquake"
     # Thunderstorm lightning that realistically comes with the event: (miles, bearing
     # degrees, minutes ago). Nothing requires it; it's simply what such storms look like.
@@ -157,7 +161,10 @@ ANOMALIES = (
         "NWS Flood Watch for heavy rain",
         2.0,
         flood_alert="Flood Watch",
-        lightning=(9.0, 200.0, 12),  # embedded thunderstorms in the rain band
+        # Embedded thunderstorms in the rain band. Lightning and the Severe Thunderstorm
+        # Warning share danger tier 2, so the interface merges them into one stop-work alert.
+        storm_alert="Severe Thunderstorm Warning",
+        lightning=(9.0, 200.0, 12),
     ),
     Anomaly(
         "winter-storm",
@@ -197,7 +204,7 @@ ANOMALIES = (
         (68, 25, 68),
         "earthquake",
         "USGS M5.4 earthquake",
-        1.0,
+        0.5,  # inside the prototype 60-minute earthquake stop-work window
         25.0,
         extra=("earthquake",),
     ),
@@ -236,15 +243,13 @@ def seed_anomalies(
         if a.lightning:
             miles, bearing, minutes_ago = a.lightning
             strike = _strike_at(site, miles, bearing, now - timedelta(minutes=minutes_ago))
-            session.add(observation_row(strike))
-            session.commit()
-            apply_lightning_rule(session, site.id, [strike], now)
             readings = [*readings, strike]
         else:
-            quiet = _no_lightning(site, now)
-            session.add(observation_row(quiet))
-            session.commit()
-            readings = [*readings, quiet]
+            readings = [*readings, _no_lightning(site, now)]
+        session.add(observation_row(readings[-1]))
+        session.commit()
+        # Every stop-work rule, as the live refresh runs them (T049C tiers).
+        apply_stop_work_rules(session, site, readings, now)
         score = score_site(session, site.id, now, observations=readings)
         results.append(AnomalyResult(site.id, a.hazard_label, score.risk_score, score.risk_level))
 
@@ -392,6 +397,19 @@ def _readings(site: db.Site, a: Anomaly, now: datetime) -> list[Observation]:
             valid_at=now + timedelta(hours=12) if a.flood_alert else None,
             label=a.flood_alert or nws_alerts.NO_ACTIVE_ALERTS,
             source_ref=f"{site.id}:flood-alert",
+            **common,
+        )
+    )
+    readings.append(
+        Observation(
+            id=f"{site.id}:storm-alert",
+            source="NWS",
+            hazard_type=HazardType.SEVERE_STORM,
+            value=a.storm_alert,
+            observed_at=now - timedelta(minutes=40),
+            valid_at=now + timedelta(hours=1) if a.storm_alert else None,
+            label=a.storm_alert or severe_storms.NO_ACTIVE_ALERTS,
+            source_ref=f"{site.id}:storm-alert",
             **common,
         )
     )
