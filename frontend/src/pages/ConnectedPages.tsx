@@ -240,7 +240,7 @@ function SitePage({
   const hazards = (
     <section className={`${card} min-w-0 space-y-3 border border-line p-3`}>
       <SectionHead title="Hazards and supervisor instructions" />
-      <SiteHazards key={site.id} site={site} />
+      <SiteHazards key={site.id} site={site} collapsed={compact} />
     </section>
   )
   const reports = (

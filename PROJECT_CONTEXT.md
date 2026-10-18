@@ -43,7 +43,7 @@ Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Ve
 - Verified: 1017 backend tests (new `tests/test_demo_gemini.py`), Ruff.
 
 ## Crew Home halves, collapsible hazards, logo to landing - 2026-10-18
-- Braydin request (Rudra's frontend, authorized). Crew Home at 1024px and wider: the stop-work alert and "Hazards and supervisor instructions" each take half (`data-crew-attention` grid). Every hazard row in `SiteHazards` is a `<details data-hazard-row>`, open by default so instructions are seen; while all rows are collapsed the two columns stretch to the same height (CSS `:has`). Phones keep the stacked layout. The AppShell header logo now links to `/landing.html` on every page.
+- Braydin request (Rudra's frontend, authorized). Crew Home at 1024px and wider: the stop-work alert and "Hazards and supervisor instructions" each take half (`data-crew-attention` grid). Every hazard row in `SiteHazards` is a `<details data-hazard-row>`: collapsed by default on crew Home (user decision, 2026-10-18), open on the supervisor site page; while all rows are collapsed the two columns stretch to the same height (CSS `:has`). Phones keep the stacked layout. The AppShell header logo now links to `/landing.html` on every page.
 - Verified: 198 frontend tests, oxlint, TypeScript, build, and full `check-shell.mjs` (Chrome; new assertions for the halves, equal collapsed heights and the logo link).
 - Demo data (not code): the three template-fallback demo briefings (Everglades, Casper, Duluth) were regenerated with real Gemini calls through `generate_site_briefing`; all demo briefings now read `generated_by="gemini"`.
 

@@ -102,7 +102,7 @@ async function loaded(text) {
     () =>
       evaluate(
         // Source/evidence disclosures are optional; instructions stay inline.
-        `(document.querySelectorAll('[aria-label="Confirmed hazards"] details:not([open])').forEach(d=>{d.open=true}), document.readyState === 'complete') && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
+        `(document.querySelectorAll('[aria-label="Confirmed hazards"] details:not([open])').forEach(d=>{d.dataset.openedByCheck='1';d.open=true}), document.readyState === 'complete') && document.body.innerText.toLowerCase().replace(/[^a-z0-9]/g,'').includes(${JSON.stringify(text.toLowerCase().replaceAll(/[^a-z0-9]/g, ''))})`,
       ),
     text,
   )
@@ -372,9 +372,9 @@ try {
         fullWidthStack:instructions.top>=alerts.bottom && Math.abs(instructions.left-alerts.left)<2 && Math.abs(instructions.width-alerts.width)<2,
         halves:Math.abs(instructions.top-alerts.top)<2 && Math.abs(instructions.width-alerts.width)<2 && instructions.left>=alerts.right && alerts.width>main.width*0.45,
         logoHref:document.querySelector('header a[aria-label="FORESITE home page"]')?.getAttribute('href'),
-        collapsedHeights:(()=>{const rows=[...document.querySelectorAll('[data-hazard-row]')];rows.forEach(r=>{r.open=false});
+        collapsedHeights:(()=>{const rows=[...document.querySelectorAll('[data-hazard-row]')],startedClosed=rows.every(r=>r.dataset.openedByCheck==='1');rows.forEach(r=>{r.open=false});
           const a=document.querySelector('[data-crew-alerts]').getBoundingClientRect().height,h=document.querySelector('[data-crew-alerts]').nextElementSibling.getBoundingClientRect().height;
-          rows.forEach(r=>{r.open=true});return {rows:rows.length,error:Math.abs(a-h)}})(),
+          return {rows:rows.length,startedClosed,error:Math.abs(a-h)}})(),
         supervisorTeamLink:!!document.querySelector('a[href="#/crew/team"]')};
     })()`)
     assert.equal(layout.desktopNav, width >= 1024)
@@ -387,6 +387,7 @@ try {
     if (width >= 1024) {
       assert(layout.halves, 'Overview puts alerts and hazards side by side, half each')
       assert(layout.collapsedHeights.rows > 0, 'Hazard rows are collapsible')
+      assert(layout.collapsedHeights.startedClosed, 'Overview hazards start collapsed')
       assert(layout.collapsedHeights.error < 1, 'Collapsed hazards match the alert height')
     } else assert(layout.fullWidthStack, 'Phones stack alerts above hazard information')
     assert(

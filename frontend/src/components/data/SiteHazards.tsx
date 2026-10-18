@@ -8,7 +8,14 @@ import { NoticeCard } from './NoticeCard'
 import { Icon } from '../shell/Icon'
 
 /** One hazard row holds its alerts, score evidence, confirmations and instructions. */
-export function SiteHazards({ site }: { site: SiteRecord }) {
+export function SiteHazards({
+  site,
+  collapsed = false,
+}: {
+  site: SiteRecord
+  /** Start every hazard row folded (crew Home); otherwise rows start open. */
+  collapsed?: boolean
+}) {
   // Confirmation can move a notice from pending to its merged hazard row during
   // a GET refresh. Preserve an in-flight supervisor draft across that move.
   const [drafts] = useState(() => new Map<string, string>())
@@ -26,8 +33,8 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
       <ul className="divide-y divide-line">
         {hazards.map((hazard) => (
           <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0">
-            {/* Open by default so instructions are seen; each row collapses on its own. */}
-            <details open data-hazard-row className="group/hazard">
+            {/* Each row folds on its own; crew Home starts them folded. */}
+            <details open={!collapsed} data-hazard-row className="group/hazard">
             <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
               <h4 className="text-lg font-bold">{hazard.label}</h4>
               <Icon name="back" className="size-5 shrink-0 -rotate-90 transition-transform group-open/hazard:rotate-90" />
