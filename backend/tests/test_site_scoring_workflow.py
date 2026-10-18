@@ -19,7 +19,7 @@ from app.schemas import HazardType, SiteDetail
 from app.services.refresh import Feed, refresh_all
 from tests.auth_fakes import crew, supervisor
 from tests.nws_fakes import FakeNws, cache, latest
-from tests.test_hazards_api import absent, confirm, review
+from tests.test_hazards_api import absent, review
 from tests.test_refresh import strike_feed
 from tests.test_reports_api import NOW, submit
 from tests.test_reports_api import client as client
@@ -97,11 +97,8 @@ def test_environment_to_api_report_confirmation_and_failed_feed(h, client, tmp_p
 
     pending = submit(client, category="wildlife").json()
     assert capture("pending_report").risk_score == 4.5
-    assert (
-        client.post(f"/api/hazards/{pending['notice_id']}/confirm", headers=crew()).status_code
-        == 403
-    )
-    assert confirm(client, pending["notice_id"]).status_code == 200
+    assert review(client, pending["id"], crew()).status_code == 403
+    assert review(client, pending["id"]).status_code == 200
     confirmed = capture("confirmed_present_report")
     assert confirmed.risk_score == 5.5 and confirmed.score.previous_score == 4.5
     assert any(

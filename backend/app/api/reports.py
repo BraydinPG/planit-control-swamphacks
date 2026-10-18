@@ -1,4 +1,4 @@
-"""Report creation/listing (T053) and supervisor absent-report review (T054).
+"""Report creation/listing (T053) and supervisor report review (T054).
 
 `POST /api/reports` takes a multipart form: `site_id`, `category`, `hazard_present`,
 `lat`, `lon`, optional `note`, `location_source` (`device`, `site`, or `pin`; default
@@ -13,7 +13,9 @@ Access (spec.md section 8):
 - `GET /api/reports` shows crew their team's site reports, and supervisors their
   organization's reports.
 - `POST /api/reports/{id}/review` is restricted to the reporting organization's
-  supervisor and reports marked absent. Present reports use hazard confirmation.
+  supervisor, who accepts or rejects any report. Accepting one marked present sends its
+  notice: Gemini picks the radius (else the category default) and every organization
+  with a team inside it is notified. Nothing is sent before that review.
 """
 
 from datetime import datetime
@@ -39,6 +41,7 @@ from app.api.sites import DbSession, report_schema, visible_site_ids
 from app.db import models as db
 from app.gemini import GeminiClient, get_gemini_client
 from app.gemini.report_analysis import run_report_analysis
+from app.outlook import EventOutlookService, get_event_outlook_service
 from app.schemas import (
     CrewReport,
     LocationSource,
@@ -55,7 +58,8 @@ from app.security import (
     require_role,
     roles,
 )
-from app.services.hazards import review_absent_report
+from app.services.hazards import review_report as review_hazard_report
+from app.services.instructions import draft_instruction
 from app.services.reports import Reporter, create_report
 from app.storage import InvalidPhoto, PhotoStore, get_photo_store, read_limited, save_photo
 
@@ -67,6 +71,7 @@ Photos = Annotated[PhotoStore, Depends(get_photo_store)]
 Gemini = Annotated[GeminiClient, Depends(get_gemini_client)]
 REPORT_LIMIT = 200
 Reviewer = Annotated[CurrentUser, Depends(require_permission(roles.REVIEW_REPORTS))]
+OutlookService = Annotated[EventOutlookService, Depends(get_event_outlook_service)]
 
 
 @router.post(
@@ -75,9 +80,21 @@ Reviewer = Annotated[CurrentUser, Depends(require_permission(roles.REVIEW_REPORT
     dependencies=[Depends(require_role("supervisor"))],
 )
 def review_report(
-    report_id: str, review: ReportReview, user: Reviewer, session: DbSession, now: Now
+    report_id: str,
+    review: ReportReview,
+    user: Reviewer,
+    session: DbSession,
+    now: Now,
+    client: Gemini,
+    outlooks: OutlookService,
 ) -> CrewReport:
-    return report_schema(review_absent_report(session, report_id, review, user, now))
+    """Accept or reject a crew report. Accepting one marked present sends its notice to
+    every organization inside the Gemini (or default) radius and drafts the reporting
+    supervisor's instruction, which they still review and send themselves."""
+    report, notice, assessment = review_hazard_report(session, report_id, review, user, now)
+    if notice is not None and assessment is not None and not assessment.suggested_instruction:
+        draft_instruction(session, notice, assessment, client, now, outlooks)
+    return report_schema(report)
 
 
 @router.post("", response_model=CrewReport, status_code=201)

@@ -40,9 +40,8 @@ test('demo accepts access mat deterioration and preserves the crew assessment', 
   assert.equal(report.mat_condition, 'D')
   assert.equal(report.note, 'Mat 12: crew stage D.')
   assert.equal(report.review_status, 'pending')
-  const notice = (await client.site(assigned)).notices.find(n => n.id === report.notice_id)
-  assert.equal(notice.status, 'potential')
-  assert.equal(notice.instruction, null)
+  // Nothing is sent until the supervisor reviews the report.
+  assert.equal(report.notice_id, null)
 })
 
 test('access mat grade A is absent with no notice; mismatched grades are rejected', async () => {
@@ -138,7 +137,7 @@ test('crew receives assigned site and cannot access another site or confirm noti
   await assert.rejects(() => client.site('site-fixture-b'), /not assigned/)
   await assert.rejects(() => client.confirm('notice-pole-1'), /Supervisor/)
 })
-test('present report -> notice confirmation -> instruction persists; demo scores and alerts unchanged', async () => {
+test('present report -> supervisor accepts -> notice -> instruction persists; demo scores and alerts unchanged', async () => {
   let role = 'crew'
   const store = storage(),
     client = new DemoClient(() => role, store)
@@ -156,26 +155,23 @@ test('present report -> notice confirmation -> instruction persists; demo scores
   assert.equal(report.review_status, 'pending')
   assert.equal(report.note, null)
   assert(client.photo(report.id)?.startsWith('blob:'))
-  let notice = (await client.site(assigned)).notices.find(
-    (n) => n.id === report.notice_id,
-  )
-  assert.equal(notice.status, 'potential')
-  assert.equal(notice.instruction, null)
-  assert.equal(notice.suggested_instruction, null)
-  role = 'supervisor'
-  await assert.rejects(
-    () => client.instruct(notice.id, 'inspect'),
-    /confirming supervisor/,
-  )
+  assert.equal(report.notice_id, null) // sent only once the supervisor accepts it
   await assert.rejects(
     () => client.review(report.id, { decision: 'confirmed' }),
-    /through their notice/,
+    (e) => e.status === 403,
   )
-  await client.confirm(notice.id)
+  role = 'supervisor'
+  const accepted = await client.review(report.id, { decision: 'confirmed' })
+  let notice = (await client.site(assigned)).notices.find(
+    (n) => n.id === accepted.notice_id,
+  )
+  assert.equal(notice.status, 'confirmed')
+  assert.equal(notice.confirmed_by, 'demo-supervisor')
+  assert.equal(notice.instruction, null)
   await client.instruct(notice.id, 'Demo supervisor instruction for review.')
   const reloaded = new DemoClient(() => role, store),
     detail = await reloaded.site(assigned)
-  notice = detail.notices.find((n) => n.id === report.notice_id)
+  notice = detail.notices.find((n) => n.id === accepted.notice_id)
   assert.equal(notice.instruction, 'Demo supervisor instruction for review.')
   assert(notice.instruction_sent_at)
   assert.equal(

@@ -1048,7 +1048,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
             </>
           )}
           {presence === 'present'
-            ? 'Nearby teams receive a potential-hazard notice. Supervisor confirmation is required before instructions.'
+            ? 'Your supervisor reviews it first. Once they accept it, every nearby organization is notified.'
             : presence === 'absent'
               ? 'Absent: no notice is sent. Your organization’s supervisor reviews the report.'
               : 'Choose one to continue.'}
@@ -1346,13 +1346,28 @@ function ReportCard({
   report: CrewReport
   compact?: boolean
 }) {
-  const { client, persona } = useApplication()
+  const { client, persona, principalId } = useApplication()
   const photo = demoClient(client)?.photo(report.id)
   const [reviewCategory, setReviewCategory] = useState<ReportCategory>(
     report.category,
   )
   const [severity, setSeverity] = useState<'' | 'low' | 'moderate' | 'high'>('')
   const look = reviewLook[report.review_status]
+  // The accepting supervisor sends the instruction Gemini drafted for their teams.
+  const instructionToSend =
+    persona === 'supervisor' &&
+    report.review_status === 'confirmed' &&
+    report.hazard_present &&
+    !!report.notice_id &&
+    report.reviewed_by === principalId
+  const instructionLink = (
+    <a
+      className={control}
+      href={`#/supervisor/sites/${encodeURIComponent(report.site_id)}`}
+    >
+      Review the instruction
+    </a>
+  )
   if (compact)
     return (
       <article
@@ -1362,11 +1377,10 @@ function ReportCard({
         <h3 className="text-lg font-bold">{categories[report.category]}</h3>
         {report.review_status === 'pending' && (
           <p className="text-sm font-semibold text-warn-text">
-            {report.hazard_present
-              ? 'Action needed: supervisor confirmation of the hazard notice.'
-              : 'Action needed: supervisor review of this report.'}
+            Action needed: supervisor review of this report.
           </p>
         )}
+        {instructionToSend && instructionLink}
         <Details
           title="View more"
           label={'View more about ' + categories[report.category] + ' report'}
@@ -1446,11 +1460,17 @@ function ReportCard({
         </div>
         <ReportAnalysis report={report} />
       </div>
-      {persona === 'supervisor' &&
-        report.review_status === 'pending' &&
-        !report.hazard_present && (
+      {persona === 'supervisor' && report.review_status === 'pending' && (
           <div className="space-y-3 rounded-xl border border-line bg-surface-2 p-3">
             <p className="kicker">Supervisor review</p>
+            {report.hazard_present && (
+              <p className="text-sm text-ink-2">
+                Accepting sends a notice about this hazard. Gemini decides how far
+                it reaches (or the hazard's default distance if Gemini is
+                unavailable), and every organization with a team inside that
+                distance is notified. Rejecting sends nothing.
+              </p>
+            )}
             <div className="grid gap-3 @lg:grid-cols-2">
               <label className={labelText}>
                 Reviewed category
@@ -1495,7 +1515,9 @@ function ReportCard({
                   })
                 }
               >
-                Confirm report
+                {report.hazard_present
+                  ? 'Accept and notify nearby organizations'
+                  : 'Accept report'}
               </Action>
               <Action
                 run={() => client.review(report.id, { decision: 'rejected' })}
@@ -1505,20 +1527,22 @@ function ReportCard({
             </div>
           </div>
         )}
-      {report.hazard_present && report.review_status === 'pending' && (
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-caution p-3 text-sm text-ink-2">
-          <p className="min-w-0 flex-1">
-            Awaiting supervisor confirmation in the worksite's hazard notices.
-          </p>
-          {persona === 'supervisor' && (
-            <a
-              className={control}
-              href={`#/supervisor/sites/${encodeURIComponent(report.site_id)}`}
-            >
-              Review worksite notice
-            </a>
-          )}
-        </div>
+      {instructionToSend && (
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-line-strong bg-surface-2 p-3 text-sm">
+            <p className="min-w-0 flex-1">
+              Accepted. Nearby organizations were notified, and Gemini drafted
+              an instruction for your teams. Review or edit it, then send it,
+              under this hazard on the worksite.
+            </p>
+            {instructionLink}
+          </div>
+        )}
+      {persona !== 'supervisor' && report.review_status === 'pending' && (
+        <p className="rounded-xl border border-dashed border-caution p-3 text-sm text-ink-2">
+          Awaiting your supervisor's review.
+          {report.hazard_present &&
+            ' Once accepted, nearby organizations are notified.'}
+        </p>
       )}
       <p className="text-sm text-muted">
         Review does not authorize work. Pending/rejected reports are not

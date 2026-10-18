@@ -1,12 +1,13 @@
-"""Crew report creation and potential-hazard notices (T053).
+"""Crew report creation, and the notice an accepted report sends (T053).
 
 - A report is stored as pending with the reporter, team, organization, category,
   hazard-present answer, coordinates, photo reference (T052 storage key), optional note,
-  and time.
-- A report marked present creates one "potential {hazard}" notice with no instruction.
-  Instructions come only after a notified supervisor confirms (T054/T054A).
-- A report marked absent creates no notice. It stays with its organization's supervisor
-  for review.
+  and time. It sends nothing yet: its organization's supervisor accepts or rejects it
+  first (user decision, 2026-10-18).
+- When the supervisor accepts a report marked present, `publish_report_notice` sends one
+  notice for it. The reporting organization's copy is confirmed by that acceptance; every
+  other organization with a team inside the radius receives it as "potential {hazard}" and
+  confirms for itself (T054/T054A). A rejected report, or one marked absent, sends nothing.
 
 Notice radius:
 - Asks Braydin's Gemini radius function when `app.gemini` publishes one (see
@@ -120,49 +121,71 @@ def create_report(
     )
     session.add(report)
     audit(session, reporter.user_id, "report.create", report.id, now)
-
-    notice = None
-    recipients = Recipients([], [])
-    if hazard_present:
-        radius, source = notice_radius(category, report)
-        notice = db.HazardNotice(
-            id=f"notice:{uuid4().hex}",
-            hazard_label=HAZARD_LABELS[category],
-            source=NoticeSource.CREW_REPORT,
-            source_ref=report.id,
-            lat=lat,
-            lon=lon,
-            radius_miles=radius,
-            radius_source=source,
-            status=NoticeStatus.POTENTIAL,
-            created_at=now,
-            evidence=[
-                Evidence(
-                    id=report.id,
-                    kind=EvidenceKind.REPORT,
-                    label=f"Crew report: {HAZARD_LABELS[category]}",
-                    observed_at=now,
-                ).model_dump(mode="json")
-            ],
-        )
-        report.notice_id = notice.id
-        session.add(notice)
-        session.flush()
-        recipients = notice_recipients(session, notice)
-        audit(session, reporter.user_id, "notice.create", notice.id, now)
-        for team_id in recipients.team_ids:
-            audit(session, "system:notices", "notice.deliver", f"{notice.id}->{team_id}", now)
-        # Snapshot actual recipients: later team moves must not grant confirmation access.
-        for supervisor_id in recipients.supervisor_ids:
-            audit(
-                session,
-                "system:notices",
-                "notice.supervisor.deliver",
-                f"{notice.id}->{supervisor_id}",
-                now,
-            )
     session.commit()
-    return CreatedReport(report, notice, recipients)
+    return CreatedReport(report, None, Recipients([], []))
+
+
+def publish_report_notice(
+    session: Session, report: db.CrewReport, supervisor_id: str, now: datetime
+) -> tuple[db.HazardNotice, db.NoticeAssessment, Recipients]:
+    """The notice for an accepted present report. Does not commit.
+
+    Gemini picks the radius (`notice_radius`), or the category default when it is
+    unavailable or invalid. The notice is confirmed for the reporting organization by
+    the acceptance; teams and supervisors of every organization inside the radius are
+    notified, and each other organization confirms for itself.
+    """
+    category = ReportCategory(report.confirmed_category or report.category)
+    radius, source = notice_radius(category, report)
+    notice = db.HazardNotice(
+        id=f"notice:{uuid4().hex}",
+        hazard_label=HAZARD_LABELS[category],
+        source=NoticeSource.CREW_REPORT,
+        source_ref=report.id,
+        lat=report.lat,
+        lon=report.lon,
+        radius_miles=radius,
+        radius_source=source,
+        status=NoticeStatus.CONFIRMED,
+        created_at=now,
+        confirmed_by=supervisor_id,
+        confirmed_at=now,
+        evidence=[
+            Evidence(
+                id=report.id,
+                kind=EvidenceKind.REPORT,
+                label=f"Crew report: {HAZARD_LABELS[category]}",
+                observed_at=report.created_at,
+            ).model_dump(mode="json")
+        ],
+    )
+    report.notice_id = notice.id
+    session.add(notice)
+    session.flush()
+    assessment = db.NoticeAssessment(
+        notice_id=notice.id,
+        organization_id=report.organization_id,
+        confirmed_by=supervisor_id,
+        confirmed_at=now,
+    )
+    session.add(assessment)
+    recipients = notice_recipients(session, notice)
+    audit(session, supervisor_id, "notice.create", notice.id, now)
+    for team_id in recipients.team_ids:
+        audit(session, "system:notices", "notice.deliver", f"{notice.id}->{team_id}", now)
+    # Snapshot actual recipients: later team moves must not grant confirmation access.
+    # The accepting supervisor always holds a receipt, even if their site is outside.
+    for recipient in sorted({*recipients.supervisor_ids, supervisor_id}):
+        audit(
+            session,
+            "system:notices",
+            "notice.supervisor.deliver",
+            f"{notice.id}->{recipient}",
+            now,
+        )
+    audit(session, supervisor_id, "notice.confirm", notice.id, now)
+    session.flush()
+    return notice, assessment, recipients
 
 
 def notice_radius(category: ReportCategory, report: db.CrewReport) -> tuple[float, RadiusSource]:

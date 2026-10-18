@@ -15,7 +15,15 @@ from app.security import CurrentUser, roles
 from app.services.hazards import confirm_hazard
 from app.services.reports import Reporter, create_report
 from tests.auth_fakes import bearer, crew, supervisor, token
-from tests.test_reports_api import HOME, NOW, seed, submit
+from tests.test_reports_api import (
+    HOME,
+    NOW,
+    legacy_notice,
+    seed,
+    submit,
+    submit_accepted,
+    submit_legacy,
+)
 from tests.test_reports_api import client as client
 from tests.test_reports_api import h as h
 
@@ -37,7 +45,7 @@ def absent(client):
 
 
 def test_notified_supervisors_are_snapshotted(h, client):
-    report = submit(client).json()
+    report = submit_accepted(client)
     receipts = [e.entity for e in h.rows(db.AuditEvent) if e.action == "notice.supervisor.deliver"]
     assert sorted(receipts) == [
         f"{report['notice_id']}->auth0|supervisor-1",
@@ -45,31 +53,40 @@ def test_notified_supervisors_are_snapshotted(h, client):
     ]
 
 
-def test_reporting_organization_confirms_the_notice_and_the_report(h, client):
+def test_accepting_a_present_report_confirms_it_and_its_notice(h, client):
     sub = "auth0|supervisor-1"
     report = submit(client).json()
-    response = confirm(client, report["notice_id"], supervisor(sub))
+    response = review(client, report["id"], supervisor(sub), severity="high")
     assert response.status_code == 200
     result = response.json()
-    assert result["notice"]["status"] == "confirmed"
-    assert result["notice"]["confirmed_by"] == sub
-    assert result["notice"]["confirmed_at"].startswith("2026-10-17T18:00")
-    assert result["suggested_instruction"] is None and result["generated_by"] is None
-    assert result["notice"]["instruction"] is None
-    [stored] = h.rows(db.CrewReport)
-    assert stored.review_status == "confirmed"
-    assert stored.reviewed_by == sub
-    assert stored.reviewed_at is not None
-    assert stored.confirmed_category == stored.category
-    assert stored.hazard_present is True
+    assert result["review_status"] == "confirmed" and result["reviewed_by"] == sub
+    assert result["confirmed_category"] == result["category"]
+    assert result["confirmed_severity"] == "high"
+    seen = client.get("/api/sites/site-a", headers=supervisor(sub)).json()["notices"][0]
+    assert seen["id"] == result["notice_id"]
+    assert seen["status"] == "confirmed" and seen["confirmed_by"] == sub
+    assert seen["confirmed_at"].startswith("2026-10-17T18:00")
+    assert seen["instruction"] is None
     actions = {(e.action, e.entity, e.actor) for e in h.rows(db.AuditEvent)}
-    assert ("notice.confirm", report["notice_id"], sub) in actions
-    assert ("report.confirm", report["id"], sub) in actions
+    assert ("notice.confirm", result["notice_id"], sub) in actions
+    assert ("report.review.confirmed", report["id"], sub) in actions
     assert len(h.rows(db.HazardScore)) == 1 and h.rows(db.Alert) == []
 
 
+def test_accepting_a_report_filed_with_its_notice_confirms_that_notice(h, client):
+    report = submit_legacy(h, client)
+    response = review(client, report["id"], severity="low")
+    assert response.status_code == 200
+    assert response.json()["notice_id"] == report["notice_id"]
+    assert response.json()["confirmed_severity"] == "low"
+    [notice] = h.rows(db.HazardNotice)
+    assert notice.status == "confirmed" and notice.confirmed_by == "auth0|supervisor-1"
+    [assessment] = h.rows(db.NoticeAssessment)
+    assert assessment.organization_id == "org-1"
+
+
 def test_another_organization_confirms_only_for_itself(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     response = confirm(client, report["notice_id"], supervisor("auth0|supervisor-2"))
     assert response.status_code == 200
     assert response.json()["notice"]["status"] == "confirmed"
@@ -94,7 +111,7 @@ def test_another_organization_confirms_only_for_itself(h, client):
 def test_an_older_confirmed_notice_keeps_its_confirmation(h, client):
     """Notices confirmed before per-organization assessments read confirmed for everyone,
     and a later organization's confirmation stores the original instead of erasing it."""
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     with h.factory() as session:
         notice = session.get(db.HazardNotice, report["notice_id"])
         notice.status, notice.confirmed_by, notice.confirmed_at = (
@@ -121,7 +138,7 @@ def test_an_older_confirmed_notice_keeps_its_confirmation(h, client):
 
 @pytest.mark.parametrize("action", ["confirm", "review"])
 def test_actions_require_authentication_and_supervisor_permission(h, client, action):
-    report = submit(client).json() if action == "confirm" else absent(client)
+    report = submit_accepted(client) if action == "confirm" else absent(client)
     path = (
         f"/api/hazards/{report['notice_id']}/confirm"
         if action == "confirm"
@@ -149,7 +166,7 @@ def test_unnotified_supervisor_cannot_confirm(h, client):
             )
         )
         session.commit()
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     assert (
         confirm(client, report["notice_id"], supervisor("auth0|supervisor-far")).status_code == 403
     )
@@ -158,7 +175,7 @@ def test_unnotified_supervisor_cannot_confirm(h, client):
 
 
 def test_later_team_move_does_not_change_recipient_authority(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     with h.factory() as session:
         session.get(db.Team, "team-x").site_id = None
         session.add(
@@ -182,7 +199,7 @@ def test_missing_notice_and_report_return_404(h, client):
 
 
 def test_each_organization_confirms_once(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     assert confirm(client, report["notice_id"]).status_code == 200
     assert confirm(client, report["notice_id"]).status_code == 409
     assert confirm(client, report["notice_id"], supervisor("auth0|supervisor-2")).status_code == 200
@@ -195,7 +212,7 @@ def test_each_organization_confirms_once(h, client):
 
 
 def test_legacy_notice_without_receipt_fails_closed(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     with h.factory() as session:
         session.query(db.AuditEvent).filter_by(action="notice.supervisor.deliver").delete()
         session.commit()
@@ -203,7 +220,7 @@ def test_legacy_notice_without_receipt_fails_closed(h, client):
 
 
 def test_invalid_link_rolls_back_notice_confirmation(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     with h.factory() as session:
         session.get(db.CrewReport, report["id"]).hazard_present = False
         session.commit()
@@ -214,7 +231,7 @@ def test_invalid_link_rolls_back_notice_confirmation(h, client):
 
 
 def test_already_reviewed_link_rolls_back_notice_claim(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     with h.factory() as session:
         session.get(db.CrewReport, report["id"]).review_status = "rejected"
         session.commit()
@@ -225,7 +242,7 @@ def test_already_reviewed_link_rolls_back_notice_claim(h, client):
 
 
 def test_source_notice_can_be_confirmed_without_a_crew_report(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     with h.factory() as session:
         notice = session.get(db.HazardNotice, report["notice_id"])
         notice.source = "feed"
@@ -237,7 +254,7 @@ def test_source_notice_can_be_confirmed_without_a_crew_report(h, client):
 
 
 def test_audit_failure_rolls_back_notice_and_report(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
 
     def fail_audit(connection, cursor, statement, parameters, context, executemany):
         if statement.startswith("INSERT INTO audit_events"):
@@ -293,10 +310,13 @@ def test_missing_membership_cannot_review(h, client):
     assert review(client, report["id"], supervisor("auth0|stranger")).status_code == 403
 
 
-def test_present_reports_require_notice_confirmation(h, client):
+def test_another_organization_cannot_accept_or_reject_the_report(h, client):
     report = submit(client).json()
-    assert review(client, report["id"]).status_code == 409
+    for decision in ("confirmed", "rejected"):
+        outsider = supervisor("auth0|supervisor-2")
+        assert review(client, report["id"], outsider, decision=decision).status_code == 403
     assert h.rows(db.CrewReport)[0].review_status == "pending"
+    assert h.rows(db.HazardNotice) == []
 
 
 def test_review_is_final_and_invalid_body_is_rejected(h, client):
@@ -336,7 +356,7 @@ def test_concurrent_confirmations_have_exactly_one_winner(tmp_path):
             "photos/test.jpg",
             NOW,
         )
-        notice_id = report.notice.id
+        notice_id = legacy_notice(session, report.report.id)
     gate = Barrier(2, timeout=10)
 
     def before_update(connection, cursor, statement, parameters, context, executemany):

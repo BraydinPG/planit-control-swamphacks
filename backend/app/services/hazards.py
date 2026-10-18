@@ -1,5 +1,8 @@
 """T054 human review and T055 atomic score refresh for confirmed present reports.
 
+The reporting organization's supervisor accepts or rejects every crew report
+(`review_report`); accepting a present one sends its notice.
+
 Each organization inside a notice's radius assesses it for itself (`NoticeAssessment`).
 """
 
@@ -16,6 +19,7 @@ from app.schemas import NoticeSource, NoticeStatus, ReportReview, ReviewStatus
 from app.security import CurrentUser, membership_for
 from app.services.alerts import audit
 from app.services.notice_views import adopt_legacy
+from app.services.reports import publish_report_notice
 from app.services.scoring import score_site
 
 
@@ -107,9 +111,17 @@ def confirm_hazard(
     return notice, assessment
 
 
-def review_absent_report(
+def review_report(
     session: Session, report_id: str, review: ReportReview, user: CurrentUser, now: datetime
-) -> db.CrewReport:
+) -> tuple[db.CrewReport, db.HazardNotice | None, db.NoticeAssessment | None]:
+    """The reporting organization's supervisor accepts or rejects a crew report.
+
+    Accepting a report marked present sends its notice (`publish_report_notice`): Gemini
+    picks the radius, or the category default, and every organization inside it is
+    notified; it is confirmed for the reporting organization, and the site is rescored.
+    A rejected report, or one marked absent, sends nothing. A present report filed before
+    reports were reviewed first already has a notice; accepting it confirms that notice.
+    """
     report = session.get(db.CrewReport, report_id)
     if report is None:
         raise HTTPException(404, "Report not found")
@@ -118,9 +130,18 @@ def review_absent_report(
         raise HTTPException(
             403, "Only the reporting organization's supervisor may review this report"
         )
-    if report.hazard_present:
-        raise HTTPException(409, "Confirm present hazards through their notice")
+    if report.review_status != ReviewStatus.PENDING:
+        raise HTTPException(409, "This report has already been reviewed")
     accepted = review.decision == ReviewStatus.CONFIRMED
+    category = (review.category or report.category) if accepted else None
+    severity = review.severity if accepted else None
+    if accepted and report.hazard_present and report.notice_id:
+        notice, assessment = confirm_hazard(session, report.notice_id, user, now)
+        session.refresh(report)
+        report.confirmed_category, report.confirmed_severity = category, severity
+        _note(session, user, report_id, review, now)
+        session.commit()
+        return report, notice, assessment
     changed = session.execute(
         update(db.CrewReport)
         .where(db.CrewReport.id == report_id, db.CrewReport.review_status == ReviewStatus.PENDING)
@@ -128,15 +149,31 @@ def review_absent_report(
             review_status=review.decision,
             reviewed_by=user.sub,
             reviewed_at=now,
-            confirmed_category=(review.category or report.category) if accepted else None,
-            confirmed_severity=review.severity if accepted else None,
+            confirmed_category=category,
+            confirmed_severity=severity,
         )
         .execution_options(synchronize_session=False)
     )
     if changed.rowcount != 1:
         session.rollback()
         raise HTTPException(409, "This report has already been reviewed")
+    # The bulk update bypasses the identity map; read it back before using the report.
+    session.refresh(report)
     audit(session, user.sub, f"report.review.{review.decision}", report_id, now)
+    notice = assessment = None
+    if accepted and report.hazard_present:
+        notice, assessment, _ = publish_report_notice(session, report, user.sub, now)
+        score_site(session, report.site_id, now, commit=False)
+        audit(session, user.sub, "score.refresh.confirmed_report", report.id, now)
+    _note(session, user, report_id, review, now)
+    session.commit()
+    session.refresh(report)
+    return report, notice, assessment
+
+
+def _note(
+    session: Session, user: CurrentUser, report_id: str, review: ReportReview, now: datetime
+) -> None:
     if review.note:
         audit(
             session,
@@ -145,6 +182,3 @@ def review_absent_report(
             json.dumps({"report_id": report_id, "note": review.note}),
             now,
         )
-    session.commit()
-    session.refresh(report)
-    return report

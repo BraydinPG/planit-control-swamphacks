@@ -13,8 +13,15 @@ import app.gemini as gemini
 from app.api.deps import get_db, get_now
 from app.db import models as db
 from app.main import app
+from app.schemas import ReportCategory
 from app.security import roles
-from app.services.reports import miles_between, notice_recipients
+from app.services.alerts import audit
+from app.services.reports import (
+    DEFAULT_RADIUS_MILES,
+    HAZARD_LABELS,
+    miles_between,
+    notice_recipients,
+)
 from app.storage import LocalPhotoStore, get_photo_store
 from tests import auth_fakes
 from tests.auth_fakes import bearer, crew, supervisor, token
@@ -142,6 +149,63 @@ def submit(client, headers=None, photo=JPEG, content_type="image/jpeg", **fields
     )
 
 
+def accept(client, report_id, headers=None, **body):
+    """The reporting organization's supervisor accepts the report."""
+    return client.post(
+        f"/api/reports/{report_id}/review",
+        json={"decision": "confirmed", **body},
+        headers=headers or supervisor(),
+    )
+
+
+def submit_accepted(client, **fields) -> dict:
+    """A present report its supervisor accepted, so its notice went out."""
+    report = submit(client, **fields).json()
+    response = accept(client, report["id"])
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def legacy_notice(session: Session, report_id: str) -> str:
+    """A potential notice the way a present report sent one at submission, before reports
+    were reviewed first. Such notices are still in the database and must keep working."""
+    report = session.get(db.CrewReport, report_id)
+    category = ReportCategory(report.category)
+    notice = db.HazardNotice(
+        id=f"notice:legacy-{report_id}", hazard_label=HAZARD_LABELS[category],
+        source="crew_report", source_ref=report.id, lat=report.lat, lon=report.lon,
+        radius_miles=DEFAULT_RADIUS_MILES[category], radius_source="default",
+        status="potential", created_at=report.created_at,
+        evidence=[{"id": report.id, "kind": "report",
+                   "label": f"Crew report: {HAZARD_LABELS[category]}",
+                   "observed_at": report.created_at.isoformat()}],
+    )  # fmt: skip
+    report.notice_id = notice.id
+    session.add(notice)
+    session.flush()
+    recipients = notice_recipients(session, notice)
+    for team_id in recipients.team_ids:
+        audit(session, "system:notices", "notice.deliver", f"{notice.id}->{team_id}", NOW)
+    for supervisor_id in recipients.supervisor_ids:
+        audit(
+            session,
+            "system:notices",
+            "notice.supervisor.deliver",
+            f"{notice.id}->{supervisor_id}",
+            NOW,
+        )
+    session.commit()
+    return notice.id
+
+
+def submit_legacy(h, client, **fields) -> dict:
+    """A present report with its notice already sent, as before reports were reviewed first."""
+    report = submit(client, **fields).json()
+    with h.factory() as session:
+        report["notice_id"] = legacy_notice(session, report["id"])
+    return report
+
+
 def test_fixture_distances() -> None:
     assert miles_between(*HOME, *NEAR) == pytest.approx(0.5, abs=0.05)
     assert miles_between(*HOME, *OTHER_ORG_NEAR) == pytest.approx(0.8, abs=0.05)
@@ -151,7 +215,7 @@ def test_fixture_distances() -> None:
 # ---- report persists ----
 
 
-def test_access_mat_report_preserves_crew_note_and_creates_potential_notice(h, client) -> None:
+def test_access_mat_report_preserves_crew_note_and_sends_nothing_until_reviewed(h, client) -> None:
     note = "Mat 12: crew stage D, broken timber at ramp entrance."
     response = submit(client, category="access_mat_deterioration", note=note, mat_condition="D")
     assert response.status_code == 201
@@ -159,11 +223,13 @@ def test_access_mat_report_preserves_crew_note_and_creates_potential_notice(h, c
     assert report["category"] == "access_mat_deterioration"
     assert report["mat_condition"] == "D"
     assert report["note"] == note
-    assert report["review_status"] == "pending"
+    assert report["review_status"] == "pending" and report["notice_id"] is None
+    assert h.rows(db.HazardNotice) == []
+    accepted = accept(client, report["id"]).json()
     [notice] = h.rows(db.HazardNotice)
+    assert accepted["notice_id"] == notice.id
     assert notice.hazard_label == "access mat deterioration"
     assert notice.radius_miles == 1.0
-    assert notice.status == "potential"
     assert notice.instruction is None
     detail = client.get("/api/sites/site-a", headers=supervisor()).json()
     assert detail["reports"][0]["category"] == "access_mat_deterioration"
@@ -236,22 +302,37 @@ def test_report_appears_in_site_detail(h, client) -> None:
     assert listed["note"] == "Pole leaning over the access road"
 
 
-# ---- potential notice ----
+# ---- the notice an accepted report sends ----
 
 
-def test_present_report_creates_potential_notice_without_instruction(h, client) -> None:
+def test_a_present_report_sends_nothing_until_its_supervisor_accepts_it(h, client) -> None:
     report = submit(client).json()
+    assert report["notice_id"] is None and h.rows(db.HazardNotice) == []
+    assert not any(e.action.startswith("notice.") for e in h.rows(db.AuditEvent))
+    accepted = submit_accepted(client)
     [notice] = h.rows(db.HazardNotice)
-    assert report["notice_id"] == notice.id
-    assert notice.status == "potential"
+    assert accepted["notice_id"] == notice.id and accepted["review_status"] == "confirmed"
     assert notice.hazard_label == "broken electrical pole or downed line"
-    assert notice.instruction is None and notice.suggested_instruction is None
-    assert notice.source == "crew_report" and notice.source_ref == report["id"]
+    assert notice.instruction is None
+    assert notice.source == "crew_report" and notice.source_ref == accepted["id"]
     assert (notice.radius_miles, notice.radius_source) == (1.0, "default")
+    # Confirmed for the reporting organization by the acceptance.
+    [assessment] = h.rows(db.NoticeAssessment)
+    assert (assessment.organization_id, assessment.confirmed_by) == (
+        "org-1",
+        "auth0|supervisor-1",
+    )
+
+
+def test_a_rejected_present_report_sends_nothing(h, client) -> None:
+    report = submit(client).json()
+    response = accept(client, report["id"], decision="rejected")
+    assert response.status_code == 200 and response.json()["review_status"] == "rejected"
+    assert h.rows(db.HazardNotice) == [] and response.json()["notice_id"] is None
 
 
 def test_recipients_inside_radius_are_notified_across_organizations(h, client) -> None:
-    submit(client)
+    submit_accepted(client)
     [notice] = h.rows(db.HazardNotice)
     with h.factory() as session:
         recipients = notice_recipients(session, notice)
@@ -271,7 +352,7 @@ def test_recipients_inside_radius_are_notified_across_organizations(h, client) -
 
 
 def test_flood_report_uses_the_5_mile_default(h, client) -> None:
-    submit(client, category="flooding")
+    submit_accepted(client, category="flooding")
     [notice] = h.rows(db.HazardNotice)
     assert (notice.radius_miles, notice.radius_source) == (5.0, "default")
     assert notice.hazard_label == "flooding"
@@ -279,7 +360,7 @@ def test_flood_report_uses_the_5_mile_default(h, client) -> None:
 
 def test_gemini_radius_is_used_when_valid(h, client, monkeypatch) -> None:
     monkeypatch.setattr(gemini, "suggest_notice_radius", lambda *args: 2.5, raising=False)
-    submit(client)
+    submit_accepted(client)
     [notice] = h.rows(db.HazardNotice)
     assert (notice.radius_miles, notice.radius_source) == (2.5, "gemini")
 
@@ -289,7 +370,7 @@ def test_invalid_or_unresponsive_gemini_radius_falls_back_to_default(
     h, client, monkeypatch, bad
 ) -> None:
     monkeypatch.setattr(gemini, "suggest_notice_radius", lambda *args: bad, raising=False)
-    submit(client)
+    submit_accepted(client)
     [notice] = h.rows(db.HazardNotice)
     assert (notice.radius_miles, notice.radius_source) == (1.0, "default")
 
@@ -299,7 +380,7 @@ def test_gemini_error_falls_back_to_default(h, client, monkeypatch) -> None:
         raise TimeoutError
 
     monkeypatch.setattr(gemini, "suggest_notice_radius", boom, raising=False)
-    assert submit(client).status_code == 201
+    submit_accepted(client)
     [notice] = h.rows(db.HazardNotice)
     assert notice.radius_source == "default"
 
@@ -371,9 +452,10 @@ def test_list_reports_respects_roles(h, client) -> None:
 
 
 def test_report_creation_is_audited(h, client) -> None:
-    report = submit(client).json()
+    report = submit_accepted(client)
     actions = {(e.action, e.entity) for e in h.rows(db.AuditEvent)}
     assert ("report.create", report["id"]) in actions
+    assert ("report.review.confirmed", report["id"]) in actions
     assert ("notice.create", report["notice_id"]) in actions
 
 

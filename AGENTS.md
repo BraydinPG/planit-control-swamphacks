@@ -279,7 +279,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 - Implement documented prototype flood/heat rules where data is available. Do not claim prototype thresholds are official policy.
 - Implement the prototype hurricane and earthquake rules from `spec.md` using Braydin's Observations. Each creates a potential-hazard notice and a score factor. Label distance and magnitude settings as prototype values.
 - Store and serve the final score from Cache's risk algorithm (T051A) through `services/scoring.py` and the site routes. The conditional ML outlook stays out of the score.
-- Implement crew reports, review state, acknowledgements, and audit events. Store photos through your photo storage helper in `backend/app/storage/` (T052): Vultr Object Storage when configured, and a private local directory in development. A report records whether the hazard is present. A source detection or a crew member marking a hazard present sends “potential {hazard}” to every team and supervisor inside the radius. That notice has no instructions.
+- Implement crew reports, review state, acknowledgements, and audit events. Store photos through your photo storage helper in `backend/app/storage/` (T052): Vultr Object Storage when configured, and a private local directory in development. A report records whether the hazard is present. A source detection sends “potential {hazard}” to every team and supervisor inside the radius. A crew report sends nothing until its organization's supervisor accepts it (user decision, 2026-10-18); accepting one marked present sends its notice to every organization inside the Gemini (or default) radius, confirmed for the reporting organization and drafting its instruction, and potential for the others. A notice carries no instructions until a supervisor sends one.
 - Call Braydin’s radius function for that notice. If it reports Gemini unresponsive or an invalid radius, use the labeled default for that category from `spec.md`. Keep the lightning 10-mile stop-work rule separate. Do not call Gemini from route or rule files.
 - Each organization inside the radius assesses the notice for itself (`notice_assessments`): a notified supervisor confirms for their own organization, edits Braydin's suggested instruction, and sends it to that organization's teams inside the stored radius. Only the reporting organization's confirmation confirms the crew report.
 - The reporting organization’s supervisor still reviews a report that no hazard is present. Gemini enrichment stays a suggestion until that review.
@@ -299,7 +299,7 @@ The `Do not edit` lists below are default coordination boundaries. An explicit p
 | Acknowledge alert | Yes | Yes |
 | Submit hazard report | Yes | Yes |
 | Read all sites, assigned teams, and the full map | No | Yes |
-| Review a report that no hazard is present | No | Own organization only |
+| Accept or reject a crew report (accepting a present one sends its notice) | No | Own organization only |
 | Receive a potential-hazard notice inside the radius | Team is inside the radius | Team is inside the radius |
 | Confirm a potential hazard from a received notice | No | A notified supervisor, for their own organization |
 | Edit and send the instruction for that hazard | No | The supervisor who confirmed it for their organization (reaches only its teams) |
@@ -341,7 +341,7 @@ The backend is the authority for permissions. Frontend guards improve UX but do 
 - Each live feed (weather, forecast, flood, lightning, and when built, hurricane and earthquake) shows its source, timestamp, and stale or unavailable state.
 - Crew can report a broken electrical pole, downed line, or on-site fire. These hazards come only from crew reports.
 - Crew can acknowledge alerts and submit a photo report that says whether a hazard is present.
-- A detected hazard or a crew member marking a hazard present sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius.
+- A detected hazard sends “potential {hazard}” with no instructions to teams and supervisors inside the Gemini radius. A crew report marked present does so once its supervisor accepts it.
 - Each notified organization's supervisor confirms it for their organization. That organization's teams inside the radius then receive the instruction that supervisor accepted or edited.
 - A supervisor sees the full map and every location with its assigned team, occupied locations first, and makes the final call on that organization’s reports that no hazard is present.
 - A confirmed flood shows its expected remaining duration to crew and supervisors in plain words, labeled as an estimate, never an all-clear.

@@ -538,29 +538,32 @@ try {
   const reportId = await evaluate(
     "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].id",
   )
-  const noticeId = await evaluate(
-    "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
+  // Nothing is sent until the supervisor accepts the report.
+  assert.equal(
+    await evaluate(
+      "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
+    ),
+    null,
   )
   await until(
     () => evaluate(`document.querySelector('[data-report-id="${reportId}"]')!==null`),
     'submitted demo photo report appears',
   )
   assert(
-    await evaluate("!document.body.innerText.includes('Review worksite notice') && !document.body.innerText.includes('Confirm potential hazard') && document.body.innerText.includes('Awaiting supervisor confirmation')"),
-    'Crew sees pending status without notice review or confirmation actions',
+    await evaluate("!document.body.innerText.includes('Accept and notify nearby organizations') && document.body.innerText.includes('Awaiting your supervisor')"),
+    'Crew sees pending status without review actions',
   )
-  assert(await evaluate("!document.body.innerText.includes('Confirm report')"))
   await reload('Reported present')
   assert(
-    await evaluate("!document.body.innerText.includes('Review worksite notice')"),
-    'Reload must not expose the supervisor review link to crew',
+    await evaluate("!document.body.innerText.includes('Reject report')"),
+    'Reload must not expose supervisor review to crew',
   )
   await click('Supervisor')
   await loaded('Needs your attention')
   await hash('/supervisor/reports', 'Reported present')
   assert(
-    await evaluate(`document.querySelector('[data-report-id="${reportId}"] a')?.getAttribute('href')==='#/supervisor/sites/site-demo-everglades'`),
-    'Supervisor retains the pending photo report notice review link',
+    await evaluate(`(()=>{const t=document.querySelector('[data-report-id="${reportId}"]').innerText;return t.includes('Accept and notify nearby organizations')&&t.includes('Reject report')})()`),
+    'Supervisor can accept or reject a present report on its card',
   )
   // The supervisor Overview lists what needs a decision; the map and list are on Worksites.
   await hash('/supervisor/sites', '55 locations')
@@ -628,20 +631,15 @@ try {
     '/supervisor/sites/site-demo-everglades',
     'Hazards and supervisor instructions',
   )
-  assert(
-    await evaluate(
-      `document.querySelector('[data-report-id="${reportId}"]').innerText.includes('supervisor confirmation of the hazard notice') && !document.querySelector('[data-report-id="${reportId}"] button')`,
-    ),
-    'Present report must use its notice, not absent-review controls',
-  )
-  assert(
-    await evaluate(
-      `document.querySelector('[data-notice-id="${noticeId}"]').innerText.includes('No instruction: supervisor confirmation is pending')`,
-    ),
-  )
   await evaluate(
-    `document.querySelector('[data-notice-id="${noticeId}"] button').click()`,
+    `Array.from(document.querySelectorAll('[data-report-id="${reportId}"] button')).find(b=>b.textContent.trim()==='Accept and notify nearby organizations').click()`,
   )
+  await loaded('Review the instruction')
+  const noticeId = await evaluate(
+    "JSON.parse(localStorage.getItem('planit:frontend-demo:v1')).reports[0].notice_id",
+  )
+  assert(noticeId, 'Accepting a present report sends its notice')
+  await loaded('Instruction to review')
   await loaded('Write an instruction for the crew')
   await set(
     `[data-notice-id="${noticeId}"] textarea`,
@@ -698,7 +696,7 @@ try {
   results.push({
     crew: 'assigned site -> alert acknowledgement/reset/reload -> photo report without note -> approved instruction',
     supervisor:
-      '55 ranked/map locations -> exact-site ML advisory -> review -> confirm -> send instruction',
+      '55 ranked/map locations -> exact-site ML advisory -> accept report (sends notice) -> send instruction',
     briefings: 'read-only archived Gemini/template fixtures with citations',
     persistence: 'local demo namespace only; no server writes',
     keyboard: 'skip navigation and Tab to visible focused control passed',

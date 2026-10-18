@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import type { SiteRecord } from '../../api/contracts'
 import { siteHazards } from '../../presentation/site-hazards'
 import { Details } from './Details'
@@ -7,6 +7,7 @@ import { Status, Timestamp } from './Status'
 import { NoticeCard } from './NoticeCard'
 import { Icon } from '../shell/Icon'
 import { displayLabel } from '../../presentation/display'
+import { ApplicationContext } from '../../application/context'
 
 /** One hazard row holds its alerts, score evidence, confirmations and instructions.
  * Every row, confirmed or still potential, starts folded to save space. */
@@ -14,6 +15,16 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
   // Confirmation can move a notice from pending to its merged hazard row during
   // a GET refresh. Preserve an in-flight supervisor draft across that move.
   const [drafts] = useState(() => new Map<string, string>())
+  const application = useContext(ApplicationContext)
+  // A folded row still says when this supervisor has an instruction to review and send.
+  const toSend = (notices: SiteRecord['notices']) =>
+    application?.persona === 'supervisor' &&
+    notices.some(
+      (n) =>
+        n.status === 'confirmed' &&
+        n.confirmed_by === application.principalId &&
+        !n.instruction_sent_at,
+    )
   const hazards = siteHazards(site)
   const pending = site.notices.filter((n) => n.status === 'potential')
   return (
@@ -30,7 +41,10 @@ export function SiteHazards({ site }: { site: SiteRecord }) {
           <li key={hazard.id} data-site-hazard={hazard.id} className="min-w-0">
             <details data-hazard-row className="group/hazard">
             <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
-              <h4 className="text-lg font-bold">{hazard.label}</h4>
+              <span className="flex min-w-0 flex-wrap items-center gap-2">
+                <h4 className="text-lg font-bold">{hazard.label}</h4>
+                {toSend(hazard.notices) && <span className="chip border border-caution text-warn-text">Instruction to review</span>}
+              </span>
               <Icon name="back" className="size-5 shrink-0 -rotate-90 transition-transform group-open/hazard:rotate-90" />
             </summary>
             <div className="space-y-2.5 px-4 pb-4">

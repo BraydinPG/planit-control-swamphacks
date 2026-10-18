@@ -19,9 +19,9 @@ from app.demo.freshen import keep_demo_fresh
 from app.demo.scenario import FLOOD_ALERT_ID, WILDLIFE_REPORT_ID
 from app.main import app
 from app.outlook import get_event_outlook_service
-from app.schemas import ReportCategory
+from app.schemas import ReportCategory, ReportReview, ReviewStatus
 from app.services import refresh
-from app.services.hazards import confirm_hazard
+from app.services.hazards import review_report
 from app.services.reports import Reporter, create_report
 from tests import auth_fakes
 from tests.auth_fakes import supervisor
@@ -245,8 +245,11 @@ def test_a_testers_own_report_confirmation_and_acknowledgement_ride_along(demo, 
             session.get(db.Site, "demo-flood"), ReportCategory.BROKEN_POLE_DOWNED_LINE, True,
             30.4515, -91.1871, None, "photos/t.jpg", NOW + timedelta(minutes=3),
         ).report  # fmt: skip
-        notice_id = report.notice_id
-        confirm_hazard(session, notice_id, _supervisor(SUPERVISOR), NOW + timedelta(minutes=4))
+        reviewed, notice, _ = review_report(
+            session, report.id, ReportReview(decision=ReviewStatus.CONFIRMED),
+            _supervisor(SUPERVISOR), NOW + timedelta(minutes=4),
+        )  # fmt: skip
+        notice_id = notice.id
         alert = session.scalars(
             select(db.Alert).where(
                 db.Alert.site_id == "demo-flash-flood", db.Alert.rule == "lightning_stop_work"

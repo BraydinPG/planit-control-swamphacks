@@ -16,7 +16,7 @@ from app.services.reports import Reporter, create_report
 from app.services.scoring import score_site
 from tests.auth_fakes import supervisor
 from tests.test_hazards_api import absent, confirm, review
-from tests.test_reports_api import HOME, NOW, seed, submit
+from tests.test_reports_api import HOME, NOW, legacy_notice, seed, submit, submit_legacy
 from tests.test_reports_api import client as client
 from tests.test_reports_api import h as h
 
@@ -49,7 +49,7 @@ def test_confirmed_present_report_updates_stored_score_and_site_reads(h, client)
     with h.factory() as session:
         initial = score_site(session, "site-a", NOW - timedelta(minutes=1))
     assert initial.risk_score == 0
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     assert len(h.rows(db.HazardScore)) == 1  # Pending and potential do not raise the score.
     assert confirm(client, report["notice_id"]).status_code == 200
     scores = sorted(h.rows(db.HazardScore), key=lambda s: s.created_at)
@@ -72,7 +72,7 @@ def test_confirmed_present_report_updates_stored_score_and_site_reads(h, client)
 
 
 def test_multiple_confirmations_at_the_same_time_keep_both_contributions(h, client):
-    reports = [submit(client).json(), submit(client, category="wildlife").json()]
+    reports = [submit_legacy(h, client), submit_legacy(h, client, category="wildlife")]
     for report in reports:
         assert confirm(client, report["notice_id"]).status_code == 200
     scores = sorted(h.rows(db.HazardScore), key=lambda s: s.created_at)
@@ -111,7 +111,7 @@ def test_older_confirmed_reports_are_not_hidden_by_ui_display_limit(h, client):
         session.add(stored_report("older-confirmed", "confirmed", age=120))
         session.add_all([stored_report(f"newer-pending-{i}", age=1) for i in range(55)])
         session.commit()
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     assert confirm(client, report["notice_id"]).status_code == 200
     [score] = h.rows(db.HazardScore)
     assert score.risk_score == 2.0
@@ -149,7 +149,7 @@ def test_active_lightning_and_other_site_scores_are_unchanged(h, client):
         score_site(session, "site-b", NOW - timedelta(seconds=1))
     alert_before = [(a.id, a.state, a.latest_event_at, a.clear_after) for a in h.rows(db.Alert)]
     other_before = [(s.id, s.risk_score) for s in h.rows(db.HazardScore) if s.site_id == "site-b"]
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     assert confirm(client, report["notice_id"], supervisor()).status_code == 200
     latest = max(
         (s for s in h.rows(db.HazardScore) if s.site_id == "site-a"), key=lambda s: s.created_at
@@ -164,7 +164,7 @@ def test_active_lightning_and_other_site_scores_are_unchanged(h, client):
 
 
 def test_scoring_failure_rolls_back_confirmation_and_report(h, client, monkeypatch):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
 
     def fail(*args, **kwargs):
         raise RuntimeError("Synthetic scoring failure")
@@ -178,7 +178,7 @@ def test_scoring_failure_rolls_back_confirmation_and_report(h, client, monkeypat
 
 
 def test_audit_failure_rolls_back_the_new_score_too(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
 
     def fail(connection, cursor, statement, parameters, context, executemany):
         if statement.startswith("INSERT INTO audit_events"):
@@ -215,7 +215,7 @@ def test_concurrent_distinct_confirmations_preserve_both_factors(tmp_path):
                 "photos/test.jpg",
                 NOW,
             )
-            ids.append(created.notice.id)
+            ids.append(legacy_notice(session, created.report.id))
     gate = Barrier(2, timeout=10)
 
     def before_update(connection, cursor, statement, parameters, context, executemany):
@@ -239,3 +239,20 @@ def test_concurrent_distinct_confirmations_preserve_both_factors(tmp_path):
             assert len(factors(scores[-1])) == 2
     finally:
         engine.dispose()
+
+
+def test_accepting_a_report_rescores_and_a_scoring_failure_sends_nothing(h, client, monkeypatch):
+    report = submit(client).json()
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("Synthetic scoring failure")
+
+    monkeypatch.setattr("app.services.hazards.score_site", fail)
+    with pytest.raises(RuntimeError, match="Synthetic scoring failure"):
+        review(client, report["id"])
+    assert h.rows(db.HazardNotice) == [] and h.rows(db.NoticeAssessment) == []
+    assert h.rows(db.CrewReport)[0].review_status == "pending"
+    monkeypatch.undo()
+    assert review(client, report["id"]).status_code == 200
+    [score] = h.rows(db.HazardScore)
+    assert factors(score)[0]["evidence_id"] == report["id"]

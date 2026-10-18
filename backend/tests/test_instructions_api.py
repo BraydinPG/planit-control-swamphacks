@@ -19,7 +19,7 @@ from app.services.instructions import send_instruction
 from app.services.reports import Reporter, create_report
 from tests.auth_fakes import bearer, crew, supervisor, token
 from tests.test_hazards_api import confirm
-from tests.test_reports_api import HOME, NOW, seed, submit
+from tests.test_reports_api import HOME, NOW, accept, legacy_notice, seed, submit, submit_legacy
 from tests.test_reports_api import client as client
 from tests.test_reports_api import h as h
 
@@ -41,7 +41,7 @@ def valid_draft(report_id, text="Keep clear of the damaged pole."):
 
 
 def test_confirm_calls_helper_with_evidence_but_never_sends(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     calls = []
 
     def transport(prompt, schema):
@@ -65,8 +65,28 @@ def test_confirm_calls_helper_with_evidence_but_never_sends(h, client):
     assert not any(e.action == "notice.instruction.deliver" for e in h.rows(db.AuditEvent))
 
 
-def test_potential_notice_never_has_a_draft_or_instruction(h, client):
+def test_accepting_a_present_report_drafts_its_supervisors_instruction(h, client):
     report = submit(client).json()
+    calls = []
+
+    def transport(prompt, schema):
+        calls.append(prompt)
+        return valid_draft(report["id"])
+
+    provider(transport)
+    accepted = accept(client, report["id"])
+    assert accepted.status_code == 200, accepted.text
+    assert len(calls) == 1 and report["id"] in calls[0]
+    [assessment] = h.rows(db.NoticeAssessment)
+    assert assessment.suggested_instruction == "Keep clear of the damaged pole."
+    assert assessment.instruction is None  # still the supervisor's to review and send
+    own = client.get("/api/sites/site-a", headers=supervisor()).json()["notices"][0]
+    assert own["suggested_instruction"] == "Keep clear of the damaged pole."
+    assert send(client, accepted.json()["notice_id"]).status_code == 200
+
+
+def test_potential_notice_never_has_a_draft_or_instruction(h, client):
+    report = submit_legacy(h, client)
     provider(lambda *args: pytest.fail("Unconfirmed send must not call Gemini"))
     assert send(client, report["notice_id"]).status_code == 409
     [notice] = h.rows(db.HazardNotice)
@@ -76,7 +96,7 @@ def test_potential_notice_never_has_a_draft_or_instruction(h, client):
 
 
 def test_crew_and_other_supervisors_never_receive_the_unsent_draft(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     provider(lambda *args: valid_draft(report["id"]))
     assert confirm(client, report["notice_id"]).status_code == 200
     for headers in [crew(), supervisor("auth0|supervisor-2")]:
@@ -88,7 +108,7 @@ def test_crew_and_other_supervisors_never_receive_the_unsent_draft(h, client):
 
 
 def test_final_text_reaches_only_the_confirming_organizations_teams(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     provider(lambda *args: valid_draft(report["id"]))
     confirm(client, report["notice_id"])
     final = "Stay behind the marked barrier and contact the supervisor."
@@ -114,7 +134,7 @@ def test_final_text_reaches_only_the_confirming_organizations_teams(h, client):
 
 
 def test_each_organization_sends_its_own_instruction(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     notice_id = report["notice_id"]
     assert confirm(client, notice_id).status_code == 200
     assert confirm(client, notice_id, supervisor("auth0|supervisor-2")).status_code == 200
@@ -142,7 +162,7 @@ def test_each_organization_sends_its_own_instruction(h, client):
 
 
 def test_another_organization_must_confirm_before_it_can_send(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     confirm(client, report["notice_id"])
     other = send(client, report["notice_id"], headers=supervisor("auth0|supervisor-2"))
     assert other.status_code == 409
@@ -158,7 +178,7 @@ def test_another_organization_must_confirm_before_it_can_send(h, client):
     ],
 )
 def test_only_the_confirming_supervisor_with_permission_can_send(h, client, headers):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     confirm(client, report["notice_id"])
     assert send(client, report["notice_id"], headers=headers).status_code == 403
     assert h.rows(db.NoticeAssessment)[0].instruction is None
@@ -174,14 +194,14 @@ def test_no_token_and_unknown_notice(h, client):
 
 @pytest.mark.parametrize("text", ["", "   ", "\n\t", "x" * 501])
 def test_invalid_final_text_is_rejected(h, client, text):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     confirm(client, report["notice_id"])
     assert send(client, report["notice_id"], text).status_code == 422
     assert h.rows(db.NoticeAssessment)[0].instruction is None
 
 
 def test_sent_instruction_cannot_be_overwritten_or_delivered_twice(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     confirm(client, report["notice_id"])
     assert send(client, report["notice_id"], "Hold position.").status_code == 200
     assert send(client, report["notice_id"], "Different text.").status_code == 409
@@ -207,7 +227,7 @@ def test_sent_instruction_cannot_be_overwritten_or_delivered_twice(h, client):
     ],
 )
 def test_invalid_gemini_output_keeps_confirmation_and_allows_manual_text(h, client, raw):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     provider(lambda *args: raw)
     response = confirm(client, report["notice_id"])
     assert response.status_code == 200
@@ -232,7 +252,7 @@ def test_invalid_gemini_output_keeps_confirmation_and_allows_manual_text(h, clie
     ],
 )
 def test_clearance_or_alert_override_claims_are_rejected(h, client, text):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     provider(lambda *args: valid_draft(report["id"], text))
     response = confirm(client, report["notice_id"])
     assert response.status_code == 200
@@ -241,7 +261,7 @@ def test_clearance_or_alert_override_claims_are_rejected(h, client, text):
 
 @pytest.mark.parametrize("exception", [TimeoutError, RuntimeError])
 def test_gemini_error_does_not_undo_confirmation(h, client, exception):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
 
     def fail(*args):
         raise exception("Synthetic provider failure")
@@ -254,7 +274,7 @@ def test_gemini_error_does_not_undo_confirmation(h, client, exception):
 
 
 def test_delivery_uses_current_teams_and_unchanged_stored_radius(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     confirm(client, report["notice_id"])
     with h.factory() as session:
         session.get(db.Team, "team-x").site_id = None
@@ -274,7 +294,7 @@ def test_delivery_uses_current_teams_and_unchanged_stored_radius(h, client):
 
 
 def test_failed_delivery_audit_rolls_back_final_text(h, client):
-    report = submit(client).json()
+    report = submit_legacy(h, client)
     confirm(client, report["notice_id"])
 
     def fail(connection, cursor, statement, parameters, context, executemany):
@@ -311,7 +331,7 @@ def test_concurrent_sends_deliver_exactly_one_text(tmp_path):
             "photos/test.jpg",
             NOW,
         )
-        notice_id = created.notice.id
+        notice_id = legacy_notice(session, created.report.id)
         confirm_hazard(session, notice_id, user, NOW)
     gate = Barrier(2, timeout=10)
 

@@ -334,11 +334,9 @@ export class DemoClient implements Client {
         photo.size > 5 * 1024 * 1024)
     )
       throw new ApiError(422, 'Photo must be JPEG/PNG/WebP, at most 5 MB')
+    // Nothing is sent until the supervisor accepts the report (see `review`).
     const site = this.state.details[input.site_id],
-      id = 'demo-report-' + crypto.randomUUID(),
-      noticeId = input.hazard_present
-        ? 'demo-notice-' + crypto.randomUUID()
-        : null
+      id = 'demo-report-' + crypto.randomUUID()
     const report: CrewReport = {
       ...input,
       id,
@@ -357,37 +355,11 @@ export class DemoClient implements Client {
       mat_condition: grade,
       site_distance_miles: null,
       enrichment: null,
-      notice_id: noticeId,
+      notice_id: null,
       created_at: this.time(),
     }
     if (photo) this.photoURLs.set(id, URL.createObjectURL(photo))
     this.state.reports.unshift(report)
-    if (noticeId)
-      this.state.notices.unshift({
-        id: noticeId,
-        hazard_label: input.category.replaceAll('_', ' '),
-        source: 'crew_report',
-        source_ref: id,
-        lat: input.lat,
-        lon: input.lon,
-        radius_miles: input.category === 'flooding' ? 5 : 1,
-        radius_source: 'default',
-        status: 'potential',
-        created_at: this.time(),
-        confirmed_by: null,
-        confirmed_at: null,
-        suggested_instruction: null,
-        instruction: null,
-        instruction_sent_at: null,
-        evidence: [
-          {
-            id,
-            kind: 'report',
-            label: 'Simulated crew report',
-            observed_at: this.time(),
-          },
-        ],
-      })
     this.save()
     return clone(report)
   }
@@ -396,17 +368,54 @@ export class DemoClient implements Client {
     const r = this.state.reports.find((r) => r.id === id)
     if (!r || r.organization_id !== org)
       throw new ApiError(403, 'Report is outside the simulated organization')
-    if (r.hazard_present)
-      throw new ApiError(409, 'Confirm present hazards through their notice')
     if (r.review_status !== 'pending')
       throw new ApiError(409, 'This report has already been reviewed')
+    const accepted = input.decision === 'confirmed'
     r.review_status = input.decision
     r.reviewed_by = 'demo-supervisor'
     r.reviewed_at = this.time()
-    r.confirmed_category =
-      input.decision === 'confirmed' ? (input.category ?? r.category) : null
-    r.confirmed_severity =
-      input.decision === 'confirmed' ? (input.severity ?? null) : null
+    r.confirmed_category = accepted ? (input.category ?? r.category) : null
+    r.confirmed_severity = accepted ? (input.severity ?? null) : null
+    const legacy = r.notice_id
+      ? this.state.notices.find((n) => n.id === r.notice_id)
+      : undefined
+    if (accepted && r.hazard_present && legacy) {
+      // Filed before reports were reviewed first: accepting confirms its notice.
+      legacy.status = 'confirmed'
+      legacy.confirmed_by = 'demo-supervisor'
+      legacy.confirmed_at = this.time()
+    } else if (accepted && r.hazard_present) {
+      // Accepting sends the notice to every organization inside the radius. The
+      // simulated demo has no Gemini, so it uses the category default.
+      const category = r.confirmed_category ?? r.category
+      const noticeId = 'demo-notice-' + crypto.randomUUID()
+      r.notice_id = noticeId
+      this.state.notices.unshift({
+        id: noticeId,
+        hazard_label: category.replaceAll('_', ' '),
+        source: 'crew_report',
+        source_ref: r.id,
+        lat: r.lat,
+        lon: r.lon,
+        radius_miles: category === 'flooding' ? 5 : 1,
+        radius_source: 'default',
+        status: 'confirmed',
+        created_at: this.time(),
+        confirmed_by: 'demo-supervisor',
+        confirmed_at: this.time(),
+        suggested_instruction: null,
+        instruction: null,
+        instruction_sent_at: null,
+        evidence: [
+          {
+            id: r.id,
+            kind: 'report',
+            label: 'Simulated crew report',
+            observed_at: r.created_at,
+          },
+        ],
+      })
+    }
     this.save()
     return clone(r)
   }
