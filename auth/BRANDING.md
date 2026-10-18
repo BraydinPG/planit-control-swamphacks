@@ -1,5 +1,18 @@
 # Landing and Auth0 login logos
 
+## Current hosted login: dark theme (2026-10-18)
+
+The Auth0 login page now matches the always-dark app: theme
+[`universal-login-theme.json`](universal-login-theme.json) (app palette: page `#121214`,
+card `#1c1c1e`, button `#0071e3`; compact type, 8 px fields and buttons, 14 px card, soft
+shadow, small centered white wordmark, social sign-in above the form). It replaces the
+light widget and navy logo described below, which remain only as history.
+
+Apply or update it with the role-manager app (it now also has `read:branding` and
+`update:branding`): `PATCH /api/v2/branding/themes/{id}` with the file's contents
+(`GET /api/v2/branding/themes/default` returns the id). The separate tenant logo setting
+(`GET /api/v2/branding`) also points at the white wordmark.
+
 The dark public landing page (`/landing.html`) uses the transparent white-letter
 wordmark: `/foresite-wordmark.png?v=daaf5322`.
 
