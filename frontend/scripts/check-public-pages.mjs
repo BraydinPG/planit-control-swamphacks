@@ -49,6 +49,17 @@ async function shot(name, full = true) {
   const clip = full ? await evaluate('({x:0,y:0,width:document.documentElement.clientWidth,height:document.documentElement.scrollHeight,scale:1})') : undefined
   const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: full, ...(clip ? { clip } : {}) })
   await writeFile(join(output, name + '.png'), Buffer.from(data, 'base64'))
+  // Edge's full-page compositor can leave content beyond 16K pixels blank.
+  // Preserve full-resolution tiles for review of this unusually long document.
+  if (clip?.height > 14000) {
+    for (let y = 0, index = 0; y < clip.height; y += 6000, index++) {
+      await evaluate(`scrollTo(0,${y});document.querySelector('header.top').style.visibility=${JSON.stringify(y ? 'hidden' : 'visible')}`)
+      const tile = { ...clip, y, height: Math.min(6000, clip.height - y) }
+      const result = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, clip: tile })
+      await writeFile(join(output, `${name}-tile-${index}.png`), Buffer.from(result.data, 'base64'))
+    }
+    await evaluate("document.querySelector('header.top').style.visibility='';scrollTo(0,0)")
+  }
 }
 const storage = "JSON.stringify([Object.entries(localStorage).sort(),Object.entries(sessionStorage).sort()])"
 const layout = `(()=>{
@@ -78,12 +89,14 @@ try {
   for (const figure of evidence.figures) {
     assert.equal(createHash('sha256').update(await readFile(join(root, 'public/research', figure.file))).digest('hex'), figure.sha256)
   }
+  const ledger = JSON.parse(await readFile(join(root, 'public/research/dashboard-figures.json'), 'utf8'))
+  for (const figure of ledger.figures) assert.equal(createHash('sha256').update(await readFile(join(root, 'public/research', figure.file))).digest('hex'), figure.sha256)
   for (const path of ['/landing.html', '/data.html', '/public-site.css', '/data.css']) {
     const response = await fetch(new URL(path, base))
     assert.equal(response.status, 200, path)
     if (path === '/data.html') {
       const html = await response.text()
-      assert(html.includes('THE SCIENCE BEHIND FORESITE.') && !html.includes('id="root"') && !html.includes('<script'))
+      assert(html.includes('THE SCIENCE BEHIND FORESITE.') && !html.includes('id="root"') && html.includes('/data-research.js') && !html.includes('/src/main'))
     }
   }
   await send('Page.navigate', { url: new URL('/landing.html', base).href }); await loaded('/landing.html')
@@ -106,18 +119,31 @@ try {
     await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
     await loaded('/data.html')
     await send('Page.reload'); await loaded('/data.html')
-    for (let index = 0; index < 3; index++) {
+    await until(() => evaluate("document.querySelector('#research-controls-status').textContent.startsWith('Interactive controls select')"), 'static research controls')
+    for (let index = 0; index < 12; index++) {
       await evaluate(`document.querySelectorAll('.lab picture img')[${index}].scrollIntoView({block:'center'})`)
       await until(() => evaluate(`document.querySelectorAll('.lab picture img')[${index}].complete&&document.querySelectorAll('.lab picture img')[${index}].naturalWidth>0`), 'chart')
     }
     await evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)")
     const data = await evaluate(layout)
     assert(!data.overflow && !data.clipped.length && data.headerFits && !data.headerOverlaps, JSON.stringify({ width, data }))
-    assert(await evaluate(`document.querySelectorAll('.lab picture').length===3&&document.querySelectorAll('.lab-targets li').length===6&&document.querySelector('header a[aria-current=page]').getAttribute('href')==='/data.html'&&Array.from(document.querySelectorAll('.lab picture img')).every(img=>img.currentSrc.includes('-mobile.svg')===${width <= 600})`))
+    assert(await evaluate(`document.querySelectorAll('.lab picture').length===12&&document.querySelectorAll('.lab-targets li').length===6&&document.querySelector('header a[aria-current=page]').getAttribute('href')==='/data.html'&&Array.from(document.querySelectorAll('.lab picture img')).every(img=>img.currentSrc.includes('-mobile.svg')===${width <= 600})`))
     assert(await evaluate("document.body.innerText.includes('Discrete-time logistic')&&document.body.innerText.includes('Kaplan–Meier')&&document.body.innerText.includes('previously inspected')&&document.body.innerText.includes('0.619922')&&document.body.innerText.includes('0.211733')&&document.body.innerText.includes('Prediction is not permission.')"))
     assert.equal(await evaluate(storage), originalStorage, 'Public navigation preserves storage/session sentinels')
     await evaluate("document.querySelectorAll('details').forEach(d=>d.open=false)")
     await shot(`public-data-${width}`); await shot(`public-data-top-${width}`, false)
+    // Controls select genuine static variants, including target-specific horizons.
+    await evaluate("document.querySelector('#calibration-model').value='logistic';document.querySelector('#calibration-horizon').value='6';document.querySelector('#calibration-model').dispatchEvent(new Event('change'))")
+    assert(await evaluate("document.querySelector('#figure-calibration img').src.includes('calibration-logistic-6.svg')&&document.querySelector('#calibration-context').textContent.includes('6h')&&document.querySelector('#figure-calibration tbody').textContent.includes('2025 inspected test')"))
+    await evaluate("document.querySelector('#duration-model').value='logistic';document.querySelector('#duration-scale').value='linear';document.querySelector('#duration-scale').dispatchEvent(new Event('change'))")
+    assert(await evaluate("document.querySelector('#figure-duration-errors img').src.includes('duration-errors-logistic-linear.svg')&&document.querySelector('#duration-context').textContent.includes('40.712h')"))
+    await evaluate("document.querySelector('#research-event').value='Heat Index Exceedance';document.querySelector('#research-event').dispatchEvent(new Event('change'))")
+    assert.deepEqual(await evaluate("Array.from(document.querySelector('#research-horizon').options).map(o=>o.value)"), ['1', '3', '6'])
+    assert(await evaluate("document.querySelector('#research-readout').textContent.includes('Heat Index Exceedance')&&document.querySelector('#research-target-limits').textContent.includes('Three airport stations')"))
+    await evaluate("document.querySelector('#research-period').value='validation';document.querySelector('#research-period').dispatchEvent(new Event('change'))")
+    assert(await evaluate("document.querySelector('#research-readout').textContent.includes('2024 validation')"))
+    await evaluate("document.querySelector('#research-event').value='Flood';document.querySelector('#research-event').dispatchEvent(new Event('change'))")
+    assert.deepEqual(await evaluate("Array.from(document.querySelector('#research-horizon').options).map(o=>o.value)"), ['6', '12', '24'])
     await evaluate('history.back()'); await loaded('/landing.html')
     await evaluate('history.forward()'); await loaded('/data.html')
     await evaluate("document.querySelector('header a[href=\"/landing.html\"].public-link').click()"); await loaded('/landing.html')
@@ -128,13 +154,25 @@ try {
   }
   // Direct access has no preceding homepage or app initialization requirement.
   await send('Page.navigate', { url: new URL('/data.html', base).href }); await loaded('/data.html')
-  assert(await evaluate("Array.from(document.scripts).every(s=>s.src.endsWith('/@vite/client'))&&!document.querySelector('#root')&&!location.hash&&!location.search"))
+  assert(await evaluate("Array.from(document.scripts).every(s=>['/@vite/client','/public-atmosphere.js','/data-research.js'].some(path=>s.src.endsWith(path)))&&!document.querySelector('#root')&&!location.hash&&!location.search&&document.querySelector('#sky')&&document.querySelector('#bolt')"))
+  // A missing static research JSON disables controls while preserving figures and tables.
+  await send('Network.setBlockedURLs', { urls: ['*/research/dashboard.json'] })
+  await send('Page.reload'); await loaded('/data.html')
+  await until(() => evaluate("document.querySelector('#research-controls-status').textContent.startsWith('Interactive research data is unavailable')"), 'missing static export fallback')
+  assert(await evaluate("document.querySelectorAll('.lab picture').length===12&&Array.from(document.querySelectorAll('.research-controls select')).every(s=>s.disabled)"))
+  await send('Network.setBlockedURLs', { urls: [] })
+  // JS-disabled visitors retain all explanatory content, figures and numerical tables.
+  await send('Emulation.setScriptExecutionDisabled', { value: true })
+  await send('Page.reload'); await loaded('/data.html')
+  assert(await evaluate("document.querySelectorAll('.lab picture').length===12&&document.querySelectorAll('.lab-values table').length===12"))
+  await send('Emulation.setScriptExecutionDisabled', { value: false })
   if (fixtures) {
     await send('Page.navigate', { url: new URL('/landing.html', base).href }); await loaded('/landing.html')
     await evaluate("document.querySelector('.cta-btn').click()")
     await until(() => evaluate("location.search==='?demo'&&location.hash==='#/crew/overview'&&document.body.innerText.includes('Simulated demo')"), 'existing demo CTA')
   }
-  assert.deepEqual(errors, [])
+  const unexpected = errors.filter(e => !JSON.stringify(e).includes('ERR_BLOCKED_BY_CLIENT'))
+  assert.deepEqual(unexpected, [])
   assert(!requests.some(p => p.startsWith('/api/')), 'No actual backend calls')
   await writeFile(join(output, 'public-pages-acceptance.json'), JSON.stringify({ results, errors, apiRequests: 0, fixtures }, null, 2))
   console.log(JSON.stringify({ passed: true, widths: results.map(r => r.width), chartsPreserved: 6, separateDocuments: true, noHomeResearchLoads: true, reloadAndHistory: true, sessionSentinelsPreserved: true, demoClick: fixtures, exceptions: 0, apiRequests: 0 }))

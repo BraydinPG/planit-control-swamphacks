@@ -3,10 +3,11 @@
 Verified 2026-10-18 on `feature/cache-predictive-landing-messaging`, based on main
 `d801615`. This is a public landing-page content/presentation change only.
 
-Later addition: [research showcase and charts](LANDING_RESEARCH_SECTION.md) documents
-the new data/backtesting/Monte Carlo section. The headline and statistics audited
-here remain intact. The research-section follow-up explicitly authorizes merging
-its verified PR into main.
+Current location: the [Data & Research guide](LANDING_RESEARCH_SECTION.md) documents
+independent `/data.html`. Research charts and source disclosures have moved off the
+homepage; its hero/statistics/features remain intact. Both public pages share the
+same header, typography and atmosphere. The latest dashboard addendum requests a
+reviewable PR without automatic merge.
 
 The headline is **SEE THE RISK.** followed by **PLAN BEYOND THE ALERT.** The eyebrow
 is **FORESITE · PREDICTIVE WORKSITE INTELLIGENCE**. The requested description and
@@ -21,8 +22,7 @@ Auth0, dashboards, API contracts, alerts, scoring, models or deployment are incl
 
 ## Statistic audit
 
-No requested number needed replacement. The visible Research scope and sources
-disclosure explains the denominators and limitations and links to existing research.
+No requested number needed replacement. The Research scope and sources disclosure on the separate Data page explains the denominators and limitations and links to existing research.
 
 | Display | Verified basis | Scope |
 | --- | --- | --- |

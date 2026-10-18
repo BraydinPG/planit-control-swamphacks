@@ -1,20 +1,29 @@
-## Dedicated public Data page checkpoint (Cache for Rudra) - 2026-10-18
+## Public Data & Research dashboard (Cache for Rudra) - 2026-10-18
 
-User-authorized correction to PR89, branch `feature/cache-dedicated-data-page` from
-main `61ec526`: homepage research markup/styles move to `/data.html` and `data.css`;
-public tokens/header styles are shared through `public-site.css`. The homepage keeps
-its hero, stats, features, atmosphere and original demo/sign-in destinations. Only
-public navigation gains Data; workspaces are unchanged. Research preparation now
-targets Data only and refuses missing markers instead of falling back to the homepage.
-All original six chart SVGs and evidence.json are byte-identical.
+User-authorized correction/expansion of PR89, `feature/cache-dedicated-data-page`,
+initial base main `61ec526`. Independent `/data.html` and Data-only styles/controls;
+shared public CSS and verbatim extracted atmosphere. Home keeps hero/stats/features,
+branding and existing CTA destinations. Public navigation alone gains Home/Data.
+No authenticated workspace, backend/auth/contracts, task states, fixtures, scoring,
+models, estimators, training inputs or deployment files change. Latest addendum
+explicitly requests one review PR and **no automatic merge**.
 
-198 frontend tests, lint/TypeScript/build, exporter Ruff/check and development public
-browser checks at four widths pass. New `check-public-pages.mjs` covers independent
-documents, keyboard navigation, direct access/reload, Back/Forward, synthetic storage
-preservation and no research loads on Home. No backend calls or service acceptance.
-No backend/auth/model/scoring/fixture/task-state or deployment changes. The user's
-latest addendum expands the same page to an advanced research dashboard; in progress.
-It explicitly requires no automatic merge. No duplicate PR is needed.
+Added 12 defensible figures, exact static exports/CSV, source/model/figure hashes,
+mobile variants and accessible tables. Original six SVGs and evidence.json stay
+byte-identical. Approved artifact and archived NOAA hashes reproduce seed42's
+5,000 draws and all 3,539 historical snapshots/567 episodes against six original
+Briers and both MAEs. No fitting/download/service call. Unknown interval bounds
+remain null; research gates and the inspected-2025 warning stay visible.
+
+198 frontend tests, seven MC/backtest tests, lint/TypeScript/build, byte checks,
+development and built live/demo Edge checks at four widths pass. Native controls,
+missing-JSON/no-script fallback, independent access/reload/history and synthetic
+session preservation verified; zero API calls. This is not live Auth0 or deployed
+service acceptance. Existing app bundle-size warning remains.
+
+[Full chart inventory, reproduction, screenshots and owner handoff](LANDING_RESEARCH_SECTION.md).
+Rudra should preserve the public documents/generated markers and qualifiers; Braydin
+has no service configuration action. Exact commit/PR attribution is in Git history.
 
 ## Landing data, backtesting and simulation showcase (Cache for Rudra) - 2026-10-18
 

@@ -360,6 +360,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
+    if "data-research-dashboard" in (PUBLIC / "data.html").read_text(encoding="utf-8"):
+        # Preserve the established command while targeting the expanded Data document.
+        import runpy
+        import sys
+
+        sys.argv = [
+            str(ROOT / "frontend/scripts/prepare-data-dashboard.py"),
+            *(["--check"] if args.check else []),
+        ]
+        runpy.run_path(sys.argv[0], run_name="__main__")
+        return
     data = read_evidence()
     assets = {}
     for name in ("monte-carlo", "backtest", "data-sources"):
