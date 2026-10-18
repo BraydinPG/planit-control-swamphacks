@@ -1,3 +1,26 @@
+## Full-width crew score and alert sections (Cache for Rudra) - 2026-10-18
+
+Explicit user follow-up, branch `feature/cache-full-width-crew-sections` from main
+`5c1e5d4`: My Worksite now stacks Site score, Score factors and evidence, then
+Weather and conditions, each at full content width. Overview stacks the full-width
+stop-work alert above Hazards and supervisor instructions. This supersedes PR85's
+desktop score/factor pairing and the earlier Overview two-column layout.
+
+`ConnectedPages.tsx` changes only crew composition; the existing cards, factor and
+reading grids, evidence disclosures, controls and phone navigation are reused.
+`scripts/check-shell.mjs` replaces side-by-side geometry expectations with full-width
+vertical-order checks at every tested size. No supervisor site composition, backend,
+auth, schema, fixture, model, scoring/alert logic, task checkbox or service changes.
+Rudra should retain the new ordering when maintaining these frontend paths. Braydin
+has no configuration action; other worktrees and existing servers are untouched.
+
+Verified 198 frontend tests, lint/TypeScript, live/demo builds, the complete built-demo
+browser workflow suite and 32 focused cases at eight widths. Screenshots were visually
+inspected on desktop and phone. All readings/outlooks/reports remain; alert acknowledgement,
+reset/reload, report review and supervisor instructions pass. No overflow, browser
+exceptions or actual backend calls. [Guide and screenshots](CREW_RESPONSIVE_LAYOUT.md).
+`PROJECT_CONTEXT.md` records the same handoff; commit/PR attribution is in Git history.
+
 ## Predictive-intelligence landing messaging (Cache for Rudra) - 2026-10-18
 
 Explicit user authorization covers the public homepage copy/presentation and the

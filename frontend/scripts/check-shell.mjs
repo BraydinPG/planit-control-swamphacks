@@ -369,7 +369,7 @@ try {
       return {mainWidth:main.width,desktopNav:visible(document.querySelector('header nav[aria-label="Workspace"]')),
         navCenterError:Math.abs(nav.left+nav.width/2-document.documentElement.clientWidth/2),
         mobileNav:visible(document.querySelector('nav[aria-label="Mobile workspace"]')),
-        sideBySide:instructions.left>alerts.right&&Math.abs(instructions.top-alerts.top)<2,
+        fullWidthStack:instructions.top>=alerts.bottom && Math.abs(instructions.left-alerts.left)<2 && Math.abs(instructions.width-alerts.width)<2,
         supervisorTeamLink:!!document.querySelector('a[href="#/crew/team"]')};
     })()`)
     assert.equal(layout.desktopNav, width >= 1024)
@@ -378,7 +378,7 @@ try {
     if (width >= 1024) assert(layout.navCenterError < 1, 'Desktop navigation is centered')
     if (width >= 1024) assert(layout.mainWidth > 600 && layout.mainWidth <= 1440)
     else assert(layout.mainWidth <= 512)
-    assert.equal(layout.sideBySide, width >= 1280)
+    assert(layout.fullWidthStack, 'Overview stacks full-width alerts above hazard information')
     assert(
       await evaluate('document.documentElement.scrollWidth <= innerWidth'),
       `Overflow at ${width}`,
@@ -441,28 +441,16 @@ try {
     })()`),
       'Approved simulated score and every available independent outlook',
     )
-    if (width >= 1280)
-      assert(
-        await evaluate(`(()=>{
-          const score=document.querySelector('[data-crew-score] [aria-label="Site score"]').getBoundingClientRect();
-          const factors=document.querySelector('[data-crew-factors] > div:last-child').getBoundingClientRect();
-          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
-          return factors.left>score.right&&Math.abs(factors.top-score.top)<2 &&
-            conditions.top>=Math.max(score.bottom,factors.bottom) &&
-            Math.abs(conditions.left-score.left)<2 && Math.abs(conditions.right-factors.right)<2;
-        })()`),
-        'Score and factors align side by side with full-width weather underneath',
-      )
-    else
-      assert(
-        await evaluate(`(()=>{
-          const score=document.querySelector('[data-crew-score]').getBoundingClientRect();
-          const factors=document.querySelector('[data-crew-factors]').getBoundingClientRect();
-          const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
-          return factors.top>=score.bottom && conditions.top>=factors.bottom;
-        })()`),
-        'Narrow worksite stacks score, factors and weather in reading order',
-      )
+    assert(
+      await evaluate(`(()=>{
+        const score=document.querySelector('[data-crew-score]').getBoundingClientRect();
+        const factors=document.querySelector('[data-crew-factors]').getBoundingClientRect();
+        const conditions=document.querySelector('[data-crew-conditions]').getBoundingClientRect();
+        return factors.top>=score.bottom && conditions.top>=factors.bottom &&
+          [factors,conditions].every(r=>Math.abs(r.left-score.left)<2&&Math.abs(r.width-score.width)<2);
+      })()`),
+      'Worksite stacks full-width score, factors and weather in reading order',
+    )
     await evaluate(
       'document.querySelector(\'[aria-label="Site score"]\').scrollIntoView({block:"center"})',
     )
