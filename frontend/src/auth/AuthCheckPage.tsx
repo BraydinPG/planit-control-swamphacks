@@ -30,7 +30,7 @@ export function AuthCheckPage() {
 
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-6 p-4 text-lg text-neutral-950 dark:text-neutral-50">
-      <h1 className="text-3xl font-bold">PlanIT Control sign-in check</h1>
+      <h1 className="text-3xl font-bold">FORESITE sign-in check</h1>
       {auth.mode === 'dev' && (
         <p className="rounded-md border-2 border-amber-700 p-3 font-medium">
           <span aria-hidden="true">⚠ </span>Dev mode: this is not a real sign-in.

@@ -58,7 +58,7 @@ class EarthquakeFeed:
 
         def fetch_site(site: SiteLike, now: datetime) -> list[Observation]:
             if isinstance(payload, FeedError):
-                raise FeedError(str(payload))
+                raise payload
             return self.events_near(site, payload, now)
 
         return [o for site in sites for o in self.cache.refresh(site, now, fetch_site)]

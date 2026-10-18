@@ -3,6 +3,7 @@
 from datetime import timedelta
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +21,21 @@ class IngestionSettings(BaseSettings):
     # feeds unless asked. The loop waits for each refresh to finish before sleeping.
     feed_refresh_enabled: bool = False
     feed_refresh_seconds: float = 300.0
+    feed_site_workers: int = Field(6, ge=1, le=16)
+    feed_round_budget_seconds: float = Field(480, gt=0, le=1800)
+    feed_http_max_retries: int = Field(1, ge=0, le=3)
+    feed_http_budget_seconds: float = Field(20, gt=0, le=60)
+    feed_http_connect_seconds: float = Field(3, gt=0, le=30)
+    feed_http_backoff_seconds: float = Field(0.5, ge=0, le=5)
+    nws_http_connections: int = Field(4, ge=1, le=8)
+    nws_min_interval_seconds: float = Field(0.25, ge=0, le=10)
+    usgs_http_connections: int = Field(2, ge=1, le=4)
+    usgs_min_interval_seconds: float = Field(0.5, ge=0, le=10)
+    nws_point_cache_seconds: float = Field(86400, gt=0)
+    nws_not_covered_cache_seconds: float = Field(3600, gt=0)
+    nws_station_cache_seconds: float = Field(3600, gt=0)
+    flood_gauge_batch_degrees: float = Field(0.5, gt=0, le=1)
+    flood_gauge_batch_sites: int = Field(32, ge=1, le=100)
 
     # Braydin's feeds (T045–T045D). Search radii decide which events reach a site's
     # Observations. They are wider than the rule distances and are not rule settings.

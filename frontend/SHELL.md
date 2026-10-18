@@ -1,4 +1,4 @@
-# PlanIT Control frontend
+# FORESITE frontend
 
 The T030 responsive shell now hosts Cache's T031-T038 crew/supervisor application. Nick's earlier attribution and shell PR #16 are preserved. Cache owns remaining frontend implementation; Auth0 internals remain Braydin's and canonical API contracts remain Rudra's.
 

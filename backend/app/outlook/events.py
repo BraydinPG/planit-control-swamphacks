@@ -417,8 +417,8 @@ def _reference_site(site: SiteLike) -> dict[str, Any]:
         "name": (getattr(site, "name", None) or site.id)[:200],
         "lat": site.lat,
         "lon": site.lon,
-        "source": (getattr(site, "source", None) or "PlanIT Control site record")[:300],
-        "inventory_vintage": "PlanIT Control site record",
+        "source": (getattr(site, "source", None) or "FORESITE site record")[:300],
+        "inventory_vintage": "FORESITE site record",
     }
 
 

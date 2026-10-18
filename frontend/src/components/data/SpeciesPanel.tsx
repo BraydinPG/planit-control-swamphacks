@@ -12,6 +12,8 @@ import { card } from './Interaction'
 import { RiskShape } from './Risk'
 import { Status, Timestamp } from './Status'
 import { Icon } from '../shell/Icon'
+import { arrangeWildlife, type Relevance, type WildlifeRow } from './wildlife'
+import { Details } from './Details'
 const SiteMap = lazy(() =>
   import('./SiteMap').then((m) => ({ default: m.SiteMap })),
 )
@@ -30,7 +32,6 @@ const confirmationLabels: Record<WildlifeReportRef['confirmation'], string> = {
   pending: 'Pending review — not confirmed',
   rejected: 'Rejected in review',
 }
-const isPlant = (s: SpeciesEntry) => /plant|fern|lichen/i.test(s.group ?? '')
 const nameOf = (s: {
   common_name: string | null
   scientific_name: string | null
@@ -50,7 +51,7 @@ export function SpeciesSection({ site }: { site: SiteDetail }) {
   return (
     <section className="space-y-3" aria-labelledby="species-title">
       <div>
-        <p className="kicker mb-1">Field awareness · read-only</p>
+        <p className="kicker mb-1">Regional wildlife and habitat</p>
         <h2 id="species-title" className="text-lg font-bold tracking-tight">
           Local species
         </h2>
@@ -83,11 +84,7 @@ export function SpeciesPanel({
   context: SiteSpeciesContext
   site: Pick<SiteDetail, 'id' | 'name' | 'lat' | 'lon'> & Partial<SiteDetail>
 }) {
-  const guided = context.species.filter((s) => s.encounter)
-  const otherAnimals = context.species.filter(
-    (s) => !s.encounter && !isPlant(s),
-  )
-  const plants = context.species.filter((s) => !s.encounter && isPlant(s))
+  const { animals, plants, otherHabitat } = arrangeWildlife(context)
   const unavailable = context.data_state === 'unavailable'
   return (
     <div className="space-y-4">
@@ -96,7 +93,10 @@ export function SpeciesPanel({
         data-testid="species-caveat"
       >
         <RiskShape kind="caution" className="mt-0.5 size-4 shrink-0" />
-        <span>{context.caveat}</span>
+        <span>
+          Regional context, not a sighting. Local wildlife remains unverified;
+          this does not clear work.
+        </span>
       </p>
 
       <div className={`${card} space-y-2 p-4 text-sm text-ink-2`}>
@@ -111,16 +111,19 @@ export function SpeciesPanel({
           )}
         </p>
         <p>
-          Retrieved <Timestamp value={context.fetched_at} /> ·{' '}
-          {context.footprint_description}
+          Retrieved <Timestamp value={context.fetched_at} />
         </p>
-        <p>
-          Wording:{' '}
-          {context.generated_by === 'gemini'
-            ? `${context.simulated ? 'recorded Gemini response' : 'Gemini'}, checked line by line against the sources below`
-            : 'deterministic template'}
-          . Statuses and guidance are shown exactly as sourced.
-        </p>
+        <Details title="Species sources and coverage">
+          <p>{context.caveat}</p>
+          <p>{context.footprint_description}</p>
+          <p>
+            Wording:{' '}
+            {context.generated_by === 'gemini'
+              ? `${context.simulated ? 'recorded Gemini response' : 'Gemini'}, checked line by line against the sources below`
+              : 'deterministic template'}
+            . Statuses and guidance are shown exactly as sourced.
+          </p>
+        </Details>
       </div>
 
       <WildlifeReports reports={context.wildlife_reports} />
@@ -141,26 +144,12 @@ export function SpeciesPanel({
         </Muted>
       ) : (
         <>
-          {guided.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="text-base font-bold">
-                Species with encounter guidance ({guided.length})
-              </h3>
-              <ul className="grid gap-3 @3xl:grid-cols-2">
-                {guided.map((s) => (
-                  <li key={s.id}>
-                    <SpeciesCard species={s} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <SpeciesGroup title="Other listed animals" rows={otherAnimals} />
+          <Wildlife rows={animals} context={context} />
           <SpeciesGroup title="Listed plants" rows={plants} />
         </>
       )}
 
-      <Habitat context={context} site={site} />
+      <HabitatMap context={context} site={site} other={otherHabitat} />
 
       {context.field_office && (
         <p className={`${card} p-4 text-sm text-ink-2`}>
@@ -173,12 +162,13 @@ export function SpeciesPanel({
 
       {context.unknowns.length > 0 && (
         <div className={`${card} p-4`}>
-          <h3 className="text-sm font-bold">What this does not tell you</h3>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2">
-            {context.unknowns.map((u) => (
-              <li key={u}>{u}</li>
-            ))}
-          </ul>
+          <Details title="What this does not tell you">
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink-2">
+              {context.unknowns.map((u) => (
+                <li key={u}>{u}</li>
+              ))}
+            </ul>
+          </Details>
         </div>
       )}
     </div>
@@ -192,8 +182,8 @@ function WildlifeReports({ reports }: { reports: WildlifeReportRef[] }) {
         Crew wildlife reports at this site
       </h3>
       <p className="text-sm text-muted">
-        Reports from crews, kept separate from the regional species list.
-        Reports do not name a species.
+        Crew reports are separate from regional habitat records. Species
+        identity is unverified.
       </p>
       {reports.length ? (
         <ul className="space-y-2">
@@ -230,32 +220,107 @@ function WildlifeReports({ reports }: { reports: WildlifeReportRef[] }) {
   )
 }
 
-export function SpeciesCard({ species: s }: { species: SpeciesEntry }) {
+const relevanceLabels: Record<
+  Relevance,
+  { label: string; shape: 'stop' | 'caution' | 'nodata' }
+> = {
+  crew_hazard: { label: 'Direct crew hazard', shape: 'stop' },
+  work_impact: { label: 'Affects work at this site', shape: 'caution' },
+  background: { label: 'Listed for the area', shape: 'nodata' },
+}
+
+/** Every listed animal in one list, most relevant to the job site first. */
+function Wildlife({
+  rows,
+  context,
+}: {
+  rows: WildlifeRow[]
+  context: SiteSpeciesContext
+}) {
+  if (!rows.length) return null
+  const hazards = rows.filter((r) => r.relevance === 'crew_hazard').length
+  return (
+    <details className={`${card} group`} open>
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 text-base font-bold">
+        <span>
+          Wildlife ({rows.length})
+          {hazards > 0 && (
+            <span className="ml-2 text-sm font-semibold text-stop-text">
+              {hazards} direct crew {hazards === 1 ? 'hazard' : 'hazards'}
+            </span>
+          )}
+        </span>
+        <Icon
+          name="back"
+          className="size-5 -rotate-90 transition-transform group-open:rotate-90"
+        />
+      </summary>
+      <p className="border-t border-line px-4 pt-3 text-sm text-muted">
+        Ordered by relevance to this job site: direct crew hazards first, then
+        animals whose habitat or guidance affects work here, then the rest.
+      </p>
+      <ol className="space-y-2 p-3">
+        {rows.map((row) => (
+          <li key={row.species.id}>
+            <WildlifePane
+              row={row}
+              habitatState={context.critical_habitat_state}
+            />
+          </li>
+        ))}
+      </ol>
+    </details>
+  )
+}
+
+export function WildlifePane({
+  row: { species: s, habitat, relevance, reasons },
+  habitatState,
+}: {
+  row: WildlifeRow
+  habitatState: SiteSpeciesContext['critical_habitat_state']
+}) {
+  const level = relevanceLabels[relevance]
+  const red = relevance === 'crew_hazard'
   return (
     <article
-      className={`${card} h-full space-y-3 border border-line p-4`}
-      aria-label={nameOf(s)}
+      aria-label={`${nameOf(s)}: ${level.label}`}
+      data-relevance={relevance}
+      className={`space-y-3 rounded-xl p-3 text-sm ${
+        red ? 'border-2 border-stop bg-stop/5' : 'border border-line'
+      }`}
     >
-      <header>
-        <h4 className="text-base font-bold">{nameOf(s)}</h4>
-        <p className="text-sm text-muted">
-          {s.common_name && s.scientific_name && (
-            <i className="mr-1">{s.scientific_name}</i>
-          )}
-          {s.group && `· ${s.group}`}
-        </p>
-        <p className="mt-1.5 chip inline-flex border border-dashed border-line-strong text-ink-2">
-          {matchLabels[s.match_basis]} · not a sighting
+      <header className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h4 className="text-base font-bold text-ink">{nameOf(s)}</h4>
+          <p className="text-muted">
+            {s.common_name && s.scientific_name && (
+              <i className="mr-1">{s.scientific_name}</i>
+            )}
+            {s.group && `· ${s.group}`}
+          </p>
+        </div>
+        <p
+          className={`chip inline-flex items-center gap-1.5 border font-semibold ${
+            red ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'
+          }`}
+        >
+          <RiskShape kind={level.shape} className="size-3.5" />
+          {level.label}
         </p>
       </header>
-      <p className="text-sm text-ink">
+      {reasons.length > 0 && (
+        <p className="text-ink-2">Why: {reasons.join(' · ')}</p>
+      )}
+      <p className="text-ink">
         {s.summary}{' '}
-        <span className="text-xs text-muted">
+        <span className="text-sm text-muted">
           ({s.summary_by === 'gemini' ? 'Gemini wording' : 'template'})
         </span>
       </p>
-      <div className="grid gap-3 @lg:grid-cols-2">
+      <div className="grid gap-2 @3xl:grid-cols-3">
         <Protection species={s} />
+        <Habitat species={s} areas={habitat} state={habitatState} />
         <Encounter species={s} />
       </div>
     </article>
@@ -265,22 +330,14 @@ export function SpeciesCard({ species: s }: { species: SpeciesEntry }) {
 function Protection({ species: s }: { species: SpeciesEntry }) {
   const p = s.protection
   return (
-    <section className="rounded-xl bg-surface-2 p-3 text-sm">
+    <section className="rounded-lg bg-surface-2 p-3">
       <h5 className="kicker mb-1">Protection status</h5>
       {p ? (
         <>
           <p className="font-semibold text-ink">
-            {p.status ?? 'Status unknown (not supplied)'}
+            {p.status ?? 'Protection status unknown'}
           </p>
           <p className="text-ink-2">{p.jurisdiction}</p>
-          <p className="text-ink-2">
-            Critical habitat at this location:{' '}
-            {p.critical_habitat_here === null
-              ? 'unknown'
-              : p.critical_habitat_here
-                ? 'yes, per IPaC'
-                : 'not per IPaC'}
-          </p>
           <SourceLink href={p.source_url} label={p.source}>
             As of <Timestamp value={p.as_of} />
           </SourceLink>
@@ -292,11 +349,57 @@ function Protection({ species: s }: { species: SpeciesEntry }) {
   )
 }
 
+function Habitat({
+  species: s,
+  areas,
+  state,
+}: {
+  species: SpeciesEntry
+  areas: CriticalHabitatArea[]
+  state: SiteSpeciesContext['critical_habitat_state']
+}) {
+  const here = s.protection?.critical_habitat_here
+  return (
+    <section className="rounded-lg bg-surface-2 p-3">
+      <h5 className="kicker mb-1">Habitat</h5>
+      <p className="text-ink">{matchLabels[s.match_basis]}, not a sighting.</p>
+      <p className="text-ink-2">
+        Critical habitat at this location:{' '}
+        {here === null || here === undefined
+          ? 'unknown'
+          : here
+            ? 'yes, per IPaC'
+            : 'not per IPaC'}
+      </p>
+      {areas.map((a) => (
+        <div key={a.id} className="mt-1.5">
+          <p className="font-semibold text-ink">
+            {a.status ?? 'Status unknown'} critical habitat within about 3 km
+          </p>
+          <p className="text-ink-2">
+            {a.federal_register
+              ? `Federal Register ${a.federal_register}`
+              : 'Citation not supplied'}{' '}
+            · published {a.published ?? 'date unknown'}
+          </p>
+          {a.geometry_note && <p className="text-muted">{a.geometry_note}</p>}
+          <SourceLink href={a.source_url} label={a.source} />
+        </div>
+      ))}
+      {state === 'unavailable' && (
+        <p className="mt-1.5 text-ink-2">
+          Critical habitat map unavailable; nearby boundaries unknown.
+        </p>
+      )}
+    </section>
+  )
+}
+
 function Encounter({ species: s }: { species: SpeciesEntry }) {
   const e = s.encounter
   return (
-    <section className="rounded-xl bg-surface-2 p-3 text-sm">
-      <h5 className="kicker mb-1">Worker encounter guidance</h5>
+    <section className="rounded-lg bg-surface-2 p-3">
+      <h5 className="kicker mb-1">Encounter guidance</h5>
       {e ? (
         <>
           <p className="text-ink">
@@ -312,7 +415,7 @@ function Encounter({ species: s }: { species: SpeciesEntry }) {
               Contact: {e.contact}
             </p>
           )}
-          <p className="mt-1.5 text-xs text-muted">
+          <p className="mt-1.5 text-sm text-muted">
             {e.review_status === 'pending_review'
               ? 'Curated from the cited source; pending safety-lead review. Your site procedures come first.'
               : `Reviewed by ${e.reviewed_by ?? 'safety lead'}.`}
@@ -370,40 +473,45 @@ function SpeciesGroup({
   )
 }
 
-function Habitat({
+/** The boundary map. Animal habitat details live in each Wildlife pane. */
+function HabitatMap({
   context,
   site,
+  other,
 }: {
   context: SiteSpeciesContext
   site: Pick<SiteDetail, 'id' | 'name' | 'lat' | 'lon'> & Partial<SiteDetail>
+  other: CriticalHabitatArea[]
 }) {
-  const areas = context.critical_habitat
-  const drawn = areas.filter((a) => a.geometry)
+  const drawn = context.critical_habitat.filter((a) => a.geometry)
   return (
     <div className="space-y-2">
       <h3 className="flex flex-wrap items-center gap-2 text-base font-bold">
-        Critical habitat near the site
+        Critical habitat map
         <Status state={context.critical_habitat_state} />
       </h3>
       <p className="text-sm text-muted">
         {context.critical_habitat_source}, within about 3 km. A boundary is
-        legal habitat designation, not a sighting.
+        legal habitat designation, not a sighting. Each animal's habitat is
+        listed in its Wildlife pane.
       </p>
       {context.critical_habitat_state === 'unavailable' ? (
         <p role="alert" className="text-sm font-semibold">
           Critical habitat boundaries are unavailable. This does not mean there
           is none.
         </p>
-      ) : areas.length ? (
-        <ul className="space-y-2">
-          {areas.map((a) => (
-            <HabitatRow key={a.id} area={a} />
-          ))}
-        </ul>
-      ) : (
+      ) : !context.critical_habitat.length ? (
         <Muted>
           The map service returned no critical habitat within about 3 km.
         </Muted>
+      ) : (
+        other.length > 0 && (
+          <ul className="space-y-2" aria-label="Other critical habitat nearby">
+            {other.map((a) => (
+              <HabitatRow key={a.id} area={a} />
+            ))}
+          </ul>
+        )
       )}
       {drawn.length > 0 && (
         <Suspense
@@ -453,7 +561,7 @@ function SourceLink({
   children?: ReactNode
 }) {
   return (
-    <p className="mt-1 text-xs text-muted">
+    <p className="mt-1 text-sm text-muted">
       Source:{' '}
       {href ? (
         <a

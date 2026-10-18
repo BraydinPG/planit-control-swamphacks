@@ -140,8 +140,8 @@ test('a supporting analysis shows its verdict, reasons with evidence labels, and
   assert(html.includes('Backs up the report'))
   assert(html.includes("Based on: Crew member's photo"))
   assert(html.includes('Also visible in the photo'))
-  assert(html.includes('Suggested category: Broken pole / downed line'))
-  assert(html.includes('The supervisor makes the final call'))
+  assert(html.includes('Suggested category: Broken pole or downed line'))
+  assert(html.includes('Supervisor review required'))
 })
 
 test('contradicts, inconclusive, analyzing, and unavailable render distinctly', () => {
@@ -167,7 +167,7 @@ test('contradicts, inconclusive, analyzing, and unavailable render distinctly', 
   assert(panel(fresh).includes('Analyzing the photo and site data'))
   const old = panel(fresh, 'live', Date.parse(base.created_at) + 10 * 60 * 1000)
   assert(old.includes('No analysis recorded'))
-  assert(panel(fresh, 'demo').includes('live backend only'))
+  assert(panel(fresh, 'demo').includes('No new photo analysis'))
 })
 
 // ---- T036B expected duration ----
@@ -268,7 +268,7 @@ test('demo reports never request device location and say they are approximate', 
 
 test('present/absent is a pair of large choices, not a dropdown', () => {
   const html = form('live')
-  assert(text(html).includes('2 · Is it there? (required)'))
+  assert(text(html).includes('2 · Is the hazard present? (required)'))
   assert.equal((html.match(/name="presence"/g) ?? []).length, 2)
   assert(
     text(html).includes('Hazard present') &&

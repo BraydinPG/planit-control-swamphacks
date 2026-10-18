@@ -1,3 +1,178 @@
+## Feed refresh optimization (Cache for Braydin and Rudra) - 2026-10-17 23:12 UTC
+
+Explicit task-specific user authorization permits focused ingestion/refresh edits.
+Branch `feature/cache-feed-refresh-performance`, baseline `11c62b6`; latest fetched
+main `cdba4c3` changes only UI hover styling, incorporated by `e0120fb` after
+implementation checkpoint `ffff712`. No teammate
+worktree/server changes. T043/T043A/T044/T045B/C/D/T049B/T073 remain historically
+completed; no new task checkbox or live-service acceptance claim.
+
+Every cross-owner modification in this run:
+
+- `backend/app/ingestion/http.py` (new): pooled HTTP, host limits/pacing, bounded
+  response/retry/time budgets, Retry-After/cancellation and redacted status diagnostics.
+- `backend/app/ingestion/runtime.py` (new): immutable worker snapshots, bounded ordered
+  I/O, round single-flight, cancellation and retrieval/phase/region metrics.
+- `backend/app/ingestion/alert_matching.py` (new): conservative active CAP/geometry,
+  holes and exact-zone matching, with uncertain geometry delegated to point queries.
+- `backend/app/ingestion/nws.py`: client lifecycle, coordinate-keyed expiring metadata,
+  negative TTL only for explicit coverage errors, safe origin/pagination and shared
+  regional alerts. `json_client.py`: pooled transport and typed invalid-response logs.
+- `backend/app/ingestion/cache.py`: coordinate-safe fallback keys, bounded multi-site
+  fetching and structured per-site final states; original observation times retained.
+- `backend/app/ingestion/nws_weather.py`: bounded fetches and station metadata reuse.
+  `nws_alerts.py`: bounded fetches and source-qualified shared alerts.
+- `backend/app/ingestion/hurricanes.py`: bounded site matching/shared NWS notices;
+  original NHC single fetch preserved. `earthquakes.py`: preserve structured failure
+  identity while retaining one shared summary fetch.
+- `backend/app/ingestion/flood_gauges.py`: bounded geographic/region batch queries,
+  outward boxes, per-site nearest gauges and original gauge/time provenance; reject
+  nonfinite/wrong-unit/future/no-data measurements. No site flood-depth inference.
+- `backend/app/ingestion/settings.py`: additive conservative workers/HTTP/cache/batch
+  options; no shared environment-template changes.
+- `backend/app/services/refresh.py`: immutable snapshots, serial unchanged upserts,
+  rule/notice/score calls, explicit missing subresults and coverage/processing metrics;
+  cancellation propagation, redacted one-shot preflight/report CLI and scheduler guard.
+- `backend/scripts/benchmark_refresh.py` (new): offline 256-site mocked benchmark,
+  original/optimized source hashes, observation/score equivalence and paced option.
+- `backend/tests/test_feed_http.py`, `test_feed_optimization.py` (new): 42 offline
+  cases for transport, statuses, retry budgets, caches, spatial association, batching,
+  final-state logs, isolated failures, no zero/false clearance and serial persistence.
+  Existing `test_nws_alerts.py` and `test_hurricanes.py` assert the intentional combined
+  alert query while retaining output assertions.
+- Shared docs: `PROJECT_CONTEXT.md` index and this log; new
+  `docs/FEED_REFRESH_PERFORMANCE.md` plus `feed-refresh-{baseline,optimized,paced}.json`
+  provide operator commands, measured results, coverage and source/migration limits.
+
+Checks: **923 backend tests pass**, including scoring/alerts/GLM/schema mirror; Ruff
+lint and **153-file** formatting pass. Final tests reject external socket connections
+(Windows asyncio internal loopback allowed). Synthetic before/after **21.05/4.44 s**,
+requests **1,794/578**, paced **152.96 s**; all 256 sites, 4,352 readings, matching
+observation and score hashes. Serial DB processing measured 1.11/2.22 s; no database
+performance improvement claimed. Detailed per-feed coverage in the guide/reports.
+
+Local ignored FEED_REFRESH_ENABLED stays false; no DATABASE_URL/NWS_USER_AGENT ready.
+No real refresh, shared DB write, account/configuration provisioning or automatic job
+was run. Frontend, canonical schemas, alert rules, scoring weights, ML, Gemini and
+security modules are untouched. Existing servers retain PIDs 77984/22668/65924.
+
+**Braydin review:** provider limits/cache/batching, actual regional error diagnosis,
+legacy USGS degradation/retirement and separately approved modern API key/migration.
+**Rudra review:** snapshot/serial ORM ordering, per-source unavailable placeholders,
+coverage versus fully processed counts and unchanged deterministic authority.
+An owner-approved single live round remains required before claiming the reported
+20-minute production problem is resolved. PR publication/commit reference follows
+in this log; no merge by Cache.
+
+Published [PR50](https://github.com/BraydinPG/planit-control-swamphacks/pull/50),
+**Optimize Feed Refresh Performance and Reliability**, open against main.
+Implementation `ffff712`, reviewed-main merge `e0120fb`, handoff `68ca740`.
+No Codex merge or background job enablement; live acceptance remains pending.
+## FORESITE application rebrand (Cache for Rudra and Braydin) - 2026-10-17
+
+Explicit user authorization covers application-wide brand text and current docs.
+Branch `feature/cache-foresite-rebrand` begins at main `ea6dcfa`; open PR50 remains
+independent and preserved. Another teammate's active Vultr work is untouched.
+
+- **Rudra/frontend:** `components/shell/AppShell.tsx` wordmark/header/footer/ARIA and
+  exact document title; `index.html` and `auth-check.html` metadata; existing
+  `public/planit-mark.svg` title only (no geometry); `index.css` comment and
+  `types/api.ts` documentation only. No page layout/class/style behavior changed.
+- **Braydin/auth:** `auth/{AuthCheckPage,RequireRole}.tsx` display strings and
+  `auth/{context,roles,index}.ts` comments only; `backend/app/security/{roles,
+  dependencies}.py` documentation and the human-readable 403 message only.
+  Role/audience/claim/client/tenant/callback/guard/token logic remains unchanged.
+- **Rudra/backend:** `app/main.py` docstring/FastAPI title; `app/outlook/events.py`
+  fallback source/vintage labels; `app/schemas/{__init__,common,species}.py`
+  descriptions only. No schema field or endpoint changes.
+- **Braydin/species:** `app/species/service.py` retrieval note. Existing offline
+  canonical generator regenerates `frontend/src/fixtures/species-context.json`;
+  only that note differs, all other generated fixtures are byte-unchanged.
+- **Cache/ML:** `ml/__init__.py` docstring, `event_outlook_preview.py` and
+  `worker_preview.py` display titles, `worker/impacts.py` derived publisher label,
+  `ml/EVENT_OUTLOOKS.md` product wording. No algorithm, model name/hash/artifact,
+  gate, ID, probability, time or statistical claim changed. Local previews refreshed.
+- **Shared docs:** README product title/intro; AGENTS/spec/tasks/context product
+  titles (task checkboxes/ownership unchanged); frontend/SHELL, auth/SETUP and
+  docs/SPECIES_CONTEXT demo wording. Both `.env.example` files change comments only;
+  no configuration values changed. New `docs/REBRANDING.md` records all intentional
+  compatibility names, historical exceptions and the deployment/hosted-login handoff.
+- **Browser tests:** existing `frontend/scripts/check-shell.mjs` adds exact
+  FORESITE title/metadata and no-old-visible/accessible-name assertions across
+  eleven destinations, plus missing-role wording. No new test framework/server.
+
+Checks: **168 frontend, 881 backend and 297 ML tests pass**, frontend lint/TypeScript
+and live/demo builds, backend Ruff lint/147-file format. Installed Edge development
+and built-demo suites pass at 1440/390/320, retaining six cards, 6.1/10, alerts,
+report/photo/confirmation/instruction, teams and briefings; zero browser exceptions
+or real backend calls. Screenshots inspected. ML previews validate 16 cases and 150
+outputs/50 sites without network. Existing Starlette/bundle warnings remain.
+PowerShell required npm.cmd instead of blocked npm.ps1; policy was not changed.
+Ignored environment fingerprints unchanged; no secrets, deployment files, schemas,
+routes, model artifacts or private data added. Existing servers retained; temporary
+built-preview server closed. Detailed evidence/commands: `docs/REBRANDING.md`.
+
+**Rudra:** review text/metadata only; preserve independent PR50 context notes when
+merging. **Braydin/deployment:** normal frontend/backend build/release; independently
+inspect the external Auth0 login display name and coordinate its FORESITE branding,
+preserving all technical settings. No Vultr, tenant, DNS, secret or workflow edits.
+No tasks checked off and no real Auth0/Tiger/deployed acceptance claim. PR/commit
+publication reference follows; no automatic merge.
+
+Published [PR51](https://github.com/BraydinPG/planit-control-swamphacks/pull/51),
+**Rebrand PlanIT Control to FORESITE**, open against main; implementation `e4f5555`,
+base `ea6dcfa`. No merge, hosting/tenant update or live acceptance by Cache.
+
+## Application-wide UI readability (Cache for Rudra) — 2026-10-17 22:23 UTC
+
+Explicit user authorization expands this run to frontend copy, typography and
+presentation across Crew and Supervisor. Initial base `5045790`, branch
+`feature/cache-ui-readability-polish`, existing isolated functional checkout.
+No edits to another checkout or another owner's running server.
+
+- `frontend/src/presentation/display.ts`, new `components/data/Details.tsx`:
+  controlled display labels, local timezone formatting, unit notation and native
+  accessible disclosures. Identifiers/contracts and authored prose stay intact.
+- `App.tsx`, `application/LiveApplication.tsx`, `components/shell/AppShell.tsx`,
+  `index.css`, `pages/{ConnectedPages,WorkspaceOverview}.tsx`: shorter navigation,
+  consistent capitalization, readable layout, demo details, clearer reporting,
+  location/error states and a link to all active alerts on Crew overview.
+- `components/data/{Status,EventOutlooks,AlertCard,NoticeCard,Duration,Advisory,
+  ReportAnalysis,StoredBriefings,SpeciesPanel,TeamRoster,SupervisorOverview,
+  attention,Interaction,SiteMap}`: summaries before evidence; visible alert and
+  approved instruction authority; original crew/Gemini/supervisor prose retained.
+  “Watch window” replaces countdown wording that suggested automatic clearance.
+- Existing frontend tests/browser runner updated for intentional copy; new
+  `tests/display.test.mjs` verifies formatting, disclosure and safety wording.
+  Integration unit Vite watcher disabled to avoid scanning browser profiles.
+- No scoring, ML, alert rule/timer, permission, API/schema, database, Gemini-prompt
+  or private-configuration edits. No fixture regeneration or task check-off.
+
+Checkpoint checks: 164 frontend tests; lint, TypeScript/production build; 85
+backend fixture/outlook/score/lightning tests; Edge demo/mock browser checks at
+1440/390/320. Final upstream integration and recheck follow in this branch.
+Rudra reviews the UI; backend-authored wording questions and screen audit are in
+`docs/UI_READABILITY.md`. T063–T068 live acceptance remains separate.
+
+Final verification, 2026-10-17 22:30 UTC: incorporated upstream `e2092dc` in
+`42dbd18`, after implementation checkpoint `9863599`. Resolved the three UI
+conflicts by retaining organization renaming/Add Team placement, recorded Gemini
+species attribution and all six report categories. PR diff against this main has
+**no backend, ML, Auth0, API/schema, fixture, task or manifest changes**.
+All **166 frontend and 881 backend tests** pass; lint, TypeScript, both live-mode
+and simulated production builds pass. Development demo/mock and built-demo Edge
+suites pass all eleven destinations, long content, stale/missing data, multiple
+alerts and expanded evidence at 1440/390/320; zero browser exceptions or actual
+backend requests. Simulated organization rename/team/code actions pass. The
+existing Starlette deprecation and default/live bundle-size warning remain.
+Nine ignored environment/artifact files are hash-unchanged. Demo remains at
+http://localhost:5177/; no teammate server was restarted. Review: Rudra for UI,
+Braydin/Rudra for the unchanged backend-authored wording noted in the guide.
+
+Published [PR47](https://github.com/BraydinPG/planit-control-swamphacks/pull/47),
+open against main, verified UI commit `a5a06cd`; no Codex merge. This publication
+note changes only the shared context/log; the implementation checks above stand.
+
 ## Canonical demo scores and prediction failure handling (Cache) — 2026-10-17
 
 Explicit user authorization: fix the obsolete fixture score and both reproduced

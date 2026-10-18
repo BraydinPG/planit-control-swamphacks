@@ -48,6 +48,12 @@ import { RiskBadge, RiskShape } from '../components/data/Risk'
 import { LocationSearch } from '../components/data/LocationSearch'
 import { evidenceOf } from '../components/data/evidence'
 import { Icon, type IconName } from '../components/shell/Icon'
+import {
+  displayLabel,
+  factorLabel,
+  reportCategories,
+} from '../presentation/display'
+import { Details } from '../components/data/Details'
 const Advisory = lazy(() =>
   import('../components/data/Advisory').then((m) => ({ default: m.Advisory })),
 )
@@ -100,8 +106,8 @@ export function ConnectedPages() {
       <JoinTeam />
     ) : (
       <p role="status" className={`${card} p-5 text-ink-2`}>
-        No sites for this account yet. Your account isn't linked to an
-        organization; supervisor accounts are linked by an administrator.
+        No worksites are available for this account. Ask your administrator to
+        check your organization and team assignment.
       </p>
     )
   const selected = encodedId ? decodeId(encodedId) : sites.data[0].id
@@ -116,7 +122,8 @@ export function ConnectedPages() {
         role="alert"
         className="rounded-2xl border-2 border-stop bg-surface p-5 font-semibold"
       >
-        This site is outside the sites returned for your session.
+        This worksite is not available to your account. Return to your assigned
+        worksites.
       </p>
     )
   return (
@@ -173,7 +180,7 @@ function SitePage({
         onClick={refresh}
       >
         <Icon name="refresh" className="size-4" />
-        Refresh server state
+        Refresh worksite
       </button>
     </div>
   )
@@ -190,10 +197,15 @@ function SitePage({
         </div>
       )}
       {compact && active[0] && <AlertCard alert={active[0]} />}
+      {compact && active.length > 1 && (
+        <a href={`#/${persona}/alerts`} className={control}>
+          View all {active.length} active alerts
+        </a>
+      )}
       {compact && !active.length && (
         <Empty>
-          No active alerts supplied for this view. This does not establish safe
-          conditions.
+          No active alerts reported. Worksite conditions still require
+          verification.
         </Empty>
       )}
       <div className="grid gap-5 @3xl:grid-cols-12 @3xl:items-start">
@@ -201,7 +213,7 @@ function SitePage({
           {compact && actions}
           <section className={`${card} p-5`}>
             <p className="kicker mb-1.5">
-              {site.location_type?.replaceAll('_', ' ') || 'Location'}
+              {displayLabel(site.location_type, 'Worksite')}
             </p>
             {!compact && (
               <h2 className="text-2xl font-bold tracking-tight">{site.name}</h2>
@@ -211,26 +223,25 @@ function SitePage({
                 ? (site.region ?? 'Region not supplied')
                 : `${site.assigned_team?.name ?? 'No team assigned'} · ${site.region ?? 'Region not supplied'}`}
             </p>
-            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 break-words font-mono text-xs text-muted">
-              <span className="inline-flex items-center gap-1">
-                <Icon name="pin" className="size-3.5" />
-                {site.id} · {site.lat}, {site.lon}
-              </span>
-              <span>{site.source}</span>
-            </p>
+            <Details title="Location and source">
+              <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 break-words text-sm text-muted">
+                <span className="inline-flex items-center gap-1">
+                  <Icon name="pin" className="size-3.5" />
+                  {site.id} · {site.lat}, {site.lon}
+                </span>
+                <span>{site.source}</span>
+              </p>
+            </Details>
           </section>
           {!compact && actions}
           <ScorePanel site={site} demo={client.mode === 'demo'} />
           <section className="space-y-3">
-            <SectionHead
-              kicker="Conditions"
-              title="Observations and issued forecasts"
-            />
+            <SectionHead title="Weather and conditions" />
             <Observations rows={site.observations} />
           </section>
           <details className={`${card} group`}>
             <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-5 text-base font-bold">
-              Score factors and source evidence
+              Score factors and evidence
               <Icon
                 name="back"
                 className="size-5 -rotate-90 transition-transform group-open:rotate-90"
@@ -247,7 +258,7 @@ function SitePage({
         <div className="space-y-5 @3xl:col-span-5">
           {!compact && (
             <section className="space-y-3">
-              <SectionHead kicker="Deterministic rules" title="Alert details" />
+              <SectionHead title="Alerts" />
               {site.alerts.length ? (
                 site.alerts.map((a) => (
                   <AlertCard key={a.id} alert={a} detail />
@@ -258,10 +269,7 @@ function SitePage({
             </section>
           )}
           <section className="space-y-3">
-            <SectionHead
-              kicker="Field notices"
-              title="Potential notices and approved instructions"
-            />
+            <SectionHead title="Hazards and supervisor instructions" />
             {site.notices.length ? (
               site.notices.map((n) => (
                 <NoticeCard
@@ -277,16 +285,23 @@ function SitePage({
               </Empty>
             )}
           </section>
-          <section className="space-y-3">
-            <SectionHead kicker="Crew reports" title="Reports at this site" />
-            {site.reports.length ? (
-              site.reports.map((r) => <ReportCard key={r.id} report={r} />)
-            ) : (
-              <Empty>No reports supplied.</Empty>
-            )}
-          </section>
         </div>
       </div>
+      {/* Full width so reports sit side by side on wide screens. */}
+      <section className="space-y-3">
+        <SectionHead kicker="Crew reports" title="Reports at this site" />
+        {site.reports.length ? (
+          <ul className="grid items-start gap-4 @3xl:grid-cols-2 @7xl:grid-cols-3">
+            {site.reports.map((r) => (
+              <li key={r.id} className="min-w-0">
+                <ReportCard report={r} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Empty>No reports supplied.</Empty>
+        )}
+      </section>
       {!compact && <EventOutlooks cards={site.event_outlooks ?? []} />}
       {/* Read-only regional context for team sites; never feeds score or alerts. */}
       {site.assigned_team && <SpeciesSection site={site} />}
@@ -347,16 +362,7 @@ function Stat({
   )
 }
 
-const factorNames: Record<string, string> = {
-  lightning: 'Lightning',
-  heat_index: 'Heat',
-  flood: 'Flooding',
-  hurricane: 'Hurricane',
-  earthquake: 'Earthquake',
-  crew_report: 'Crew reports',
-}
-const factorName = (f: string) =>
-  factorNames[f] ?? f.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase())
+const factorName = factorLabel
 
 function SitesPage({ sites }: { sites: SiteSummary[] }) {
   const { persona, client } = useApplication()
@@ -414,9 +420,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
     <div className="pc-enter space-y-6">
       <div className="space-y-2">
         <p className="text-base font-semibold">
-          {sites.length} locations · {counts.teams} with a team. Team sites come
-          first, then the highest score. A site with no score is never treated
-          as low risk.
+          {sites.length} locations · {counts.teams} with a team.
         </p>
         {client.mode === 'demo' && (
           <p className="max-w-3xl text-sm text-muted">
@@ -428,19 +432,15 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
       <div className="grid grid-cols-2 gap-3 @3xl:grid-cols-4">
         <Stat
           value={counts.alerting}
-          label="sites with active alerts"
+          label="Active alerts"
           shape="stop"
           pressed={alerts}
           onToggle={() => setAlerts(!alerts)}
         />
-        <Stat
-          value={counts.high}
-          label="high-risk sites, score 7.0 or higher"
-          shape="warn"
-        />
+        <Stat value={counts.high} label="Score 7.0 or higher" shape="warn" />
         <Stat
           value={counts.teams}
-          label="locations with an assigned team"
+          label="Assigned worksites"
           shape="low"
           pressed={assignment === 'assigned'}
           onToggle={() =>
@@ -449,7 +449,7 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
         />
         <Stat
           value={counts.unscored}
-          label="not scored or missing data"
+          label="Unscored or unknown"
           shape="nodata"
         />
       </div>
@@ -594,9 +594,9 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                   ) : evidenceOf(s) === 'none' ? (
                     <>
                       <RiskBadge level={s.risk_level} evidence="none" />
-                      <p className="text-xs text-muted tabular-nums">
+                      <p className="text-sm text-muted tabular-nums">
                         Server value {s.risk_score} / 10 ·{' '}
-                        {s.risk_level ?? 'level unavailable'}
+                        {displayLabel(s.risk_level, 'Level unavailable')}
                       </p>
                     </>
                   ) : (
@@ -622,8 +622,8 @@ function SitesPage({ sites }: { sites: SiteSummary[] }) {
                           factor.factor === 'model'
                             ? 'legacy demo factor withheld'
                             : factor.data_state === 'observed'
-                              ? factor.label
-                              : `${factor.label} (${factor.data_state})`,
+                              ? factorLabel(factor.factor)
+                              : `${factorLabel(factor.factor)} (${displayLabel(factor.data_state)})`,
                         )
                         .join('; ')
                     : 'No factors reported yet'}
@@ -727,14 +727,8 @@ function AlertsPage({ id }: { id: string | null }) {
     </div>
   )
 }
-const categories: Record<ReportCategory, string> = {
-  broken_pole_downed_line: 'Broken pole / downed line',
-  on_site_fire: 'On-site fire',
-  access_mat_deterioration: 'Access mat deterioration',
-  wildlife: 'Wildlife',
-  flooding: 'Flooding',
-  other: 'Other',
-}
+const categories = reportCategories
+
 const categoryIcon: Record<ReportCategory, IconName> = {
   broken_pole_downed_line: 'bolt',
   on_site_fire: 'spark',
@@ -839,8 +833,8 @@ export function ReportForm({ site }: { site: SiteSummary }) {
         <h2 className="text-2xl font-bold tracking-tight">Report a hazard</h2>
         <p className="mt-1 text-sm text-ink-2">
           {client.mode === 'demo'
-            ? 'Demo only. Avoid private photos; selected photos stay in memory and are not persisted across reload.'
-            : 'Submitted to the configured backend only; server validates permissions and storage.'}{' '}
+            ? 'Simulated report. Use a sample photo; photos disappear after a reload.'
+            : 'Your supervisor reviews the report before confirming a hazard.'}{' '}
           Note is optional.
         </p>
       </div>
@@ -871,7 +865,9 @@ export function ReportForm({ site }: { site: SiteSummary }) {
       </fieldset>
       <div>
         <fieldset>
-          <legend className={step}>2 · Is it there? (required)</legend>
+          <legend className={step}>
+            2 · Is the hazard present? (required)
+          </legend>
           <div className="grid grid-cols-2 gap-2">
             {(
               [
@@ -899,7 +895,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
         </fieldset>
         <p className="mt-2 text-sm text-muted">
           {presence === 'present'
-            ? 'Present: a potential-hazard notice with no instructions goes to teams in the radius after submission.'
+            ? 'Nearby teams receive a potential-hazard notice. Supervisor confirmation is required before instructions.'
             : presence === 'absent'
               ? 'Absent: no notice is sent. Your organization’s supervisor reviews the report.'
               : 'Choose one to continue.'}
@@ -999,7 +995,7 @@ export function ReportForm({ site }: { site: SiteSummary }) {
             </label>
           </div>
         )}
-        <p className="mt-1 text-xs text-muted">
+        <p className="mt-1 text-sm text-muted">
           Your location is used only for this report, and only with your
           permission.
         </p>
@@ -1011,9 +1007,11 @@ export function ReportForm({ site }: { site: SiteSummary }) {
           rows={3}
           maxLength={1000}
           value={note}
-          placeholder={category === 'access_mat_deterioration'
-            ? 'Record the mat or section, your A-D stage (D: unusable), and visible damage.'
-            : undefined}
+          placeholder={
+            category === 'access_mat_deterioration'
+              ? 'Describe the affected section, visible damage and your crew assessment.'
+              : undefined
+          }
           onChange={(e) => setNote(e.target.value)}
         />
       </label>
@@ -1145,24 +1143,23 @@ function ReportCard({ report }: { report: CrewReport }) {
             <span
               className={`chip inline-flex items-center gap-1.5 border ${report.hazard_present ? 'border-stop text-stop-text' : 'border-line-strong text-ink-2'}`}
             >
-              {report.hazard_present ? 'Hazard present' : 'Hazard absent'}
+              {report.hazard_present ? 'Reported present' : 'Reported absent'}
             </span>
           </div>
-          <h3 className="text-lg font-bold">
-            {categories[report.category]} ·{' '}
-            {report.hazard_present ? 'present' : 'absent'} ·{' '}
-            {report.review_status}
-          </h3>
-          <p className="break-words font-mono text-xs text-muted">
-            {report.site_id} · {report.lat}, {report.lon}
+          <h3 className="text-lg font-bold">{categories[report.category]}</h3>
+          <p className="text-sm text-muted">
+            Reported <Timestamp value={report.created_at} />
           </p>
-          <p className="flex items-center gap-1.5 text-xs text-ink-2">
-            <Icon name="pin" className="size-3.5" />
-            {locationText(report)}
-          </p>
-          <p className="text-xs text-muted">
-            Report {report.id} · <Timestamp value={report.created_at} />
-          </p>
+          <Details title="Report location and record">
+            <p className="break-words font-mono text-sm text-muted">
+              {report.site_id} · {report.lat}, {report.lon}
+            </p>
+            <p className="flex items-center gap-1.5 text-xs text-ink-2">
+              <Icon name="pin" className="size-3.5" />
+              {locationText(report)}
+            </p>
+            <p className="text-sm text-muted">Report {report.id}</p>
+          </Details>
           {report.note && (
             <p className="rounded-xl bg-surface-2 px-3 py-2 text-ink">
               {report.note}
@@ -1175,12 +1172,12 @@ function ReportCard({ report }: { report: CrewReport }) {
               alt={`Selected demo evidence for ${categories[report.category]}`}
             />
           ) : report.photo_url ? (
-            <p className="text-xs text-muted">
+            <p className="text-sm text-muted">
               Photo reference supplied; private photo retrieval is not
               connected.
             </p>
           ) : (
-            <p className="text-xs text-muted">
+            <p className="text-sm text-muted">
               {client.mode === 'demo'
                 ? 'No persisted photo. Demo photos are session-only.'
                 : 'No photo reference supplied.'}
@@ -1238,7 +1235,7 @@ function ReportCard({ report }: { report: CrewReport }) {
                   })
                 }
               >
-                Confirm report classification
+                Confirm report
               </Action>
               <Action
                 run={() => client.review(report.id, { decision: 'rejected' })}
@@ -1251,18 +1248,17 @@ function ReportCard({ report }: { report: CrewReport }) {
       {report.hazard_present && report.review_status === 'pending' && (
         <div className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-caution p-3 text-sm text-ink-2">
           <p className="min-w-0 flex-1">
-            Present report remains pending until a notified supervisor confirms
-            its potential notice.
+            Awaiting supervisor confirmation in the worksite's hazard notices.
           </p>
           <a
             className={control}
             href={`#/${persona}/sites/${encodeURIComponent(report.site_id)}`}
           >
-            Open site notices
+            Review worksite notice
           </a>
         </div>
       )}
-      <p className="text-xs text-muted">
+      <p className="text-sm text-muted">
         Review does not authorize work. Pending/rejected reports are not
         confirmed hazards.
       </p>
@@ -1285,33 +1281,41 @@ function ReportsPage({ sites }: { sites: SiteSummary[] }) {
   const [siteId, setSiteId] = useState(choices[0].id)
   const site = choices.find((s) => s.id === siteId) ?? choices[0]
   return (
-    <div className="pc-enter grid gap-6 @3xl:grid-cols-12 @3xl:items-start">
-      <div className="space-y-4 @3xl:col-span-7">
-        <label className={labelText}>
-          Report location
-          <select
-            aria-label="Report location"
-            className={field}
-            value={site.id}
-            onChange={(e) => setSiteId(e.target.value)}
-          >
-            {choices.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" className={control} onClick={refresh}>
-          <Icon name="refresh" className="size-4" />
-          Refresh reports and server state
-        </button>
+    // Controls and the queue heading share row 1, so the form card and the
+    // first report card start on the same line in row 2.
+    <div className="pc-enter grid gap-4 @3xl:grid-cols-12 @3xl:items-start">
+      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-1 @3xl:self-end">
+        <div className="flex flex-wrap items-end gap-3">
+          <label className={`${labelText} min-w-0 flex-1`}>
+            Report location
+            <select
+              aria-label="Report location"
+              className={field}
+              value={site.id}
+              onChange={(e) => setSiteId(e.target.value)}
+            >
+              {choices.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" className={control} onClick={refresh}>
+            <Icon name="refresh" className="size-4" />
+            Refresh reports
+          </button>
+        </div>
+      </div>
+      <div className="@3xl:col-span-7 @3xl:col-start-1 @3xl:row-start-2">
         <ReportForm key={site.id} site={site} />
       </div>
-      <div className="@3xl:col-span-5">
+      <div className="mt-4 @3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-1 @3xl:mt-0 @3xl:self-center">
+        <SectionHead kicker="Review queue" title="Reports and review" />
+      </div>
+      <div className="@3xl:col-span-5 @3xl:col-start-8 @3xl:row-start-2">
         {result.data ? (
           <section className="space-y-3" aria-label="Submitted reports">
-            <SectionHead kicker="Review queue" title="Reports and review" />
             {result.data
               .filter((r) => sites.some((s) => s.id === r.site_id))
               .map((r) => (

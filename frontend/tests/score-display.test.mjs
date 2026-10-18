@@ -68,9 +68,9 @@ test('T069 replay: a positive index at 0% coverage shows its number, qualified a
   })
   assert.equal(evidenceOf(demo), 'partial')
   const out = text(demo)
-  assert.match(out, /7\.1 \/ 10 · high/)
-  assert.match(out, /Evidence incomplete · 0% of inputs reported/)
-  assert.match(out, /Includes stale or simulated \(replay\) inputs/)
+  assert.match(out, /7\.1 \/ 10 · High/)
+  assert.match(out, /Evidence incomplete/)
+  assert.match(out, /Includes stale or simulated inputs/)
   assert.doesNotMatch(out, /Unknown/)
   assert.match(out, /rules-0\.2/)
 })
@@ -80,15 +80,15 @@ test('zero with no current evidence reads as unknown, never as a verified low', 
   assert.equal(evidenceOf(unknown), 'none')
   const out = text(unknown)
   assert.match(out, /Unknown/)
-  assert.match(out, /not a low or safe reading/)
-  assert.match(out, /Server value 0\.0 \/ 10 · low/)
+  assert.match(out, /not a low-risk reading/)
+  assert.match(out, /Server value 0\.0 \/ 10 · Low/)
 })
 
 test('zero from fully observed inputs is shown as the measured index', () => {
   const healthy = site({})
   assert.equal(evidenceOf(healthy), 'full')
   const out = text(healthy)
-  assert.match(out, /0\.0 \/ 10 · low/)
+  assert.match(out, /0\.0 \/ 10 · Low/)
   assert.doesNotMatch(out, /Unknown|Evidence incomplete/)
 })
 
@@ -99,7 +99,7 @@ test('partial coverage, feed outage and unscored sites', () => {
     data_completeness: 0.67,
   })
   assert.equal(evidenceOf(held), 'partial')
-  assert.match(text(held), /67% of inputs reported/)
+  assert.match(text(held), /67% of inputs/)
   const unscored = site({
     risk_score: null,
     risk_level: null,

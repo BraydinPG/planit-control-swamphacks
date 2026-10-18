@@ -265,8 +265,8 @@ test('the Overview lists active alerts, notices to confirm, then absent reports 
     items.map((i) => [i.title, i.detail]),
     [
       ['Lightning stop-work alert', 'Site a'],
-      ['Potential downed line', 'Site b · within 1 mi'],
-      ['Report: no on-site fire', 'Site b'],
+      ['Potential hazard: Downed line', 'Site b · within 1 mi'],
+      ['Reported absent: On-site fire', 'Site b'],
     ],
   )
   assert.equal(items[0].href, '#/supervisor/alerts/al-1')

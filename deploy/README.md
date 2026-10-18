@@ -1,0 +1,86 @@
+# Deploying FORESITE on Vultr
+
+One Vultr server runs everything: Caddy serves the built frontend and HTTPS, and proxies
+`/api/*` and `/health` to the FastAPI backend (uvicorn, systemd). The database stays on
+Tiger Data and identity on Auth0. Crew photos go to Vultr Object Storage.
+
+| Piece | Where |
+|---|---|
+| Server | Vultr Cloud Compute `foresite`, Atlanta, shared CPU, 2 vCPU / 4 GB, Ubuntu 24.04 |
+| Firewall | Vultr group `foresite-web` (22, 80, 443) plus ufw on the server |
+| Address | `https://64-177-53-1.sslip.io` (sslip.io name for the IP; add a custom domain below) |
+| Photos | Vultr Object Storage `foresite-photos` (Atlanta), private bucket `foresite-photos` |
+| Backend | `/srv/foresite/app`, venv `/srv/foresite/venv` (Python 3.14 via uv), unit `foresite-api` |
+| Frontend | `/srv/foresite/frontend` (Vite build, live API, same origin) |
+| Secrets | `/srv/foresite/app/backend/.env`, mode 600, owned by `foresite`. Never committed. |
+
+## Server `.env`
+
+Start from `backend/.env.example` and fill every value. Production differences:
+
+- `CORS_ALLOWED_ORIGINS=https://<site address>` (the browser calls the same origin, so CORS is
+  normally unused)
+- `DEV_AUTH_BYPASS=false`
+- `FEED_REFRESH_ENABLED=true` and `BRIEFING_SCHEDULE_ENABLED=true` **on this server only**.
+  Every laptop sharing the Tiger database sets both to `false`.
+- `PHOTO_LOCAL_DIR=/srv/foresite/photos`
+- `VULTR_OBJECT_STORAGE_ENDPOINT`, `_ACCESS_KEY`, `_SECRET_KEY`, `_BUCKET` from the Object
+  Storage subscription (`vultr-cli object-storage get <id>`).
+
+Write it over SSH without printing it, then `chmod 600` and `chown foresite:foresite`.
+
+## First-time setup
+
+```bash
+ssh root@SERVER 'bash -s' < deploy/setup.sh       # Caddy, uv + Python 3.14, user, ufw 80/443
+scp deploy/foresite-api.service root@SERVER:/etc/systemd/system/
+scp deploy/Caddyfile root@SERVER:/etc/caddy/Caddyfile
+ssh root@SERVER 'mkdir -p /etc/systemd/system/caddy.service.d &&
+  printf "[Service]\nEnvironment=\"SITE_ADDRESS=64-177-53-1.sslip.io\"\n" > /etc/systemd/system/caddy.service.d/site.conf &&
+  systemctl daemon-reload && systemctl enable foresite-api && systemctl restart caddy'
+```
+
+## Deploy a commit
+
+From a clean checkout with `backend/.env`-independent `frontend/.env.local` (public Auth0 SPA
+values) and the provisioned model in `ml/artifacts/provisioned_v2`:
+
+```bash
+deploy/deploy.sh root@SERVER
+```
+
+It builds the frontend, ships `HEAD` with `git archive` plus the gitignored model artifact,
+keeps the server `.env`, installs requirements pinned by `deploy/constraints.txt`, and
+restarts the API. The previous version stays in `app.prev` / `frontend.prev`.
+
+**Roll back:** `ssh root@SERVER 'cd /srv/foresite && mv app app.bad && mv app.prev app && mv frontend frontend.bad && mv frontend.prev frontend && systemctl restart foresite-api'`
+
+## Add a custom domain
+
+1. DNS: an A record for the subdomain pointing to the server IP (GoDaddy → DNS → Add record).
+2. Add it to `SITE_ADDRESS`, comma-separated, e.g.
+   `SITE_ADDRESS=64-177-53-1.sslip.io, app.example.com`, then `systemctl daemon-reload &&
+   systemctl restart caddy`. Caddy gets the certificate on its own.
+3. Add `https://app.example.com` to the server `CORS_ALLOWED_ORIGINS` and to Auth0 (below),
+   then `systemctl restart foresite-api`.
+
+## Auth0 (T081)
+
+Auth0 dashboard → Applications → the SPA → Settings → Application URIs. Keep the localhost
+entries and add, for each site address:
+
+- Allowed Callback URLs: `https://<address>`
+- Allowed Logout URLs: `https://<address>`
+- Allowed Web Origins: `https://<address>`
+
+## Operate
+
+```bash
+ssh root@SERVER 'journalctl -u foresite-api -f'      # backend log (feed rounds, briefings)
+ssh root@SERVER 'systemctl status foresite-api caddy'
+```
+
+## Tear down after the hackathon
+
+Destroy the instance and the Object Storage subscription in Vultr (stopped servers still
+bill), delete the Vultr API key, and remove the deployed URLs from Auth0.

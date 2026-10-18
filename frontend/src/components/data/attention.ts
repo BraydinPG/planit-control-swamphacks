@@ -6,6 +6,7 @@ import type {
 } from '../../types/api'
 import type { RiskShape } from './Risk'
 import { evidenceOf } from './evidence'
+import { displayLabel, reportCategories } from '../../presentation/display'
 
 /** What waits on a supervisor, for the Overview (spec.md sections 3 and 7). */
 export type Shape = Parameters<typeof RiskShape>[0]['kind']
@@ -18,19 +19,8 @@ export interface AttentionItem {
   action: string
 }
 
-const categoryNames: Record<CrewReport['category'], string> = {
-  broken_pole_downed_line: 'broken pole or downed line',
-  on_site_fire: 'on-site fire',
-  wildlife: 'wildlife',
-  flooding: 'flooding',
-  access_mat_deterioration: 'access mat deterioration',
-  other: 'other hazard',
-}
-const ruleNames: Record<string, string> = {
-  lightning_stop_work: 'Lightning stop-work',
-}
-const rule = (r: string) =>
-  ruleNames[r] ?? r.replaceAll('_', ' ').replace(/^./, (c) => c.toUpperCase())
+const categoryNames = reportCategories
+const rule = displayLabel
 
 /** Everything waiting on the supervisor, most urgent first. */
 export function attentionItems(
@@ -54,7 +44,7 @@ export function attentionItems(
     ...notices.map(({ notice, site }) => ({
       key: `notice:${notice.id}`,
       shape: 'caution' as Shape,
-      title: `Potential ${notice.hazard_label}`,
+      title: `Potential hazard: ${displayLabel(notice.hazard_label)}`,
       detail: `${site.name} · within ${notice.radius_miles} mi`,
       href: `#/supervisor/sites/${encodeURIComponent(site.id)}`,
       action: 'Confirm or dismiss',
@@ -64,7 +54,7 @@ export function attentionItems(
       .map((r) => ({
         key: `report:${r.id}`,
         shape: 'nodata' as Shape,
-        title: `Report: no ${categoryNames[r.category]}`,
+        title: `Reported absent: ${categoryNames[r.category]}`,
         detail: name(r.site_id),
         href: '#/supervisor/reports',
         action: 'Review report',

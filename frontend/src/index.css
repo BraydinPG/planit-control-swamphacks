@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /*
- * PlanIT Control design tokens: an Apple Human Interface style.
+ * FORESITE design tokens: an Apple Human Interface style.
  * Light grouped backgrounds, white inset lists, hairline dividers, system
  * blue for actions, and the system font (San Francisco on Apple devices).
  * The crew workspace keeps its phone layout at every screen size; the
@@ -15,6 +15,9 @@
   --pc-bg: #f2f2f7;
   --pc-surface: #ffffff;
   --pc-surface-2: #f2f2f7;
+  /* Hover on white surfaces: lighter than the page background so a hovered
+     card never blends into it. */
+  --pc-hover: #f9f9fb;
   --pc-nav: #f9f9fb;
   --pc-line: #d2d2d7;
   --pc-line-strong: #8e8e93;
@@ -46,6 +49,7 @@
   --color-bg: var(--pc-bg);
   --color-surface: var(--pc-surface);
   --color-surface-2: var(--pc-surface-2);
+  --color-hover: var(--pc-hover);
   --color-nav: var(--pc-nav);
   --color-line: var(--pc-line);
   --color-line-strong: var(--pc-line-strong);
@@ -70,7 +74,7 @@
 @utility kicker {
   font-family: var(--font-sans);
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.3;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -104,11 +108,13 @@
     font-family: var(--font-sans);
     background: var(--pc-bg);
     color: var(--pc-ink);
+    line-height: 1.55;
   }
   h1,
   h2,
   h3 {
     text-wrap: balance;
+    scroll-margin-top: 5rem;
   }
   p,
   li,
@@ -128,7 +134,7 @@
   }
   input[type='file']::file-selector-button {
     margin-right: 0.75rem;
-    min-height: 2.25rem;
+    min-height: 2.75rem;
     border: 1px solid var(--pc-line-strong);
     border-radius: 0.6rem;
     background: var(--pc-surface-2);

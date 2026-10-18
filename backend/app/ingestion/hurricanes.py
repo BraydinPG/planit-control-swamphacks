@@ -18,6 +18,7 @@ source. A failed fetch reads stale, then unavailable. Never treat a failure as "
 from datetime import datetime
 from typing import Any
 
+from app.ingestion import runtime
 from app.ingestion.base import FeedError, SiteLike
 from app.ingestion.cache import FeedCache
 from app.ingestion.geo import direction_from, distance_miles
@@ -89,14 +90,25 @@ class HurricaneFeed:
 
         def nhc_site(site: SiteLike, now: datetime) -> list[Observation]:
             if isinstance(storms, FeedError):
-                raise FeedError(str(storms))
+                raise storms
             return self.storms_near(site, storms, now)
 
-        observations: list[Observation] = []
-        for site in sites:
-            observations += self.nhc_cache.refresh(site, now, nhc_site)
-            observations += self.nws_cache.refresh(site, now, self.nws_alerts)
-        return observations
+        with runtime.round_scope():
+
+            def per_site(site, at):
+                return self.nhc_cache.refresh(site, at, nhc_site) + self.nws_cache.refresh(
+                    site, at, self.nws_alerts
+                )
+
+            return [
+                o
+                for rows in runtime.ordered_map(
+                    lambda site: per_site(site, now),
+                    sites,
+                    get_ingestion_settings().feed_site_workers,
+                )
+                for o in rows
+            ]
 
     def storms_near(
         self, site: SiteLike, storms: list[dict[str, Any]], now: datetime
@@ -114,10 +126,7 @@ class HurricaneFeed:
         ]
 
     def nws_alerts(self, site: SiteLike, now: datetime) -> list[Observation]:
-        payload = self.nws.get_json(
-            "/alerts/active",
-            params={"point": f"{site.lat:.4f},{site.lon:.4f}", "event": ",".join(TROPICAL_EVENTS)},
-        )
+        payload = self.nws.active_alerts(site, now)
         features = payload.get("features")
         if not isinstance(features, list):
             raise FeedError("NWS alerts response has no features list")

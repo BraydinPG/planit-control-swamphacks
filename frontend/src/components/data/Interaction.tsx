@@ -1,6 +1,8 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { useApplication } from '../../application/context'
 import { ApiError, type Client } from '../../api/contracts'
+import { Details } from './Details'
+import { errorSummary } from '../../presentation/display'
 
 const base =
   'pc-press inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'
@@ -28,8 +30,21 @@ export function LoadState({ error }: { error: string | null }) {
       className="flex flex-col gap-3 rounded-2xl border-2 border-stop bg-surface p-5 @lg:flex-row @lg:items-center @lg:justify-between"
     >
       <div>
-        <p className="kicker text-stop-text!">Could not load</p>
-        <p className="mt-1 text-base text-ink">{error}</p>
+        <p className="text-lg font-bold text-stop-text">
+          Information unavailable
+        </p>
+        <p className="mt-1 text-base text-ink">{errorSummary(error)}</p>
+        <p className="mt-2 text-sm text-ink-2">
+          Try again. If access is denied, ask your supervisor to check your
+          account.
+        </p>
+        <Details title="Error details">
+          {errorSummary(error) !== error && <p>{error}</p>}
+          <p>
+            No demo data replaces a failed live request. Previously shown
+            information may be out of date.
+          </p>
+        </Details>
       </div>
       <button type="button" className={control} onClick={refresh}>
         Retry loading
@@ -38,7 +53,7 @@ export function LoadState({ error }: { error: string | null }) {
   ) : (
     <div className="space-y-3">
       <p role="status" aria-live="polite" className="kicker">
-        Loading workspace data…
+        Loading your workspace…
       </p>
       <div className="pc-skeleton h-24 rounded-2xl" aria-hidden="true" />
       <div className="grid gap-3 @lg:grid-cols-2" aria-hidden="true">
@@ -97,7 +112,7 @@ export function Action({
       </button>
       {!client.capabilities[capability] && (
         <p className="mt-2 text-sm text-muted">
-          This action is unavailable on the current live backend.
+          This action is not available yet. No change has been made.
         </p>
       )}
       {message && (

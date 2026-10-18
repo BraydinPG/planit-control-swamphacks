@@ -1,9 +1,9 @@
-# PlanIT Control Project Specification
+# FORESITE Project Specification
 For the step-by-step implementation backlog, see tasks.md
 
 ## 1. Project summary
 
-PlanIT Control is a web platform that helps utility field crews and supervisors make site safety decisions using one shared view of current hazards, forecasts, historical risk, and crew reports.
+FORESITE is a web platform that helps utility field crews and supervisors make site safety decisions using one shared view of current hazards, forecasts, historical risk, and crew reports.
 
 The product combines three distinct functions:
 

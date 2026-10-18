@@ -1,0 +1,6 @@
+# Pin the ML stack to the versions the provisioned model was trained and checked with,
+# so the server loads ml/artifacts/provisioned_v2 exactly as development does.
+joblib==1.6.0
+numpy==2.5.4
+scikit-learn==1.9.1
+scipy==1.18.1

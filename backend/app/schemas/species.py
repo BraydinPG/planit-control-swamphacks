@@ -49,7 +49,7 @@ class ProtectionStatus(Schema):
     )
     source: str
     source_url: str | None = None
-    as_of: datetime = Field(description="When PlanIT Control retrieved this record.")
+    as_of: datetime = Field(description="When FORESITE retrieved this record.")
     evidence_id: str
 
 

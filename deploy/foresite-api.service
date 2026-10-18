@@ -1,0 +1,24 @@
+# FORESITE FastAPI backend (T080). Installed to /etc/systemd/system by deploy/setup.sh.
+[Unit]
+Description=FORESITE API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=foresite
+Group=foresite
+WorkingDirectory=/srv/foresite/app/backend
+# PYTHONPATH=.. makes the repo root importable, so the backend can load ml/.
+Environment=PYTHONPATH=..
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/srv/foresite/venv/bin/uvicorn app.main:app --env-file /srv/foresite/app/backend/.env --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/srv/foresite
+
+[Install]
+WantedBy=multi-user.target

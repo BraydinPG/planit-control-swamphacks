@@ -1,4 +1,4 @@
-"""PlanIT Control roles and permissions (spec.md section 8, AGENTS.md role policy).
+"""FORESITE roles and permissions (spec.md section 8, AGENTS.md role policy).
 
 Auth0 holds the same roles and permissions (auth/SETUP.md). `ROLE_PERMISSIONS` is the
 fallback when an access token carries a role but no `permissions` claim.

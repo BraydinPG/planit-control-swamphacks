@@ -34,15 +34,15 @@ const descriptions: Record<
   { title: string; description: string; pending: string }
 > = {
   sites: {
-    title: 'Worksite context',
+    title: 'Worksites',
     description:
       'Locations, assigned teams and the evidence behind site conditions.',
     pending: 'The site list, map and site detail are not available here.',
   },
   alerts: {
-    title: 'Crew alerts',
+    title: 'Alerts',
     description:
-      'Deterministic alerts with their triggering evidence, countdown and acknowledgements.',
+      'Current alerts, lightning watch windows and acknowledgements.',
     pending: 'Alert details, acknowledgements and timers are not available.',
   },
   reports: {
@@ -54,12 +54,12 @@ const descriptions: Record<
   briefings: {
     title: 'Shift briefings',
     description:
-      'Stored next-day briefings with evidence references and stated unknowns.',
+      'Saved shift summaries, supporting evidence and unknown conditions.',
     pending: 'Briefings are not available.',
   },
   team: {
     title: 'Team',
-    description: 'Who is on each team, and the join codes that add crew to it.',
+    description: 'Manage team assignments and invite crew with join codes.',
     pending: 'Team management is not available.',
   },
 }
@@ -93,7 +93,7 @@ export function AppShell({
     return () => window.removeEventListener('hashchange', update)
   }, [])
   useEffect(() => {
-    document.title = `${active.title} · PlanIT Control`
+    document.title = 'FORESITE'
     heading.current?.focus({ preventScroll: true })
     window.scrollTo(0, 0)
   }, [active.title, route.workspace, locationRoute])
@@ -114,7 +114,7 @@ export function AppShell({
         aria-label={mobile ? 'Mobile workspace' : 'Workspace'}
         className={
           mobile
-            ? `grid ${visible.length > 5 ? 'grid-cols-6' : 'grid-cols-5'} gap-1.5`
+            ? `grid ${visible.length > 5 ? 'grid-cols-6 gap-0.5' : 'grid-cols-5 gap-1.5'}`
             : 'space-y-1'
         }
       >
@@ -127,7 +127,7 @@ export function AppShell({
               aria-current={current ? 'page' : undefined}
               className={
                 mobile
-                  ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-[11px] leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
+                  ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-xs leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
                   : `flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-black/5 hover:text-ink'}`
               }
             >
@@ -140,7 +140,7 @@ export function AppShell({
                 }
               />
               <span className={mobile ? 'max-w-full' : 'min-w-0 truncate'}>
-                {label(item)}
+                {mobile && item.id === 'overview' ? 'Home' : label(item)}
               </span>
             </a>
           )
@@ -168,12 +168,12 @@ export function AppShell({
         <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-[#ececf0]/90 px-4 py-6 backdrop-blur-xl lg:flex">
           <a
             href={`#/${route.workspace}/overview`}
-            aria-label="PlanIT Control overview"
+            aria-label="FORESITE overview"
             className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
           >
             <Logo className="size-7 text-ink" />
             <span className="text-lg font-bold tracking-tight">
-              PlanIT Control
+              FORESITE
             </span>
           </a>
           <div className="space-y-2">
@@ -187,10 +187,6 @@ export function AppShell({
           <div className="mt-auto space-y-3 border-t border-line px-3 pt-5 text-xs leading-relaxed text-muted">
             <p className="font-semibold text-ink-2">
               Rules raise alerts. People make the call.
-            </p>
-            <p>
-              Evidence informs the picture; people and official controls govern
-              the work.
             </p>
           </div>
         </aside>
@@ -207,7 +203,7 @@ export function AppShell({
             />
             <p className="min-w-0 truncate text-sm">
               <span className={`font-bold ${crew ? '' : 'lg:hidden'}`}>
-                PlanIT Control
+                FORESITE
               </span>
               <span className={`hidden text-muted ${crew ? '' : 'lg:inline'}`}>
                 {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}
@@ -233,7 +229,7 @@ export function AppShell({
         className={`@container mx-auto ${column} min-w-0 [overflow-wrap:anywhere] px-4 pb-32 pt-4 outline-none ${crew ? '' : 'sm:px-6 sm:pt-6 lg:px-10 lg:pb-12'}`}
       >
         <div className="mb-5 flex flex-col gap-3 rounded-xl border border-dotted border-line-strong bg-surface/60 px-3 py-2.5 @2xl:flex-row @2xl:items-center @2xl:justify-between @2xl:px-4">
-          <p className="max-w-2xl text-xs leading-relaxed text-ink-2">
+          <p className="max-w-2xl text-sm leading-relaxed text-ink-2">
             <strong className="font-semibold text-ink">
               {badge ??
                 (isFixture ? 'Demonstration workspace.' : 'No connected data.')}
@@ -282,12 +278,14 @@ export function AppShell({
             className="text-[28px] leading-tight font-bold tracking-tight outline-none @2xl:text-[34px]"
           >
             {route.page === 'overview'
-              ? 'Field overview'
+              ? crew
+                ? 'Your worksite'
+                : 'Supervisor overview'
               : descriptions[route.page].title}
           </h1>
           <p className="mt-2 hidden max-w-2xl text-sm leading-relaxed text-muted @2xl:block">
             {route.page === 'overview'
-              ? 'Site status, field knowledge and the evidence that connects them.'
+              ? 'Alerts, reports and worksites needing attention.'
               : descriptions[route.page].description}
           </p>
         </div>
@@ -307,7 +305,7 @@ export function AppShell({
                 <Icon name={active.icon} className="size-7" />
               </div>
               <h2 id="workspace-status" className="text-xl font-semibold">
-                Not available in this shell
+                This view is unavailable
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-7 text-muted">
                 {descriptions[route.page].pending} No live{' '}
@@ -322,7 +320,7 @@ export function AppShell({
             </section>
           ))}
         <footer className="mt-10 flex flex-col gap-2 border-t border-line pt-5 text-xs leading-relaxed text-muted @2xl:flex-row @2xl:justify-between">
-          <span className="font-semibold text-ink-2">PlanIT Control</span>
+          <span className="font-semibold text-ink-2">FORESITE</span>
           <span>
             Advisory context does not authorize work or clear an alert.
           </span>
