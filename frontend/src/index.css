@@ -148,7 +148,7 @@
     accent-color: var(--pc-accent);
   }
   input[type='file']::file-selector-button {
-    margin-right: 0.75rem;
+    margin-right: 1.25rem; /* clear space between the button and the file name */
     min-height: 2.75rem;
     border: 1px solid var(--pc-line-strong);
     border-radius: 0.6rem;
