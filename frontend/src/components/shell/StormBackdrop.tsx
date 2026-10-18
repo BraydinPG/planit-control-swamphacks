@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { isVivid, onStormLevel } from './stormLevel'
+import { FogWake, WAKE_GLSL } from './fogWake'
 
 /**
  * Dark red fog with random lightning behind every app page, matching the landing
@@ -16,7 +17,7 @@ import { isVivid, onStormLevel } from './stormLevel'
 const VERTEX = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'
 const FRAGMENT = `precision mediump float;
 uniform vec2 uRes;uniform float uTime;uniform float uFlash;uniform vec2 uStrike;uniform float uLevel;
-uniform vec2 uCursor;uniform vec2 uPush;
+${WAKE_GLSL}
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
@@ -25,13 +26,13 @@ void main(){
   vec2 uv=gl_FragCoord.xy/uRes;
   vec2 p=(gl_FragCoord.xy-.5*uRes)/uRes.y;
   float t=uTime*.025;
-  // the pointer drags the nearby fog along its path with a slight swirl, then it settles
-  vec2 dc=p-uCursor;float near=exp(-dot(dc,dc)/.03);
-  vec2 cp=(p-(uPush+vec2(-dc.y,dc.x)*length(uPush)*2.)*near)*vec2(.8,1.3);
+  // the pointer's wake: the gas parts along its path and thins slightly, then closes back in
+  vec3 wk=wake(p);
+  vec2 cp=(p-wk.xy)*vec2(.8,1.3);
   vec2 q=vec2(fbm(cp*1.3+vec2(t,0.)),fbm(cp*1.3+vec2(5.2,1.3)-t));
   vec2 r=vec2(fbm(cp*1.3+3.2*q+vec2(1.7,9.2)+t*1.4),fbm(cp*1.3+3.2*q+vec2(8.3,2.8)-t*1.1));
   float f=fbm(cp*1.1+3.*r);
-  float fog=smoothstep(.2,.95,f)*(.55+.6*(1.-uv.y*.6))*1.25;
+  float fog=smoothstep(.2,.95,f)*(.55+.6*(1.-uv.y*.6))*1.25*(1.-.25*wk.z);
   float edge=smoothstep(.45,.75,f)-smoothstep(.75,1.,f);
   vec3 tint=vec3(.95,.12,.16);
   // base matches the app background (#121214) so plain areas look unchanged at rest
@@ -66,10 +67,9 @@ export function StormBackdrop() {
       strike: [0, 0.3] as [number, number],
       flicker: -1e9,
       level: isVivid() ? 1 : 0,
-      // pointer position and the fog's push, in shader units (fractions of screen height)
-      cursor: [0, 0] as [number, number],
-      push: [0, 0] as [number, number],
     }
+    // the pointer's wake through the fog (empty, so no effect, under reduced motion)
+    const wake = new FogWake()
     let draw: (time: number) => void = () => {}
     let raf = 0
     let timer = 0
@@ -93,7 +93,7 @@ export function StormBackdrop() {
       gl.enableVertexAttribArray(loc)
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
       const u = (name: string) => gl.getUniformLocation(program, name)
-      const uRes = u('uRes'), uTime = u('uTime'), uFlash = u('uFlash'), uStrike = u('uStrike'), uLevel = u('uLevel'), uCursor = u('uCursor'), uPush = u('uPush')
+      const uRes = u('uRes'), uTime = u('uTime'), uFlash = u('uFlash'), uStrike = u('uStrike'), uLevel = u('uLevel'), uWake = u('uWake'), uWakeDir = u('uWakeDir')
       // low resolution: the fog is soft anyway, and field phones save battery
       const size = () => {
         skyEl.width = Math.max(1, Math.round(window.innerWidth * 0.35))
@@ -109,8 +109,8 @@ export function StormBackdrop() {
         gl.uniform1f(uFlash, state.flash)
         gl.uniform2f(uStrike, state.strike[0], state.strike[1])
         gl.uniform1f(uLevel, state.level)
-        gl.uniform2f(uCursor, state.cursor[0], state.cursor[1])
-        gl.uniform2f(uPush, state.push[0], state.push[1])
+        gl.uniform4fv(uWake, wake.positions)
+        gl.uniform2fv(uWakeDir, wake.directions)
         gl.drawArrays(gl.TRIANGLES, 0, 3)
       }
     } else {
@@ -206,25 +206,8 @@ export function StormBackdrop() {
     }
     timer = window.setTimeout(schedule, 2500)
 
-    // The pointer's movement pushes the fog near it; the push fades each frame, so the fog
-    // settles back once the pointer stops. Capped small so the effect stays subtle.
-    const MAX_PUSH = 0.035
-    let seen = false
-    const onPointer = (event: PointerEvent) => {
-      const x = (event.clientX - window.innerWidth / 2) / window.innerHeight
-      const y = -(event.clientY - window.innerHeight / 2) / window.innerHeight
-      if (seen) {
-        state.push[0] += (x - state.cursor[0]) * 0.35
-        state.push[1] += (y - state.cursor[1]) * 0.35
-        const len = Math.hypot(state.push[0], state.push[1])
-        if (len > MAX_PUSH) {
-          state.push[0] *= MAX_PUSH / len
-          state.push[1] *= MAX_PUSH / len
-        }
-      }
-      seen = true
-      state.cursor = [x, y]
-    }
+    // the pointer slices a short-lived wake through the fog (see fogWake.ts)
+    const onPointer = (event: PointerEvent) => wake.move(event.clientX, event.clientY, performance.now())
     window.addEventListener('pointermove', onPointer, { passive: true })
     cleanups.push(() => window.removeEventListener('pointermove', onPointer))
 
@@ -236,8 +219,7 @@ export function StormBackdrop() {
       last = now
       state.level += ((isVivid() ? 1 : 0) - state.level) * 0.05 // fades between levels
       state.flash *= 0.88
-      state.push[0] *= 0.9
-      state.push[1] *= 0.9
+      wake.update(now)
       if (now - state.flicker < 400 && Math.random() < 0.2) state.flash = Math.min(0.9, state.flash + 0.15)
       draw((now - t0) / 1000)
       drawBolts(now)
