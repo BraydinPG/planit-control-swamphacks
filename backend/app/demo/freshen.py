@@ -28,10 +28,10 @@ at the same `now` changes nothing. A past event never moves past `now`: the seed
 confirmations and anything a tester did since the last slide are newer than the readings,
 so they stop at "just now". Timers and forecast times may lie ahead and move freely.
 
-Each round also fills the Everglades report's seeded analysis when it has none
-(`app.demo.report_analysis`), and links the public "Try demo" guests
-(`ensure_guest_memberships`): a seed clears the demo organization's memberships, and the
-guests' scope comes from theirs.
+Each round also fills the Gemini output demo sites should always show (report analysis,
+notice radius, sent instructions, next-day briefings; `app.demo.gemini_content`), and
+links the public "Try demo" guests (`ensure_guest_memberships`): a seed clears the demo
+organization's memberships, and the guests' scope comes from theirs.
 
 `run_forever` repeats the slide every `FEED_REFRESH_SECONDS` next to the live feed loop
 (`app.services.refresh.run_forever`), so it runs only where `FEED_REFRESH_ENABLED` is on:
@@ -49,6 +49,7 @@ from sqlalchemy import delete, func, insert, or_, select
 from sqlalchemy.orm import Session
 
 from app.db import models as db
+from app.demo.gemini_content import DemoBriefings, ensure_demo_briefings, ensure_demo_notices
 from app.demo.report_analysis import ensure_demo_report_analysis
 from app.demo.scenario import DEMO_ORG_ID, DEMO_TEAM_ID
 from app.ingestion import runtime
@@ -62,7 +63,9 @@ log = logging.getLogger(__name__)
 MIN_DELTA = timedelta(minutes=1)
 
 
-def keep_demo_fresh(session: Session, now: datetime) -> dict[str, timedelta]:
+def keep_demo_fresh(
+    session: Session, now: datetime, briefings: DemoBriefings | None = None
+) -> dict[str, timedelta]:
     """Slide every demo site to `now`. Returns the delta of each site that moved.
 
     A failure at one site rolls back that site only and never raises.
@@ -96,13 +99,7 @@ def keep_demo_fresh(session: Session, now: datetime) -> dict[str, timedelta]:
             continue
         if delta is not None:
             moved[site_id] = delta
-    try:
-        ensure_demo_report_analysis(session, now)
-    except Exception as exc:
-        session.rollback()
-        runtime.event(
-            "demo_report_analysis_failed", failure=True, exception_type=type(exc).__name__
-        )
+    _gemini_content(session, now, briefings)
     if moved:
         runtime.event(
             "demo_freshened",
@@ -110,6 +107,27 @@ def keep_demo_fresh(session: Session, now: datetime) -> dict[str, timedelta]:
             minutes=round(max(moved.values()).total_seconds() / 60, 1),
         )
     return moved
+
+
+def _gemini_content(session: Session, now: datetime, briefings: DemoBriefings | None) -> None:
+    """Gemini output the demo sites should always show (`app.demo.gemini_content`).
+
+    Briefings need Gemini and the NWS forecast, so they run only when `briefings` is given.
+    """
+    steps = [
+        ("demo_report_analysis_failed", lambda: ensure_demo_report_analysis(session, now)),
+        ("demo_notices_failed", lambda: ensure_demo_notices(session, now)),
+    ]
+    if briefings is not None:
+        steps.append(
+            ("demo_briefings_failed", lambda: ensure_demo_briefings(session, now, briefings))
+        )
+    for failure, step in steps:
+        try:
+            step()
+        except Exception as exc:
+            session.rollback()
+            runtime.event(failure, failure=True, exception_type=type(exc).__name__)
 
 
 # The guests' rows: crew on the Everglades team, and a supervisor of the demo organization.
@@ -299,9 +317,11 @@ async def run_forever(
     if sessions is None:
         from app.db import get_session as sessions
 
+    briefings = demo_briefing_sources()
+
     def once() -> dict[str, timedelta]:
         with sessions() as session:
-            return keep_demo_fresh(session, datetime.now(UTC))
+            return keep_demo_fresh(session, datetime.now(UTC), briefings)
 
     while not stop.is_set():
         try:
@@ -312,3 +332,16 @@ async def run_forever(
             await asyncio.wait_for(stop.wait(), timeout=interval)
         except TimeoutError:
             pass
+
+
+def demo_briefing_sources() -> DemoBriefings:
+    """The same Gemini client, NWS forecast and outlooks the 6 PM job uses."""
+    from app.gemini.briefing_schedule import BriefingSettings, nws_forecast_source
+    from app.gemini.client import get_gemini_client
+    from app.outlook import get_event_outlook_service
+
+    return DemoBriefings(
+        get_gemini_client(),
+        nws_forecast_source(BriefingSettings().briefing_forecast_hours),
+        get_event_outlook_service(),
+    )

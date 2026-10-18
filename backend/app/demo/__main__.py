@@ -122,10 +122,10 @@ def _run(args: argparse.Namespace) -> None:
                 "DEMO_SUPERVISOR_USER_ID (Auth0 user IDs) in backend/.env and run again."
             )
     elif args.command == "freshen":
-        from app.demo.freshen import keep_demo_fresh
+        from app.demo.freshen import demo_briefing_sources, keep_demo_fresh
 
         with get_session() as session:
-            moved = keep_demo_fresh(session, now)
+            moved = keep_demo_fresh(session, now, demo_briefing_sources())
         print(f"Moved {len(moved)} demo sites to {now:%Y-%m-%d %H:%M} UTC.")
         for site_id, delta in moved.items():
             print(f"  {site_id:24} +{delta}")

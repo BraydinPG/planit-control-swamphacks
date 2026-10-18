@@ -299,7 +299,7 @@ def test_a_failing_slide_never_stops_the_live_rounds(monkeypatch) -> None:
     live_rounds = []
     demo_ran = threading.Event()
 
-    def broken(session, now):
+    def broken(session, now, briefings=None):
         demo_ran.set()
         raise RuntimeError("demo broke")
 
