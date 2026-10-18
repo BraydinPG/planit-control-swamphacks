@@ -2,6 +2,11 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Full-width crew sections - 2026-10-18
+- User-authorized `feature/cache-full-width-crew-sections`, base main `5c1e5d4`: My Worksite stacks full-width Site score, Score factors and evidence, then Weather and conditions at every width. Overview stacks the full-width stop-work alert above Hazards and supervisor instructions. This supersedes PR85's desktop score/factor pairing; existing cards, internal grids and phone navigation remain.
+- Verified 198 frontend tests, lint/TypeScript, live/demo builds, the complete built-demo browser workflow suite and 32 focused cases over eight widths. Vertical order/widths, score evidence, all readings/outlooks/reports, acknowledgements/reset/reload and supervisor instructions pass; no overflow, browser exceptions or actual API calls. [Current layout and screenshots](docs/CREW_RESPONSIVE_LAYOUT.md).
+- Only crew composition, existing browser assertions, review screenshots and coordination docs change. Supervisor site layout, scoring/alerts, backend/auth/contracts/fixtures/models and task checkboxes remain unchanged. Rudra should preserve the new full-width ordering; Braydin has no configuration action. Commit/PR attribution is recorded in Git history.
+
 ## Predictive-intelligence landing messaging - 2026-10-18
 - User-authorized `feature/cache-predictive-landing-messaging`, base main `d801615`: public homepage headline is SEE THE RISK. / PLAN BEYOND THE ALERT., with the requested predictive-intelligence description, four research statistics and three feature blocks. Existing branding, atmosphere, animation JavaScript and demo/sign-in destinations remain. No dashboard, backend/auth, model/scoring, fixture, deployment or task-state changes.
 - Audited 526,824 mixed source records, six retrospectively evaluated duration targets, one 5,000-draw offline consistency experiment and 50 EIA reference locations against existing reports. On-page source disclosure preserves those qualifications; no operational validation, universal coverage or work-clearance claim. [Audit, handoff and screenshots](docs/LANDING_PREDICTIVE_MESSAGING.md).
