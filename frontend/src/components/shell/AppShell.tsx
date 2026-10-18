@@ -4,7 +4,6 @@ import { Icon, type IconName } from './Icon'
 import { Brand } from './Brand'
 import { WorkspaceOverview } from '../../pages/WorkspaceOverview'
 import { useVividStorm } from './stormLevel'
-import { useAutoHideSidebar } from './useAutoHideSidebar'
 
 export type Workspace = 'crew' | 'supervisor'
 export type ShellPage =
@@ -116,9 +115,8 @@ export function AppShell({
   // Keep the field layout on phones/tablets; give desktop crews a full workspace.
   const crew = route.workspace === 'crew'
   const column = crew ? 'max-w-lg lg:max-w-[1440px]' : 'max-w-7xl'
-  // Supervisor desktop: the sidebar tucks away and reappears at the left edge.
-  const sidebar = useAutoHideSidebar(!crew)
 
+  // Desktop: a row of links in the header. Phones and tablets: the bottom tab bar.
   function navigation(mobile = false) {
     return (
       <nav
@@ -126,7 +124,7 @@ export function AppShell({
         className={
           mobile
             ? `grid ${visible.length > 5 ? 'grid-cols-6 gap-0.5' : 'grid-cols-5 gap-1.5'}`
-            : 'space-y-4'
+            : 'flex min-w-0 items-center gap-1'
         }
       >
         {visible.map((item) => {
@@ -139,7 +137,7 @@ export function AppShell({
               className={
                 mobile
                   ? `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-center text-xs leading-tight transition-colors ${current ? 'font-bold text-accent' : 'font-medium text-muted hover:text-ink'}`
-                  : `flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-white/5 hover:text-ink'}`
+                  : `inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg px-3 text-[15px] whitespace-nowrap transition-colors ${current ? 'bg-accent/15 font-semibold text-ink' : 'font-medium text-ink-2 hover:bg-white/5 hover:text-ink'}`
               }
             >
               <Icon
@@ -147,10 +145,11 @@ export function AppShell({
                 className={
                   mobile
                     ? 'size-6 shrink-0'
-                    : `size-5 shrink-0 ${current ? 'text-accent' : 'text-accent/80'}`
+                    : // icons only on wide screens, so six links still fit at 1024px
+                      `hidden size-4 shrink-0 xl:block ${current ? 'text-accent' : 'text-accent/80'}`
                 }
               />
-              <span className={mobile ? 'max-w-full' : 'min-w-0 truncate'}>
+              <span className={mobile ? 'max-w-full' : ''}>
                 {mobile && item.id === 'overview' ? 'Home' : label(item)}
               </span>
             </a>
@@ -163,8 +162,7 @@ export function AppShell({
   return (
     <div
       data-theme={route.workspace}
-      // A tucked-away sidebar overlays the page, so the page keeps its full width.
-      className={`min-h-svh font-sans text-ink ${sidebar.autoHide ? '' : 'lg:pl-64'}`}
+      className="min-h-svh font-sans text-ink"
     >
       <a
         href="#main-content"
@@ -176,64 +174,21 @@ export function AppShell({
       >
         Skip to content
       </a>
-      {!crew && sidebar.autoHide && !sidebar.open && (
-        // Tucked away: a slim tab on the left edge shows where it went and opens it on click.
-        <button
-          type="button"
-          onClick={sidebar.show}
-          aria-label="Show navigation"
-          className="fixed top-1/2 left-0 z-30 hidden h-24 w-3 -translate-y-1/2 rounded-r-lg border border-l-0 border-line bg-surface/90 backdrop-blur-xl transition-[width] hover:w-4 lg:block"
-        />
-      )}
-      <aside
-        onFocus={sidebar.onFocus}
-        onBlur={sidebar.onBlur}
-        className={`fixed inset-y-0 left-0 z-30 hidden w-64 flex-col gap-8 border-r border-line bg-surface/90 px-4 py-6 backdrop-blur-xl transition-transform duration-300 ease-out lg:flex ${sidebar.autoHide ? 'shadow-[8px_0_32px_rgba(0,0,0,0.45)]' : ''} ${sidebar.open ? '' : '-translate-x-full shadow-none'}`}
-      >
-        <a
-          href={`#/${route.workspace}/overview`}
-          aria-label="FORESITE overview"
-          className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-ink"
-        >
-          <Brand variant="compact" className="w-42" decorative />
-        </a>
-        <div className="space-y-2">
-          <p className="kicker px-3">
-            {route.workspace === 'crew'
-              ? 'Crew workspace'
-              : 'Supervisor workspace'}
-          </p>
-          {navigation()}
-        </div>
-        {crew && (
-          <div className="mt-auto space-y-3 border-t border-line px-3 pt-5 text-xs leading-relaxed text-muted">
-            <p className="font-semibold text-ink-2">
-              Rules raise alerts. People make the call.
-            </p>
-          </div>
-        )}
-      </aside>
       <header
         className={`sticky top-0 z-20 border-b border-line bg-nav/80 px-4 backdrop-blur-xl backdrop-saturate-150 ${crew ? 'lg:px-10' : 'sm:px-6 lg:px-10'}`}
       >
         <div
           className={`mx-auto flex min-h-14 ${column} items-center justify-between gap-3`}
         >
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-4 xl:gap-6">
             <a
               href={`#/${route.workspace}/overview`}
               aria-label={`FORESITE ${route.workspace} home`}
-              className={`inline-flex min-h-11 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent ${sidebar.autoHide ? '' : 'lg:hidden'}`}
+              className="inline-flex min-h-11 shrink-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               <Brand variant="compact" className="w-28 sm:w-32" decorative />
             </a>
-            <p className="hidden min-w-0 truncate text-sm lg:block">
-              <span className="hidden text-muted lg:inline">
-                {route.workspace === 'crew' ? 'Crew' : 'Supervisor'}
-                <span className="px-2 text-line-strong">/</span>
-                <span className="font-semibold text-ink">{active.title}</span>
-              </span>
-            </p>
+            <div className="hidden min-w-0 lg:block">{navigation()}</div>
           </div>
           {headerControls ?? (<span
             className={`inline-flex shrink-0 items-center gap-1.5 chip border ${authenticated ? 'border-ok text-ok' : 'border-dotted border-sim text-sim'}`}
