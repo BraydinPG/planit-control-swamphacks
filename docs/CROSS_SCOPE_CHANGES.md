@@ -18,7 +18,10 @@ Rudra should retain these component interfaces during future UI work; Braydin's
 Auth0/Tiger Data acceptance remains independent. The obsolete Advisory module remains
 available for independent replay tooling but is no longer mounted in application pages.
 
-194 frontend tests, lint/TypeScript, production build and 32 focused browser cases
+Implementation `3124b74`; main `ce3292b` reconciled in `e1f6fb8` without conflicts,
+preserving PR79's briefing/fog updates. 194 frontend tests, 139 backend scoring,
+report/lightning/stop-work/contract checks, lint/TypeScript, live/demo builds,
+complete development/built-demo browser suites and 32 focused browser cases
 across 320/390/768/1024/1280/1440/1920/2560 pass. Card tops align within 1px; no
 overflow, browser exceptions or actual API calls. Existing browser regression checks
 now exercise complete hazard coverage and the removed panel. Commit/PR are recorded
