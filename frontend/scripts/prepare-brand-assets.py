@@ -1,8 +1,9 @@
-"""Extract approved FORESITE pixels, never redraw the logo. Requires Pillow 13.0.0.
+"""Make the user-authorized exact pixel cutout. Requires Pillow 13.0.0.
 
 Run from repository root: python frontend/scripts/prepare-brand-assets.py
-The original public/foresite-logo.png stays byte-identical. Fixed crop coordinates
-refer to the approved 2172x724 artwork; a different source requires review.
+The committed branding/foresite-logo-source.png stays byte-identical. Only alpha
+changes for foreground pixels; RGB is zeroed where the background is fully removed.
+Fixed coordinates/key thresholds refer to the approved 1983x793 replacement artwork.
 """
 
 import hashlib
@@ -13,11 +14,49 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageFilter, ImageOps, __version__
 
 PUBLIC = Path(__file__).resolve().parents[1] / "public"
-SOURCE = PUBLIC / "foresite-logo.png"
-APPROVED = "56ddbbb30501102a1700f57510feb5a18db2cbcb588e55bd558f42128ea5617d"
-FULL = (164, 140, 2010, 602)
-WORDMARK = (164, 140, 2010, 538)
-CYCLONE = (355, 139, 779, 539)
+SOURCE = PUBLIC.parent / "branding" / "foresite-logo-source.png"
+APPROVED = "2f14dd3437f22fe1ef9c420f0edc7b86878ddb6fec9144540c77caa9aa90d3db"
+FULL = (138, 177, 1848, 600)
+WORDMARK = (138, 177, 1848, 534)
+CYCLONE = (326, 177, 701, 534)
+SURFACE = "#0b141d"
+
+
+def remove_background(original):
+    """Key the measured 9-18 charcoal background, keeping supplied foreground RGB."""
+    rgb = original.convert("RGB")
+    alpha = Image.new("L", rgb.size)
+    # Every sampled background channel is <=18. The short transition preserves
+    # antialiasing; foreground at >=32 stays opaque, including dark blue arms.
+    alpha.putdata(
+        [
+            max(0, min(255, round((max(pixel) - 18) * 255 / 14)))
+            for pixel in rgb.get_flattened_data()
+        ]
+    )
+    # The cyclone's enclosed dark eye is negative space too, not a navy disk.
+    pixels = rgb.load()
+    eye, queue = {(512, 370)}, deque([(512, 370)])
+    while queue:
+        x, y = queue.popleft()
+        for xx, yy in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+            if (
+                470 <= xx < 555
+                and 330 <= yy < 415
+                and (xx, yy) not in eye
+                and max(pixels[xx, yy]) <= 110
+            ):
+                eye.add((xx, yy))
+                queue.append((xx, yy))
+    assert len(eye) == 2624, "Unexpected cyclone eye; review the supplied artwork"
+    for xy in eye:
+        alpha.putpixel(xy, 0)
+    cutout = rgb.convert("RGBA")
+    cutout.putalpha(alpha)
+    cutout.putdata(
+        [pixel if pixel[3] else (0, 0, 0, 0) for pixel in cutout.get_flattened_data()]
+    )
+    return cutout
 
 
 def extract_cyclone(source):
@@ -46,7 +85,7 @@ def extract_cyclone(source):
                         queue.append((xx, yy))
             components.append(component)
     selected = max(components, key=len)
-    assert len(selected) == 100079, "Unexpected artwork segmentation; review the source"
+    assert 50000 < len(selected) < 130000, "Unexpected cyclone; review the source"
     silhouette = Image.new("L", crop.size)
     for xy in selected:
         silhouette.putpixel(xy, 255)
@@ -60,37 +99,37 @@ def extract_cyclone(source):
     return crop.crop(crop.getbbox())
 
 
-def square(image, size, padding):
-    canvas = Image.new("RGBA", (size, size))
+def contain(image, size, padding=0):
+    canvas = Image.new("RGBA", size)
     inside = ImageOps.contain(
-        image, (size - padding * 2, size - padding * 2), Image.Resampling.LANCZOS
+        image, (size[0] - padding * 2, size[1] - padding * 2), Image.Resampling.LANCZOS
     )
     canvas.alpha_composite(
-        inside, ((size - inside.width) // 2, (size - inside.height) // 2)
+        inside, ((size[0] - inside.width) // 2, (size[1] - inside.height) // 2)
     )
     return canvas
 
 
+def square(image, size, padding):
+    return contain(image, (size, size), padding)
+
+
 def main():
     if not SOURCE.is_file():
-        raise SystemExit(
-            "Approved public/foresite-logo.png is missing; supply the official PNG first"
-        )
+        raise SystemExit("Approved branding/foresite-logo-source.png is missing")
     assert hashlib.sha256(SOURCE.read_bytes()).hexdigest() == APPROVED, (
         "Unapproved source image"
     )
-    original = Image.open(SOURCE).convert("RGBA")
-    assert original.size == (2172, 724)
+    original = Image.open(SOURCE).convert("RGB")
+    assert original.size == (1983, 793)
+    original = remove_background(original)
     full = original.crop(FULL)
     compact = original.crop(WORDMARK)
     icon = extract_cyclone(original)
     assets = {
-        "foresite-logo-full.png": ImageOps.contain(
-            full, (1200, 1200), Image.Resampling.LANCZOS
-        ),
-        "foresite-wordmark.png": ImageOps.contain(
-            compact, (768, 768), Image.Resampling.LANCZOS
-        ),
+        "foresite-logo.png": original,
+        "foresite-logo-full.png": contain(full, (1200, 300)),
+        "foresite-wordmark.png": contain(compact, (768, 166)),
         "foresite-cyclone.png": square(icon, 384, 12),
         "foresite-favicon-16.png": square(icon, 16, 1),
         "foresite-favicon-32.png": square(icon, 32, 1),
@@ -98,7 +137,7 @@ def main():
         "foresite-icon-192.png": square(icon, 192, 8),
     }
     # Metadata preview is a presentation surface, not a recolored logo variant.
-    social = Image.new("RGBA", (1200, 630), "white")
+    social = Image.new("RGBA", (1200, 630), SURFACE)
     artwork = ImageOps.contain(full, (1080, 450), Image.Resampling.LANCZOS)
     social.alpha_composite(
         artwork, ((1200 - artwork.width) // 2, (630 - artwork.height) // 2)
@@ -106,7 +145,14 @@ def main():
     assets["foresite-social.png"] = social
     manifest = {
         "source_sha256": APPROVED,
+        "source_file": "frontend/branding/foresite-logo-source.png",
         "pillow_version": __version__,
+        "method": "user-authorized pixel cutout; foreground RGB unchanged",
+        "alpha_key": {
+            "background_max_channel": 18,
+            "opaque_min_channel_max": 32,
+            "eye_pixels_removed": 2624,
+        },
         "crop_boxes": {"full": FULL, "wordmark": WORDMARK, "cyclone": CYCLONE},
         "assets": {},
     }

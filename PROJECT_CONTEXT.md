@@ -2,6 +2,10 @@
 
 Read this index first, then AGENTS.md, spec.md, tasks.md and relevant source. Verify facts in code; detailed historical results remain in owner guides and Git history.
 
+## Replacement white FORESITE artwork - 2026-10-18
+- Explicit user request replaces active logo variants with the supplied white-letter/cyan-cyclone artwork and genuine transparency. User approved an exact pixel cutout after two imagegen drafts introduced artifacts; neither generated draft is used. Committed source: `frontend/branding/foresite-logo-source.png`; canonical cutout: `frontend/public/foresite-logo.png` (visible foreground RGB preserved, alpha-only extraction).
+- `frontend/scripts/prepare-brand-assets.py` deterministically provisions full/compact/cyclone/favicon/touch/social assets and their hash manifest from the pinned source. Cache version `daaf5322`; existing display sizes and accessible links retained. Latest main's dark theme is the contrast solution; no separate logo background, outline or filter is added. Final integration checks are recorded with the subsequent main reconciliation.
+
 ## Centered sign-in card - 2026-10-17
 - Explicit follow-up request on `feature/center-sign-in`: center the access card's brand, heading, text and action buttons, remove "Sign in to see this screen.", and retain the soft shadow with an explicit border-free container. Presentation-only changes in `auth/RequireRole.tsx`; authentication behavior is preserved.
 - Verification after integrating main `d50e5d2`: all 174 frontend tests, TypeScript/production build, lint and whitespace checks pass. No real Auth0 or deployment acceptance is claimed.
