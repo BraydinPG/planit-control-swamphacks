@@ -30,16 +30,16 @@ export function AuthCheckPage() {
   ]
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-6 p-4 text-lg text-neutral-950 dark:text-neutral-50">
+    <main className="mx-auto flex max-w-2xl flex-col gap-6 p-4 text-lg text-ink">
       <Brand variant="full" />
       <h1 className="text-3xl font-bold">FORESITE sign-in check</h1>
       {auth.mode === 'dev' && (
-        <p className="rounded-md border-2 border-amber-700 p-3 font-medium">
+        <p className="rounded-md border-2 border-caution p-3 font-medium">
           <span aria-hidden="true">⚠ </span>Dev mode: this is not a real sign-in.
         </p>
       )}
       {auth.error && (
-        <p role="alert" className="font-medium text-red-800 dark:text-red-300">
+        <p role="alert" className="font-medium text-stop-text">
           {auth.error}
         </p>
       )}
@@ -94,7 +94,7 @@ function CheckButton({ onClick, children }: { onClick: () => void; children: str
     <button
       type="button"
       onClick={onClick}
-      className="min-h-11 min-w-11 rounded-md border-2 border-neutral-900 px-4 py-2 font-semibold hover:bg-neutral-100 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-neutral-100 dark:hover:bg-neutral-800"
+      className="min-h-11 min-w-11 rounded-md border-2 border-line-strong px-4 py-2 font-semibold hover:bg-control-hover focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-focus"
     >
       {children}
     </button>

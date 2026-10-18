@@ -906,7 +906,7 @@ try {
     )
     const signInAppearance = "(()=>{const panel=document.querySelector('[aria-labelledby=access-panel-title]');const button=panel.querySelector('button');const logo=panel.querySelector('[data-brand]');return {panelBackground:getComputedStyle(panel).backgroundColor,panelText:getComputedStyle(panel).color,buttonBackground:getComputedStyle(button).backgroundColor,buttonText:getComputedStyle(button).color,logoBackground:getComputedStyle(logo).backgroundColor,logoFilter:getComputedStyle(logo.querySelector('img')).filter}})()"
     const darkPreferenceAppearance = await evaluate(signInAppearance)
-    assert.equal(darkPreferenceAppearance.panelBackground, 'rgb(255, 255, 255)', 'Original navy logo stays on a light sign-in panel even with dark OS preference')
+    assert.equal(darkPreferenceAppearance.panelBackground, 'rgb(28, 28, 30)', 'Sign-in panel uses the always-dark surface; the logo artwork is unchanged')
     assert.equal(darkPreferenceAppearance.logoBackground, 'rgba(0, 0, 0, 0)')
     assert.equal(darkPreferenceAppearance.logoFilter, 'none', 'No recoloring, white halo or contrast plate is added to the logo')
     assert.notEqual(darkPreferenceAppearance.panelText, darkPreferenceAppearance.panelBackground)
