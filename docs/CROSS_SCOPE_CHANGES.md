@@ -1,3 +1,24 @@
+## Public Everglades Case Study (Cache for Rudra) - 2026-10-18 09:48 UTC
+
+Explicit user request authorizes the standalone Case Study and merge after checks,
+superseding the attachment hold. Branch `feature/cache-everglades-case-study`,
+base main `787b1ba`; no existing tracked task is checked off.
+
+Adds public `case-study.{html,css,js}`, two authentic fixture-app captures with
+hash provenance, source-integrity tests and extensions to the existing public
+browser harness. Home/Platform/Data change only shared navigation. Updates
+`PROJECT_CONTEXT.md`, this record and [the source/handoff guide](CASE_STUDY.md);
+review screenshots are under `docs/screenshots/case-study-*.webp`.
+
+Verified 203 frontend tests, lint/TypeScript, development and live/fixture built
+Edge acceptance at 1440/768/390/320. Seven stages × two perspectives, keyboard,
+no-JS, motion, 44px controls and storage preservation pass; no overflow, exceptions
+or API requests. Both builds pass with the existing SPA chunk-size warning.
+No application, backend/auth/DB, canonical fixture, model/scoring, task-state or
+deployment edits. The guide gives Rudra the pre-existing Watch/Warning,
+photo-reference and synthetic/different-site duration issues without changing his
+generator. Braydin's existing static deployment needs no new service or route.
+
 ## Interactive public Platform page (Cache for Rudra) - 2026-10-18
 
 [PR #93](https://github.com/BraydinPG/planit-control-swamphacks/pull/93): verified implementation `7f64b3b`; user-authorized merge.

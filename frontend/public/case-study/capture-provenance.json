@@ -1,0 +1,24 @@
+{
+  "capture": "Installed Edge CDP: actual React app, fixture build, new isolated browser profile",
+  "fixture_as_of_utc": "2026-10-17T18:00:00Z",
+  "viewport_css_pixels": {
+    "width": 1440,
+    "height": 1000,
+    "device_scale_factor": 2
+  },
+  "crew_route": "/?demo#/crew/overview",
+  "supervisor_route": "/?demo#/supervisor/sites/site-demo-everglades",
+  "supervisor_crop": "[data-notice-id=notice-wildlife-1]",
+  "backend_requests": 0,
+  "mutations": 0,
+  "fixture_sha256": {
+    "src/fixtures/site-detail.json": "6a9d55be320c9c6f833f8ac2a018ed7727a53429604e7c3612603b7a48d6667e",
+    "src/fixtures/reports.json": "b7b003fc274ec9f59b7df611d945e4898e6d88587ff7def56fb88c399423fd4b",
+    "src/fixtures/hazard-notices.json": "b9e7b3cdd95e32c38685d45f5bace6af3e2380386bac58aa39d13d9ef8c05ab7"
+  },
+  "image_sha256": {
+    "crew-overview.webp": "933040def5cf8b7787056acc25d5ff5cb78bdc7227bad9c4c4ee6830ddd65108",
+    "supervisor-notice.webp": "f89c178d0d74259bea1f2df32fd7914b3a6c7587b7cc2bd7c136090fce26ac53"
+  },
+  "fixture_hash_encoding": "UTF-8, CRLF normalized to LF"
+}
