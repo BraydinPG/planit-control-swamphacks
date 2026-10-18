@@ -1,3 +1,29 @@
+## Landing + hosted-login logo handoff (Cache for Rudra and Braydin) - 2026-10-18
+
+Explicit user request covers the new HTML front door and a normal navy logo for the
+separate light Auth0 page. Branch `feature/cache-landing-auth0-branding` starts from
+main `ca87dd5`, preserving the landing storm/statistics implementation and app changes.
+`frontend/public/landing.html` replaces its placeholder symbol/text with the existing
+white wordmark, updates the favicon cache key/title and bounds the logo at phone and
+desktop widths. Both `/?signin` targets and all redirect/auth code remain unchanged.
+
+New public `foresite-logo-light.png` is copied byte-identically from approved branding
+commit `4508e9d`; the existing asset generator pins it and records it in the manifest.
+`auth/BRANDING.md` supplies the public URL suffix and exact hosted-logo owner steps;
+`auth/SETUP.md`, frontend branding guide and PROJECT_CONTEXT link the handoff. User
+clarified they lack management access and need the suffix to give Braydin. No tenant
+configuration, credentials, accounts or privileges were changed; tenant branding is
+pending owner action after the public asset is deployed.
+
+Focused Edge landing checks cover 1440/768/390/320, transparent white/navy asset decode,
+aspect ratio, no overflow, 44px controls, keyboard focus and unchanged Sign in links,
+with no exceptions/real API requests in development and built-demo modes. All 178 frontend
+tests, lint, TypeScript, default/live and explicit-demo production builds, Python generator
+lint/format, pinned asset hashes and deterministic regeneration pass. Existing bundle-size
+warning remains. Backend and hosted Auth0 acceptance were not rerun or claimed.
+Rudra reviews the small HTML change; Braydin applies the hosted-logo URL. No other
+worktrees/servers, auth implementation, backend/contracts, score/ML or task states change.
+
 ## Replacement white/cyan logo (Cache for Rudra and Braydin) - 2026-10-18
 
 Explicit user request replaces logos everywhere in the app and removes the supplied
