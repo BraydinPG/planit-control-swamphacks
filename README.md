@@ -33,7 +33,7 @@ React + TypeScript UI built with Vite and Tailwind CSS. API routes, auth checks,
 
 | Path | Contents | Owner |
 |---|---|---|
-| `frontend/` | Vite + React + TypeScript + Tailwind UI | Rudra (Braydin owns `src/auth/`) |
+| `frontend/` | Vite + React + TypeScript + Tailwind UI | Nick, with contributions from Rudra (Braydin owns `src/auth/`) |
 | `frontend/public/` | Public website: landing, Platform, Data and About pages | Cache |
 | `frontend/src/types/api.ts` | TypeScript mirror of the API schemas | Rudra |
 | `frontend/src/fixtures/` | Mock API responses for fixture mode (generated) | Rudra |

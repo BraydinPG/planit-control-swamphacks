@@ -1372,4 +1372,4 @@ The user wanted the landing page's demo button to open the live demo sites with 
 
 ### 2026-10-19 — Braydin: README brought up to date (user request; Rudra's README)
 
-**For Rudra:** `README.md` now covers the live site and read-only demo, what the app does (review-first crew reports, organizations, briefings, outlooks, polling), AI/model safeguards with links to the evaluation docs, current ownership, `python -m app.db.init`, the demo commands, every built feed, deployment, and the frontend unit and browser checks. Setup, Windows, NWS and fixture sections are kept.
+**For Rudra:** `README.md` lists Nick as the frontend owner with contributions from Rudra (user decision). It now covers the live site and read-only demo, what the app does (review-first crew reports, organizations, briefings, outlooks, polling), AI/model safeguards with links to the evaluation docs, current ownership, `python -m app.db.init`, the demo commands, every built feed, deployment, and the frontend unit and browser checks. Setup, Windows, NWS and fixture sections are kept.
