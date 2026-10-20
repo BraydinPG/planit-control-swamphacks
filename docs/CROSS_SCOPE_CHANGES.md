@@ -1369,3 +1369,7 @@ The user wanted the landing page's demo button to open the live demo sites with 
 ### 2026-10-18 — Braydin: About page team cards credit what each person built (user request; Cache's public page)
 
 **For Cache:** `frontend/public/about.html` team cards now describe each person's work from the git history instead of the ownership map and task IDs; the `team-reference` "Documented: … T0xx" lines are removed. Notably the responsive app shell (T030) is credited to Cache, who committed it, and Nick's card adds the landing page, storm/fog backdrop and header navigation. `check-public-pages.mjs` passes.
+
+### 2026-10-19 — Braydin: README brought up to date (user request; Rudra's README)
+
+**For Rudra:** `README.md` now covers the live site and read-only demo, what the app does (review-first crew reports, organizations, briefings, outlooks, polling), AI/model safeguards with links to the evaluation docs, current ownership, `python -m app.db.init`, the demo commands, every built feed, deployment, and the frontend unit and browser checks. Setup, Windows, NWS and fixture sections are kept.
